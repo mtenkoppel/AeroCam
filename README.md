@@ -104,12 +104,30 @@ behavior. They are references, not bundled dependencies:
 - [DJI Remote](https://github.com/rhoenschrat/DJI-Remote)
 - [M5StickC Plus 2 Remote for DJI Osmo](https://github.com/theserialhobbyist/M5StickCPlus2_Remote_For_DJI_Osmo)
 
-## AI-assisted development
+## AI transparency
 
-AeroCam was developed with substantial assistance from AI coding tools. Its
-features have been tested by a human on real Karoo and DJI hardware, but that
-testing cannot cover every device state, firmware version, or riding condition.
-Review changes and test them before relying on the software.
+The AeroCam code was written exclusively by large language models (LLMs),
+working from human-provided requirements and feedback.
+
+- Similar projects, including the ClipRide GoPro extension and DJI's sample
+  project, were analyzed automatically to learn from their lifecycle handling
+  and technical implementation.
+- Hammerhead's Karoo documentation and extension SDK were analyzed
+  automatically to understand the available platform features and integration
+  points.
+- The unique human contributions were developing the product and interaction
+  design, discovering the Keep awake workaround for the camera's standby
+  limitation after the LLM could not solve remote wake-up, and testing the
+  software on real Karoo and DJI hardware.
+- Development was iterative rather than a single-shot generation. AeroCam
+  progressed from small proofs of concept to a stable beta in approximately 12
+  hours of active development.
+- Approximately EUR 30-60 in AI credits were used during development.
+- This transparency statement was also written by an LLM from human-provided
+  requirements.
+
+Human testing cannot cover every device state, firmware version, or riding
+condition. Review changes and test them before relying on the software.
 
 ## Warranty and liability
 
