@@ -12,7 +12,7 @@ mode.
 
 ## Install
 
-Download the newest APK from [GitHub Releases](https://github.com/mtenkoppel/AeroCam/releases/latest).
+Download the newest APK from [GitHub Releases](https://github.com/mtenkoppel/AeroCam/releases).
 On the Karoo, allow installation from the source you use to transfer the APK,
 then open the file and install it. Updates must be signed with the same key as
 the installed version; otherwise Android requires the existing app to be
