@@ -430,12 +430,13 @@
                             android:id="@+id/widgetControlVideoTimer"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
+                            android:layout_marginStart="2dp"
                             android:maxLines="1"
                             android:text="14:45"
                             android:textColor="@color/dji_text_on_accent"
                             android:textSize="28sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:translationY="-2dp" />
                     </LinearLayout>
 
                     <ProgressBar
@@ -456,7 +457,7 @@
                         android:maxLines="1"
                         android:text="★ HIGHLIGHT"
                         android:textColor="@color/dji_text_on_accent"
-                        android:textSize="11sp"
+                        android:textSize="13sp"
                         android:visibility="gone" />
                 </FrameLayout>
                 <FrameLayout
