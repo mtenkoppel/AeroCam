@@ -600,35 +600,40 @@ object DjiWidgetRenderer {
             },
         )
         setViewVisibility(R.id.widgetControlVideoSpinner, View.GONE)
-        setViewVisibility(R.id.widgetControlVideoIcon, View.VISIBLE)
+        setViewVisibility(R.id.widgetControlVideoIdle, View.VISIBLE)
+        setViewVisibility(R.id.widgetControlVideoRecording, View.GONE)
         setViewVisibility(R.id.widgetControlVideoMeta, View.VISIBLE)
         setViewVisibility(R.id.widgetControlVideoFeedback, View.GONE)
         setTextColor(R.id.widgetControlVideoMeta, palette.textOnAccent)
+        setTextColor(R.id.widgetControlVideoTimer, palette.textOnAccent)
         setTextColor(R.id.widgetControlVideoFeedback, palette.textOnAccent)
         setImageViewResource(
-            R.id.widgetControlVideoIcon,
+            R.id.widgetControlVideoIdleIcon,
             if (connected) R.drawable.ic_widget_video else R.drawable.ic_widget_video_disabled,
         )
+        setImageViewResource(R.id.widgetControlVideoRecordingIcon, R.drawable.ic_widget_video)
         if (connected && viewState.videoAwaitingResponse != null) {
-            setViewVisibility(R.id.widgetControlVideoIcon, View.GONE)
-            setViewVisibility(R.id.widgetControlVideoMeta, View.GONE)
+            setViewVisibility(R.id.widgetControlVideoIdle, View.GONE)
+            setViewVisibility(R.id.widgetControlVideoRecording, View.GONE)
             setViewVisibility(R.id.widgetControlVideoFeedback, View.GONE)
             setViewVisibility(R.id.widgetControlVideoSpinner, View.VISIBLE)
+        } else if (connected && state.recording) {
+            setViewVisibility(R.id.widgetControlVideoIdle, View.GONE)
+            setViewVisibility(R.id.widgetControlVideoRecording, View.VISIBLE)
+            setTextViewText(R.id.widgetControlVideoTimer, formatDuration(state.recordingDurationSeconds))
+            state.highlightFeedback?.let {
+                setViewVisibility(R.id.widgetControlVideoFeedback, View.VISIBLE)
+                setTextViewText(R.id.widgetControlVideoFeedback, "★ ${compactFeedback(context, it.uppercase())}")
+            }
         } else {
             setTextViewText(
                 R.id.widgetControlVideoMeta,
                 if (!connected) {
                     ""
-                } else if (state.recording) {
-                    formatDuration(state.recordingDurationSeconds)
                 } else {
                     videoFormat(context, state)
                 },
             )
-            state.highlightFeedback?.takeIf { connected && state.recording }?.let {
-                setViewVisibility(R.id.widgetControlVideoFeedback, View.VISIBLE)
-                setTextViewText(R.id.widgetControlVideoFeedback, "★ ${compactFeedback(context, it.uppercase())}")
-            }
         }
         setViewVisibility(
             R.id.widgetControlVideoHighlight,
