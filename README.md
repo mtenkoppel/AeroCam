@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="AeroCam.svg" alt="AeroCam logo" width="180">
+</p>
+
 # AeroCam
 
 [![CI](https://github.com/mtenkoppel/AeroCam/actions/workflows/ci.yml/badge.svg)](https://github.com/mtenkoppel/AeroCam/actions/workflows/ci.yml)
