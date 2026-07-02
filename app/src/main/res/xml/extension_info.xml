@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ExtensionInfo
+    displayName="@string/extension_name"
+    icon="@drawable/ic_launcher_foreground"
+    id="karoo-poc"
+    scansDevices="true"
+    configurable="true">
+    <DataType
+        description="@string/dji_status_description"
+        displayName="@string/dji_status"
+        graphical="true"
+        icon="@drawable/ic_launcher_foreground"
+        typeId="dji-status" />
+    <DataType
+        description="@string/dji_power_description"
+        displayName="@string/dji_power"
+        graphical="true"
+        icon="@drawable/ic_coffee"
+        typeId="dji-power" />
+    <DataType
+        description="@string/dji_photo_description"
+        displayName="@string/dji_photo"
+        graphical="true"
+        icon="@drawable/ic_launcher_foreground"
+        typeId="dji-photo" />
+    <BonusAction
+        actionId="dji-record"
+        displayName="@string/bonus_record" />
+    <BonusAction
+        actionId="dji-highlight"
+        displayName="@string/bonus_highlight" />
+    <BonusAction
+        actionId="dji-settings"
+        displayName="@string/bonus_settings" />
+</ExtensionInfo>

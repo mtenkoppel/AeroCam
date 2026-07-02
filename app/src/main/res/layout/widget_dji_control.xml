@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widgetControlRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dji_bg_canvas_dark"
+    android:orientation="vertical">
+
+    <!-- Compact control field. The full-screen field uses widgetControlFullShell. -->
+    <LinearLayout
+        android:id="@+id/widgetControlMain"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <FrameLayout
+            android:id="@+id/widgetControlKeepAwake"
+            android:layout_width="72dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/widget_surface_selector">
+
+            <ImageView
+                android:id="@+id/widgetControlKeepAwakeIcon"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/keep_osmo_awake"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_widget_keep_awake_disabled" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/widgetControlBattery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="60%"
+                android:textColor="@color/dji_text_primary_dark"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/widgetControlStorage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="14.5 GB"
+                android:textColor="@color/dji_text_primary_dark"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/widgetControlSleep"
+            android:layout_width="72dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/widget_surface_selector">
+
+            <ImageView
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/widget_deep_sleep"
+                android:src="@drawable/ic_widget_sleep" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/widgetControlMessage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/widget_surface_dark"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/widgetControlMessageText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:maxLines="2"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/gallery_state_offline"
+            android:textAlignment="center"
+            android:textColor="@color/dji_text_primary_dark"
+            android:textSize="18sp" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/widgetControlConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <FrameLayout
+            android:id="@+id/widgetControlConfirmYes"
+            android:layout_width="72dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/widget_surface_active">
+            <ImageView
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/widget_confirm"
+                android:src="@drawable/ic_widget_check" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/widget_surface_dark"
+            android:gravity="center"
+            android:text="@string/widget_turn_off"
+            android:textColor="@color/dji_text_primary_dark"
+            android:textSize="16sp" />
+
+        <FrameLayout
+            android:id="@+id/widgetControlConfirmNo"
+            android:layout_width="72dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/widget_surface_danger">
+            <ImageView
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/widget_cancel"
+                android:src="@drawable/ic_widget_close" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/widgetControlFullShell"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/widgetControlFullUtility"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="22"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:id="@+id/widgetControlFullKeepAwake"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_surface_selector">
+                <ImageView
+                    android:id="@+id/widgetControlFullKeepAwakeIcon"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/keep_osmo_awake"
+                    android:src="@drawable/ic_widget_keep_awake_disabled" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/widgetControlMore"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/widget_surface_selector">
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/widget_open_settings"
+                    android:src="@drawable/ic_widget_more" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/widgetControlFullSleep"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/widget_surface_selector">
+                <ImageView
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/widget_deep_sleep"
+                    android:src="@drawable/ic_widget_sleep" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/widgetControlFullOffline"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="22"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <FrameLayout
+                android:id="@+id/widgetControlTopMessage"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="@drawable/widget_surface_selector">
+                <TextView
+                    android:id="@+id/widgetControlTopMessageText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:text="@string/widget_connect"
+                    android:textColor="@color/dji_text_primary_dark"
+                    android:textSize="18sp" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/widgetControlOfflineMore"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/widget_surface_selector">
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/widget_open_settings"
+                    android:src="@drawable/ic_widget_more" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/widgetControlTopConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="22"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:visibility="gone">
+            <FrameLayout
+                android:id="@+id/widgetControlTopConfirmYes"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_surface_active">
+                <ImageView
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/widget_confirm"
+                    android:src="@drawable/ic_widget_check" />
+            </FrameLayout>
+            <TextView
+                android:id="@+id/widgetControlTopConfirmText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/widget_surface_dark"
+                android:gravity="center"
+                android:text="@string/widget_turn_off"
+                android:textColor="@color/dji_text_primary_dark"
+                android:textSize="16sp" />
+            <FrameLayout
+                android:id="@+id/widgetControlTopConfirmNo"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_surface_danger">
+                <ImageView
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/widget_cancel"
+                    android:src="@drawable/ic_widget_close" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/widgetControlTopConfirmSpacer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="78"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/widgetControlFullStatus"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="18"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/widgetControlFullOfflineHint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/widget_auto_reconnect_enabled"
+                android:textColor="@color/dji_text_secondary_dark"
+                android:textSize="15sp"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/widgetControlFullBatteryGroup"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="@string/battery"
+                    android:src="@drawable/ic_battery" />
+                <TextView
+                    android:id="@+id/widgetControlFullBattery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:maxLines="1"
+                    android:text="90%"
+                    android:textColor="@color/dji_text_primary_dark"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/widgetControlFullStorageGroup"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="@string/widget_storage"
+                    android:src="@drawable/ic_widget_storage" />
+                <TextView
+                    android:id="@+id/widgetControlFullStorage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:maxLines="1"
+                    android:text="14.5 GB"
+                    android:textColor="@color/dji_text_primary_dark"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/widgetControlFull"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="60"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/widgetControlVideoRow"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:id="@+id/widgetControlVideo"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/widget_surface_selector"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/widgetControlVideoIcon"
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"
+                        android:contentDescription="@string/widget_video"
+                        android:src="@drawable/ic_widget_video" />
+                    <ProgressBar
+                        android:id="@+id/widgetControlVideoSpinner"
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:indeterminateTint="@color/dji_icon_primary"
+                        android:visibility="gone" />
+                    <TextView
+                        android:id="@+id/widgetControlVideoMeta"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:maxLines="1"
+                        android:text="4K 30FPS"
+                        android:textColor="@color/dji_text_on_accent"
+                        android:textSize="14sp" />
+                </LinearLayout>
+                <FrameLayout
+                    android:id="@+id/widgetControlVideoHighlight"
+                    android:layout_width="72dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/widget_surface_selector"
+                    android:visibility="gone">
+                    <ImageView
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/widget_add_highlight"
+                        android:src="@drawable/ic_widget_highlight" />
+                </FrameLayout>
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/widgetControlPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/widget_surface_selector">
+                <ImageView
+                    android:id="@+id/widgetControlPhotoIcon"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/widget_photo"
+                    android:src="@drawable/ic_widget_photo" />
+                <TextView
+                    android:id="@+id/widgetControlPhotoStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textColor="@color/dji_text_primary_dark"
+                    android:visibility="gone" />
+                <ProgressBar
+                    android:id="@+id/widgetControlPhotoSpinner"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center"
+                    android:indeterminateTint="@color/dji_icon_primary"
+                    android:visibility="gone" />
+            </FrameLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

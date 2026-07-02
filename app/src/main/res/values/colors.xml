@@ -1,0 +1,43 @@
+<resources>
+    <color name="white">#FFFFFF</color>
+
+    <color name="dji_confirm">#18794E</color>
+    <color name="dji_warning">#9A6700</color>
+    <color name="dji_neutral">#30363D</color>
+
+    <color name="dji_bg_canvas_dark">#000000</color>
+    <color name="dji_bg_canvas_light">#F4F6F8</color>
+    <color name="dji_bg_gallery_dark">#141414</color>
+    <color name="dji_bg_gallery_light">#EEF1F4</color>
+    <color name="dji_bg_preview_dark">#1B1B1B</color>
+    <color name="dji_bg_preview_light">#D9DEE5</color>
+
+    <color name="dji_text_primary_dark">#FFFFFF</color>
+    <color name="dji_text_primary_light">#101418</color>
+    <color name="dji_text_secondary_dark">#B8C1CC</color>
+    <color name="dji_text_secondary_light">#5C6675</color>
+    <color name="dji_text_on_accent">#FFFFFF</color>
+
+    <color name="dji_icon_primary">#FFFFFF</color>
+    <color name="dji_icon_disabled_fill">#777777</color>
+    <color name="dji_icon_disabled_strike">#303030</color>
+    <color name="dji_icon_blocked_fill">#9A9A9A</color>
+    <color name="dji_icon_blocked_strike">#FF4D4D</color>
+
+    <color name="dji_surface_selector">#4B4B4B</color>
+    <color name="dji_surface_selector_pressed">#4B4B4B</color>
+    <color name="dji_surface_muted">#303030</color>
+    <color name="dji_surface_success">#6CCB31</color>
+    <color name="dji_surface_success_pressed">#6CCB31</color>
+    <color name="dji_surface_recording">#FF0505</color>
+    <color name="dji_surface_recording_pressed">#FF0505</color>
+    <color name="dji_surface_danger">#FF0505</color>
+    <color name="dji_surface_danger_pressed">#C40000</color>
+    <color name="dji_focus_ring">#FFE900</color>
+
+    <color name="dji_button_primary">#55D6BE</color>
+    <color name="dji_button_secondary">#4B5563</color>
+
+    <color name="dji_battery_low_dark">#FF0505</color>
+    <color name="dji_battery_low_light">#C40000</color>
+</resources>

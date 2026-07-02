@@ -1,0 +1,9 @@
+## Copy this file to local.properties and fill in your own values.
+##
+## GitHub Packages requires authentication for karoo-ext. A classic GitHub
+## personal access token with read:packages is enough.
+gpr.user=your-github-username
+gpr.key=your-github-token
+
+## Android Studio usually writes this automatically. Uncomment if needed.
+## sdk.dir=/Users/maurice/Library/Android/sdk

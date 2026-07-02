@@ -1,0 +1,10 @@
+[versions]
+agp = "8.2.2"
+kotlin = "2.0.0"
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
+[libraries]
+hammerhead-karoo-ext = { group = "io.hammerhead", name = "karoo-ext", version = "1.1.9" }
