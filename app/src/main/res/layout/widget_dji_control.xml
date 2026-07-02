@@ -402,15 +402,6 @@
                             android:layout_height="41dp"
                             android:contentDescription="@string/widget_video"
                             android:src="@drawable/ic_widget_video" />
-                        <TextView
-                            android:id="@+id/widgetControlVideoMeta"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="1dp"
-                            android:maxLines="1"
-                            android:text="4K 30FPS"
-                            android:textColor="@color/dji_text_on_accent"
-                            android:textSize="14sp" />
                     </LinearLayout>
 
                     <LinearLayout

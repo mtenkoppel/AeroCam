@@ -29,16 +29,6 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_widget_video" />
 
-            <TextView
-                android:id="@+id/widgetVideoIdleMeta"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
-                android:maxLines="1"
-                android:text="4K 30FPS"
-                android:textColor="@color/dji_text_primary_dark"
-                android:textSize="11sp"
-                android:visibility="gone" />
         </LinearLayout>
 
         <TextView

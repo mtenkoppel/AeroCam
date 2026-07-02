@@ -12,7 +12,6 @@ import com.karoopoc.MainActivity
 import com.karoopoc.R
 import com.karoopoc.dji.CameraConnectionState
 import com.karoopoc.dji.DjiCameraState
-import com.karoopoc.dji.DjiCameraMode
 import com.karoopoc.dji.DjiSettings
 import com.karoopoc.dji.PhotoCaptureState
 import io.hammerhead.karooext.models.ViewConfig
@@ -96,7 +95,6 @@ object DjiWidgetRenderer {
             setTextColor(R.id.widgetVideoMeta, palette.textOnAccent)
 
             setViewVisibility(R.id.widgetVideoIdle, View.GONE)
-            setViewVisibility(R.id.widgetVideoIdleMeta, View.GONE)
             setViewVisibility(R.id.widgetVideoStatus, View.GONE)
             setViewVisibility(R.id.widgetVideoRecording, View.GONE)
             setViewVisibility(R.id.widgetVideoHighlight, View.GONE)
@@ -187,11 +185,6 @@ object DjiWidgetRenderer {
                         R.id.widgetVideoIcon,
                         if (connected) R.drawable.ic_widget_video else R.drawable.ic_widget_video_disabled,
                     )
-                    if (connected && size in setOf(DjiWidgetSize.LARGE, DjiWidgetSize.FULL)) {
-                        setViewVisibility(R.id.widgetVideoIdleMeta, View.VISIBLE)
-                        setTextViewText(R.id.widgetVideoIdleMeta, videoFormat(context, state))
-                        setTextColor(R.id.widgetVideoIdleMeta, palette.textPrimary)
-                    }
                     setInt(
                         R.id.widgetVideoPrimary,
                         "setBackgroundResource",
@@ -602,9 +595,7 @@ object DjiWidgetRenderer {
         setViewVisibility(R.id.widgetControlVideoSpinner, View.GONE)
         setViewVisibility(R.id.widgetControlVideoIdle, View.VISIBLE)
         setViewVisibility(R.id.widgetControlVideoRecording, View.GONE)
-        setViewVisibility(R.id.widgetControlVideoMeta, View.VISIBLE)
         setViewVisibility(R.id.widgetControlVideoFeedback, View.GONE)
-        setTextColor(R.id.widgetControlVideoMeta, palette.textOnAccent)
         setTextColor(R.id.widgetControlVideoTimer, palette.textOnAccent)
         setTextColor(R.id.widgetControlVideoFeedback, palette.textOnAccent)
         setImageViewResource(
@@ -625,15 +616,6 @@ object DjiWidgetRenderer {
                 setViewVisibility(R.id.widgetControlVideoFeedback, View.VISIBLE)
                 setTextViewText(R.id.widgetControlVideoFeedback, "★ ${compactFeedback(context, it.uppercase())}")
             }
-        } else {
-            setTextViewText(
-                R.id.widgetControlVideoMeta,
-                if (!connected) {
-                    ""
-                } else {
-                    videoFormat(context, state)
-                },
-            )
         }
         setViewVisibility(
             R.id.widgetControlVideoHighlight,
@@ -804,18 +786,7 @@ private fun statusTextSize(config: ViewConfig, size: DjiWidgetSize): Float {
 }
 
 private fun recordingMeta(context: Context, state: DjiCameraState, size: DjiWidgetSize): String {
-    val storage = formatStorage(context, state.remainingCapacityMb)
-    val video = videoFormat(context, state)
-    return if (size == DjiWidgetSize.SMALL) storage else "$storage  $video"
-}
-
-private fun videoFormat(context: Context, state: DjiCameraState): String {
-    if (state.cameraMode != DjiCameraMode.VIDEO && !state.recording) {
-        return context.getString(R.string.widget_video_fallback)
-    }
-    val resolution = videoResolutionLabel(state.videoResolution) ?: context.getString(R.string.widget_video_fallback)
-    val fps = videoFpsLabel(state.videoFps)?.let { " ${it}FPS" }.orEmpty()
-    return "$resolution$fps"
+    return formatStorage(context, state.remainingCapacityMb)
 }
 
 private fun formatStorage(context: Context, megabytes: Long?): String {
