@@ -10,6 +10,102 @@ mode.
 > endorsed by, or sponsored by DJI or Hammerhead. DJI and Osmo are trademarks
 > of their respective owners.
 
+> [!NOTE]
+> DJI cameras cannot currently be woken from a complete power-off through the
+> standard Android Bluetooth APIs available on Karoo. AeroCam works around this
+> limitation with **Keep awake**, which keeps a connected camera responsive
+> while allowing its screens to remain off. A fully powered-off camera must
+> still be turned on manually.
+
+## Features
+
+### Basics
+
+- **Start and stop recording:** Control video recording from an in-ride data
+  field or a Karoo bonus action, with immediate input feedback and camera-state
+  confirmation.
+- **GPS telemetry:** Stream live Karoo position, altitude, and movement data to
+  the camera so supported DJI recordings contain telemetry for later overlays.
+- **Highlights:** Add DJI highlight markers while recording, making interesting
+  moments easier to find during editing.
+- **Automatic reconnection:** AeroCam remembers the paired camera and searches
+  for it in the background, reconnecting when the camera becomes available.
+- **Photo capture:** Take photos directly from a focused data field or the
+  full-screen control field.
+- **Camera monitoring:** View camera battery and remaining card space, with
+  optional one-time alerts for low battery, low storage, and photo or recording
+  events.
+- **Light and dark themes:** Choose light, dark, or follow the Karoo system
+  appearance.
+- **Six languages:** English, German, Spanish, French, Italian, and Portuguese
+  are selected automatically from the Karoo language.
+
+### Auto Highlights
+
+Auto highlights use Karoo ride data to mark useful moments while a ride and
+camera recording are active. Each trigger can be enabled separately, and power,
+speed, heart-rate, and descent thresholds can be customized. Optional
+**Auto-start recording** starts recording when a trigger occurs while the camera
+is idle; that first event starts the recording rather than adding an immediate
+marker.
+
+- **Lap marker:** Adds a highlight whenever Karoo records a new lap.
+- **Peak power:** Adds a highlight when power crosses the configured wattage.
+- **Maximum speed:** Adds a highlight when speed crosses the configured km/h
+  threshold.
+- **Climb summit:** Adds a highlight when the ridden distance reaches the summit
+  of a climb in the active Karoo route.
+- **Peak heart rate:** Adds a highlight when heart rate crosses the configured
+  bpm threshold.
+- **High-speed descent:** Adds a highlight when speed exceeds the configured
+  threshold while the grade indicates a descent.
+- **Ride bookmarks:** Adds markers at the start and end of a ride when recording
+  is active.
+
+### Keep Awake
+
+Keep awake periodically sends a lightweight camera-control command so the Osmo
+does not reach its automatic power-off timeout. This lets the camera remain
+connected and ready while its locked screens stay off. AeroCam pauses these
+commands during video recording so they do not create unwanted highlights, then
+resumes afterward.
+
+Keeping the camera responsive consumes noticeably more battery than allowing it
+to power off, but testing showed it remains practical for normal rides. The
+interval is configurable, and the feature can be turned on or off from Cam
+Control.
+
+### Data Fields
+
+- **Photo:** A focused shutter control optimized to remain clear and usable in
+  small data-field positions, including beside maps or media controls.
+- **Video:** A compact recording control optimized for small data fields, with
+  recording duration, highlight control, and temporary action feedback.
+- **Cam Control:** Best used as a full-screen data field. It combines connection,
+  battery, storage, Keep awake, video, photo, camera power-off, and app access in
+  one riding dashboard.
+
+### Bonus Actions
+
+Karoo bonus actions let supported hardware buttons trigger AeroCam without
+opening a data field.
+
+- **Start/Stop Recording:** Toggles video recording.
+- **Add Highlight:** Adds a highlight to the active recording.
+- **Settings:** Opens AeroCam for configuration and camera status.
+
+## Compatibility
+
+### Cameras
+
+AeroCam has been developed and tested with the **DJI Osmo Action 4**. The Osmo
+Action 5 Pro and Osmo Action 6 Pro appear to use a compatible Bluetooth control
+protocol, but they have not yet been tested and are not currently guaranteed.
+
+### Karoo
+
+AeroCam has been tested only with the **Hammerhead Karoo 3**.
+
 ## Install
 
 Download the newest APK from [GitHub Releases](https://github.com/mtenkoppel/AeroCam/releases).
