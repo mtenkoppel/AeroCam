@@ -69,6 +69,7 @@
             android:background="@drawable/widget_surface_selector">
 
             <ImageView
+                android:id="@+id/widgetControlSleepIcon"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
@@ -112,6 +113,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/widget_surface_active">
             <ImageView
+                android:id="@+id/widgetControlConfirmYesIcon"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
@@ -137,6 +139,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/widget_surface_danger">
             <ImageView
+                android:id="@+id/widgetControlConfirmNoIcon"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
@@ -183,6 +186,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/widget_surface_selector">
                 <ImageView
+                    android:id="@+id/widgetControlMoreIcon"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_gravity="center"
@@ -198,6 +202,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/widget_surface_selector">
                 <ImageView
+                    android:id="@+id/widgetControlFullSleepIcon"
                     android:layout_width="34dp"
                     android:layout_height="34dp"
                     android:layout_gravity="center"
@@ -240,6 +245,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/widget_surface_selector">
                 <ImageView
+                    android:id="@+id/widgetControlOfflineMoreIcon"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_gravity="center"
@@ -263,6 +269,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/widget_surface_active">
                 <ImageView
+                    android:id="@+id/widgetControlTopConfirmYesIcon"
                     android:layout_width="34dp"
                     android:layout_height="34dp"
                     android:layout_gravity="center"
@@ -288,6 +295,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/widget_surface_danger">
                 <ImageView
+                    android:id="@+id/widgetControlTopConfirmNoIcon"
                     android:layout_width="34dp"
                     android:layout_height="34dp"
                     android:layout_gravity="center"
@@ -330,6 +338,7 @@
                 android:gravity="center"
                 android:orientation="horizontal">
                 <ImageView
+                    android:id="@+id/widgetControlFullBatteryIcon"
                     android:layout_width="22dp"
                     android:layout_height="22dp"
                     android:contentDescription="@string/battery"
@@ -353,6 +362,7 @@
                 android:gravity="center"
                 android:orientation="horizontal">
                 <ImageView
+                    android:id="@+id/widgetControlFullStorageIcon"
                     android:layout_width="22dp"
                     android:layout_height="22dp"
                     android:contentDescription="@string/widget_storage"
@@ -459,6 +469,7 @@
                     android:background="@drawable/widget_surface_selector"
                     android:visibility="gone">
                     <ImageView
+                        android:id="@+id/widgetControlVideoHighlightIcon"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_gravity="center"

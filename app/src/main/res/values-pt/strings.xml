@@ -65,11 +65,11 @@
     <string name="notification_connected">Câmara DJI ligada</string>
     <string name="notification_connecting">A ligar à câmara DJI</string>
     <string name="notification_disconnected">Câmara DJI desligada</string>
-    <string name="dji_status">Vídeo DJI</string>
+    <string name="dji_status">Vídeo</string>
     <string name="dji_status_description">Gravar vídeo e adicionar destaques</string>
-    <string name="dji_photo">Fotografia DJI</string>
+    <string name="dji_photo">Fotografia</string>
     <string name="dji_photo_description">Tirar uma fotografia com a câmara DJI</string>
-    <string name="dji_power">Controlo da câmara DJI</string>
+    <string name="dji_power">Controlo da câmara</string>
     <string name="dji_power_description">Ligar, controlar Manter ativa ou desligar a câmara</string>
     <string name="bonus_record">Iniciar/parar gravação DJI</string>
     <string name="bonus_highlight">Adicionar destaque DJI</string>

@@ -24,8 +24,8 @@
     <color name="dji_icon_blocked_fill">#9A9A9A</color>
     <color name="dji_icon_blocked_strike">#FF4D4D</color>
 
-    <color name="dji_surface_selector">#4B4B4B</color>
-    <color name="dji_surface_selector_pressed">#4B4B4B</color>
+    <color name="dji_surface_selector">#636363</color>
+    <color name="dji_surface_selector_pressed">#636363</color>
     <color name="dji_surface_muted">#303030</color>
     <color name="dji_surface_success">#6CCB31</color>
     <color name="dji_surface_success_pressed">#6CCB31</color>

@@ -1,6 +1,6 @@
 # Next Release
 
-- [ ] Remove "DJI" from data field names.
+- [x] Remove "DJI" from data field names.
 - [ ] Add app icons.
 - [ ] Improve the data field previews.
 - [ ] Continue UI tuning:

@@ -37,3 +37,10 @@ and BLE lifecycle behavior. Its source is not bundled as an AeroCam dependency.
 These projects were used for protocol comparison and hardware experiments. They
 are not bundled dependencies.
 
+## Google Material Design Icons
+
+Repository: https://github.com/google/material-design-icons  
+License: Apache License 2.0
+
+AeroCam includes adapted Android vector versions of selected outlined Material
+icons.

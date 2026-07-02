@@ -75,6 +75,8 @@ object DjiWidgetRenderer {
         return RemoteViews(context.packageName, R.layout.widget_dji_video).apply {
             setInt(R.id.widgetVideoRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
             applyResponsiveFrame(config, R.id.widgetVideoRoot, size, hideCaptions)
+            applyCaptionIconScale(hideCaptions, 8, R.id.widgetVideoIcon)
+            applyCaptionIconScale(hideCaptions, 6, R.id.widgetVideoHighlightIcon)
             setTextViewTextSize(
                 R.id.widgetVideoTimer,
                 TypedValue.COMPLEX_UNIT_SP,
@@ -228,6 +230,7 @@ object DjiWidgetRenderer {
         return RemoteViews(context.packageName, R.layout.widget_dji_photo).apply {
             setInt(R.id.widgetPhotoRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
             applyResponsiveFrame(config, R.id.widgetPhotoRoot, size, hideCaptions)
+            applyCaptionIconScale(hideCaptions, 8, R.id.widgetPhotoIcon)
             setTextViewTextSize(
                 R.id.widgetPhotoStatus,
                 TypedValue.COMPLEX_UNIT_SP,
@@ -311,6 +314,30 @@ object DjiWidgetRenderer {
         return RemoteViews(context.packageName, R.layout.widget_dji_control).apply {
             setInt(R.id.widgetControlRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
             applyResponsiveFrame(config, R.id.widgetControlRoot, size, hideCaptions)
+            applyCaptionIconScale(
+                hideCaptions,
+                5,
+                R.id.widgetControlKeepAwakeIcon,
+                R.id.widgetControlSleepIcon,
+                R.id.widgetControlConfirmYesIcon,
+                R.id.widgetControlConfirmNoIcon,
+                R.id.widgetControlFullKeepAwakeIcon,
+                R.id.widgetControlMoreIcon,
+                R.id.widgetControlFullSleepIcon,
+                R.id.widgetControlOfflineMoreIcon,
+                R.id.widgetControlTopConfirmYesIcon,
+                R.id.widgetControlTopConfirmNoIcon,
+                R.id.widgetControlVideoIdleIcon,
+                R.id.widgetControlVideoRecordingIcon,
+                R.id.widgetControlVideoHighlightIcon,
+                R.id.widgetControlPhotoIcon,
+            )
+            applyCaptionIconScale(
+                hideCaptions,
+                3,
+                R.id.widgetControlFullBatteryIcon,
+                R.id.widgetControlFullStorageIcon,
+            )
             setViewVisibility(R.id.widgetControlMain, View.GONE)
             setViewVisibility(R.id.widgetControlMessage, View.GONE)
             setViewVisibility(R.id.widgetControlConfirm, View.GONE)
@@ -666,6 +693,10 @@ object DjiWidgetRenderer {
         size: DjiWidgetSize,
         hideCaptions: Boolean,
     ) {
+        if (!hideCaptions) {
+            setViewPadding(rootId, 2, 0, 2, 2)
+            return
+        }
         if (hideCaptions && size in setOf(DjiWidgetSize.SMALL_HALF, DjiWidgetSize.SMALL, DjiWidgetSize.MEDIUM)) {
             setViewPadding(rootId, 5, 5, 5, 5)
             return
@@ -681,6 +712,15 @@ object DjiWidgetRenderer {
             else -> horizontalPadding
         }
         setViewPadding(rootId, horizontalPadding, verticalPadding, horizontalPadding, verticalPadding)
+    }
+
+    private fun RemoteViews.applyCaptionIconScale(
+        hideCaptions: Boolean,
+        padding: Int,
+        vararg iconIds: Int,
+    ) {
+        val appliedPadding = if (hideCaptions) 0 else padding
+        iconIds.forEach { setViewPadding(it, appliedPadding, appliedPadding, appliedPadding, appliedPadding) }
     }
 
     private fun RemoteViews.setRecordingPadding(layout: VideoRecordingLayout) {
