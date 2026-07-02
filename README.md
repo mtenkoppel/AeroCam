@@ -1,5 +1,10 @@
 # AeroCam
 
+[![CI](https://github.com/mtenkoppel/AeroCam/actions/workflows/ci.yml/badge.svg)](https://github.com/mtenkoppel/AeroCam/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/mtenkoppel/AeroCam?include_prereleases&label=release)](https://github.com/mtenkoppel/AeroCam/releases)
+[![License: GPLv3](https://img.shields.io/github/license/mtenkoppel/AeroCam)](LICENSE)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF)](https://kotlinlang.org/)
+
 AeroCam is an independent Karoo extension for controlling a DJI Osmo Action
 camera over Bluetooth Low Energy. It provides in-ride camera controls, automatic
 reconnection, GPS telemetry, video highlights, and a configurable keep-awake
@@ -66,14 +71,10 @@ marker.
 
 Keep awake periodically sends a lightweight camera-control command so the Osmo
 does not reach its automatic power-off timeout. This lets the camera remain
-connected and ready while its locked screens stay off. AeroCam pauses these
-commands during video recording so they do not create unwanted highlights, then
-resumes afterward.
+connected and ready while its locked screens stay off. 
 
 Keeping the camera responsive consumes noticeably more battery than allowing it
-to power off, but testing showed it remains practical for normal rides. The
-interval is configurable, and the feature can be turned on or off from Cam
-Control.
+to power off, but testing showed it remains practical for up to 3 hour rides.
 
 ### Data Fields
 
@@ -100,11 +101,59 @@ opening a data field.
 
 AeroCam has been developed and tested with the **DJI Osmo Action 4**. The Osmo
 Action 5 Pro and Osmo Action 6 Pro appear to use a compatible Bluetooth control
-protocol, but they have not yet been tested and are not currently guaranteed.
+protocol, but they have not yet been tested.
 
 ### Karoo
 
 AeroCam has been tested only with the **Hammerhead Karoo 3**.
+
+## How It Works
+
+### Pair a Camera
+
+Pairing is required only once:
+
+1. Turn on the camera.
+2. On the camera, open **Settings > Bluetooth Remote Controller** and leave that
+   screen open.
+3. Open AeroCam on the Karoo and press **Search**.
+4. Accept the connection and security code shown on the camera.
+
+AeroCam stores the paired camera and will try to reconnect automatically when
+the camera is available.
+
+### Set Up Keep Awake
+
+Keep awake works best when the camera is configured for low-distraction use:
+
+1. Configure the camera's **QS button** to use the Screen Switch/Photo action
+   rather than a voice-prompt action. Menu wording can vary by DJI firmware.
+2. Turn off camera sounds or lower their volume so periodic QS commands do not
+   produce distracting tones.
+3. Configure Single Screen Preview so the front display remains off when the
+   camera is locked.
+4. Set Auto Power Off to at least two minutes, then choose a Keep awake interval
+   shorter than that timeout.
+5. After AeroCam connects, lock the camera screen. The displays turn off while
+   AeroCam periodically prevents the camera from fully powering down.
+
+Keep awake is a practical standby workaround, not a true DJI standby mode. It
+uses additional camera battery and cannot wake a camera after complete
+power-off.
+
+### Prepare for a Ride
+
+Once the camera has been paired and configured, a reliable pre-ride workflow is:
+
+1. Check the camera's video settings, including resolution, frame rate, field of
+   view, and stabilization.
+2. Mount the camera and confirm that you are happy with its point of view.
+3. Turn on the Karoo and camera, then confirm that AeroCam reconnects.
+4. If you use Keep awake, enable it and lock the camera display before starting
+   the ride.
+
+You can then leave the AeroCam app itself in the background and use its data
+fields or bonus actions during the ride.
 
 ## Install
 
@@ -218,7 +267,7 @@ working from human-provided requirements and feedback.
 - Development was iterative rather than a single-shot generation. AeroCam
   progressed from small proofs of concept to a stable beta in approximately 12
   hours of active development.
-- Approximately EUR 30-60 in AI credits were used during development.
+- Approximately EUR 30-60 in Euros were used during development.
 - This transparency statement was also written by an LLM from human-provided
   requirements.
 
