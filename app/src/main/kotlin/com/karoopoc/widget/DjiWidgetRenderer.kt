@@ -15,8 +15,6 @@ import com.karoopoc.dji.DjiCameraState
 import com.karoopoc.dji.DjiSettings
 import com.karoopoc.dji.PhotoCaptureState
 import io.hammerhead.karooext.models.ViewConfig
-import kotlin.math.min
-import kotlin.math.roundToInt
 
 data class DjiWidgetViewState(
     val camera: DjiCameraState,
@@ -74,7 +72,7 @@ object DjiWidgetRenderer {
 
         return RemoteViews(context.packageName, R.layout.widget_dji_video).apply {
             setInt(R.id.widgetVideoRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
-            applyResponsiveFrame(config, R.id.widgetVideoRoot, size, hideCaptions)
+            applyWidgetFrame(R.id.widgetVideoRoot)
             applyCaptionIconScale(hideCaptions, 8, R.id.widgetVideoIcon)
             applyCaptionIconScale(hideCaptions, 6, R.id.widgetVideoHighlightIcon)
             setTextViewTextSize(
@@ -229,7 +227,7 @@ object DjiWidgetRenderer {
 
         return RemoteViews(context.packageName, R.layout.widget_dji_photo).apply {
             setInt(R.id.widgetPhotoRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
-            applyResponsiveFrame(config, R.id.widgetPhotoRoot, size, hideCaptions)
+            applyWidgetFrame(R.id.widgetPhotoRoot)
             applyCaptionIconScale(hideCaptions, 8, R.id.widgetPhotoIcon)
             setTextViewTextSize(
                 R.id.widgetPhotoStatus,
@@ -313,7 +311,7 @@ object DjiWidgetRenderer {
 
         return RemoteViews(context.packageName, R.layout.widget_dji_control).apply {
             setInt(R.id.widgetControlRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
-            applyResponsiveFrame(config, R.id.widgetControlRoot, size, hideCaptions)
+            applyWidgetFrame(R.id.widgetControlRoot)
             applyCaptionIconScale(
                 hideCaptions,
                 5,
@@ -687,31 +685,8 @@ object DjiWidgetRenderer {
         }
     }
 
-    private fun RemoteViews.applyResponsiveFrame(
-        config: ViewConfig,
-        rootId: Int,
-        size: DjiWidgetSize,
-        hideCaptions: Boolean,
-    ) {
-        if (!hideCaptions) {
-            setViewPadding(rootId, 2, 0, 2, 2)
-            return
-        }
-        if (hideCaptions && size in setOf(DjiWidgetSize.SMALL_HALF, DjiWidgetSize.SMALL, DjiWidgetSize.MEDIUM)) {
-            setViewPadding(rootId, 5, 5, 5, 5)
-            return
-        }
-        val shortSide = min(config.viewSize.first, config.viewSize.second).coerceAtLeast(1)
-        val horizontalPadding = when (size) {
-            DjiWidgetSize.SMALL_HALF, DjiWidgetSize.SMALL -> (shortSide * 0.028f).roundToInt().coerceIn(2, 4)
-            else -> (shortSide * 0.045f).roundToInt().coerceIn(4, 10)
-        }
-        val verticalPadding = when (size) {
-            DjiWidgetSize.SMALL_HALF, DjiWidgetSize.SMALL -> 0
-            DjiWidgetSize.MEDIUM -> 2
-            else -> horizontalPadding
-        }
-        setViewPadding(rootId, horizontalPadding, verticalPadding, horizontalPadding, verticalPadding)
+    private fun RemoteViews.applyWidgetFrame(rootId: Int) {
+        setViewPadding(rootId, 10, 10, 10, 10)
     }
 
     private fun RemoteViews.applyCaptionIconScale(

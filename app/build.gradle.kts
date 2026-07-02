@@ -16,8 +16,8 @@ android {
         applicationId = "com.karoopoc"
         minSdk = 23
         targetSdk = 34
-        versionCode = 13
-        versionName = "0.9.0-beta.3-dev.6"
+        versionCode = 14
+        versionName = "0.9.0-beta.3-dev.7"
     }
 
     signingConfigs {
