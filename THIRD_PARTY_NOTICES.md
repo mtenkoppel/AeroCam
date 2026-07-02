@@ -39,7 +39,7 @@ are not bundled dependencies.
 
 ## Google Material Design Icons
 
-Repository: https://github.com/google/material-design-icons  
+Repository: https://github.com/google/material-design-icons
 License: Apache License 2.0
 
 AeroCam includes adapted Android vector versions of selected outlined Material
