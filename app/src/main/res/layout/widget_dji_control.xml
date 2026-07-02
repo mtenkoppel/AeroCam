@@ -453,11 +453,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal|bottom"
-                        android:layout_marginBottom="3dp"
+                        android:layout_marginBottom="18dp"
                         android:maxLines="1"
                         android:text="★ HIGHLIGHT"
                         android:textColor="@color/dji_text_on_accent"
-                        android:textSize="13sp"
+                        android:textSize="16sp"
                         android:visibility="gone" />
                 </FrameLayout>
                 <FrameLayout
