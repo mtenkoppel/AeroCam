@@ -12,6 +12,7 @@ import com.karoopoc.MainActivity
 import com.karoopoc.R
 import com.karoopoc.dji.CameraConnectionState
 import com.karoopoc.dji.DjiCameraState
+import com.karoopoc.dji.DjiCameraMode
 import com.karoopoc.dji.DjiSettings
 import com.karoopoc.dji.PhotoCaptureState
 import io.hammerhead.karooext.models.ViewConfig
@@ -73,7 +74,7 @@ object DjiWidgetRenderer {
         val hideCaptions = DjiSettings.hideFieldCaptions(context)
 
         return RemoteViews(context.packageName, R.layout.widget_dji_video).apply {
-            setInt(R.id.widgetVideoRoot, "setBackgroundColor", palette.widgetBackground)
+            setInt(R.id.widgetVideoRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
             applyResponsiveFrame(config, R.id.widgetVideoRoot, size, hideCaptions)
             setTextViewTextSize(
                 R.id.widgetVideoTimer,
@@ -94,7 +95,8 @@ object DjiWidgetRenderer {
             setTextColor(R.id.widgetVideoTimer, palette.textOnAccent)
             setTextColor(R.id.widgetVideoMeta, palette.textOnAccent)
 
-            setViewVisibility(R.id.widgetVideoIcon, View.GONE)
+            setViewVisibility(R.id.widgetVideoIdle, View.GONE)
+            setViewVisibility(R.id.widgetVideoIdleMeta, View.GONE)
             setViewVisibility(R.id.widgetVideoStatus, View.GONE)
             setViewVisibility(R.id.widgetVideoRecording, View.GONE)
             setViewVisibility(R.id.widgetVideoHighlight, View.GONE)
@@ -180,11 +182,16 @@ object DjiWidgetRenderer {
                 }
 
                 else -> {
-                    setViewVisibility(R.id.widgetVideoIcon, View.VISIBLE)
+                    setViewVisibility(R.id.widgetVideoIdle, View.VISIBLE)
                     setImageViewResource(
                         R.id.widgetVideoIcon,
                         if (connected) R.drawable.ic_widget_video else R.drawable.ic_widget_video_disabled,
                     )
+                    if (connected && size in setOf(DjiWidgetSize.LARGE, DjiWidgetSize.FULL)) {
+                        setViewVisibility(R.id.widgetVideoIdleMeta, View.VISIBLE)
+                        setTextViewText(R.id.widgetVideoIdleMeta, videoFormat(context, state))
+                        setTextColor(R.id.widgetVideoIdleMeta, palette.textPrimary)
+                    }
                     setInt(
                         R.id.widgetVideoPrimary,
                         "setBackgroundResource",
@@ -226,7 +233,7 @@ object DjiWidgetRenderer {
         val hideCaptions = DjiSettings.hideFieldCaptions(context)
 
         return RemoteViews(context.packageName, R.layout.widget_dji_photo).apply {
-            setInt(R.id.widgetPhotoRoot, "setBackgroundColor", palette.widgetBackground)
+            setInt(R.id.widgetPhotoRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
             applyResponsiveFrame(config, R.id.widgetPhotoRoot, size, hideCaptions)
             setTextViewTextSize(
                 R.id.widgetPhotoStatus,
@@ -309,7 +316,7 @@ object DjiWidgetRenderer {
         val hideCaptions = DjiSettings.hideFieldCaptions(context)
 
         return RemoteViews(context.packageName, R.layout.widget_dji_control).apply {
-            setInt(R.id.widgetControlRoot, "setBackgroundColor", palette.widgetBackground)
+            setInt(R.id.widgetControlRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
             applyResponsiveFrame(config, R.id.widgetControlRoot, size, hideCaptions)
             setViewVisibility(R.id.widgetControlMain, View.GONE)
             setViewVisibility(R.id.widgetControlMessage, View.GONE)
@@ -595,7 +602,9 @@ object DjiWidgetRenderer {
         setViewVisibility(R.id.widgetControlVideoSpinner, View.GONE)
         setViewVisibility(R.id.widgetControlVideoIcon, View.VISIBLE)
         setViewVisibility(R.id.widgetControlVideoMeta, View.VISIBLE)
+        setViewVisibility(R.id.widgetControlVideoFeedback, View.GONE)
         setTextColor(R.id.widgetControlVideoMeta, palette.textOnAccent)
+        setTextColor(R.id.widgetControlVideoFeedback, palette.textOnAccent)
         setImageViewResource(
             R.id.widgetControlVideoIcon,
             if (connected) R.drawable.ic_widget_video else R.drawable.ic_widget_video_disabled,
@@ -603,6 +612,7 @@ object DjiWidgetRenderer {
         if (connected && viewState.videoAwaitingResponse != null) {
             setViewVisibility(R.id.widgetControlVideoIcon, View.GONE)
             setViewVisibility(R.id.widgetControlVideoMeta, View.GONE)
+            setViewVisibility(R.id.widgetControlVideoFeedback, View.GONE)
             setViewVisibility(R.id.widgetControlVideoSpinner, View.VISIBLE)
         } else {
             setTextViewText(
@@ -610,12 +620,15 @@ object DjiWidgetRenderer {
                 if (!connected) {
                     ""
                 } else if (state.recording) {
-                    state.highlightFeedback?.let { "★ ${compactFeedback(context, it.uppercase())}" }
-                        ?: formatDuration(state.recordingDurationSeconds)
+                    formatDuration(state.recordingDurationSeconds)
                 } else {
                     videoFormat(context, state)
                 },
             )
+            state.highlightFeedback?.takeIf { connected && state.recording }?.let {
+                setViewVisibility(R.id.widgetControlVideoFeedback, View.VISIBLE)
+                setTextViewText(R.id.widgetControlVideoFeedback, "★ ${compactFeedback(context, it.uppercase())}")
+            }
         }
         setViewVisibility(
             R.id.widgetControlVideoHighlight,
@@ -792,6 +805,9 @@ private fun recordingMeta(context: Context, state: DjiCameraState, size: DjiWidg
 }
 
 private fun videoFormat(context: Context, state: DjiCameraState): String {
+    if (state.cameraMode != DjiCameraMode.VIDEO && !state.recording) {
+        return context.getString(R.string.widget_video_fallback)
+    }
     val resolution = videoResolutionLabel(state.videoResolution) ?: context.getString(R.string.widget_video_fallback)
     val fps = videoFpsLabel(state.videoFps)?.let { " ${it}FPS" }.orEmpty()
     return "$resolution$fps"

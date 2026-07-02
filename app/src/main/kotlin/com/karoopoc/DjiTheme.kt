@@ -29,6 +29,12 @@ data class DjiPalette(
 )
 
 object DjiTheme {
+    fun widgetBackgroundResource(context: Context): Int = if (isLight(context)) {
+        R.drawable.widget_root_light
+    } else {
+        R.drawable.widget_root_dark
+    }
+
     fun readMode(context: Context): DjiThemeMode = DjiThemeMode.fromPreference(
         DjiSettings.preferences(context).getString(DjiSettings.KEY_THEME_MODE, DjiThemeMode.SYSTEM.preferenceValue),
     )

@@ -3,7 +3,7 @@
     android:id="@+id/widgetPhotoRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dji_bg_canvas_dark">
+    android:background="@drawable/widget_root_dark">
 
     <FrameLayout
         android:id="@+id/widgetPhotoPrimary"
@@ -13,8 +13,8 @@
 
         <ImageView
             android:id="@+id/widgetPhotoIcon"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_gravity="center"
             android:contentDescription="@string/widget_take_photo"
             android:scaleType="centerInside"

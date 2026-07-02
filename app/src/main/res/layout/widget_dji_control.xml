@@ -3,7 +3,7 @@
     android:id="@+id/widgetControlRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dji_bg_canvas_dark"
+    android:background="@drawable/widget_root_dark"
     android:orientation="vertical">
 
     <!-- Compact control field. The full-screen field uses widgetControlFullShell. -->
@@ -23,8 +23,8 @@
 
             <ImageView
                 android:id="@+id/widgetControlKeepAwakeIcon"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:contentDescription="@string/keep_osmo_awake"
                 android:scaleType="centerInside"
@@ -69,8 +69,8 @@
             android:background="@drawable/widget_surface_selector">
 
             <ImageView
-                android:layout_width="44dp"
-                android:layout_height="44dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:contentDescription="@string/widget_deep_sleep"
                 android:src="@drawable/ic_widget_sleep" />
@@ -112,8 +112,8 @@
             android:layout_height="match_parent"
             android:background="@drawable/widget_surface_active">
             <ImageView
-                android:layout_width="44dp"
-                android:layout_height="44dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:contentDescription="@string/widget_confirm"
                 android:src="@drawable/ic_widget_check" />
@@ -137,8 +137,8 @@
             android:layout_height="match_parent"
             android:background="@drawable/widget_surface_danger">
             <ImageView
-                android:layout_width="44dp"
-                android:layout_height="44dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:contentDescription="@string/widget_cancel"
                 android:src="@drawable/ic_widget_close" />
@@ -168,8 +168,8 @@
                 android:background="@drawable/widget_surface_selector">
                 <ImageView
                     android:id="@+id/widgetControlFullKeepAwakeIcon"
-                    android:layout_width="38dp"
-                    android:layout_height="38dp"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
                     android:layout_gravity="center"
                     android:contentDescription="@string/keep_osmo_awake"
                     android:src="@drawable/ic_widget_keep_awake_disabled" />
@@ -183,8 +183,8 @@
                 android:layout_weight="1"
                 android:background="@drawable/widget_surface_selector">
                 <ImageView
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:layout_gravity="center"
                     android:contentDescription="@string/widget_open_settings"
                     android:src="@drawable/ic_widget_more" />
@@ -198,8 +198,8 @@
                 android:layout_weight="1"
                 android:background="@drawable/widget_surface_selector">
                 <ImageView
-                    android:layout_width="38dp"
-                    android:layout_height="38dp"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
                     android:layout_gravity="center"
                     android:contentDescription="@string/widget_deep_sleep"
                     android:src="@drawable/ic_widget_sleep" />
@@ -240,8 +240,8 @@
                 android:layout_weight="1"
                 android:background="@drawable/widget_surface_selector">
                 <ImageView
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:layout_gravity="center"
                     android:contentDescription="@string/widget_open_settings"
                     android:src="@drawable/ic_widget_more" />
@@ -263,8 +263,8 @@
                 android:layout_weight="1"
                 android:background="@drawable/widget_surface_active">
                 <ImageView
-                    android:layout_width="38dp"
-                    android:layout_height="38dp"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
                     android:layout_gravity="center"
                     android:contentDescription="@string/widget_confirm"
                     android:src="@drawable/ic_widget_check" />
@@ -288,8 +288,8 @@
                 android:layout_weight="1"
                 android:background="@drawable/widget_surface_danger">
                 <ImageView
-                    android:layout_width="38dp"
-                    android:layout_height="38dp"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
                     android:layout_gravity="center"
                     android:contentDescription="@string/widget_cancel"
                     android:src="@drawable/ic_widget_close" />
@@ -330,8 +330,8 @@
                 android:gravity="center"
                 android:orientation="horizontal">
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
                     android:contentDescription="@string/battery"
                     android:src="@drawable/ic_battery" />
                 <TextView
@@ -353,8 +353,8 @@
                 android:gravity="center"
                 android:orientation="horizontal">
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
                     android:contentDescription="@string/widget_storage"
                     android:src="@drawable/ic_widget_storage" />
                 <TextView
@@ -390,11 +390,11 @@
                     android:layout_weight="1"
                     android:background="@drawable/widget_surface_selector"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
                     <ImageView
                         android:id="@+id/widgetControlVideoIcon"
-                        android:layout_width="46dp"
-                        android:layout_height="46dp"
+                        android:layout_width="41dp"
+                        android:layout_height="41dp"
                         android:contentDescription="@string/widget_video"
                         android:src="@drawable/ic_widget_video" />
                     <ProgressBar
@@ -408,11 +408,21 @@
                         android:id="@+id/widgetControlVideoMeta"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="1dp"
                         android:maxLines="1"
                         android:text="4K 30FPS"
                         android:textColor="@color/dji_text_on_accent"
                         android:textSize="14sp" />
+                    <TextView
+                        android:id="@+id/widgetControlVideoFeedback"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:maxLines="1"
+                        android:text="★ HIGHLIGHT"
+                        android:textColor="@color/dji_text_on_accent"
+                        android:textSize="11sp"
+                        android:visibility="gone" />
                 </LinearLayout>
                 <FrameLayout
                     android:id="@+id/widgetControlVideoHighlight"
@@ -422,8 +432,8 @@
                     android:background="@drawable/widget_surface_selector"
                     android:visibility="gone">
                     <ImageView
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:layout_gravity="center"
                         android:contentDescription="@string/widget_add_highlight"
                         android:src="@drawable/ic_widget_highlight" />
@@ -439,8 +449,8 @@
                 android:background="@drawable/widget_surface_selector">
                 <ImageView
                     android:id="@+id/widgetControlPhotoIcon"
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
+                    android:layout_width="47dp"
+                    android:layout_height="47dp"
                     android:layout_gravity="center"
                     android:contentDescription="@string/widget_photo"
                     android:src="@drawable/ic_widget_photo" />
