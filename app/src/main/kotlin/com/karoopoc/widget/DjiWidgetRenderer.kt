@@ -15,8 +15,6 @@ import com.karoopoc.dji.DjiCameraState
 import com.karoopoc.dji.DjiSettings
 import com.karoopoc.dji.PhotoCaptureState
 import io.hammerhead.karooext.models.ViewConfig
-import kotlin.math.min
-import kotlin.math.roundToInt
 
 data class DjiWidgetViewState(
     val camera: DjiCameraState,
@@ -73,8 +71,10 @@ object DjiWidgetRenderer {
         val hideCaptions = DjiSettings.hideFieldCaptions(context)
 
         return RemoteViews(context.packageName, R.layout.widget_dji_video).apply {
-            setInt(R.id.widgetVideoRoot, "setBackgroundColor", palette.widgetBackground)
-            applyResponsiveFrame(config, R.id.widgetVideoRoot, size, hideCaptions)
+            setInt(R.id.widgetVideoRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
+            applyWidgetFrame(R.id.widgetVideoRoot)
+            applyCaptionIconScale(hideCaptions, 8, R.id.widgetVideoIcon)
+            applyCaptionIconScale(hideCaptions, 6, R.id.widgetVideoHighlightIcon)
             setTextViewTextSize(
                 R.id.widgetVideoTimer,
                 TypedValue.COMPLEX_UNIT_SP,
@@ -94,7 +94,7 @@ object DjiWidgetRenderer {
             setTextColor(R.id.widgetVideoTimer, palette.textOnAccent)
             setTextColor(R.id.widgetVideoMeta, palette.textOnAccent)
 
-            setViewVisibility(R.id.widgetVideoIcon, View.GONE)
+            setViewVisibility(R.id.widgetVideoIdle, View.GONE)
             setViewVisibility(R.id.widgetVideoStatus, View.GONE)
             setViewVisibility(R.id.widgetVideoRecording, View.GONE)
             setViewVisibility(R.id.widgetVideoHighlight, View.GONE)
@@ -180,7 +180,7 @@ object DjiWidgetRenderer {
                 }
 
                 else -> {
-                    setViewVisibility(R.id.widgetVideoIcon, View.VISIBLE)
+                    setViewVisibility(R.id.widgetVideoIdle, View.VISIBLE)
                     setImageViewResource(
                         R.id.widgetVideoIcon,
                         if (connected) R.drawable.ic_widget_video else R.drawable.ic_widget_video_disabled,
@@ -226,8 +226,9 @@ object DjiWidgetRenderer {
         val hideCaptions = DjiSettings.hideFieldCaptions(context)
 
         return RemoteViews(context.packageName, R.layout.widget_dji_photo).apply {
-            setInt(R.id.widgetPhotoRoot, "setBackgroundColor", palette.widgetBackground)
-            applyResponsiveFrame(config, R.id.widgetPhotoRoot, size, hideCaptions)
+            setInt(R.id.widgetPhotoRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
+            applyWidgetFrame(R.id.widgetPhotoRoot)
+            applyCaptionIconScale(hideCaptions, 8, R.id.widgetPhotoIcon)
             setTextViewTextSize(
                 R.id.widgetPhotoStatus,
                 TypedValue.COMPLEX_UNIT_SP,
@@ -309,8 +310,32 @@ object DjiWidgetRenderer {
         val hideCaptions = DjiSettings.hideFieldCaptions(context)
 
         return RemoteViews(context.packageName, R.layout.widget_dji_control).apply {
-            setInt(R.id.widgetControlRoot, "setBackgroundColor", palette.widgetBackground)
-            applyResponsiveFrame(config, R.id.widgetControlRoot, size, hideCaptions)
+            setInt(R.id.widgetControlRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
+            applyWidgetFrame(R.id.widgetControlRoot)
+            applyCaptionIconScale(
+                hideCaptions,
+                5,
+                R.id.widgetControlKeepAwakeIcon,
+                R.id.widgetControlSleepIcon,
+                R.id.widgetControlConfirmYesIcon,
+                R.id.widgetControlConfirmNoIcon,
+                R.id.widgetControlFullKeepAwakeIcon,
+                R.id.widgetControlMoreIcon,
+                R.id.widgetControlFullSleepIcon,
+                R.id.widgetControlOfflineMoreIcon,
+                R.id.widgetControlTopConfirmYesIcon,
+                R.id.widgetControlTopConfirmNoIcon,
+                R.id.widgetControlVideoIdleIcon,
+                R.id.widgetControlVideoRecordingIcon,
+                R.id.widgetControlVideoHighlightIcon,
+                R.id.widgetControlPhotoIcon,
+            )
+            applyCaptionIconScale(
+                hideCaptions,
+                3,
+                R.id.widgetControlFullBatteryIcon,
+                R.id.widgetControlFullStorageIcon,
+            )
             setViewVisibility(R.id.widgetControlMain, View.GONE)
             setViewVisibility(R.id.widgetControlMessage, View.GONE)
             setViewVisibility(R.id.widgetControlConfirm, View.GONE)
@@ -593,29 +618,29 @@ object DjiWidgetRenderer {
             },
         )
         setViewVisibility(R.id.widgetControlVideoSpinner, View.GONE)
-        setViewVisibility(R.id.widgetControlVideoIcon, View.VISIBLE)
-        setViewVisibility(R.id.widgetControlVideoMeta, View.VISIBLE)
-        setTextColor(R.id.widgetControlVideoMeta, palette.textOnAccent)
+        setViewVisibility(R.id.widgetControlVideoIdle, View.VISIBLE)
+        setViewVisibility(R.id.widgetControlVideoRecording, View.GONE)
+        setViewVisibility(R.id.widgetControlVideoFeedback, View.GONE)
+        setTextColor(R.id.widgetControlVideoTimer, palette.textOnAccent)
+        setTextColor(R.id.widgetControlVideoFeedback, palette.textOnAccent)
         setImageViewResource(
-            R.id.widgetControlVideoIcon,
+            R.id.widgetControlVideoIdleIcon,
             if (connected) R.drawable.ic_widget_video else R.drawable.ic_widget_video_disabled,
         )
+        setImageViewResource(R.id.widgetControlVideoRecordingIcon, R.drawable.ic_widget_video)
         if (connected && viewState.videoAwaitingResponse != null) {
-            setViewVisibility(R.id.widgetControlVideoIcon, View.GONE)
-            setViewVisibility(R.id.widgetControlVideoMeta, View.GONE)
+            setViewVisibility(R.id.widgetControlVideoIdle, View.GONE)
+            setViewVisibility(R.id.widgetControlVideoRecording, View.GONE)
+            setViewVisibility(R.id.widgetControlVideoFeedback, View.GONE)
             setViewVisibility(R.id.widgetControlVideoSpinner, View.VISIBLE)
-        } else {
-            setTextViewText(
-                R.id.widgetControlVideoMeta,
-                if (!connected) {
-                    ""
-                } else if (state.recording) {
-                    state.highlightFeedback?.let { "★ ${compactFeedback(context, it.uppercase())}" }
-                        ?: formatDuration(state.recordingDurationSeconds)
-                } else {
-                    videoFormat(context, state)
-                },
-            )
+        } else if (connected && state.recording) {
+            setViewVisibility(R.id.widgetControlVideoIdle, View.GONE)
+            setViewVisibility(R.id.widgetControlVideoRecording, View.VISIBLE)
+            setTextViewText(R.id.widgetControlVideoTimer, formatDuration(state.recordingDurationSeconds))
+            state.highlightFeedback?.let {
+                setViewVisibility(R.id.widgetControlVideoFeedback, View.VISIBLE)
+                setTextViewText(R.id.widgetControlVideoFeedback, "★ ${compactFeedback(context, it.uppercase())}")
+            }
         }
         setViewVisibility(
             R.id.widgetControlVideoHighlight,
@@ -660,27 +685,17 @@ object DjiWidgetRenderer {
         }
     }
 
-    private fun RemoteViews.applyResponsiveFrame(
-        config: ViewConfig,
-        rootId: Int,
-        size: DjiWidgetSize,
+    private fun RemoteViews.applyWidgetFrame(rootId: Int) {
+        setViewPadding(rootId, 10, 10, 10, 10)
+    }
+
+    private fun RemoteViews.applyCaptionIconScale(
         hideCaptions: Boolean,
+        padding: Int,
+        vararg iconIds: Int,
     ) {
-        if (hideCaptions && size in setOf(DjiWidgetSize.SMALL_HALF, DjiWidgetSize.SMALL, DjiWidgetSize.MEDIUM)) {
-            setViewPadding(rootId, 5, 5, 5, 5)
-            return
-        }
-        val shortSide = min(config.viewSize.first, config.viewSize.second).coerceAtLeast(1)
-        val horizontalPadding = when (size) {
-            DjiWidgetSize.SMALL_HALF, DjiWidgetSize.SMALL -> (shortSide * 0.028f).roundToInt().coerceIn(2, 4)
-            else -> (shortSide * 0.045f).roundToInt().coerceIn(4, 10)
-        }
-        val verticalPadding = when (size) {
-            DjiWidgetSize.SMALL_HALF, DjiWidgetSize.SMALL -> 0
-            DjiWidgetSize.MEDIUM -> 2
-            else -> horizontalPadding
-        }
-        setViewPadding(rootId, horizontalPadding, verticalPadding, horizontalPadding, verticalPadding)
+        val appliedPadding = if (hideCaptions) 0 else padding
+        iconIds.forEach { setViewPadding(it, appliedPadding, appliedPadding, appliedPadding, appliedPadding) }
     }
 
     private fun RemoteViews.setRecordingPadding(layout: VideoRecordingLayout) {
@@ -786,15 +801,7 @@ private fun statusTextSize(config: ViewConfig, size: DjiWidgetSize): Float {
 }
 
 private fun recordingMeta(context: Context, state: DjiCameraState, size: DjiWidgetSize): String {
-    val storage = formatStorage(context, state.remainingCapacityMb)
-    val video = videoFormat(context, state)
-    return if (size == DjiWidgetSize.SMALL) storage else "$storage  $video"
-}
-
-private fun videoFormat(context: Context, state: DjiCameraState): String {
-    val resolution = videoResolutionLabel(state.videoResolution) ?: context.getString(R.string.widget_video_fallback)
-    val fps = videoFpsLabel(state.videoFps)?.let { " ${it}FPS" }.orEmpty()
-    return "$resolution$fps"
+    return formatStorage(context, state.remainingCapacityMb)
 }
 
 private fun formatStorage(context: Context, megabytes: Long?): String {
