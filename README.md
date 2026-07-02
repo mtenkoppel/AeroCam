@@ -9,6 +9,8 @@
 [![License: GPLv3](https://img.shields.io/badge/license-GPLv3-2563EB)](LICENSE)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF)](https://kotlinlang.org/)
 
+**Website:** [mtenkoppel.github.io/AeroCam](https://mtenkoppel.github.io/AeroCam/)
+
 AeroCam is an independent Karoo extension for controlling a DJI Osmo Action
 camera over Bluetooth Low Energy. It provides in-ride camera controls, automatic
 reconnection, GPS telemetry, video highlights, and a configurable keep-awake
