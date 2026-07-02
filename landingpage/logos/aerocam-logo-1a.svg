@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- AeroCam concept 1A: "Blades" — simplified cam (body + lens only), upright,
+       with tapered speed blades that thin out into the wind. -->
+  <g fill="currentColor">
+    <path d="M150 177 a13 13 0 0 1 0 26 L36 190 Z"/>
+    <path d="M150 247 a13 13 0 0 1 0 26 L12 260 Z"/>
+    <path d="M150 317 a13 13 0 0 1 0 26 L48 330 Z"/>
+  </g>
+  <rect x="190" y="150" width="256" height="220" rx="52" fill="none" stroke="currentColor" stroke-width="32"/>
+  <circle cx="350" cy="240" r="56" fill="none" stroke="currentColor" stroke-width="30"/>
+  <circle cx="350" cy="240" r="16" fill="currentColor"/>
+</svg>

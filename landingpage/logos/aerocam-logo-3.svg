@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- AeroCam logo concept 3: "Teardrop" — the cam body itself is an aero shape,
+       blunt at the front, tapering into the slipstream, with a helmet-style vent. -->
+  <defs>
+    <mask id="aero-cuts">
+      <rect width="512" height="512" fill="white"/>
+      <path d="M116 236 C 168 196, 216 182, 260 182" fill="none" stroke="black" stroke-width="24" stroke-linecap="round"/>
+      <circle cx="330" cy="256" r="64" fill="black"/>
+    </mask>
+  </defs>
+  <g fill="currentColor">
+    <path d="M72 256 C 120 176, 216 128, 312 128 C 384 128, 440 184, 440 256 C 440 328, 384 384, 312 384 C 216 384, 120 336, 72 256 Z" mask="url(#aero-cuts)"/>
+    <circle cx="330" cy="256" r="40"/>
+    <rect x="24" y="196" width="72" height="22" rx="11"/>
+    <rect x="8" y="245" width="48" height="22" rx="11"/>
+    <rect x="24" y="294" width="72" height="22" rx="11"/>
+  </g>
+</svg>

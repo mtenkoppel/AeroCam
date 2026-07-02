@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- AeroCam concept 1C: "Line pack" — italic cam with a pack of fine speed lines;
+       leading edges aligned to the lean angle, lengths staggered like a wind profile. -->
+  <g transform="translate(34 0) skewX(-8)">
+    <rect x="190" y="150" width="256" height="220" rx="52" fill="none" stroke="currentColor" stroke-width="32"/>
+    <circle cx="350" cy="240" r="56" fill="none" stroke="currentColor" stroke-width="30"/>
+    <circle cx="350" cy="240" r="16" fill="currentColor"/>
+  </g>
+  <g fill="currentColor">
+    <rect x="101" y="175" width="60"  height="10" rx="5"/>
+    <rect x="46"  y="215" width="110" height="10" rx="5"/>
+    <rect x="10"  y="255" width="140" height="10" rx="5"/>
+    <rect x="44"  y="295" width="100" height="10" rx="5"/>
+    <rect x="84"  y="335" width="55"  height="10" rx="5"/>
+  </g>
+</svg>

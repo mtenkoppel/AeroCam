@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- AeroCam logo concept 1: "Slipstream" — outline action cam with detached speed lines,
+       closest to the two reference marks. Recolor by setting `color` on the svg or parent. -->
+  <g fill="currentColor">
+    <rect x="56" y="176" width="84" height="24" rx="12"/>
+    <rect x="28" y="234" width="112" height="24" rx="12"/>
+    <rect x="48" y="292" width="92" height="24" rx="12"/>
+    <circle cx="236" cy="212" r="17"/>
+    <rect x="284" y="318" width="92" height="26" rx="13"/>
+  </g>
+  <g fill="none" stroke="currentColor" stroke-width="34">
+    <rect x="176" y="152" width="264" height="224" rx="52"/>
+  </g>
+  <g fill="none" stroke="currentColor" stroke-width="30">
+    <circle cx="344" cy="244" r="54"/>
+  </g>
+  <circle cx="344" cy="244" r="16" fill="currentColor"/>
+</svg>

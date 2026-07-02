@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AeroCam — DJI Osmo Action control for Hammerhead Karoo</title>
+  <meta name="description" content="AeroCam is an open-source Karoo extension that controls your DJI Osmo Action over Bluetooth. Record, shoot, and highlight the best moments of your ride — without reaching for the camera." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- AeroCam mark (from /Developer/AeroCam/AeroCam.svg), recolorable via currentColor -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <symbol id="aerocam-mark" viewBox="0 128 470 264">
+      <path d="M406.919 150H254.919C226.2 150 199.647 173.281 195.611 202L179.308 318C175.272 346.719 195.281 370 224 370H376C404.719 370 431.272 346.719 435.308 318L451.611 202C455.647 173.281 435.638 150 406.919 150Z" stroke="currentColor" stroke-width="32.1569" fill="none"/>
+      <path d="M342.4 296C373.328 296 401.924 270.928 406.27 240C410.617 209.072 389.069 184 358.141 184C327.213 184 298.617 209.072 294.27 240C289.924 270.928 311.472 296 342.4 296Z" stroke="currentColor" stroke-width="30.1471" fill="none"/>
+      <path d="M348.022 256C356.858 256 365.028 248.837 366.27 240C367.512 231.163 361.356 224 352.519 224C343.682 224 335.512 231.163 334.27 240C333.028 248.837 339.185 256 348.022 256Z" fill="currentColor"/>
+      <path d="M156 165H106C103.239 165 101 168.358 101 172.5C101 176.642 103.239 180 106 180H156C158.761 180 161 176.642 161 172.5C161 168.358 158.761 165 156 165Z" fill="currentColor"/>
+      <path d="M151 205H51C48.2386 205 46 208.358 46 212.5C46 216.642 48.2386 220 51 220H151C153.761 220 156 216.642 156 212.5C156 208.358 153.761 205 151 205Z" fill="currentColor"/>
+      <path d="M145 245H15C12.2386 245 10 248.358 10 252.5C10 256.642 12.2386 260 15 260H145C147.761 260 150 256.642 150 252.5C150 248.358 147.761 245 145 245Z" fill="currentColor"/>
+      <path d="M139 285H49C46.2386 285 44 288.358 44 292.5C44 296.642 46.2386 300 49 300H139C141.761 300 144 296.642 144 292.5C144 288.358 141.761 285 139 285Z" fill="currentColor"/>
+      <path d="M134 325H89C86.2386 325 84 328.358 84 332.5C84 336.642 86.2386 340 89 340H134C136.761 340 139 336.642 139 332.5C139 328.358 136.761 325 134 325Z" fill="currentColor"/>
+    </symbol>
+  </svg>
+
+  <!-- ======================= NAV ======================= -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="#top"><svg class="brand-logo"><use href="#aerocam-mark"/></svg>AeroCam</a>
+      <nav class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#transparency">Transparency</a>
+        <a href="#highlights">Auto highlights</a>
+        <a href="#keepawake">Keep awake</a>
+        <a href="#install">Install</a>
+      </nav>
+      <a class="btn btn-ghost btn-sm" href="https://github.com/mtenkoppel/AeroCam" target="_blank" rel="noopener">
+        <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </header>
+
+  <!-- ======================= HERO ======================= -->
+  <section class="hero" id="top">
+    <div class="hero-grid-bg" aria-hidden="true"></div>
+    <div class="container hero-inner">
+      <div class="hero-copy reveal">
+        <div class="pill">
+          <span class="pill-dot"></span> Public beta &middot; v0.9.0-beta.2 &middot; free &amp; open source
+        </div>
+        <h1>Your Osmo.<br/>On your <span class="accent">Karoo</span>.</h1>
+        <p class="lede">
+          AeroCam turns your Hammerhead Karoo into a full remote for your DJI Osmo Action.
+          Record, shoot, and highlight the best seconds of the ride — while the camera stays
+          out of reach and your hands stay near the bars.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="https://github.com/mtenkoppel/AeroCam/releases" target="_blank" rel="noopener">
+            Download the beta APK
+          </a>
+          <a class="btn btn-ghost" href="https://github.com/mtenkoppel/AeroCam" target="_blank" rel="noopener">
+            Read the source
+          </a>
+        </div>
+        <p class="hero-license mono">GPL-3.0 licensed</p>
+        <p class="hero-disclaimer">Independent project — not affiliated with or endorsed by DJI or Hammerhead.</p>
+      </div>
+
+      <!-- Mock Karoo (portrait, Karoo 3 proportions), fields over an abstract map -->
+      <div class="hero-visual reveal" aria-hidden="true">
+        <div class="karoo-frame">
+          <span class="karoo-side-btn ksb-l1"></span>
+          <span class="karoo-side-btn ksb-l2"></span>
+          <span class="karoo-side-btn ksb-r1"></span>
+          <div class="karoo-screen">
+            <!-- Video field: red recording tile + star (highlight) button -->
+            <div class="kvideo">
+              <div class="kvideo-primary" id="kvideo-primary">
+                <div class="kvideo-timer" id="rec-time">12:36</div>
+                <div class="kvideo-feedback" id="kvideo-feedback">★ MAX SPEED 61 KM/H</div>
+                <div class="kvideo-meta">12.4 GB&ensp;4K 60FPS</div>
+              </div>
+              <div class="kvideo-star" id="kvideo-star">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.6l2.83 5.73 6.32.92-4.57 4.46 1.08 6.29L12 17.03 6.34 20l1.08-6.29-4.57-4.46 6.32-.92L12 2.6z"/></svg>
+              </div>
+            </div>
+            <!-- Small fields row -->
+            <div class="kwidget-row">
+              <div class="kwidget-small">
+                <span class="kwidget-small-label">DJI STATUS</span>
+                <span class="kwidget-small-value ok">READY</span>
+              </div>
+              <div class="kwidget-small">
+                <span class="kwidget-small-label">BATTERY</span>
+                <span class="kwidget-small-value">82%</span>
+              </div>
+            </div>
+            <!-- Abstract ride map -->
+            <div class="kmap">
+              <svg viewBox="0 0 224 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                <rect x="0" y="0" width="224" height="240" fill="#0a0f12"/>
+                <!-- street grid -->
+                <g stroke="#141c22" stroke-width="2">
+                  <path d="M0 48 H224"/><path d="M0 118 H224"/><path d="M0 188 H224"/>
+                  <path d="M46 0 V240"/><path d="M118 0 V240"/><path d="M178 0 V240"/>
+                </g>
+                <g stroke="#10161b" stroke-width="5">
+                  <path d="M0 224 L224 150"/><path d="M20 0 L150 240"/>
+                </g>
+                <!-- route: soft glow underlay + line -->
+                <path d="M 18 222 L 62 222 Q 74 222 78 211 L 96 162 Q 100 152 112 152 L 138 152 Q 150 152 152 140 L 160 84 Q 162 72 174 70 L 202 62"
+                      fill="none" stroke="rgba(85,214,190,0.22)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M 18 222 L 62 222 Q 74 222 78 211 L 96 162 Q 100 152 112 152 L 138 152 Q 150 152 152 140 L 160 84 Q 162 72 174 70 L 202 62"
+                      fill="none" stroke="#55d6be" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- current position -->
+                <circle cx="202" cy="62" r="5.5" fill="#55d6be"/>
+                <circle cx="202" cy="62" r="6" fill="none" stroke="#55d6be" stroke-width="2" opacity="0.8">
+                  <animate attributeName="r" values="6;16" dur="1.8s" repeatCount="indefinite"/>
+                  <animate attributeName="opacity" values="0.8;0" dur="1.8s" repeatCount="indefinite"/>
+                </circle>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <p class="visual-caption">AeroCam data fields on the Karoo ride screen</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= PITCH STRIP ======================= -->
+  <section class="strip">
+    <div class="container strip-inner reveal">
+      <!-- Logo with live wind: the five speed lines gust individually -->
+      <svg class="strip-logo" viewBox="0 128 470 264" aria-hidden="true">
+        <path d="M406.919 150H254.919C226.2 150 199.647 173.281 195.611 202L179.308 318C175.272 346.719 195.281 370 224 370H376C404.719 370 431.272 346.719 435.308 318L451.611 202C455.647 173.281 435.638 150 406.919 150Z" stroke="currentColor" stroke-width="32.1569" fill="none"/>
+        <path d="M342.4 296C373.328 296 401.924 270.928 406.27 240C410.617 209.072 389.069 184 358.141 184C327.213 184 298.617 209.072 294.27 240C289.924 270.928 311.472 296 342.4 296Z" stroke="currentColor" stroke-width="30.1471" fill="none"/>
+        <path d="M348.022 256C356.858 256 365.028 248.837 366.27 240C367.512 231.163 361.356 224 352.519 224C343.682 224 335.512 231.163 334.27 240C333.028 248.837 339.185 256 348.022 256Z" fill="currentColor"/>
+        <path class="wind wind-1" d="M156 165H106C103.239 165 101 168.358 101 172.5C101 176.642 103.239 180 106 180H156C158.761 180 161 176.642 161 172.5C161 168.358 158.761 165 156 165Z" fill="currentColor"/>
+        <path class="wind wind-2" d="M151 205H51C48.2386 205 46 208.358 46 212.5C46 216.642 48.2386 220 51 220H151C153.761 220 156 216.642 156 212.5C156 208.358 153.761 205 151 205Z" fill="currentColor"/>
+        <path class="wind wind-3" d="M145 245H15C12.2386 245 10 248.358 10 252.5C10 256.642 12.2386 260 15 260H145C147.761 260 150 256.642 150 252.5C150 248.358 147.761 245 145 245Z" fill="currentColor"/>
+        <path class="wind wind-4" d="M139 285H49C46.2386 285 44 288.358 44 292.5C44 296.642 46.2386 300 49 300H139C141.761 300 144 296.642 144 292.5C144 288.358 141.761 285 139 285Z" fill="currentColor"/>
+        <path class="wind wind-5" d="M134 325H89C86.2386 325 84 328.358 84 332.5C84 336.642 86.2386 340 89 340H134C136.761 340 139 336.642 139 332.5C139 328.358 136.761 325 134 325Z" fill="currentColor"/>
+      </svg>
+      <p>
+        <span class="strip-strong">Aero, as in streamlined control.</span>
+        No phone in the loop, no second remote on your bars, no drag on your setup —
+        just the bike computer you already ride with, talking directly to your camera.
+      </p>
+    </div>
+  </section>
+
+  <!-- ======================= FEATURES ======================= -->
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="kicker">// Features</span>
+        <h2>Distraction-free interaction</h2>
+      </div>
+      <div class="cards">
+        <article class="card reveal">
+          <div class="card-icon">⏺</div>
+          <h3>In-ride camera control</h3>
+          <p>Start and stop recordings, take photos, and switch camera modes from Karoo data
+          fields — full-page control center or compact fields that sit next to your power and speed.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-icon">⟳</div>
+          <h3>Reconnects itself</h3>
+          <p>Tunnel, coffee stop, out-of-range descent? AeroCam watches the link and reconnects
+          the moment your camera is back — validated against power-offs, reboots, and range loss.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-icon">★</div>
+          <h3>Automatic highlights</h3>
+          <p>Peak power, max speed, summit, zone-5 heart rate — AeroCam adds a highlight to the
+          recording the instant they happen. Editing later means jumping straight to the good part.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-icon">☕</div>
+          <h3>Keep awake</h3>
+          <p>The Osmo can't be woken remotely once it powers off. AeroCam's workaround keeps it
+          in a ready, screens-off doze between recordings — connected for hours, one tap from rolling.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-icon">🛰</div>
+          <h3>GPS telemetry to the camera</h3>
+          <p>AeroCam streams live Karoo GPS — position, altitude, velocity — straight into the
+          camera for DJI's video telemetry overlays. Your speed, burned into the footage.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-icon">◳</div>
+          <h3>Made for the ride screen</h3>
+          <p>Purpose-built data fields in every Karoo size, with recording state, battery, and
+          card space at a glance. Localized in English, German, Spanish, French, Italian, and Portuguese.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= AI TRANSPARENCY ======================= -->
+  <section class="section section-alt" id="transparency">
+    <div class="container split">
+      <div class="split-copy reveal">
+        <div class="transparency-badge">AI-built. Human-proven.</div>
+        <h2 class="gradient-heading">Written by machines.<br/>Designed by a human.</h2>
+        <p>
+          AeroCam's code was written entirely by large language models — and we say so out
+          loud, because you deserve to know how your software is made. What the models
+          can't do is ride: the product design, the keep-awake discovery, and every
+          connection-loss, reboot, and range test came from a human on real Karoo and
+          Osmo hardware.
+        </p>
+        <p>
+          It's co-development: a human sets the direction and proves the result, the model
+          writes the code in between. The full story is in the
+          <a href="https://github.com/mtenkoppel/AeroCam#ai-transparency" target="_blank" rel="noopener">AI transparency statement</a> —
+          and the code is open, so you can review every line yourself.
+        </p>
+      </div>
+      <div class="codev reveal">
+        <div class="orb-stage">
+          <div class="orb orb-human"></div>
+          <div class="orb orb-machine"></div>
+          <div class="orb-core"></div>
+          <div class="orb-caption">
+            <span>human design</span>
+            <span class="orb-caption-center">aerocam</span>
+            <span>machine code</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= AUTO HIGHLIGHTS ======================= -->
+  <section class="section" id="highlights">
+    <div class="container split">
+      <div class="split-copy reveal">
+        <span class="kicker">// Auto highlights</span>
+        <h2>Your ride tags its own footage</h2>
+        <p>
+          The expensive part of ride video isn't recording it — it's finding the eight
+          seconds worth keeping in two hours of footage. Highlights solve that: they are
+          markers inside the recording, so in the edit you jump from moment to moment
+          instead of scrubbing through the whole file.
+        </p>
+        <p>
+          AeroCam sets those markers for you. It watches your ride data — power, speed,
+          heart rate, laps, climbs — and adds a highlight the moment a threshold you
+          defined is crossed. You choose the triggers and the values, so the markers mean
+          something: your sprint, your summit, your fastest descent.
+        </p>
+        <p>
+          Camera idle when the moment hits? Enable <strong>auto-start recording</strong> and
+          the first trigger starts the camera for you.
+        </p>
+      </div>
+      <div class="trigger-board reveal">
+        <div class="trigger" data-active><span class="trigger-led"></span>Lap marker</div>
+        <div class="trigger" data-active><span class="trigger-led"></span>Peak power</div>
+        <div class="trigger" data-active><span class="trigger-led"></span>Max speed</div>
+        <div class="trigger" data-active><span class="trigger-led"></span>Climb summit</div>
+        <div class="trigger" data-active><span class="trigger-led"></span>Peak heart rate</div>
+        <div class="trigger" data-active><span class="trigger-led"></span>High-speed descent</div>
+        <div class="trigger" data-active><span class="trigger-led"></span>Ride start / end</div>
+        <p class="trigger-note">Each trigger is opt-in, with thresholds you set.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= KEEP AWAKE ======================= -->
+  <section class="section section-alt" id="keepawake">
+    <div class="container split split-reverse">
+      <div class="split-copy reveal">
+        <span class="kicker">// Keep awake</span>
+        <h2>The standby mode DJI forgot</h2>
+        <p>
+          Once an Osmo Action fully powers off, nothing can switch it back on over Bluetooth.
+          Every other remote — DJI's own included — just… gives up. AeroCam doesn't: it
+          periodically nudges the camera's power-off timer, keeping it connected with the
+          screens dark and ready to record for the whole ride.
+        </p>
+      </div>
+      <div class="stat-panel reveal">
+        <div class="stat">
+          <span class="stat-value"><span data-count="120" id="stat-count">0</span> min</span>
+          <span class="stat-unit">of standby ≈ 35% battery</span>
+          <span class="stat-desc">Measured in a field test: 100% → 64% in 1 h 56 min of Keep awake.</span>
+        </div>
+        <div class="battery">
+          <div class="battery-shell">
+            <span class="battery-used-label">− 36% standby</span>
+            <div class="battery-fill" id="battery-fill"><span>64%</span></div>
+          </div>
+          <div class="battery-tip"></div>
+        </div>
+        <p class="stat-note">Based on the 2,100&nbsp;mAh Osmo battery. Temperature, firmware, and
+        battery age shift the result — that's why the pulse interval is configurable.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= HOW IT WORKS ======================= -->
+  <section class="section" id="how">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="kicker">// How it works</span>
+        <h2>Pair once. Then just ride.</h2>
+      </div>
+      <ol class="steps">
+        <li class="step reveal">
+          <span class="step-num">01</span>
+          <h3>Sideload &amp; pair</h3>
+          <p><a href="https://github.com/mtenkoppel/AeroCam/releases" target="_blank" rel="noopener">Download the APK</a>
+          and install it on your Karoo, scan for your Osmo, approve the code on the camera.
+          That's the last time you touch the camera's menus.</p>
+        </li>
+        <li class="step reveal">
+          <span class="step-num">02</span>
+          <h3>Add data fields</h3>
+          <p>Drop Cam Control, Video, or Photo fields onto your ride pages — full-screen command
+          center or a compact field next to your metrics.</p>
+        </li>
+        <li class="step reveal">
+          <span class="step-num">03</span>
+          <h3>Ride</h3>
+          <p>Power the camera on and AeroCam finds it, connects, streams GPS, and adds
+          highlights for your best moments.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ======================= INSTALL ======================= -->
+  <section class="section section-alt" id="install">
+    <div class="container install-inner">
+      <div class="section-head reveal">
+        <span class="kicker">// Install</span>
+        <h2>On your Karoo in five minutes</h2>
+      </div>
+      <div class="install-card reveal">
+        <ol class="install-steps">
+          <li><span class="mono">1.</span> Grab the latest APK from <a href="https://github.com/mtenkoppel/AeroCam/releases" target="_blank" rel="noopener">GitHub Releases</a> (checksum included).</li>
+          <li><span class="mono">2.</span> Transfer it to your Karoo and allow installation from your transfer source.</li>
+          <li><span class="mono">3.</span> Open AeroCam, pair your Osmo, add the data fields. Done.</li>
+        </ol>
+        <div class="install-cta">
+          <a class="btn btn-primary" href="https://github.com/mtenkoppel/AeroCam/releases" target="_blank" rel="noopener">Get AeroCam beta</a>
+          <p class="install-note">Beta software — read the release notes before updating. Prefer building it
+          yourself? The <a href="https://github.com/mtenkoppel/AeroCam#build-from-source" target="_blank" rel="noopener">README</a> takes you from clone to APK.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= FOOTER ======================= -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="brand"><svg class="brand-logo"><use href="#aerocam-mark"/></svg>AeroCam</span>
+        <p>Free software under <a href="https://github.com/mtenkoppel/AeroCam/blob/master/LICENSE" target="_blank" rel="noopener">GPL-3.0</a>.
+        Provided as-is, without warranty of any kind.</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/mtenkoppel/AeroCam" target="_blank" rel="noopener">Source code</a>
+        <a href="https://github.com/mtenkoppel/AeroCam/releases" target="_blank" rel="noopener">Releases</a>
+        <a href="https://github.com/mtenkoppel/AeroCam/issues" target="_blank" rel="noopener">Report an issue</a>
+        <a href="https://github.com/mtenkoppel/AeroCam#ai-transparency" target="_blank" rel="noopener">AI transparency</a>
+      </div>
+      <p class="footer-legal">
+        AeroCam is an independent community project. It is not affiliated with, endorsed by, or
+        sponsored by DJI or Hammerhead. DJI and Osmo are trademarks of their respective owners.
+      </p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
