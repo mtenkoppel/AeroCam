@@ -71,7 +71,7 @@ marker.
 
 Keep awake periodically sends a lightweight camera-control command so the Osmo
 does not reach its automatic power-off timeout. This lets the camera remain
-connected and ready while its locked screens stay off. 
+connected and ready while its locked screens stay off.
 
 Keeping the camera responsive consumes noticeably more battery than allowing it
 to power off, but testing showed it remains practical for up to 3 hour rides.
