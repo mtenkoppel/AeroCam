@@ -1,7 +1,7 @@
 # Next Release
 
 - [x] Remove "DJI" from data field names.
-- [ ] Add app icons.
+- [x] Add app icons.
 - [ ] Improve the data field previews.
 - [x] Continue UI tuning:
   - Match the data field corner radius to its rounded stroke; the current widget surface appears square.
