@@ -10,6 +10,11 @@ camera over Bluetooth Low Energy. It provides in-ride camera controls, automatic
 reconnection, GPS telemetry, video highlights, and a configurable keep-awake
 mode.
 
+> [!TIP]
+> **Built with AI. Shaped and proven by a human.** AeroCam combines AI-driven
+> development with hands-on product direction, real-world testing, and human
+> supervision. [Read the AI transparency statement](#ai-transparency).
+
 > [!IMPORTANT]
 > AeroCam is an independent community project. It is not affiliated with,
 > endorsed by, or sponsored by DJI or Hammerhead. DJI and Osmo are trademarks
