@@ -5,7 +5,7 @@
 # AeroCam
 
 [![CI](https://github.com/mtenkoppel/AeroCam/actions/workflows/ci.yml/badge.svg)](https://github.com/mtenkoppel/AeroCam/actions/workflows/ci.yml)
-[![Release: v0.9.0-beta.2](https://img.shields.io/badge/release-v0.9.0--beta.2-2563EB)](https://github.com/mtenkoppel/AeroCam/releases)
+[![Release: v0.9.0-beta.3](https://img.shields.io/badge/release-v0.9.0--beta.3-2563EB)](https://github.com/mtenkoppel/AeroCam/releases)
 [![License: GPLv3](https://img.shields.io/badge/license-GPLv3-2563EB)](LICENSE)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF)](https://kotlinlang.org/)
 
