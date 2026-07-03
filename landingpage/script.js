@@ -92,36 +92,29 @@
     triggers.forEach(function (el) { el.classList.add("lit"); });
   }
 
-  /* ---------- keep-awake stat: count-up + battery drain 100% -> 64% ---------- */
-  var statValue = document.getElementById("stat-count");
+  /* ---------- keep-awake battery: drain 100% -> 64% when scrolled into view ---------- */
   var batteryFill = document.getElementById("battery-fill");
-  if (statValue) {
-    var target = parseInt(statValue.getAttribute("data-count"), 10);
-    var animateStat = function () {
+  if (batteryFill) {
+    watch(batteryFill, function () {
       if (reducedMotion) {
-        statValue.textContent = String(target);
-        if (batteryFill) batteryFill.style.width = "64%";
-        return;
+        batteryFill.style.transition = "none";
       }
-      var start = null;
-      var duration = 1600;
-      var step = function (ts) {
-        if (!start) start = ts;
-        var p = Math.min((ts - start) / duration, 1);
-        var eased = 1 - Math.pow(1 - p, 3);
-        statValue.textContent = String(Math.round(eased * target));
-        if (p < 1) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-      if (batteryFill) {
-        requestAnimationFrame(function () { batteryFill.style.width = "64%"; });
-      }
-      /* rAF is suspended in unfocused/background pages — guarantee the end state */
-      setTimeout(function () {
-        statValue.textContent = String(target);
-        if (batteryFill) batteryFill.style.width = "64%";
-      }, duration + 400);
-    };
-    watch(statValue, animateStat);
+      /* next frame so the width transition runs; timeout as rAF fallback */
+      requestAnimationFrame(function () { batteryFill.style.width = "64%"; });
+      setTimeout(function () { batteryFill.style.width = "64%"; }, 300);
+    });
+  }
+
+  /* ---------- thanks band: live GitHub star count (no backend needed) ---------- */
+  var starCount = document.getElementById("star-count");
+  if (starCount && window.fetch) {
+    fetch("https://api.github.com/repos/mtenkoppel/AeroCam")
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        if (data && typeof data.stargazers_count === "number") {
+          starCount.textContent = "· " + data.stargazers_count;
+        }
+      })
+      .catch(function () { /* rate-limited or offline — button works without it */ });
   }
 })();

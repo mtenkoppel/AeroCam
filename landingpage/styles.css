@@ -212,19 +212,14 @@ h1 {
 .kvideo-star svg { width: 28px; height: 28px; }
 .kvideo-star.flash { background: var(--focus); color: #000; }
 
-/* Small fields row (status widgets) */
-.kwidget-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex-shrink: 0; }
-.kwidget-small {
-  background: var(--surface-muted); border-radius: 8px;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 0; padding: 8px 6px;
+/* Photo data field: icon tile like the real photo widget */
+.kphoto {
+  flex-shrink: 0; height: 46px;
+  background: var(--surface-selector); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
 }
-.kwidget-small-label {
-  font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.14em;
-  color: var(--text-2);
-}
-.kwidget-small-value { font-weight: 800; font-size: 0.95rem; }
-.kwidget-small-value.ok { color: var(--ok); }
+.kphoto svg { width: 38px; height: 29px; }
 
 /* Abstract map fills the rest of the screen */
 .kmap {
@@ -457,6 +452,22 @@ h2 { font-size: clamp(1.8rem, 3.6vw, 2.6rem); font-weight: 830; }
 }
 .stat-note { font-size: 0.78rem; color: var(--text-3); }
 
+/* thanks band */
+.thanks {
+  background: var(--bg-alt);
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+}
+.thanks-inner {
+  padding: 26px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 24px; flex-wrap: wrap;
+}
+.thanks-inner p { color: var(--text-2); font-size: 0.95rem; max-width: 36em; }
+.thanks-inner strong { color: var(--text); }
+.thanks-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.star-glyph { color: var(--focus); }
+#star-count { color: var(--text-3); font-family: var(--mono); font-size: 0.8rem; margin-left: 6px; }
+
 /* steps */
 .steps {
   list-style: none;
@@ -490,6 +501,7 @@ h2 { font-size: clamp(1.8rem, 3.6vw, 2.6rem); font-weight: 830; }
 .footer { border-top: 1px solid var(--line); padding: 52px 0 40px; background: var(--bg-alt); }
 .footer-inner { display: flex; flex-direction: column; gap: 26px; }
 .footer-brand p { color: var(--text-3); font-size: 0.85rem; margin-top: 10px; }
+.footer-contact { font-size: 0.8rem; }
 .footer-links { display: flex; gap: 24px; flex-wrap: wrap; font-size: 0.88rem; }
 .footer-legal {
   color: var(--text-3); font-size: 0.78rem; border-top: 1px solid var(--line);

@@ -60,7 +60,8 @@
             Download the beta APK
           </a>
           <a class="btn btn-ghost" href="https://github.com/mtenkoppel/AeroCam" target="_blank" rel="noopener">
-            Read the source
+            <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+            GitHub
           </a>
         </div>
         <p class="hero-license mono">GPL-3.0 licensed</p>
@@ -85,40 +86,50 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.6l2.83 5.73 6.32.92-4.57 4.46 1.08 6.29L12 17.03 6.34 20l1.08-6.29-4.57-4.46 6.32-.92L12 2.6z"/></svg>
               </div>
             </div>
-            <!-- Small fields row -->
-            <div class="kwidget-row">
-              <div class="kwidget-small">
-                <span class="kwidget-small-label">DJI STATUS</span>
-                <span class="kwidget-small-value ok">READY</span>
-              </div>
-              <div class="kwidget-small">
-                <span class="kwidget-small-label">BATTERY</span>
-                <span class="kwidget-small-value">82%</span>
-              </div>
+            <!-- Photo data field -->
+            <div class="kphoto">
+              <svg viewBox="0 0 40 30" aria-hidden="true">
+                <rect x="3" y="4" width="34" height="24" rx="7" fill="none" stroke="currentColor" stroke-width="3.4"/>
+                <circle cx="25" cy="14" r="6" fill="none" stroke="currentColor" stroke-width="3.2"/>
+                <circle cx="25" cy="14" r="1.8" fill="currentColor"/>
+              </svg>
             </div>
-            <!-- Abstract ride map -->
+            <!-- Karoo-style ride map: dark map, yellow route with chevrons, TBT banner -->
             <div class="kmap">
-              <svg viewBox="0 0 224 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-                <rect x="0" y="0" width="224" height="240" fill="#0a0f12"/>
-                <!-- street grid -->
-                <g stroke="#141c22" stroke-width="2">
-                  <path d="M0 48 H224"/><path d="M0 118 H224"/><path d="M0 188 H224"/>
-                  <path d="M46 0 V240"/><path d="M118 0 V240"/><path d="M178 0 V240"/>
+              <svg viewBox="0 0 224 220" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                <rect x="0" y="0" width="224" height="220" fill="#0c1013"/>
+                <!-- minor streets -->
+                <g stroke="#1a2127" stroke-width="3">
+                  <path d="M0 32 H224"/><path d="M0 178 H224"/>
+                  <path d="M58 0 V220"/><path d="M22 0 V220"/>
+                  <path d="M188 0 L112 220"/>
                 </g>
-                <g stroke="#10161b" stroke-width="5">
-                  <path d="M0 224 L224 150"/><path d="M20 0 L150 240"/>
+                <!-- main roads (the route follows these) -->
+                <g stroke="#232d35" stroke-width="8">
+                  <path d="M104 0 V220"/>
+                  <path d="M0 144 H224"/>
+                  <path d="M0 64 H224"/>
+                  <path d="M148 0 V220"/>
                 </g>
-                <!-- route: soft glow underlay + line -->
-                <path d="M 18 222 L 62 222 Q 74 222 78 211 L 96 162 Q 100 152 112 152 L 138 152 Q 150 152 152 140 L 160 84 Q 162 72 174 70 L 202 62"
-                      fill="none" stroke="rgba(85,214,190,0.22)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M 18 222 L 62 222 Q 74 222 78 211 L 96 162 Q 100 152 112 152 L 138 152 Q 150 152 152 140 L 160 84 Q 162 72 174 70 L 202 62"
-                      fill="none" stroke="#55d6be" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-                <!-- current position -->
-                <circle cx="202" cy="62" r="5.5" fill="#55d6be"/>
-                <circle cx="202" cy="62" r="6" fill="none" stroke="#55d6be" stroke-width="2" opacity="0.8">
-                  <animate attributeName="r" values="6;16" dur="1.8s" repeatCount="indefinite"/>
-                  <animate attributeName="opacity" values="0.8;0" dur="1.8s" repeatCount="indefinite"/>
-                </circle>
+                <!-- route: Karoo yellow with direction chevrons -->
+                <path d="M 22 214 L 22 156 Q 22 144 34 144 L 92 144 Q 104 144 104 132 L 104 76 Q 104 64 116 64 L 210 64"
+                      fill="none" stroke="#ffd60a" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                <g fill="none" stroke="#0c1013" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
+                  <path d="M16 197 L22 186 L28 197"/>
+                  <path d="M55 150 L66 144 L55 138"/>
+                  <path d="M134 70 L145 64 L134 58"/>
+                  <path d="M170 70 L181 64 L170 58"/>
+                </g>
+                <!-- rider position arrow -->
+                <path d="M104 90 L115 117 L104 109 L93 117 Z" fill="#ffffff" stroke="#0c1013" stroke-width="2.5" stroke-linejoin="round"/>
+                <!-- turn-by-turn banner -->
+                <g>
+                  <rect x="10" y="10" width="204" height="36" rx="8" fill="#14191d" stroke="#242b31" stroke-width="1.5"/>
+                  <path d="M24 38 V29 Q24 22 31 22 H39" fill="none" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round"/>
+                  <path d="M34 16 L40 22 L34 28" fill="none" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+                  <text x="54" y="33" font-family="ui-monospace, Menlo, monospace" font-size="14" font-weight="700" fill="#ffffff">300 m</text>
+                  <text x="126" y="33" font-family="ui-monospace, Menlo, monospace" font-size="11" fill="#7b8794">Ridge Rd</text>
+                </g>
               </svg>
             </div>
           </div>
@@ -252,8 +263,9 @@
           something: your sprint, your summit, your fastest descent.
         </p>
         <p>
-          Camera idle when the moment hits? Enable <strong>auto-start recording</strong> and
-          the first trigger starts the camera for you.
+          Didn't start the recording? With <strong>Keep awake</strong> on, enable
+          <strong>auto-start recording</strong> and the first trigger starts the camera
+          for you — you'll never forget to press record again.
         </p>
       </div>
       <div class="trigger-board reveal">
@@ -277,26 +289,39 @@
         <h2>The standby mode DJI forgot</h2>
         <p>
           Once an Osmo Action fully powers off, nothing can switch it back on over Bluetooth.
-          Every other remote — DJI's own included — just… gives up. AeroCam doesn't: it
-          periodically nudges the camera's power-off timer, keeping it connected with the
-          screens dark and ready to record for the whole ride.
+          Every other remote — DJI's own included — just… gives up after 30 minutes of
+          inactivity. AeroCam doesn't: it periodically nudges the camera's power-off timer,
+          keeping it connected with the screens dark and ready to record for the whole ride.
         </p>
       </div>
       <div class="stat-panel reveal">
         <div class="stat">
-          <span class="stat-value"><span data-count="120" id="stat-count">0</span> min</span>
+          <span class="stat-value">2 hours</span>
           <span class="stat-unit">of standby ≈ 35% battery</span>
-          <span class="stat-desc">Measured in a field test: 100% → 64% in 1 h 56 min of Keep awake.</span>
         </div>
         <div class="battery">
           <div class="battery-shell">
-            <span class="battery-used-label">− 36% standby</span>
+            <span class="battery-used-label">2 h standby · − 36%</span>
             <div class="battery-fill" id="battery-fill"><span>64%</span></div>
           </div>
           <div class="battery-tip"></div>
         </div>
         <p class="stat-note">Based on the 2,100&nbsp;mAh Osmo battery. Temperature, firmware, and
         battery age shift the result — that's why the pulse interval is configurable.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= THANKS ======================= -->
+  <section class="thanks">
+    <div class="container thanks-inner reveal">
+      <p><strong>Did AeroCam help you?</strong> A GitHub star is the only usage signal an
+      open-source project gets — and it takes one click.</p>
+      <div class="thanks-actions">
+        <a class="btn btn-ghost btn-sm" href="https://github.com/mtenkoppel/AeroCam" target="_blank" rel="noopener">
+          <span class="star-glyph">★</span> Star on GitHub<span id="star-count"></span>
+        </a>
+        <a class="btn btn-ghost btn-sm" href="mailto:tenkoppel@gmail.com?subject=AeroCam%20says%20thanks">Say thanks by mail</a>
       </div>
     </div>
   </section>
@@ -361,6 +386,9 @@
         <span class="brand"><svg class="brand-logo"><use href="#aerocam-mark"/></svg>AeroCam</span>
         <p>Free software under <a href="https://github.com/mtenkoppel/AeroCam/blob/master/LICENSE" target="_blank" rel="noopener">GPL-3.0</a>.
         Provided as-is, without warranty of any kind.</p>
+        <p class="footer-contact">© 2026 Maurice ten Koppel &middot;
+        <a href="https://github.com/mtenkoppel" target="_blank" rel="noopener">github.com/mtenkoppel</a> &middot;
+        <a href="mailto:tenkoppel@gmail.com">tenkoppel@gmail.com</a></p>
       </div>
       <div class="footer-links">
         <a href="https://github.com/mtenkoppel/AeroCam" target="_blank" rel="noopener">Source code</a>
