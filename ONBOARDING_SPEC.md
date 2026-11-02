@@ -32,6 +32,7 @@ The former standalone settings-revisit page was removed. The data explanation is
 - Power default: 250 W; speed default: 40 km/h; heart rate default remains 165 bpm.
 - All five onboarding triggers start off for a new installation. Selecting any enables auto-highlights at Next. New first-pairing setup disables legacy default-on ride bookmarks.
 - Power/speed/heart-rate editors and settings reads accept positive integers without the old artificial ranges. Storage uses Android Int; invalid/overflow inputs cannot be saved. Existing valid saved thresholds are retained.
+- Low positive thresholds cap the existing reset margin at half the threshold so a trigger can rearm. Normal thresholds keep their previous margins; this only changes trigger comparison arithmetic, not service/connection behavior.
 - Power feedback: >=300 W, >=350 W, >500 W. Speed feedback: >=50, >55, >60 km/h. Heart-rate input has no joke text.
 - High-speed descent and start/end bookmarks are omitted pending owner review: issues [20](https://github.com/mtenkoppel/AeroCam/issues/20) and [21](https://github.com/mtenkoppel/AeroCam/issues/21). Their underlying trigger algorithms are unchanged.
 - Timer choices map 60→30, 120→90, 300→270 seconds. No timer is inferred from the camera; the rider confirms it.

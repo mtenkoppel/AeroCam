@@ -178,7 +178,7 @@ class DjiKarooIntegration(
         if (settings.peakPowerHighlights && !powerWasAbove && watts >= threshold) {
             requestHighlight(appContext.getString(R.string.highlight_peak_power_feedback, watts.toInt()))
         }
-        powerWasAbove = if (powerWasAbove) watts >= threshold - 50.0 else watts >= threshold
+        powerWasAbove = if (powerWasAbove) ThresholdPolicy.remainsAbove(watts, threshold, 50.0) else watts >= threshold
     }
 
     private fun onSpeed(metersPerSecond: Double) {
@@ -195,7 +195,7 @@ class DjiKarooIntegration(
         if (settings.maxSpeedHighlights && !speedWasAbove && kph >= threshold) {
             requestHighlight(appContext.getString(R.string.highlight_max_speed_feedback, kph.toInt()))
         }
-        speedWasAbove = if (speedWasAbove) kph >= threshold - 3.0 else kph >= threshold
+        speedWasAbove = if (speedWasAbove) ThresholdPolicy.remainsAbove(kph, threshold, 3.0) else kph >= threshold
         checkHighSpeedDescent()
         publishGpsTelemetry()
     }
@@ -211,7 +211,7 @@ class DjiKarooIntegration(
         if (settings.peakHeartRateHighlights && !hrWasInZoneFive && inZoneFive) {
             requestHighlight(appContext.getString(R.string.highlight_peak_hr_feedback, heartRate.toInt()))
         }
-        hrWasInZoneFive = if (hrWasInZoneFive) heartRate >= threshold - 3 else inZoneFive
+        hrWasInZoneFive = if (hrWasInZoneFive) ThresholdPolicy.remainsAbove(heartRate, threshold, 3.0) else inZoneFive
     }
 
     private fun onGrade(grade: Double) {
