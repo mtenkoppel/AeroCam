@@ -45,8 +45,8 @@ object DjiSettings {
     const val KEY_KEEP_AWAKE_INTERVAL_SECONDS = "keep_awake_interval_seconds"
     const val KEY_HIDE_FIELD_CAPTIONS = "hide_field_captions"
 
-    const val DEFAULT_PEAK_POWER_WATTS = 500
-    const val DEFAULT_MAX_SPEED_KPH = 50
+    const val DEFAULT_PEAK_POWER_WATTS = 250
+    const val DEFAULT_MAX_SPEED_KPH = 40
     const val DEFAULT_PEAK_HEART_RATE_BPM = 165
     const val DEFAULT_DESCENT_SPEED_KPH = 50
     const val LOW_BATTERY_PERCENT = 20
@@ -60,14 +60,14 @@ object DjiSettings {
             lapHighlights = prefs.getBoolean(KEY_LAP_HIGHLIGHTS, false),
             peakPowerHighlights = prefs.getBoolean(KEY_PEAK_POWER_HIGHLIGHTS, false),
             peakPowerWatts = prefs.getInt(KEY_PEAK_POWER_WATTS, DEFAULT_PEAK_POWER_WATTS)
-                .coerceIn(300, 1_000),
+                .coerceAtLeast(1),
             maxSpeedHighlights = prefs.getBoolean(KEY_MAX_SPEED_HIGHLIGHTS, false),
             maxSpeedKph = prefs.getInt(KEY_MAX_SPEED_KPH, DEFAULT_MAX_SPEED_KPH)
-                .coerceIn(30, 80),
+                .coerceAtLeast(1),
             climbSummitHighlights = prefs.getBoolean(KEY_CLIMB_SUMMIT_HIGHLIGHTS, false),
             peakHeartRateHighlights = prefs.getBoolean(KEY_PEAK_HEART_RATE_HIGHLIGHTS, false),
             peakHeartRateBpm = prefs.getInt(KEY_PEAK_HEART_RATE_BPM, DEFAULT_PEAK_HEART_RATE_BPM)
-                .coerceIn(120, 220),
+                .coerceAtLeast(1),
             highSpeedDescentHighlights = prefs.getBoolean(KEY_HIGH_SPEED_DESCENT_HIGHLIGHTS, false),
             descentSpeedKph = prefs.getInt(KEY_DESCENT_SPEED_KPH, DEFAULT_DESCENT_SPEED_KPH)
                 .coerceIn(40, 80),

@@ -36,7 +36,7 @@
     <string name="pairing_accept">Accept connection on camera</string>
     <string name="pairing_connected">Connected</string>
     <string name="pairing_connected_icon">✓</string>
-    <string name="pairing_steps_title">Steps</string>
+    <string name="pairing_steps_title">Connect camera</string>
     <string name="pairing_step_1">1. Turn on cam</string>
     <string name="pairing_step_2">2. Go to Settings &gt; Bluetooth Remote Controller and keep the screen open</string>
     <string name="pairing_step_3">3. Press search on your Karoo</string>
