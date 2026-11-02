@@ -12,7 +12,7 @@
     <string name="theme_system">Usar el sistema</string>
     <string name="theme_dark">Oscuro</string>
     <string name="theme_light">Claro</string>
-    <string name="keep_osmo_awake">Mantener cámara activa</string>
+    <string name="keep_osmo_awake">Evitar reposo</string>
     <string name="recording">Grabación</string>
     <string name="card_space">Espacio en tarjeta</string>
     <string name="settings">Ajustes</string>
@@ -22,7 +22,7 @@
     <string name="help_back">Volver a Ayuda</string>
     <string name="help_how_to_use">Cómo usar AeroCam</string>
     <string name="help_how_to_use_summary">Conecta la cámara y elige el campo de datos adecuado.</string>
-    <string name="help_keep_awake">Cómo funciona Mantener activa</string>
+    <string name="help_keep_awake">Evitar reposo</string>
     <string name="help_keep_awake_summary">Mantén la cámara preparada y conoce el consumo de batería.</string>
     <string name="help_auto_highlights">Cómo funcionan los destacados automáticos</string>
     <string name="help_auto_highlights_summary">Marca automáticamente momentos interesantes de una grabación.</string>
@@ -51,8 +51,8 @@
     <string name="searching">Buscando</string>
     <string name="connecting">Conectando</string>
     <string name="connected">Conectada</string>
-    <string name="start_keep_awake">Activar Mantener activa</string>
-    <string name="stop_keep_awake">Desactivar Mantener activa</string>
+    <string name="start_keep_awake">Activar evitar reposo</string>
+    <string name="stop_keep_awake">Desactivar evitar reposo</string>
     <string name="take_picture">Hacer foto</string>
     <string name="start_recording">Iniciar grabación</string>
     <string name="stop_recording_with_time">Detener grabación %1$s</string>
@@ -61,7 +61,7 @@
     <string name="ble_permissions_denied">Permisos BLE denegados; controles DJI no disponibles</string>
     <string name="dji_camera_service">Conexión con cámara DJI</string>
     <string name="notification_recording">Grabando %1$s</string>
-    <string name="notification_keep_awake">Conectada; Mantener activa habilitado</string>
+    <string name="notification_keep_awake">Evitar reposo · Activado</string>
     <string name="notification_connected">Cámara DJI conectada</string>
     <string name="notification_connecting">Conectando con la cámara DJI</string>
     <string name="notification_disconnected">Cámara DJI desconectada</string>
@@ -120,8 +120,8 @@
     <string name="widget_deep_sleep">Apagar cámara</string>
     <string name="widget_storage">Almacenamiento</string>
     <string name="widget_add_highlight">Añadir destacado</string>
-    <string name="widget_keep_awake_on">MANTENER ACTIVA SÍ</string>
-    <string name="widget_keep_awake_off">MANTENER ACTIVA NO</string>
+    <string name="widget_keep_awake_on">Evitar reposo · Activado</string>
+    <string name="widget_keep_awake_off">Evitar reposo · Desactivado</string>
     <string name="widget_highlight_feedback">DESTACADO</string>
     <string name="widget_speed_feedback">VELOCIDAD</string>
     <string name="widget_video_fallback">VÍDEO</string>
@@ -145,7 +145,7 @@
     <string name="gallery_state_reconnecting">Reconexión automática</string>
     <string name="gallery_state_recording">Grabando</string>
     <string name="gallery_state_feedback">Respuesta breve</string>
-    <string name="gallery_state_keep_awake">Mantener activa</string>
+    <string name="gallery_state_keep_awake">Evitar reposo · Activado</string>
     <string name="gallery_state_sleep_confirmation">Confirmación de apagado</string>
     <string name="alert_recording_started">Grabación iniciada</string>
     <string name="alert_recording_stopped">Grabación detenida</string>

@@ -29,7 +29,7 @@ mode.
 > [!NOTE]
 > DJI cameras cannot currently be woken from a complete power-off through the
 > standard Android Bluetooth APIs available on Karoo. AeroCam works around this
-> limitation with **Keep awake**, which keeps a connected camera responsive
+> limitation with **Prevent standby**, which keeps a connected camera responsive
 > while allowing its screens to remain off. A fully powered-off camera must
 > still be turned on manually.
 
@@ -78,7 +78,7 @@ marker.
 - **Ride bookmarks:** Adds markers at the start and end of a ride when recording
   is active.
 
-### Keep Awake
+### Prevent standby
 
 Keep awake periodically sends a lightweight camera-control command so the Osmo
 does not reach its automatic power-off timeout. This lets the camera remain
@@ -131,9 +131,11 @@ Pairing is required only once:
 4. Accept the connection and security code shown on the camera.
 
 AeroCam stores the paired camera and will try to reconnect automatically when
-the camera is available.
+the camera is available. After first pairing, an optional guide walks through
+camera settings, ride triggers and widgets. Replay it with **Camera setup guide**
+in Settings or Help. See [ONBOARDING_SPEC.md](ONBOARDING_SPEC.md).
 
-### Set Up Keep Awake
+### Set Up Prevent standby
 
 Keep awake works best when the camera is configured for low-distraction use:
 
@@ -146,7 +148,8 @@ Keep awake works best when the camera is configured for low-distraction use:
 4. Set Auto Power Off to **five minutes**. The new default QS interval is
    **four minutes thirty seconds**, leaving time for acknowledgement retries.
    Previously saved custom intervals remain unchanged. Shorter camera timers
-   require a correspondingly shorter app interval; guided configuration is pending.
+   require a correspondingly shorter app interval; choose the matching timer in the
+   camera setup guide.
 5. After AeroCam connects, lock the camera screen. The displays turn off while
    AeroCam periodically prevents the camera from fully powering down.
 

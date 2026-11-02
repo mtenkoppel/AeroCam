@@ -1,114 +1,52 @@
-# First connection and onboarding
+# Camera onboarding
 
-Status: interactive specification draft v3, 2026-11-02. Branch: codex/onboarding.
-No Android implementation or deployment is part of this prototype revision.
+Implemented on `codex/onboarding`, 2026-11-02, from the owner-reviewed interactive prototype.
 
-## Story
+## Final accepted flow
 
-As a rider pairing AeroCam, I want optional guided camera setup and configurable
-ride triggers so I can control my DJI camera with minimal preparation each ride.
+1. Pair camera: existing search and security approval, compact AeroCam logo, sentence-case instructions. Search is real in the app.
+2. Connection confirmed: large checkmark; explain automatic reconnection. Continue explicitly (no automatic dismissal).
+3. Welcome: “Less fiddling. More riding.” Device line drawings. Start setup or Skip.
+4. Recommend **Prevent standby**: explain five-minute camera timer even during an active connection; coffee icon; battery observation (~4 hours with 1,770 mAh, not a guarantee). Skip or enable.
+5. Camera setup: auto power off five minutes (or matching one/two minute choice); optionally mute clicks; enable **Single Screen Preview (Scrn Off when Locked)**. Camera menu labels stay in their exact provided English form in all translations. Skip or confirm.
+6. “Next time you go for a ride, you can just:” turn on camera, lock camera, control from Karoo. Illustrated lock location.
+7. Auto-highlights: five opt-in triggers (lap, power, speed, route summit, heart rate). Numeric trigger enabling opens an editor; backing out leaves a newly selected trigger off. Auto-start recording is separate, available only when a trigger is selected. Turning every trigger off also turns auto-start off. Skip or Next.
+8. Widget page: “Awesome.” Add widgets to the Karoo ride screen, sample controls, Next.
+9. Final page: “Have fun with AeroCam.” Convenient camera control; GPS/speed/elevation streaming into supported recordings; DJI Mimo / GPStitch. Done returns to Settings.
 
-## Flow
+The former standalone settings-revisit page was removed. The data explanation is now after the widget page. Prototype timestamps remain references, not visible production UI.
 
-1. **Connect:** larger existing logo above AeroCam, Search, and “Steps to Connect
-   Camera”. Search simulates successful pairing in the mock only.
-2. **Connection success:** prominent green checkmark, approximately 168 × 168
-   pixels on the 480 × 800 canvas, followed by “Camera connected”. Continue.
-3. **Welcome:** retain “Less fiddling. More riding.” Say “Take a moment to set up
-   your DJI camera for a great in-ride experience.” No Back or connected-status
-   label here. Footer ghost Skip and primary Start setup.
-4. **KeepAwake:** a single inset box with a large coffee icon beside the KeepAwake
-   heading. Recommend enabling the feature; explain AeroCam prevents sleep and
-   cannot reach the camera once off. State battery cost. Retain the owner's
-   observation: about four hours standby using a 1,770 mAh battery, actual life
-   varies. Remove the “Good news” sentence. Footer Skip / Enable KeepAwake.
-5. **Camera settings:** headline “Now let’s make some settings on your DJI cam
-   together.” Auto Power Off: five minutes; optional mute; enable Single Screen
-   Preview (Scrn Off when Locked), with its display-off explanation and menu path.
-   Under the timeout, “I don’t want 5 minutes” opens the alternate-time guide.
-   Footer Skip / Next. Next confirms settings and enables KeepAwake.
-6. **How it works:** numbered dots: (1) Turn on your camera; AeroCam connects
-   automatically (Karoo must be on). (2) Lock the camera; display turns off.
-   Include the schematic control menu highlighting the second icon in the bottom
-   row. (3) Ride! If KeepAwake was skipped, show the off-state behavior instead.
-7. **Auto-highlights:** merge the previous introduction and configuration screens.
-   Explain: “AeroCam can add highlights or even automatically start recording:”
-   Show labeled options with one-line explanations and editable thresholds.
-   Auto-start recording remains a separate, initially off option. Footer Skip /
-   Next. Require at least one selected trigger for Next; Skip turns this feature
-   and its trigger flags off.
-8. **Before your next ride:** introduce small-to-large AeroCam control widgets,
-   show a simple sample widget, and explain automatic GPS streaming into supported
-   video recordings. A connected camera and a GPS location are required. Finish
-   setup leads to a minimal completion state.
+## Skips, persistence, and existing users
 
-From welcome onward, remove the connected label and progress indicator. Retain
-Back after welcome, with a quiet “Your DJI camera” header. Brief linear sliding
-transitions remain and respect reduced-motion preferences.
+- Skip setup goes straight to Settings.
+- Skip Prevent standby (or its camera settings) disables it via the existing controller, shows a short reminder about later setup and FAQ, then proceeds to triggers.
+- Skip triggers disables their selected flags and auto-start, then goes directly to the widget page.
+- First-time setup is prepared when the user presses Search; it only opens the pairing confirmation once the camera is actually connected. A persisted draft resumes thereafter even if the camera is temporarily disconnected.
+- Draft page, navigation stack, timer, trigger values and unsaved numeric input survive process recreation. An incomplete camera setup never enables Prevent standby.
+- The selected timer is applied before enabling through existing controller APIs. No BLE, reconnect, QS retry, recording guard, service, or Karoo SDK changes.
+- Existing configured installations are not forced through onboarding. A Camera setup guide button in Settings and Help permits replay. Replay loads existing trigger values. Entering camera setup suspends Prevent standby until confirmation. Deferred trigger settings are preserved on replay.
+- Completing clears the draft and stores a completion marker. Returning to Settings rebuilds the UI from current preferences.
 
-## Alternate standby setting
+## Settings changes
 
-Guide the rider to Settings → Auto Power Off on the DJI camera. The prototype
-supports the previously discussed 1, 2 and 5 minute choices, not a claim to list
-all camera firmware options. Require the rider to choose the same value here.
+- Power default: 250 W; speed default: 40 km/h; heart rate default remains 165 bpm.
+- All five onboarding triggers start off for a new installation. Selecting any enables auto-highlights at Next. New first-pairing setup disables legacy default-on ride bookmarks.
+- Power/speed/heart-rate editors and settings reads accept positive integers without the old artificial ranges. Storage uses Android Int; invalid/overflow inputs cannot be saved. Existing valid saved thresholds are retained.
+- Power feedback: >=300 W, >=350 W, >500 W. Speed feedback: >=50, >55, >60 km/h. Heart-rate input has no joke text.
+- High-speed descent and start/end bookmarks are omitted pending owner review: issues [20](https://github.com/mtenkoppel/AeroCam/issues/20) and [21](https://github.com/mtenkoppel/AeroCam/issues/21). Their underlying trigger algorithms are unchanged.
+- Timer choices map 60→30, 120→90, 300→270 seconds. No timer is inferred from the camera; the rider confirms it.
+- The stream carries GPS position, movement and elevation; it does not carry heart rate or cycling power. Those claims must not appear in onboarding.
 
-Set `keepAwakeIntervalSeconds = cameraStandbySeconds - 30` only upon camera-setup
-confirmation. Thus 1 minute → 30 seconds, 2 minutes → 90 seconds, 5 → 270 seconds.
-The preview displays the resulting interval. Back without saving leaves the old
-choice intact. KeepAwake stays off throughout incomplete setup. Do not offer
-30-second standby with this formula because it would produce a zero interval.
-Only prototype state is changed today, not the app's setting.
+## Compatibility and validation
 
-## Trigger behavior verified from source
+Official Karoo documentation checked 2026-11-02:
+- https://hammerheadnav.github.io/karoo-ext/ (1.1.9)
+- https://github.com/hammerheadnav/karoo-ext/releases (1.1.9 requires KOS 1.634.2440 or later)
 
-Read DjiSettings.kt and DjiKarooIntegration.kt on 2026-11-02.
+SDK remains 1.1.9; compile SDK 35, target 34, minimum Android API 23. Android API and Karoo OS versions are distinct. No dependencies or manifest permissions added. The new Activity is private to AeroCam.
 
-| Option | Explanation | Draft threshold | Existing source default / bounds |
-| --- | --- | --- | --- |
-| Lap marker | Whenever you record a lap | None | Off |
-| Peak power | When power crosses the threshold | 350 W, explicitly requested by owner | 500 W; 300–1000 W |
-| Max speed | When speed crosses the threshold | 50 km/h | 50; 30–80 km/h |
-| Climb summit | When route distance reaches the end of a route climb | None | Off; needs route climb data |
-| Peak heart rate | When heart rate crosses the threshold | 165 bpm | 165; 120–220 bpm |
-| High-speed descent | Speed threshold reached with grade at or below −3% | 50 km/h | 50; 40–80 km/h |
-| Start/end bookmarks | Ride boundary markers while camera is already recording | None | On |
+Onboarding strings are provided in English, German, Spanish, French, Italian and Portuguese. Theme uses DjiTheme. Layout uses scrollable content plus fixed footer actions, native Android back arrow, switches and numeric input. No new UI framework.
 
-All trigger defaults follow source except the explicit requested power change.
-The source code itself still uses 500 W; the 350 W change is only in the draft.
+Automated checks: testDebugUnitTest / assembleDebug (CI) and release-signed build. Policy tests cover timer margin, input validation outside previous limits, invalid inputs, and feedback boundaries. Prototype interaction checks cover skip paths, gating and final navigation.
 
-Enabling a threshold-based trigger opens a focused numeric editor with the
-default prefilled. Save threshold confirms the value and enables that trigger.
-Back leaves a newly selected trigger off. An enabled row displays its value and
-allows reopening the editor. Values must be whole numbers within source bounds.
-This avoids squeezing seven controls plus numeric fields into the Karoo screen.
-
-Source semantics: power, speed and heart-rate triggers fire on threshold crossing
-with hysteresis, not continuously while above the threshold. Auto-start recording
-starts a recording when a trigger occurs while idle; it does not also add a marker
-on that same event. Start bookmark is sent once when the camera is recording and
-the ride is actively recording, including when camera recording starts mid-ride.
-End bookmark currently occurs specifically on active RideState.Recording → Idle
-while camera recording continues; ending from Paused is not covered by that path.
-Bookmarks do not automatically start a recording.
-
-Implementation note found in review: the existing end-bookmark path checks
-rideBookmarks but not the master autoHighlightsEnabled setting. The onboarding
-Skip action should clear both flags. Any broader consistency fix is separate from
-this visual specification; do not claim it has been changed.
-
-## State, appearance and scope
-
-- First pairing only; not a prompt on every reconnect.
-- Welcome Skip bypasses optional setup. Feature Skip affects that feature only.
-- No QS while camera setup is incomplete. Next commits the chosen interval and
-  enable flag together. The camera setting and lock state are user-confirmed,
-  not readable by AeroCam.
-- Real implementation must persist progress, resume safely after disconnect or
-  process restart, and define replay/edit semantics. These interruptions are not
-  simulated in this draft.
-- Use AeroCam spelling consistently. “ErroCam” is treated as dictation.
-- 480 × 800 physical Karoo canvas, status bar included, proportional narrow-screen
-  preview. Theme follows the conversation with optional appearance preview.
-- Widget illustration uses recognizable camera/video/coffee controls; it is a
-  non-operating sample, not a new widget design committed to the Android app.
-- Final review can adjust copy and selected defaults before application coding.
+No Karoo was attached during implementation. On-device visual checks, keyboards, first pairing, process restart, theme/language layouts and camera confirmation remain to be performed. No installed firmware is claimed as tested for this change. Keep source rollback by retaining the branch base; do not uninstall or erase pairing data.

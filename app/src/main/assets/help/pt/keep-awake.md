@@ -1,32 +1,23 @@
-# Como funciona Manter ativa
+# Impedir espera
 
-## Porque existe
+A câmara desliga-se quando o temporizador termina, normalmente após 5 minutos, mesmo estando ligada ao Karoo.
 
-O AeroCam não consegue voltar a ligar de forma fiável uma DJI Osmo Action completamente desligada.
+1. Define o desligamento automático para 5 minutos
 
-**Manter ativa** contorna esta limitação. O AeroCam envia regularmente uma pressão do botão QS para reiniciar o temporizador de desligar automático. A câmara permanece ligada e pronta, mesmo com os ecrãs desligados.
+Settings → Auto Power Off → 5 minutos
 
-> **Bateria:** Manter ativa consome muito mais bateria do que um verdadeiro modo de espera.
+Quero outro tempo de espera: Escolhe aqui o mesmo tempo de Auto Power Off que na DJI.
 
-## Configurar a câmara
+2. Desativa os sons (opcional)
 
-1. Defina **Single Screen Preview** como **Screen off when locked** para desligar os ecrãs mantendo a câmara disponível.
-2. Defina **Auto Power Off** para pelo menos **2 minutos**.
-3. Ligue a câmara ao Karoo e bloqueie o ecrã da câmara. Isto desliga os ecrãs e poupa alguma energia.
-4. Desative os sons se não quiser ouvir um clique a cada comando QS.
+Settings → Sounds → Mute
 
-Os nomes dos menus podem variar ligeiramente entre versões de firmware.
+3. Ativa o desligamento do ecrã ao bloquear
 
-## Durante uma volta
+Settings → Single Screen Preview (Scrn Off when Locked) → On
 
-Ative Manter ativa no Controlo da câmara. O AeroCam envia imediatamente um comando QS e repete-o com o intervalo definido.
+Desliza para baixo e toca no cadeado: segunda opção da esquerda, na fila inferior.
 
-Se a ligação se perder, o AeroCam retoma depois de voltar a ligar. Aguarda brevemente para a câmara ficar pronta.
+Com cinco minutos na câmara, o intervalo é de quatro minutos e trinta segundos. Para um ou dois minutos, escolhe o mesmo tempo no guia. O AeroCam não consegue ler o temporizador. A função pausa durante a gravação. Uma nova ligação inicia um intervalo completo. Ativar com a câmara ligada ou parar uma gravação pode enviar um impulso imediato. Não pode ligar uma câmara desligada.
 
-A função é pausada durante uma gravação, porque o mesmo comando QS cria um destaque. Retoma quando a gravação termina.
-
-## Uso da bateria
-
-Num teste, a bateria desceu de **100% para 64% em cerca de 1 hora e 56 minutos**. É apenas uma referência: temperatura, gravações, ecrãs e estado da bateria afetam o resultado.
-
-> **Importante:** Manter ativa evita que a câmara se desligue. Não consegue ligar uma câmara já completamente desligada.
+Manter a câmara ligada consome bateria. Nos nossos testes, 1.770 mAh deram cerca de 4 horas em espera. A autonomia real varia.
