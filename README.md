@@ -143,8 +143,10 @@ Keep awake works best when the camera is configured for low-distraction use:
    produce distracting tones.
 3. Configure Single Screen Preview so the front display remains off when the
    camera is locked.
-4. Set Auto Power Off to at least two minutes, then choose a Keep awake interval
-   shorter than that timeout.
+4. Set Auto Power Off to **five minutes**. The new default QS interval is
+   **four minutes thirty seconds**, leaving time for acknowledgement retries.
+   Previously saved custom intervals remain unchanged. Shorter camera timers
+   require a correspondingly shorter app interval; guided configuration is pending.
 5. After AeroCam connects, lock the camera screen. The displays turn off while
    AeroCam periodically prevents the camera from fully powering down.
 
@@ -345,3 +347,8 @@ AeroCam is licensed under the [GNU General Public License v3.0](LICENSE)
 (`GPL-3.0-only`). Distributed modified versions must provide corresponding
 source code under the same license. GPLv3 permits commercial use and resale;
 its purpose here is to ensure that distributed derivatives remain open.
+
+## Developer ride diagnostics
+
+See [KEEP_AWAKE_RECOVERY.md](KEEP_AWAKE_RECOVERY.md) for acknowledgement handling,
+USB-only opt-in logging, retrieval, limits, and the hardware validation checklist.

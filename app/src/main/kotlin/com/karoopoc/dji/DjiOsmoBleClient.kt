@@ -64,6 +64,11 @@ class DjiOsmoBleClient(
     private var keepAwakeIntervalMs = DEFAULT_KEEP_AWAKE_INTERVAL_SECONDS * 1_000L
     private var keepAwakeQsCount = 0
     private var keepAwakeScheduled = false
+    private var keepAwakeGeneration = 0L
+    private var keepAwakeAttempt: KeepAwakeAttempt? = null
+    private var keepAwakeFaulted = false
+    private var keepAwakeTimeout: Runnable? = null
+    private fun rideEvent(name: String, details: String = "") = RideDiagnostics.event(appContext, name, details)
     private var latestBatteryPercent: Int? = null
     private var latestCameraStatus: Int? = null
     private var latestCameraMode: Int? = null
@@ -94,6 +99,7 @@ class DjiOsmoBleClient(
             val ageMs = SystemClock.elapsedRealtime() - lastCameraRxAtMs
             val timeoutMs = if (keepAwakeEnabled) KEEP_AWAKE_LIVENESS_TIMEOUT_MS else LIVENESS_TIMEOUT_MS
             if (ageMs > timeoutMs) {
+                rideEvent("LINK_STALE", "rxAgeMs=$ageMs")
                 logStatus("KNOWN_DEVICE: connection stale (${ageMs / 1000}s without camera data)")
                 disconnectInternal(clearReconnect = false)
                 scheduleReconnect("stale link", RECONNECT_AFTER_LOSS_MS)
@@ -115,7 +121,7 @@ class DjiOsmoBleClient(
                 autoConnectKnownDevice()
                 return
             }
-            dispatchKeepAwakePulse(reschedule = true)
+            beginKeepAwakeAttempt()
         }
     }
     private val gpsPush = object : Runnable {
@@ -395,6 +401,8 @@ class DjiOsmoBleClient(
 
     fun setKeepAwake(enabled: Boolean, intervalSeconds: Int) {
         val wasEnabled = keepAwakeEnabled
+        keepAwakeFaulted = false
+        rideEvent("KEEP_AWAKE_SETTING", "enabled=$enabled intervalSeconds=$intervalSeconds")
         keepAwakeEnabled = enabled
         keepAwakeIntervalMs = intervalSeconds.coerceIn(
             MIN_KEEP_AWAKE_INTERVAL_SECONDS,
@@ -669,9 +677,8 @@ class DjiOsmoBleClient(
         }
         stopScan()
         stopGpsStream()
-        if (clearReconnect) {
-            cancelKeepAwake()
-        }
+        cancelKeepAwake()
+        rideEvent("LINK_CLOSED", "automaticReconnect=${!clearReconnect}")
         mainHandler.removeCallbacks(livenessCheck)
         writeQueue.clear()
         writeInProgress = false
@@ -840,39 +847,42 @@ class DjiOsmoBleClient(
     private val gattCallback = object : BluetoothGattCallback() {
         @SuppressLint("MissingPermission")
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
-            if (diagnosticConnectionPaused) {
-                gatt.close()
-                return
-            }
-            Log.i(TAG, "DJI GATT connection state status=$status newState=$newState")
-            if (newState == BluetoothProfile.STATE_CONNECTED) {
-                stopScan()
-                logStatus("KNOWN_DEVICE: BLE connected; requesting MTU")
-                publishState(connection = CameraConnectionState.CONNECTING)
-                gatt.requestMtu(500)
-            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                protocolConnected = false
-                stopGpsStream()
-                cancelKeepAwake()
-                latestRecording = false
-                photoState = PhotoCaptureState.IDLE
-                mainHandler.removeCallbacks(livenessCheck)
-                logStatus("KNOWN_DEVICE: BLE disconnected status=$status")
-                publishState(
-                    connection = CameraConnectionState.DISCONNECTED,
-                    displayOff = false,
-                    recording = false,
-                    recordingDurationSeconds = 0,
-                )
-                gatt.close()
-                if (this@DjiOsmoBleClient.gatt == gatt) {
-                    this@DjiOsmoBleClient.gatt = null
+            mainHandler.post {
+                if (gatt !== this@DjiOsmoBleClient.gatt) return@post
+                if (diagnosticConnectionPaused) {
+                    gatt.close()
+                    return@post
                 }
-                scheduleReconnect("BLE disconnected", RECONNECT_AFTER_LOSS_MS)
+                Log.i(TAG, "DJI GATT connection state status=$status newState=$newState")
+                if (newState == BluetoothProfile.STATE_CONNECTED) {
+                    stopScan()
+                    logStatus("KNOWN_DEVICE: BLE connected; requesting MTU")
+                    publishState(connection = CameraConnectionState.CONNECTING)
+                    gatt.requestMtu(500)
+                } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                    protocolConnected = false
+                    rideEvent("LINK_DISCONNECTED", "gattStatus=$status")
+                    stopGpsStream()
+                    cancelKeepAwake()
+                    latestRecording = false
+                    photoState = PhotoCaptureState.IDLE
+                    mainHandler.removeCallbacks(livenessCheck)
+                    logStatus("KNOWN_DEVICE: BLE disconnected status=$status")
+                    publishState(
+                        connection = CameraConnectionState.DISCONNECTED,
+                        displayOff = false,
+                        recording = false,
+                        recordingDurationSeconds = 0,
+                    )
+                    gatt.close()
+                    if (this@DjiOsmoBleClient.gatt == gatt) {
+                        this@DjiOsmoBleClient.gatt = null
+                    }
+                    scheduleReconnect("BLE disconnected", RECONNECT_AFTER_LOSS_MS)
+                }
             }
         }
 
-        @SuppressLint("MissingPermission")
         override fun onMtuChanged(gatt: BluetoothGatt, mtu: Int, status: Int) {
             Log.i(TAG, "DJI MTU changed mtu=$mtu status=$status")
             gatt.discoverServices()
@@ -925,7 +935,9 @@ class DjiOsmoBleClient(
             characteristic: BluetoothGattCharacteristic,
             value: ByteArray,
         ) {
-            handleNotification(value)
+            mainHandler.post {
+                if (gatt === this@DjiOsmoBleClient.gatt) handleNotification(value)
+            }
         }
 
         @Deprecated("Used on Android versions before API 33")
@@ -934,7 +946,10 @@ class DjiOsmoBleClient(
             gatt: BluetoothGatt,
             characteristic: BluetoothGattCharacteristic,
         ) {
-            handleNotification(characteristic.value ?: ByteArray(0))
+            val value = characteristic.value?.copyOf() ?: ByteArray(0)
+            mainHandler.post {
+                if (gatt === this@DjiOsmoBleClient.gatt) handleNotification(value)
+            }
         }
 
         override fun onCharacteristicWrite(
@@ -944,6 +959,7 @@ class DjiOsmoBleClient(
         ) {
             Log.i(TAG, "DJI write complete status=$status uuid=${characteristic.uuid}")
             mainHandler.post {
+                if (gatt !== this@DjiOsmoBleClient.gatt) return@post
                 activeWrite?.let { pending ->
                     completeActiveWrite(pending, status == BluetoothGatt.GATT_SUCCESS)
                 }
@@ -1019,7 +1035,10 @@ class DjiOsmoBleClient(
             DjiProtocol.CMD_SET_COMMON to DjiProtocol.CMD_ID_VERSION_QUERY -> handleVersionFrame(frame)
             DjiProtocol.CMD_SET_CAMERA to DjiProtocol.CMD_ID_CAMERA_STATUS_PUSH -> handleCameraStatus(frame)
             DjiProtocol.CMD_SET_CAMERA to DjiProtocol.CMD_ID_NEW_CAMERA_STATUS_PUSH -> handleNewCameraStatus(frame)
-            DjiProtocol.CMD_SET_COMMON to DjiProtocol.CMD_ID_KEY_REPORT -> logReturnCode("key report", frame)
+            DjiProtocol.CMD_SET_COMMON to DjiProtocol.CMD_ID_KEY_REPORT -> {
+                logReturnCode("key report", frame)
+                handleKeepAwakeResponse(frame)
+            }
             DjiProtocol.CMD_SET_COMMON to DjiProtocol.CMD_ID_GPS_DATA_PUSH -> logReturnCode("GPS data push", frame)
             DjiProtocol.CMD_SET_COMMON to DjiProtocol.CMD_ID_POWER_MODE_SWITCH -> logReturnCode("power mode", frame)
             DjiProtocol.CMD_SET_CAMERA to DjiProtocol.CMD_ID_MODE_SWITCH -> logReturnCode("mode switch", frame)
@@ -1060,6 +1079,9 @@ class DjiOsmoBleClient(
                 prefs.edit()
                     .putBoolean(KEY_PROTOCOL_CONNECTED_ONCE, true)
                     .apply()
+                cancelKeepAwake()
+                keepAwakeFaulted = false
+                rideEvent("LINK_READY", "intervalMs=$keepAwakeIntervalMs")
                 logStatus("KNOWN_DEVICE: connected and ready")
                 publishState(connection = CameraConnectionState.CONNECTED)
                 mainHandler.removeCallbacks(livenessCheck)
@@ -1070,7 +1092,7 @@ class DjiOsmoBleClient(
                 startGpsStream()
                 runPendingActionIfNeeded()
                 scheduleKeepAwakeIfNeeded(
-                    delayMs = CONNECTED_KEEP_AWAKE_DELAY_MS,
+                    delayMs = keepAwakeIntervalMs,
                     reason = "post-connect",
                 )
                 mainHandler.postDelayed({ drainOperationQueue() }, 900)
@@ -1159,16 +1181,17 @@ class DjiOsmoBleClient(
         latestCameraMode = cameraStatus.mode
         latestVideoResolution = cameraStatus.videoResolution
         latestVideoFps = cameraStatus.fps
+        val wasRecording = latestRecording
         latestRecording = cameraStatus.mode == CAMERA_MODE_VIDEO &&
             cameraStatus.status == CAMERA_STATUS_IN_PROGRESS
 
+        if (wasRecording != latestRecording) rideEvent("RECORDING", "active=$latestRecording")
         if (latestRecording) {
-            cancelKeepAwake()
-            operationQueue.removeAll { it.coalesceKey == KEEP_AWAKE_OPERATION_KEY }
+            if (keepAwakeScheduled || keepAwakeAttempt != null) cancelKeepAwake()
         } else {
             scheduleKeepAwakeIfNeeded(
-                delayMs = 0L,
-                reason = "recording stopped or status refresh",
+                delayMs = if (wasRecording) 0L else keepAwakeIntervalMs,
+                reason = if (wasRecording) "recording stopped" else "idle status",
             )
         }
 
@@ -1242,12 +1265,14 @@ class DjiOsmoBleClient(
         payload: ByteArray,
         writeType: Int,
         seq: Int = nextSeq(),
+        keepAwakeToken: Long? = null,
         onComplete: (Boolean) -> Unit = {},
     ) {
         val frame = DjiProtocol.createFrame(cmdSet, cmdId, cmdType, payload, seq)
         mainHandler.post {
             if (diagnosticConnectionPaused) return@post
-            writeQueue.addLast(PendingWrite(label, frame, writeType, onComplete))
+            if (keepAwakeToken != null && !validKeepAwakeToken(keepAwakeToken)) return@post
+            writeQueue.addLast(PendingWrite(label, frame, writeType, onComplete, keepAwakeToken))
             drainWriteQueue()
         }
     }
@@ -1257,10 +1282,12 @@ class DjiOsmoBleClient(
         priority: CommandPriority,
         steps: List<CommandStep>,
         coalesceKey: String? = null,
+        keepAwakeToken: Long? = null,
         onComplete: () -> Unit = {},
     ) {
         mainHandler.post {
             if (diagnosticConnectionPaused) return@post
+            if (keepAwakeToken != null && !validKeepAwakeToken(keepAwakeToken)) return@post
             if (coalesceKey != null) {
                 operationQueue.removeAll { it.coalesceKey == coalesceKey }
             }
@@ -1271,6 +1298,7 @@ class DjiOsmoBleClient(
                 steps = steps,
                 order = operationOrder,
                 coalesceKey = coalesceKey,
+                keepAwakeToken = keepAwakeToken,
                 onComplete = onComplete,
             )
             Log.i(TAG, "DJI command queued label=$label priority=$priority depth=${operationQueue.size}")
@@ -1291,7 +1319,8 @@ class DjiOsmoBleClient(
 
     private fun executeActiveOperationStep() {
         val active = activeOperation ?: return
-        if (active.operation.coalesceKey == KEEP_AWAKE_OPERATION_KEY && !shouldKeepAwake()) {
+        if (active.operation.coalesceKey == KEEP_AWAKE_OPERATION_KEY &&
+            !validKeepAwakeToken(active.operation.keepAwakeToken)) {
             Log.i(TAG, "DJI keep awake command cancelled before execution: camera state changed")
             activeOperation = null
             drainOperationQueue()
@@ -1319,7 +1348,9 @@ class DjiOsmoBleClient(
             cmdType = step.cmdType,
             payload = step.payload,
             writeType = step.writeType,
+            keepAwakeToken = active.operation.keepAwakeToken,
             onComplete = { success ->
+                if (activeOperation !== active) return@queueFrame
                 if (!success) {
                     Log.w(TAG, "DJI command step failed operation=${active.operation.label} step=${step.label}")
                     activeOperation = null
@@ -1340,6 +1371,11 @@ class DjiOsmoBleClient(
     private fun drainWriteQueue() {
         if (writeInProgress) return
         val pending = writeQueue.removeFirstOrNull() ?: return
+        if (pending.keepAwakeToken != null && !validKeepAwakeToken(pending.keepAwakeToken)) {
+            pending.onComplete(false)
+            drainWriteQueue()
+            return
+        }
         val gatt = gatt
         val characteristic = writeCharacteristic
 
@@ -1362,6 +1398,12 @@ class DjiOsmoBleClient(
         writeInProgress = true
         activeWrite = pending
 
+        pending.keepAwakeToken?.let { token ->
+            val sequence = DjiProtocol.readU16(pending.frame, 8)
+            keepAwakeAttempt?.sent(sequence, SystemClock.elapsedRealtime())
+            rideEvent("QS_SENT", "cycle=$token seq=$sequence attempt=${keepAwakeAttempt?.count}")
+            armKeepAwakeTimeout(token, queued = false)
+        }
         val accepted = writeCharacteristic(gatt, characteristic, pending.frame, pending.writeType)
         if (!accepted) {
             Log.w(TAG, "DJI TX rejected by Android stack label=${pending.label}")
@@ -1380,6 +1422,7 @@ class DjiOsmoBleClient(
         if (activeWrite !== pending) return
         activeWrite = null
         writeInProgress = false
+        if (pending.keepAwakeToken != null) rideEvent("QS_WRITE_RESULT", "cycle=${pending.keepAwakeToken} success=$success")
         pending.onComplete(success)
         drainWriteQueue()
     }
@@ -1493,7 +1536,7 @@ class DjiOsmoBleClient(
     }
 
     private fun shouldKeepAwake(): Boolean {
-        return keepAwakeEnabled && protocolConnected && !latestRecording
+        return keepAwakeEnabled && protocolConnected && !latestRecording && !keepAwakeFaulted
     }
 
     private fun scheduleKeepAwakeIfNeeded(delayMs: Long = keepAwakeIntervalMs, reason: String) {
@@ -1505,43 +1548,102 @@ class DjiOsmoBleClient(
     }
 
     private fun scheduleKeepAwakePulse(delayMs: Long, reason: String) {
-        if (!shouldKeepAwake() || keepAwakeScheduled) {
+        if (!shouldKeepAwake() || keepAwakeScheduled || keepAwakeAttempt != null) {
             publishState()
             return
         }
         keepAwakeScheduled = true
-        mainHandler.postDelayed(keepAwakeQs, delayMs)
+        mainHandler.postDelayed(keepAwakeQs, delayMs.coerceAtLeast(0))
+        rideEvent("QS_SCHEDULED", "delayMs=$delayMs reason=$reason")
         Log.i(TAG, "DJI keep awake scheduled in ${delayMs}ms reason=$reason")
         publishState()
     }
 
-    private fun scheduleKeepAwake() {
-        cancelKeepAwake()
-        scheduleKeepAwakePulse(
-            delayMs = keepAwakeIntervalMs,
-            reason = "recurring interval",
-        )
+    private fun validKeepAwakeToken(token: Long?): Boolean =
+        token != null && token == keepAwakeGeneration && keepAwakeAttempt != null && shouldKeepAwake()
+
+    private fun beginKeepAwakeAttempt() {
+        keepAwakeGeneration++
+        keepAwakeAttempt = KeepAwakeAttempt()
+        sendKeepAwakeAttempt()
     }
 
-    private fun dispatchKeepAwakePulse(reschedule: Boolean) {
-        keepAwakeQsCount += 1
+    private fun sendKeepAwakeAttempt() {
+        val token = keepAwakeGeneration
+        if (!validKeepAwakeToken(token)) return
+        keepAwakeQsCount++
+        // Also bound time spent waiting behind other writes. Do not stack retries in a stalled queue.
+        armKeepAwakeTimeout(token, queued = true)
         enqueueOperation(
             label = "keep awake QS short press #$keepAwakeQsCount",
             priority = CommandPriority.KEEP_AWAKE,
             coalesceKey = KEEP_AWAKE_OPERATION_KEY,
+            keepAwakeToken = token,
             steps = listOf(keyReportStep(DjiProtocol.qsButtonShortPressPayload())),
         )
         logKeepAwakeMeasurement()
-        if (reschedule) {
-            scheduleKeepAwake()
-        } else {
-            publishState()
+    }
+
+    private fun armKeepAwakeTimeout(token: Long, queued: Boolean) {
+        keepAwakeTimeout?.let(mainHandler::removeCallbacks)
+        keepAwakeTimeout = Runnable {
+            if (!validKeepAwakeToken(token)) return@Runnable
+            if (queued || activeWrite?.keepAwakeToken == token) {
+                failKeepAwake("write stalled")
+            } else if (!isProtocolLinkFresh()) {
+                failKeepAwake("link not fresh")
+            } else if (keepAwakeAttempt?.canRetry() == true) {
+                rideEvent("QS_RETRY", "cycle=$token reason=no_success_response")
+                sendKeepAwakeAttempt()
+            } else {
+                failKeepAwake("no acknowledgement after three attempts")
+            }
+        }.also { mainHandler.postDelayed(it, KeepAwakeAttempt.ACK_TIMEOUT_MS) }
+    }
+
+    private fun handleKeepAwakeResponse(frame: DjiProtocol.Frame) {
+        if (!frame.isResponse || !validKeepAwakeToken(keepAwakeGeneration)) return
+        val attempt = keepAwakeAttempt ?: return
+        if (attempt.contains(frame.seq)) {
+            rideEvent("QS_RESPONSE", "cycle=$keepAwakeGeneration seq=${frame.seq} code=${frame.payload.singleOrNull()?.toInt()?.and(255)}")
+        }
+        when (val result = attempt.response(frame.seq, frame.payload)) {
+            is KeepAwakeAttempt.Result.Success -> {
+                val now = SystemClock.elapsedRealtime()
+                rideEvent("QS_ACK", "cycle=$keepAwakeGeneration seq=${frame.seq} latencyMs=${now - result.sentAtMs}")
+                cancelKeepAwake()
+                scheduleKeepAwakeIfNeeded(
+                    delayMs = (result.sentAtMs + keepAwakeIntervalMs - now).coerceAtLeast(0),
+                    reason = "acknowledged QS",
+                )
+            }
+            KeepAwakeAttempt.Result.InvalidCommand -> failKeepAwake("DJI rejected command format")
+            KeepAwakeAttempt.Result.Ignore -> Unit // Timeout provides bounded recovery; no payload retained.
         }
     }
 
+    private fun failKeepAwake(reason: String) {
+        rideEvent("QS_UNCONFIRMED", "reason=$reason")
+        keepAwakeFaulted = true
+        cancelKeepAwake()
+        logStatus("Keep awake could not be confirmed: $reason; toggle Keep awake to retry")
+    }
+
     private fun cancelKeepAwake() {
+        keepAwakeGeneration++
+        keepAwakeAttempt = null
         keepAwakeScheduled = false
+        keepAwakeTimeout?.let(mainHandler::removeCallbacks)
+        keepAwakeTimeout = null
         mainHandler.removeCallbacks(keepAwakeQs)
+        operationQueue.removeAll { it.coalesceKey == KEEP_AWAKE_OPERATION_KEY }
+        writeQueue.removeAll { it.keepAwakeToken != null }
+        val active = activeOperation
+        if (active?.operation?.coalesceKey == KEEP_AWAKE_OPERATION_KEY && activeWrite?.keepAwakeToken == null) {
+            activeOperation = null
+            mainHandler.post { drainOperationQueue() }
+        }
+        // In-flight Android writes finish normally; they cannot be recalled safely.
         publishState()
     }
 
@@ -1682,6 +1784,7 @@ class DjiOsmoBleClient(
         val frame: ByteArray,
         val writeType: Int,
         val onComplete: (Boolean) -> Unit,
+        val keepAwakeToken: Long? = null,
     )
 
     private data class CommandStep(
@@ -1700,6 +1803,7 @@ class DjiOsmoBleClient(
         val steps: List<CommandStep>,
         val order: Long,
         val coalesceKey: String?,
+        val keepAwakeToken: Long?,
         val onComplete: () -> Unit,
     )
 
@@ -1745,9 +1849,9 @@ class DjiOsmoBleClient(
         private const val BLUETOOTH_RECOVERY_DELAY_MS = 2_000L
         private const val GPS_PUSH_INTERVAL_MS = 100L
         private const val GPS_TX_LOG_INTERVAL_MS = 5_000L
-        private const val CONNECTED_KEEP_AWAKE_DELAY_MS = 2_000L
         private const val SLEEP_OFFLINE_DELAY_MS = 350L
-        const val DEFAULT_KEEP_AWAKE_INTERVAL_SECONDS = 15
+        // Requires the recommended five-minute camera Auto Power Off setting.
+        const val DEFAULT_KEEP_AWAKE_INTERVAL_SECONDS = 270
         const val MIN_KEEP_AWAKE_INTERVAL_SECONDS = 10
         const val MAX_KEEP_AWAKE_INTERVAL_SECONDS = 300
         private const val CAMERA_STATUS_SCREEN_OFF = 0x00
