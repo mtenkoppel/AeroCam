@@ -176,11 +176,49 @@ uninstalled first, which also removes AeroCam settings and its saved camera.
 
 This project is currently in beta. Review the release notes before updating.
 
+## Day-to-day development with GitHub
+
+GitHub Actions can build, test, and sign AeroCam without Android Studio or a local
+Android SDK. Your Mac only needs Git, GitHub CLI (`gh`), and ADB for this route.
+Use a `codex/…` branch for a focused change. Pushing it runs **Signed test build**;
+the workflow also supports manual dispatch once present on the default branch.
+Only trusted repository pushes use release secrets; fork pull requests must not
+receive signing secrets.
+
+1. Push the change and wait for the matching commit's **Signed test build** run.
+2. Download its `aerocam-signed-<commit>` artifact (retained for 14 days):
+   `gh run download RUN_ID --repo mtenkoppel/AeroCam --name aerocam-signed-COMMIT --dir /tmp/aerocam-build`
+3. Verify the run succeeded, then install with
+   `./scripts/install-release.sh /tmp/aerocam-build/app-release.apk`.
+4. Open the desired screen and run `./scripts/capture-screenshot.sh`.
+
+The signed workflow verifies the established release certificate. Release-signed
+updates preserve settings when installed over a release-signed installation.
+An older debug installation needs a separately authorized one-time migration;
+never uninstall automatically to solve a signature mismatch.
+
+A test artifact is not a published release. The separate release workflow publishes
+only when a version tag is pushed; do that only as part of an intentional release.
+Keep signing secrets in GitHub and retain secure independent backups. Do not put
+keystores or passwords in repository files or downloadable artifacts.
+
+### Requesting work with issues
+
+Create a [GitHub issue](https://github.com/mtenkoppel/AeroCam/issues/new/choose)
+using **Bug report** or **Change request**, then give the issue link or number to
+the coding assistant in chat. Include the desired outcome and device versions.
+The assistant reads the issue and comments, implements a focused change, runs the
+checks, and opens a linked PR. Creating an issue alone does not automatically
+start an agent; no background issue monitor is configured.
+
+See [AGENTS.md](AGENTS.md) for agent guidance and
+[PROJECT_REVIEW.md](PROJECT_REVIEW.md) for the initial review and follow-up work.
+
 ## Build from source
 
 ### Requirements
 
-- Android Studio with JDK 17
+- JDK 17 and Android SDK command-line tools (Android Studio is optional)
 - Android SDK 35
 - A GitHub account and token with `read:packages`
 - A Karoo in developer mode for USB deployment
