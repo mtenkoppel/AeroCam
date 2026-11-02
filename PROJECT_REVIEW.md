@@ -9,23 +9,11 @@ The suspected callback/write-timeout weaknesses are tracked as high-priority,
 deferred issue [#15](https://github.com/mtenkoppel/AeroCam/issues/15), not a release
 blocker. The priority is visible UI finish and preservation of field-tested stability.
 
-The toolchain upgrade is paused at a scope gate: AGP 8.6.1 supports SDK 35 and
-requires Gradle 8.7; Kotlin 2.0.0's fully supported range ends at AGP 8.3.1 / Gradle
-8.5. Kotlin 2.1.x covers AGP 8.6 / Gradle 8.7, but changes compiler output and
-normally the automatically included Kotlin standard library. This is a potential
-shared-runtime impact, not evidence of a Karoo/BLE regression. A new owner decision
-is required before pursuing that runtime-changing path. No dependency or runtime
-code update was made in this scope decision.
-
-References: https://developer.android.com/build/releases/agp-8-6-0-release-notes
-and https://kotlinlang.org/docs/gradle-configure-project.html.
-
-Rollback source: `rollback/pre-toolchain-2026-11-02` at
-`fdef5948b5847aa556adb32c02c8109597905c0b`. The verified signed version-15 APK is
-retained locally with SHA-256
-`84e98b8aa7a1fd76d45d7a0e249d01880677c19873b2c3ef7185f26dc584c470`.
-A later rollback after a version bump should rebuild baseline code with a higher
-versionCode and the established release key, preserving app data.
+The owner approved the compatible toolchain upgrade after cloud comparison and
+physical testing on 2026-11-02. Kotlin 2.1.21, AGP 8.6.1, and Gradle 8.7 replace
+the unsupported build combination; the SDK-warning suppression is removed.
+Karoo SDK and app source are unchanged. See the [validation record](TOOLCHAIN_VALIDATION.md)
+for observed results, limits, build links, and the prepared rollback.
 
 ## Overall assessment
 
@@ -39,7 +27,7 @@ The Settings / Status / Help navigation is logical. Theme palettes, row/card hel
 2. **High: no deadline for response-bearing BLE writes.** `drainWriteQueue` marks a write active and waits for `onCharacteristicWrite`; only no-response writes have a completion timer. If the callback is lost while notifications keep the link fresh, the liveness watchdog need not recover the blocked operation queue. Add a bounded write deadline tied to the pending write/session, with focused timeout/reconnect tests.
 3. **Medium: keep-awake is difficult to verify in isolation.** Guards, scheduling, coalescing, priorities, liveness checks, and intentional-sleep cancellation are present. However, `keepAwakeActive` expresses eligibility rather than confirmed pulse success, and the QS counter increments before write completion. Extract a clock/scheduler-driven policy and distinguish scheduled, sent, and failed pulse evidence. Test recording start/stop, disabling, disconnect, stale link, and write failure. Do not describe a build pass as a battery/runtime test.
 4. **Medium: integration cleanup depends on its owner.** `DjiKarooIntegration.start` does not retain consumer IDs and `stop` only cancels camera observation. The current extension owner subsequently disconnects KarooSystemService, so this is not proof of a current leak. Explicit consumer ownership and idempotent start/stop would make the component reusable and safer to isolate.
-5. **Medium: build compatibility debt.** AGP 8.2 supports compile SDK through 34, but AeroCam compiles with 35 and suppresses the unsupported-SDK warning in gradle.properties. A successful build does not make that an officially supported pairing. Upgrade AGP/Gradle/Kotlin together in a dedicated PR; remove the suppression after validation.
+5. **Resolved: build compatibility debt.** The tested AGP 8.6.1 / Gradle 8.7 / Kotlin 2.1.21 combination supports compile SDK 35. The unsupported-SDK suppression has been removed. See the validation record for cloud and hardware checks.
 
 Only two unit tests currently exist (widget size classification and video label mappings). They passed, but do not cover the connection lifecycle, command queue, keep-awake, protocol parsing, or automated highlights. Prioritize deterministic lifecycle tests before a broad refactor.
 
@@ -47,7 +35,7 @@ Only two unit tests currently exist (widget size classification and video label 
 
 The mechanism keeps the DJI camera available, rather than keeping the Karoo display on. A foreground connected-device service owns BLE work; it requests Karoo Bluetooth and releases the same resource on teardown. QS pulses are eligible only while enabled, protocol-connected, and not recording. Pending pulses are coalesced and guarded again before execution. Disable/sleep and disconnect paths have cancellation logic. The default interval is 15 seconds, clamped to 10–300 seconds.
 
-This is a sensible foundation, with the callback/timeout/test gaps above. An allowed interval can exceed the camera's configured auto-power-off timeout, so any future interval UI should explain that relationship. No claim of compatibility with every camera firmware, guaranteed wake from full power-off, or guaranteed runtime follows from this review. Re-pairing is required after the authorized signing migration before further physical camera checks.
+This is a sensible foundation, with the callback/timeout/test gaps above. An allowed interval can exceed the camera's configured auto-power-off timeout, so any future interval UI should explain that relationship. No claim of compatibility with every camera firmware, guaranteed wake from full power-off, or guaranteed runtime follows from this review. Re-pairing after the signing migration was completed. The subsequent toolchain update preserved that pairing; device observations are recorded in the validation report.
 
 ## Dependency status
 
@@ -56,16 +44,16 @@ Checked against official sources on 2026-11-02; newest does not automatically me
 | Component | Repository | Current upstream observed | Assessment |
 | --- | --- | --- | --- |
 | Karoo Extensions | 1.1.9 | 1.1.9 | Current; release notes require KOS 1.634.2440+ for its capabilities |
-| Kotlin | 2.0.0 | 2.4.21 | Behind; coordinate compiler/plugin migration |
-| Android Gradle Plugin | 8.2.2 | 9.5.0 | Behind; current compile SDK 35 pairing is unsupported |
-| Gradle wrapper | 8.6 | 9.8.2 | Behind; select version against AGP compatibility, not independently |
+| Kotlin | 2.1.21 | 2.4.21 | Validated compatible combination; further upgrades separate |
+| Android Gradle Plugin | 8.6.1 | 9.5.0 | Supports compile SDK 35; validated |
+| Gradle wrapper | 8.7 | 9.8.2 | Compatible with selected AGP/Kotlin; validated |
 | Java | 17 target/toolchain | JDK 17 remains supported by AGP 9.5 | No reason to change the app's Java target solely for freshness |
 | JUnit 4 | 4.13.2 | 4.13.2 on JUnit 4 line | Current within its line; newer JUnit is a migration, not mandatory cleanup |
 | GitHub actions | Mostly v4 | checkout 7.0.1, setup-java 6.1.0, upload-artifact 7.0.2, gradle/actions 6.4.1 | Behind; existing Dependabot PRs cover several updates |
 
 The app uses Android Views and RemoteViews, not Compose/Hilt. Hammerhead's sample uses additional frameworks but explicitly does not require them. Transitive AndroidX/coroutines dependencies come through karoo-ext; this review is not a complete transitive vulnerability audit.
 
-Connected device: k24, Android 12 / API 32; launcher/settings package version 4.217.1-ad98202524. This package version is not the public KOS number. Installation and launch were checked; confirm the KOS version in device Settings before claiming the full SDK compatibility floor is met. Karoo 2 was not tested.
+Connected device: k24, Android 12 / API 32; launcher/settings package version 4.217.1-ad98202524. This package version is not the public KOS number. Installation, camera controls, reconnection, and keep-awake were checked; confirm the KOS version in device Settings before claiming the full SDK compatibility floor is met. Karoo 2 was not tested.
 
 Official references:
 - https://github.com/hammerheadnav/karoo-ext/releases/tag/1.1.9
@@ -77,12 +65,15 @@ Official references:
 - https://kotlinlang.org/docs/releases.html
 - https://docs.gradle.org/current/release-notes.html
 
-## Next focused tickets
+## Follow-up backlog (not release blockers)
+
+Connection/lifecycle changes and associated tests remain deferred under #15.
+UI extractions are optional only when needed for a concrete visible improvement.
 
 - Reject stale GATT callbacks and serialize lifecycle state transitions.
 - Add response-write deadlines and queue recovery tests.
 - Extract/test keep-awake policy and report pulse outcome accurately.
-- Upgrade the Android build toolchain as a compatible set.
+- Refresh GitHub workflow actions separately; the app toolchain upgrade is complete.
 - Extract reusable main-screen sections without changing behavior.
 - Make Karoo consumer registration and teardown explicit.
 

@@ -7,7 +7,7 @@
 [![CI](https://github.com/mtenkoppel/AeroCam/actions/workflows/ci.yml/badge.svg)](https://github.com/mtenkoppel/AeroCam/actions/workflows/ci.yml)
 [![Release: v0.9.0-beta.3](https://img.shields.io/badge/release-v0.9.0--beta.3-2563EB)](https://github.com/mtenkoppel/AeroCam/releases)
 [![License: GPLv3](https://img.shields.io/badge/license-GPLv3-2563EB)](LICENSE)
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF)](https://kotlinlang.org/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.1.21-7F52FF)](https://kotlinlang.org/)
 
 **Website:** [mtenkoppel.github.io/AeroCam](https://mtenkoppel.github.io/AeroCam/)
 
@@ -215,6 +215,13 @@ See [AGENTS.md](AGENTS.md) for agent guidance and
 [PROJECT_REVIEW.md](PROJECT_REVIEW.md) for the initial review and follow-up work.
 
 ## Build from source
+
+The validated build combination is Kotlin 2.1.21, Android Gradle Plugin 8.6.1,
+Gradle 8.7, and Java 17, with compile SDK 35 / target SDK 34. Karoo Extensions
+remains at 1.1.9. These versions were selected for compatibility and tested on
+hardware; they are not a claim that every dependency is the newest available.
+See [toolchain validation](TOOLCHAIN_VALIDATION.md) for evidence
+and rollback instructions.
 
 ### Requirements
 
