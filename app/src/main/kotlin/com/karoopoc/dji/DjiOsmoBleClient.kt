@@ -737,6 +737,7 @@ class DjiOsmoBleClient(
 
     @SuppressLint("MissingPermission")
     private fun handleScanResult(result: ScanResult) {
+        if (diagnosticConnectionPaused) return
         val advertisement = parseDjiAdvertisement(result.scanRecord) ?: return
         val name = result.scanRecord?.deviceName ?: result.device.name ?: "unnamed"
         val candidate = DjiCandidate(result.device, name, result.rssi, advertisement)
@@ -772,6 +773,7 @@ class DjiOsmoBleClient(
 
     @SuppressLint("MissingPermission")
     private fun stopScanAndConnectBest() {
+        if (diagnosticConnectionPaused) return
         if (gatt != null) return
 
         val candidate = bestCandidate
@@ -1244,6 +1246,7 @@ class DjiOsmoBleClient(
     ) {
         val frame = DjiProtocol.createFrame(cmdSet, cmdId, cmdType, payload, seq)
         mainHandler.post {
+            if (diagnosticConnectionPaused) return@post
             writeQueue.addLast(PendingWrite(label, frame, writeType, onComplete))
             drainWriteQueue()
         }
@@ -1257,6 +1260,7 @@ class DjiOsmoBleClient(
         onComplete: () -> Unit = {},
     ) {
         mainHandler.post {
+            if (diagnosticConnectionPaused) return@post
             if (coalesceKey != null) {
                 operationQueue.removeAll { it.coalesceKey == coalesceKey }
             }
