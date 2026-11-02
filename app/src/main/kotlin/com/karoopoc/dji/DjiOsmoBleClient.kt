@@ -959,6 +959,16 @@ class DjiOsmoBleClient(
 
         lastCameraRxAtMs = SystemClock.elapsedRealtime()
 
+        // Temporary diagnostic branch: opt in via adb log.tag.AeroCamStatusRaw=VERBOSE.
+        // Capture status only; never include GPS or pairing packets in this diagnostic tag.
+        if (frame.cmdSet == DjiProtocol.CMD_SET_CAMERA &&
+            (frame.cmdId == DjiProtocol.CMD_ID_CAMERA_STATUS_PUSH ||
+                frame.cmdId == DjiProtocol.CMD_ID_NEW_CAMERA_STATUS_PUSH) &&
+            Log.isLoggable("AeroCamStatusRaw", Log.VERBOSE)
+        ) {
+            Log.v("AeroCamStatusRaw", "cmd=${frame.commandName} raw=${DjiProtocol.hex(value)}")
+        }
+
         if (!frame.isRoutineStatusPush()) {
             Log.i(TAG, "DJI RX raw=${DjiProtocol.hex(value)}")
             Log.i(
