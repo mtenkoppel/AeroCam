@@ -604,7 +604,7 @@ class MainActivity : Activity() {
         )
         settingsReconnectValue.visibility = if (connecting) View.VISIBLE else View.GONE
         settingsConnectButton.visibility = if (connected) View.GONE else View.VISIBLE
-        settingsConnectButton.isEnabled = state.configured && !connecting
+        settingsConnectButton.isEnabled = state.configured && !connecting && !state.diagnosticConnectionPaused
         connectButton.isEnabled = state.configured && !connecting && !connected
         forgetButton.isEnabled = state.configured
         renderingState = false

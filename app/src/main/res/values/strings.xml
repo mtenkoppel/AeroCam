@@ -178,4 +178,9 @@
     <string name="highlight_descent_feedback">High-speed descent</string>
     <string name="highlight_climb_feedback">Climb summit</string>
     <string name="dji_independence_notice">AeroCam is an independent project and is not affiliated with, endorsed by, or sponsored by DJI. DJI and Osmo are trademarks of their respective owners.</string>
+    <string name="diagnostic_connection_title">Debug: camera connection</string>
+    <string name="diagnostic_disconnect">Disconnect camera</string>
+    <string name="diagnostic_reconnect">Reconnect camera</string>
+    <string name="diagnostic_connection_hint">Manual test only. Bluetooth stays on. Disconnect is blocked while recording or a camera action is pending.</string>
+    <string name="diagnostic_connection_paused">Camera connection paused. Use Reconnect camera to resume. Restarting the app service also ends this debug pause.</string>
 </resources>
