@@ -13,3 +13,5 @@ local.properties
 /app/release
 /docs
 /screenshots/*.png
+
+/ride-diagnostics-*/
