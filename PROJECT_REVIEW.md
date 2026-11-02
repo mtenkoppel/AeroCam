@@ -2,6 +2,31 @@
 
 Scope: source review of 68bc3d5 plus the infrastructure version bump; build/test/signing checks; Karoo install/launch/screenshots. This is not a long-duration BLE or ride regression test. Private research was consulted but is not reproduced here.
 
+## Owner decision after review (2026-11-02)
+
+Connection/lifecycle restructuring and failure-path tests are explicitly deferred.
+The suspected callback/write-timeout weaknesses are tracked as high-priority,
+deferred issue [#15](https://github.com/mtenkoppel/AeroCam/issues/15), not a release
+blocker. The priority is visible UI finish and preservation of field-tested stability.
+
+The toolchain upgrade is paused at a scope gate: AGP 8.6.1 supports SDK 35 and
+requires Gradle 8.7; Kotlin 2.0.0's fully supported range ends at AGP 8.3.1 / Gradle
+8.5. Kotlin 2.1.x covers AGP 8.6 / Gradle 8.7, but changes compiler output and
+normally the automatically included Kotlin standard library. This is a potential
+shared-runtime impact, not evidence of a Karoo/BLE regression. A new owner decision
+is required before pursuing that runtime-changing path. No dependency or runtime
+code update was made in this scope decision.
+
+References: https://developer.android.com/build/releases/agp-8-6-0-release-notes
+and https://kotlinlang.org/docs/gradle-configure-project.html.
+
+Rollback source: `rollback/pre-toolchain-2026-11-02` at
+`fdef5948b5847aa556adb32c02c8109597905c0b`. The verified signed version-15 APK is
+retained locally with SHA-256
+`84e98b8aa7a1fd76d45d7a0e249d01880677c19873b2c3ef7185f26dc584c470`.
+A later rollback after a version bump should rebuild baseline code with a higher
+versionCode and the established release key, preserving app data.
+
 ## Overall assessment
 
 The architecture is understandable and suitable for focused iteration. Protocol encoding (DjiProtocol), persistent settings (DjiSettings), camera service/controller, Karoo integration, widget controller/rendering, help, and theme already have distinct responsibilities. The main maintenance pressure is concentration in DjiOsmoBleClient (~1,791 lines) and MainActivity (~1,022 lines), not a need to replace the framework.
