@@ -883,6 +883,7 @@ class DjiOsmoBleClient(
             }
         }
 
+        @SuppressLint("MissingPermission")
         override fun onMtuChanged(gatt: BluetoothGatt, mtu: Int, status: Int) {
             Log.i(TAG, "DJI MTU changed mtu=$mtu status=$status")
             gatt.discoverServices()
@@ -1588,15 +1589,15 @@ class DjiOsmoBleClient(
         keepAwakeTimeout?.let(mainHandler::removeCallbacks)
         keepAwakeTimeout = Runnable {
             if (!validKeepAwakeToken(token)) return@Runnable
-            if (queued || activeWrite?.keepAwakeToken == token) {
-                failKeepAwake("write stalled")
-            } else if (!isProtocolLinkFresh()) {
-                failKeepAwake("link not fresh")
-            } else if (keepAwakeAttempt?.canRetry() == true) {
-                rideEvent("QS_RETRY", "cycle=$token reason=no_success_response")
-                sendKeepAwakeAttempt()
-            } else {
-                failKeepAwake("no acknowledgement after three attempts")
+            when (keepAwakeAttempt?.timeout(queued, activeWrite?.keepAwakeToken == token, isProtocolLinkFresh())) {
+                KeepAwakeAttempt.Timeout.WRITE_STALLED -> failKeepAwake("write stalled")
+                KeepAwakeAttempt.Timeout.LINK_STALE -> failKeepAwake("link not fresh")
+                KeepAwakeAttempt.Timeout.RETRY -> {
+                    rideEvent("QS_RETRY", "cycle=$token reason=no_success_response")
+                    sendKeepAwakeAttempt()
+                }
+                KeepAwakeAttempt.Timeout.EXHAUSTED -> failKeepAwake("no acknowledgement after three attempts")
+                null -> Unit
             }
         }.also { mainHandler.postDelayed(it, KeepAwakeAttempt.ACK_TIMEOUT_MS) }
     }

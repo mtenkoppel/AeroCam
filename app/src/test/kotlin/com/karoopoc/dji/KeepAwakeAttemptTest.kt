@@ -4,6 +4,19 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class KeepAwakeAttemptTest {
+    @Test fun timeoutNeverQueuesRetriesBehindAStalledWriteOrOnAStaleLink() {
+        val cycle = KeepAwakeAttempt()
+        cycle.sent(1, 0)
+        assertEquals(KeepAwakeAttempt.Timeout.WRITE_STALLED, cycle.timeout(true, false, true))
+        assertEquals(KeepAwakeAttempt.Timeout.WRITE_STALLED, cycle.timeout(false, true, true))
+        assertEquals(KeepAwakeAttempt.Timeout.LINK_STALE, cycle.timeout(false, false, false))
+        assertEquals(KeepAwakeAttempt.Timeout.RETRY, cycle.timeout(false, false, true))
+        cycle.sent(2, 5000)
+        assertEquals(KeepAwakeAttempt.Timeout.RETRY, cycle.timeout(false, false, true))
+        cycle.sent(3, 10000)
+        assertEquals(KeepAwakeAttempt.Timeout.EXHAUSTED, cycle.timeout(false, false, true))
+    }
+
     @Test fun lateSuccessUsesOriginalSendTime() {
         val cycle = KeepAwakeAttempt()
         cycle.sent(7, 1000)

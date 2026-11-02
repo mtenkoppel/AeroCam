@@ -17,6 +17,13 @@ internal class KeepAwakeAttempt {
             else -> Result.Ignore // Missing/unknown/failed results use the bounded timeout path.
         }
     }
+    fun timeout(queued: Boolean, writePending: Boolean, linkFresh: Boolean): Timeout = when {
+        queued || writePending -> Timeout.WRITE_STALLED
+        !linkFresh -> Timeout.LINK_STALE
+        canRetry() -> Timeout.RETRY
+        else -> Timeout.EXHAUSTED
+    }
+    enum class Timeout { WRITE_STALLED, LINK_STALE, RETRY, EXHAUSTED }
     fun contains(sequence: Int) = sent.containsKey(sequence)
     fun canRetry() = count < MAX_ATTEMPTS
     sealed class Result {
