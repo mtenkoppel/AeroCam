@@ -75,9 +75,6 @@ class MainActivity : Activity() {
     private lateinit var resetButton: Button
     private lateinit var settingsConnectionValue: TextView
     private lateinit var settingsReconnectValue: TextView
-    private lateinit var diagnosticDisconnectButton: Button
-    private lateinit var diagnosticReconnectButton: Button
-    private lateinit var diagnosticConnectionHint: TextView
     private lateinit var settingsConnectButton: Button
 
     private lateinit var peakPowerThresholdRow: LinearLayout
@@ -326,18 +323,6 @@ class MainActivity : Activity() {
             DjiCameraController.connect(this)
         }
         connectionGroup.addView(settingsConnectButton, fullWidthParams())
-
-        val diagnosticGroup = group(content, getString(R.string.diagnostic_connection_title))
-        diagnosticConnectionHint = secondaryText(getString(R.string.diagnostic_connection_hint))
-        diagnosticGroup.addView(diagnosticConnectionHint, fullWidthParams(bottomMargin = dp(10)))
-        diagnosticDisconnectButton = actionButton(getString(R.string.diagnostic_disconnect)) {
-            DjiCameraController.diagnosticDisconnect(this)
-        }
-        diagnosticGroup.addView(diagnosticDisconnectButton, fullWidthParams())
-        diagnosticReconnectButton = actionButton(getString(R.string.diagnostic_reconnect)) {
-            DjiCameraController.diagnosticReconnect(this)
-        }
-        diagnosticGroup.addView(diagnosticReconnectButton, fullWidthParams())
 
         val automationGroup = group(content, getString(R.string.automatic_highlights))
         val autoHighlightsSwitch = settingsSwitch(
@@ -619,10 +604,6 @@ class MainActivity : Activity() {
         )
         settingsReconnectValue.visibility = if (connecting) View.VISIBLE else View.GONE
         settingsConnectButton.visibility = if (connected) View.GONE else View.VISIBLE
-        diagnosticDisconnectButton.isEnabled = state.configured && !state.diagnosticConnectionPaused && !state.recording
-        diagnosticReconnectButton.isEnabled = state.configured && state.diagnosticConnectionPaused
-        diagnosticConnectionHint.text = getString(if (state.diagnosticConnectionPaused)
-            R.string.diagnostic_connection_paused else R.string.diagnostic_connection_hint)
         settingsConnectButton.isEnabled = state.configured && !connecting && !state.diagnosticConnectionPaused
         connectButton.isEnabled = state.configured && !connecting && !connected
         forgetButton.isEnabled = state.configured
