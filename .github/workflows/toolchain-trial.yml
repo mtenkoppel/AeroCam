@@ -1,0 +1,54 @@
+name: Toolchain comparison trial
+on:
+  push:
+    branches: [codex/toolchain-build-trial]
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [baseline, candidate]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.variant == 'baseline' && 'bdc258d9862857c934021f0708c6cd58844196fe' || github.sha }}
+          path: subject
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build and record resolved runtime libraries
+        working-directory: subject
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew -I "$GITHUB_WORKSPACE/.github/trial/runtime-report.gradle" testDebugUnitTest assembleDebug assembleRelease :app:trialRuntimeReport
+      - name: Record APK configuration and contents
+        working-directory: subject
+        run: |
+          apk=app/build/outputs/apk/release/app-release-unsigned.apk
+          "$ANDROID_HOME/build-tools/35.0.0/aapt2" dump badging "$apk" > build/trial/badging.txt
+          "$ANDROID_HOME/build-tools/35.0.0/aapt2" dump xmltree "$apk" --file AndroidManifest.xml > build/trial/manifest.txt
+          python3 - <<'PYTHON'
+          import hashlib, json, zipfile
+          from pathlib import Path
+          with zipfile.ZipFile('app/build/outputs/apk/release/app-release-unsigned.apk') as apk:
+              entries = {name: hashlib.sha256(apk.read(name)).hexdigest() for name in sorted(apk.namelist())}
+          Path('build/trial/apk-entries.json').write_text(json.dumps(entries, indent=2))
+          PYTHON
+      - uses: actions/upload-artifact@v4
+        with:
+          name: toolchain-${{ matrix.variant }}
+          path: |
+            subject/build/trial/
+            subject/app/build/test-results/testDebugUnitTest/
+          if-no-files-found: error
+          retention-days: 14
