@@ -1,6 +1,6 @@
 # QS acknowledgement experiment
 
-Status: planned; no results claimed. Prepared 2026-11-02.
+Status: Phase A completed 2026-11-02; Phases B and C pending.
 
 ## Decision this experiment supports
 
@@ -113,3 +113,41 @@ sanitized summary here if appropriate. Restore the user's Keep awake preference.
 No automatic retries, interval change, lifecycle refactor or firmware change is
 part of writing this experiment. Removing the temporary Settings disconnect /
 reconnect buttons does not require changing BLE connection handling.
+
+## Phase A results — 2026-11-02
+
+Tested release-signed version 20 (`2905ff2`), Karoo k24 / Android 12
+(build incremental `eng.ubuntu.20261014.145316`; KOS marketing version not
+recorded), DJI ACTION4 reporting `SDK-v1.1 DEBUG AC203-03.04.80.15`.
+Owner confirmed idle, screen locked, Auto Power Off five minutes.
+
+Collected 12 QS requests at the existing 15-second interval, with
+12 matching responses. All responses were command 0x0011,
+response flag set, identical request sequence and return code 0x00.
+Latency: 87–120 ms; median 106.5 ms.
+No missing, nonzero or duplicate responses in this sample.
+
+| QS TX time (device log clock) | Sequence | DJI return code | Latency ms |
+| --- | --- | --- | --- |
+| 13:59:48.953000 | 4 | 0x00 | 111 |
+| 14:00:03.941000 | 5 | 0x00 | 111 |
+| 14:00:18.930000 | 6 | 0x00 | 105 |
+| 14:00:33.926000 | 7 | 0x00 | 95 |
+| 14:00:48.929000 | 8 | 0x00 | 118 |
+| 14:01:03.933000 | 9 | 0x00 | 100 |
+| 14:01:18.935000 | 10 | 0x00 | 87 |
+| 14:01:33.939000 | 11 | 0x00 | 112 |
+| 14:01:48.941000 | 12 | 0x00 | 93 |
+| 14:02:03.943000 | 13 | 0x00 | 120 |
+| 14:02:18.942000 | 14 | 0x00 | 108 |
+| 14:02:33.945000 | 15 | 0x00 | 90 |
+
+Keep awake was restored to off after capture; saved interval remains 15 seconds.
+The temporary connection buttons are absent from the installed Settings screen.
+Raw logs remain local and are not committed. The log clock differs from the
+visible Karoo clock; latency uses only timestamps from the same log.
+
+Conclusion: matching camera-level success acknowledgements are available on this
+setup. This supports implementing bounded acknowledgement-based retries, but
+does not establish a guaranteed reset of the standby timer, a production timeout,
+or behavior under response loss. No retry logic or longer interval was deployed.
