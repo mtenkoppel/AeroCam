@@ -37,6 +37,8 @@ class DjiOsmoBleClient(
     private val mainHandler = Handler(Looper.getMainLooper())
     private val prefs = appContext.getSharedPreferences("dji_osmo_poc", Context.MODE_PRIVATE)
 
+    @Volatile private var diagnosticConnectionPaused = false
+
     private var scanCallback: ScanCallback? = null
     private var bestCandidate: DjiCandidate? = null
     private var gatt: BluetoothGatt? = null
@@ -184,6 +186,7 @@ class DjiOsmoBleClient(
 
     @SuppressLint("MissingPermission")
     fun autoConnectKnownDevice() {
+        if (diagnosticConnectionPaused) return
         sleepOfflineAssumed = false
         sleepShutdownRunnable?.let(mainHandler::removeCallbacks)
         sleepShutdownRunnable = null
@@ -278,6 +281,7 @@ class DjiOsmoBleClient(
 
     @SuppressLint("MissingPermission")
     fun startDiscoveryAndHandshake() {
+        if (diagnosticConnectionPaused) return
         sleepOfflineAssumed = false
         sleepShutdownRunnable?.let(mainHandler::removeCallbacks)
         sleepShutdownRunnable = null
@@ -567,6 +571,7 @@ class DjiOsmoBleClient(
     }
 
     private fun runWhenReady(action: PendingCameraAction): Boolean {
+        if (diagnosticConnectionPaused) return false
         if (isProtocolLinkFresh()) return true
 
         if (!hasKnownDevice()) {
@@ -622,6 +627,30 @@ class DjiOsmoBleClient(
         mainHandler.removeCallbacks(gpsPush)
         operationQueue.removeAll { it.coalesceKey == LABEL_GPS }
         Log.i(TAG, "DJI real GPS streaming stopped")
+    }
+
+    // Temporary Settings-only diagnostic controls. Pause lasts for this client session.
+    fun diagnosticDisconnect() {
+        if (latestRecording || pendingActionsAfterConnect.isNotEmpty() ||
+            operationQueue.any { it.priority == CommandPriority.USER_ACTION } ||
+            activeOperation?.operation?.priority == CommandPriority.USER_ACTION
+        ) {
+            logStatus("Diagnostic disconnect blocked: recording or camera action pending")
+            return
+        }
+        diagnosticConnectionPaused = true
+        disconnectInternal(clearReconnect = true)
+        latestRecording = false
+        photoState = PhotoCaptureState.IDLE
+        publishState(connection = CameraConnectionState.DISCONNECTED, recording = false,
+            recordingDurationSeconds = 0, displayOff = false)
+        logStatus("Diagnostic camera connection paused; Bluetooth remains enabled")
+    }
+
+    fun diagnosticReconnect() {
+        diagnosticConnectionPaused = false
+        logStatus("Diagnostic camera connection resumed")
+        autoConnectKnownDevice()
     }
 
     @SuppressLint("MissingPermission")
@@ -809,6 +838,10 @@ class DjiOsmoBleClient(
     private val gattCallback = object : BluetoothGattCallback() {
         @SuppressLint("MissingPermission")
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
+            if (diagnosticConnectionPaused) {
+                gatt.close()
+                return
+            }
             Log.i(TAG, "DJI GATT connection state status=$status newState=$newState")
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 stopScan()
@@ -949,6 +982,7 @@ class DjiOsmoBleClient(
     }
 
     private fun handleNotification(value: ByteArray) {
+        if (diagnosticConnectionPaused) return
         if (value.isEmpty()) return
 
         val frame = DjiProtocol.parseFrame(value)
@@ -1548,6 +1582,7 @@ class DjiOsmoBleClient(
     ) {
         val configured = hasKnownDevice()
         cameraState = cameraState.copy(
+            diagnosticConnectionPaused = diagnosticConnectionPaused,
             configured = configured,
             connection = when {
                 !configured -> CameraConnectionState.NOT_CONFIGURED
@@ -1780,6 +1815,7 @@ data class DjiGpsTelemetry(
 )
 
 data class DjiCameraState(
+    val diagnosticConnectionPaused: Boolean = false,
     val configured: Boolean = false,
     val connection: CameraConnectionState = CameraConnectionState.NOT_CONFIGURED,
     val batteryPercent: Int? = null,
