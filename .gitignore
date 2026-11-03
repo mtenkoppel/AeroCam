@@ -15,3 +15,15 @@ local.properties
 /screenshots/*.png
 
 /ride-diagnostics-*/
+
+# Local development guidance and working notes
+/AGENTS.md
+/SECURITY.md
+/TODO.md
+/TOOLCHAIN_VALIDATION.md
+/COMBINED_WIDGET.md
+/KEEP_AWAKE_RECOVERY.md
+/ONBOARDING_SPEC.md
+/PROJECT_REVIEW.md
+/QS_ACKNOWLEDGEMENT_EXPERIMENT.md
+/DEVELOPMENT.md
