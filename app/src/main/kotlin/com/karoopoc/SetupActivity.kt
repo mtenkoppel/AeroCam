@@ -92,7 +92,10 @@ class SetupActivity : DetailActivity() {
                     body.addView(ui.text(getString(it)), ui.fullWidthParams(bottomMargin = ui.dp(10)))
                 }
                 search = button(R.string.pairing_search) { requestSearch() }
-                continueButton = button(R.string.continue_setup) { next() }
+                continueButton = button(R.string.continue_setup) {
+                    startActivity(Intent(this, OnboardingActivity::class.java).putExtra("replay", true))
+                    finish()
+                }
                 body.addView(search, ui.fullWidthParams())
                 body.addView(continueButton, ui.fullWidthParams())
                 body.addView(ui.secondaryText(getString(R.string.dji_independence_notice)).apply { textSize = 11f }, ui.fullWidthParams(topMargin = ui.dp(12)))
@@ -136,7 +139,10 @@ class SetupActivity : DetailActivity() {
         search.text = getString(R.string.pairing_searching)
         search.isEnabled = false
         if (DjiCameraController.state().configured) DjiCameraController.connect(this)
-        else DjiCameraController.discover(this)
+        else {
+            OnboardingActivity.prepare(this)
+            DjiCameraController.discover(this)
+        }
         handler.postDelayed({ renderConnection(DjiCameraController.state()) }, 10_000L)
     }
 

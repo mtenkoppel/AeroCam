@@ -5,7 +5,7 @@
 # AeroCam
 
 [![CI](https://github.com/mtenkoppel/AeroCam/actions/workflows/ci.yml/badge.svg)](https://github.com/mtenkoppel/AeroCam/actions/workflows/ci.yml)
-[![Release: v0.9.0-beta.3](https://img.shields.io/badge/release-v0.9.0--beta.3-2563EB)](https://github.com/mtenkoppel/AeroCam/releases)
+[![Release: v0.9.0-beta.4](https://img.shields.io/badge/release-v0.9.0--beta.4-2563EB)](https://github.com/mtenkoppel/AeroCam/releases)
 [![License: GPLv3](https://img.shields.io/badge/license-GPLv3-2563EB)](LICENSE)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.1.21-7F52FF)](https://kotlinlang.org/)
 
@@ -87,7 +87,6 @@ highlight starts the interval for subsequent threshold highlights. Suppressed
 triggers are discarded, never deferred; the existing threshold reset margins
 still apply. Starting a recording alone does not start the cooldown.
 
-### Keep Awake
 
 Keep awake periodically sends a lightweight camera-control command so the Osmo
 does not reach its automatic power-off timeout. This lets the camera remain
