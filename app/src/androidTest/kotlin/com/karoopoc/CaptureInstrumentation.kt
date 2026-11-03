@@ -68,6 +68,8 @@ class CaptureInstrumentation : Instrumentation() {
         } catch(t:Throwable){finish(Activity.RESULT_CANCELED,Bundle().apply{putString("stream",t.stackTraceToString())})}
     }
     private fun capture(name:String,view:View){
+        view.measure(View.MeasureSpec.makeMeasureSpec(view.width,View.MeasureSpec.EXACTLY),View.MeasureSpec.makeMeasureSpec(view.height,View.MeasureSpec.EXACTLY))
+        view.layout(view.left,view.top,view.right,view.bottom)
         val bitmap=Bitmap.createBitmap(view.width,view.height,Bitmap.Config.ARGB_8888)
         view.draw(Canvas(bitmap));File(out,"$name.png").outputStream().use{bitmap.compress(Bitmap.CompressFormat.PNG,100,it)};bitmap.recycle()
         File(out,"$name.json").writeText(node(view).put("capture",name).put("density",view.resources.displayMetrics.density).put("scaledDensity",view.resources.displayMetrics.scaledDensity).toString())
@@ -87,12 +89,13 @@ class CaptureInstrumentation : Instrumentation() {
             .put("x",v.left).put("y",v.top).put("w",v.width).put("h",v.height).put("visibility",v.visibility)
             .put("padding",JSONArray(listOf(v.paddingLeft,v.paddingTop,v.paddingRight,v.paddingBottom))).put("alpha",v.alpha).put("enabled",v.isEnabled)
             .put("background",background(v.background))
+        if(v.backgroundTintList!=null)j.put("backgroundTint",v.backgroundTintList!!.getColorForState(v.drawableState,v.backgroundTintList!!.defaultColor))
         if(v is LinearLayout)j.put("orientation",v.orientation)
         if(v is ScrollView)j.put("scrollY",v.scrollY)
         if(v is TextView){
             j.put("text",v.text.toString()).put("textSize",v.textSize).put("color",v.currentTextColor).put("style",v.typeface?.style?:0).put("gravity",v.gravity).put("includeFontPadding",v.includeFontPadding)
             val l=v.layout
-            if(l!=null){val a=JSONArray();for(i in 0 until l.lineCount){a.put(JSONObject().put("text",v.text.subSequence(l.getLineStart(i),l.getLineEnd(i)).toString().trimEnd('\n')).put("x",l.getLineLeft(i)+v.compoundPaddingLeft).put("baseline",l.getLineBaseline(i)+v.extendedPaddingTop).put("top",l.getLineTop(i)+v.extendedPaddingTop).put("bottom",l.getLineBottom(i)+v.extendedPaddingTop))};j.put("lines",a)}
+            if(l!=null){val a=JSONArray();for(i in 0 until l.lineCount){a.put(JSONObject().put("text",v.text.subSequence(l.getLineStart(i),l.getLineEnd(i)).toString().trimEnd('\n')).put("x",l.getLineLeft(i)+v.compoundPaddingLeft).put("baseline",l.getLineBaseline(i)+(v.baseline-l.getLineBaseline(0))).put("top",l.getLineTop(i)+(v.baseline-l.getLineBaseline(0))).put("bottom",l.getLineBottom(i)+(v.baseline-l.getLineBaseline(0))))};j.put("lines",a)}
         }
         if(v is Switch) j.put("checked",v.isChecked)
         if(v is ImageView && v.drawable!=null){
