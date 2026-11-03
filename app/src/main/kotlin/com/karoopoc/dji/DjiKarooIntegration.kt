@@ -1,6 +1,8 @@
 package com.karoopoc.dji
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
 import com.karoopoc.R
@@ -22,6 +24,16 @@ class DjiKarooIntegration(
     private val karooSystem: KarooSystemService,
 ) {
     private val appContext = context.applicationContext
+    private val notificationHandler = Handler(Looper.getMainLooper())
+    private val notificationQueue = RideNotificationQueue<InRideAlert>(
+        show = { alert, durationMs ->
+            if (rideState is RideState.Recording) {
+                karooSystem.dispatch(alert.copy(autoDismissMs = durationMs))
+            }
+        },
+        schedule = { delayMs, action -> notificationHandler.postDelayed({ action() }, delayMs) },
+        cancelScheduled = { notificationHandler.removeCallbacksAndMessages(null) },
+    )
     private var cancelCameraObservation: (() -> Unit)? = null
 
     private var rideState: RideState = RideState.Idle
@@ -89,6 +101,7 @@ class DjiKarooIntegration(
     fun stop() {
         cancelCameraObservation?.invoke()
         cancelCameraObservation = null
+        notificationHandler.post { notificationQueue.clear() }
     }
 
     private fun consumeStream(typeId: String, fieldId: String, onValue: (Double) -> Unit) {
@@ -110,6 +123,9 @@ class DjiKarooIntegration(
             DjiCameraController.addHighlight(appContext, appContext.getString(R.string.highlight_ride_end_feedback))
         }
         rideState = next
+        if (next !is RideState.Recording) {
+            notificationHandler.post { notificationQueue.clearPending() }
+        }
         DjiCameraController.setRideActive(appContext, isRiding)
 
         if (!wasRiding && next is RideState.Recording) {
@@ -340,17 +356,21 @@ class DjiKarooIntegration(
 
     private fun showAlert(id: String, title: String, detail: String?, backgroundColor: Int) {
         if (rideState !is RideState.Recording) return
-        karooSystem.dispatch(
-            InRideAlert(
-                id = id,
-                icon = R.drawable.ic_launcher_foreground,
-                title = title,
-                detail = detail,
-                autoDismissMs = 2_000L,
-                backgroundColor = backgroundColor,
-                textColor = R.color.white,
-            ),
-        )
+        notificationHandler.post {
+            // The ride may have paused or ended while this work waited for the main thread.
+            if (rideState !is RideState.Recording) return@post
+            notificationQueue.enqueue(
+                InRideAlert(
+                    id = id,
+                    icon = R.drawable.ic_launcher_foreground,
+                    title = title,
+                    detail = detail,
+                    autoDismissMs = NotificationDuration.MINIMUM_MS,
+                    backgroundColor = backgroundColor,
+                    textColor = R.color.white,
+                ),
+            )
+        }
     }
 
     private fun resetThresholdEdges() {
