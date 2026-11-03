@@ -104,7 +104,7 @@ class DjiKarooIntegration(
         val settings = DjiSettings.read(appContext)
         val marker = rideMarkers.onRideState(
             next,
-            cameraRecording = latestCameraState.recording,
+            cameraRecording = latestCameraState.recording && latestCameraState.connection == CameraConnectionState.CONNECTED,
             enabled = settings.autoHighlightsEnabled && settings.rideBookmarks,
         )
         if (marker != null) {

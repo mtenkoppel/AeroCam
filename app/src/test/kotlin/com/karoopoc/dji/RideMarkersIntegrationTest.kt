@@ -29,10 +29,11 @@ class RideMarkersIntegrationTest {
             .apply { isAccessible = true }.invoke(integration, state)
     }
 
-    private fun camera(recording: Boolean) {
+    private fun camera(recording: Boolean, connected: Boolean = true) {
         DjiKarooIntegration::class.java.getDeclaredMethod("onCameraState", DjiCameraState::class.java)
             .apply { isAccessible = true }.invoke(integration,
-                DjiCameraState(connection = CameraConnectionState.CONNECTED, configured = true, recording = recording))
+                DjiCameraState(connection = if (connected) CameraConnectionState.CONNECTED else CameraConnectionState.DISCONNECTED,
+                    configured = true, recording = recording))
     }
 
     private fun requests(): List<Intent> = generateSequence { shadowOf(context).nextStartedService }.toList()
@@ -75,5 +76,15 @@ class RideMarkersIntegrationTest {
         assertFalse(requests().any {
             it.action == DjiCameraService.ACTION_HIGHLIGHT || it.action == DjiCameraService.ACTION_RECORD_START
         })
+    }
+
+    @Test fun disconnectedCameraWithLastKnownRecordingStateDoesNotQueueBoundaryMarkers() {
+        camera(recording = true, connected = false)
+        ride(RideState.Idle)
+        ride(RideState.Recording)
+        ride(RideState.Paused(false))
+        ride(RideState.Idle)
+        camera(recording = true)
+        assertFalse(requests().any { it.action == DjiCameraService.ACTION_HIGHLIGHT })
     }
 }
