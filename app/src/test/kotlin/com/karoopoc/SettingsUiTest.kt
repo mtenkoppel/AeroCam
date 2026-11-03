@@ -146,6 +146,19 @@ class SettingsUiTest {
         }
     }
 
+    @Test fun `connect remains disabled during the existing diagnostic pause`() {
+        val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
+        val activity = controller.get()
+        activity.onRequestPermissionsResult(1001,
+            arrayOf(android.Manifest.permission.BLUETOOTH_SCAN, android.Manifest.permission.BLUETOOTH_CONNECT), intArrayOf(0, 0))
+        DjiCameraController.publish(DjiCameraState(configured = true, connection = CameraConnectionState.DISCONNECTED,
+            diagnosticConnectionPaused = true))
+        assertFalse(button(activity, activity.getString(R.string.connect_known_dji)).isEnabled)
+        DjiCameraController.publish(DjiCameraState(configured = true, connection = CameraConnectionState.DISCONNECTED))
+        assertTrue(button(activity, activity.getString(R.string.connect_known_dji)).isEnabled)
+        controller.pause().stop().destroy()
+    }
+
     @Test fun `debug and storage row heights stay fixed for changing content`() {
         val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
         val activity = controller.get()
