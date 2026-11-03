@@ -95,9 +95,9 @@ class CaptureInstrumentation : Instrumentation() {
         if(v is TextView){
             j.put("text",v.text.toString()).put("textSize",v.textSize).put("color",v.currentTextColor).put("style",v.typeface?.style?:0).put("gravity",v.gravity).put("includeFontPadding",v.includeFontPadding)
             val l=v.layout
-            if(l!=null){val a=JSONArray();for(i in 0 until l.lineCount){a.put(JSONObject().put("text",v.text.subSequence(l.getLineStart(i),l.getLineEnd(i)).toString().trimEnd('\n')).put("x",l.getLineLeft(i)+v.compoundPaddingLeft).put("baseline",l.getLineBaseline(i)+(v.baseline-l.getLineBaseline(0))).put("top",l.getLineTop(i)+(v.baseline-l.getLineBaseline(0))).put("bottom",l.getLineBottom(i)+(v.baseline-l.getLineBaseline(0))))};j.put("lines",a)}
+            if(l!=null){val a=JSONArray();for(i in 0 until l.lineCount){a.put(JSONObject().put("text",v.text.subSequence(l.getLineStart(i),l.getLineEnd(i)).toString().trimEnd('\n')).put("x",l.getLineLeft(i)+v.compoundPaddingLeft).put("width",l.getLineWidth(i)).put("baseline",l.getLineBaseline(i)+(v.baseline-l.getLineBaseline(0))).put("top",l.getLineTop(i)+(v.baseline-l.getLineBaseline(0))).put("bottom",l.getLineBottom(i)+(v.baseline-l.getLineBaseline(0))))};j.put("lines",a)}
         }
-        if(v is Switch) j.put("checked",v.isChecked)
+        if(v is Switch) {j.put("checked",v.isChecked);for((key,d) in listOf("thumb" to v.thumbDrawable,"track" to v.trackDrawable)){val b=d.bounds;j.put(key,JSONArray(listOf(b.left,b.top,b.width(),b.height())))}}
         if(v is ImageView && v.drawable!=null){
             val d=v.drawable;val id=R.drawable::class.java.fields.firstOrNull{f->runCatching{v.context.getDrawable(f.getInt(null))?.constantState==d.constantState}.getOrDefault(false)}
             if(id!=null)j.put("drawable",id.name)
