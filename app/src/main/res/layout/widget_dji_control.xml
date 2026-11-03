@@ -23,11 +23,11 @@
 
             <ImageView
                 android:id="@+id/widgetControlKeepAwakeIcon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="@dimen/widget_icon_utility_size"
+                android:layout_height="@dimen/widget_icon_utility_size"
                 android:layout_gravity="center"
                 android:contentDescription="@string/keep_osmo_awake"
-                android:scaleType="centerInside"
+                android:scaleType="fitCenter"
                 android:src="@drawable/ic_widget_keep_awake_disabled" />
         </FrameLayout>
 
@@ -70,10 +70,11 @@
 
             <ImageView
                 android:id="@+id/widgetControlSleepIcon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="@dimen/widget_icon_utility_size"
+                android:layout_height="@dimen/widget_icon_utility_size"
                 android:layout_gravity="center"
                 android:contentDescription="@string/widget_deep_sleep"
+                android:scaleType="fitCenter"
                 android:src="@drawable/ic_widget_sleep" />
         </FrameLayout>
     </LinearLayout>
@@ -114,10 +115,11 @@
             android:background="@drawable/widget_surface_active">
             <ImageView
                 android:id="@+id/widgetControlConfirmYesIcon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="@dimen/widget_icon_utility_size"
+                android:layout_height="@dimen/widget_icon_utility_size"
                 android:layout_gravity="center"
                 android:contentDescription="@string/widget_confirm"
+                android:scaleType="fitCenter"
                 android:src="@drawable/ic_widget_check" />
         </FrameLayout>
 
@@ -140,10 +142,11 @@
             android:background="@drawable/widget_surface_danger">
             <ImageView
                 android:id="@+id/widgetControlConfirmNoIcon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="@dimen/widget_icon_utility_size"
+                android:layout_height="@dimen/widget_icon_utility_size"
                 android:layout_gravity="center"
                 android:contentDescription="@string/widget_cancel"
+                android:scaleType="fitCenter"
                 android:src="@drawable/ic_widget_close" />
         </FrameLayout>
     </LinearLayout>
@@ -171,10 +174,11 @@
                 android:background="@drawable/widget_surface_selector">
                 <ImageView
                     android:id="@+id/widgetControlFullKeepAwakeIcon"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
+                    android:layout_width="@dimen/widget_icon_toolbar_size"
+                    android:layout_height="@dimen/widget_icon_toolbar_size"
                     android:layout_gravity="center"
                     android:contentDescription="@string/keep_osmo_awake"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_widget_keep_awake_disabled" />
             </FrameLayout>
 
@@ -187,10 +191,11 @@
                 android:background="@drawable/widget_surface_selector">
                 <ImageView
                     android:id="@+id/widgetControlMoreIcon"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="@dimen/widget_icon_toolbar_size"
+                    android:layout_height="@dimen/widget_icon_toolbar_size"
                     android:layout_gravity="center"
                     android:contentDescription="@string/widget_open_settings"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_widget_settings" />
             </FrameLayout>
 
@@ -203,10 +208,11 @@
                 android:background="@drawable/widget_surface_selector">
                 <ImageView
                     android:id="@+id/widgetControlFullSleepIcon"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
+                    android:layout_width="@dimen/widget_icon_toolbar_size"
+                    android:layout_height="@dimen/widget_icon_toolbar_size"
                     android:layout_gravity="center"
                     android:contentDescription="@string/widget_deep_sleep"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_widget_sleep" />
             </FrameLayout>
         </LinearLayout>
@@ -246,10 +252,11 @@
                 android:background="@drawable/widget_surface_selector">
                 <ImageView
                     android:id="@+id/widgetControlOfflineMoreIcon"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="@dimen/widget_icon_toolbar_size"
+                    android:layout_height="@dimen/widget_icon_toolbar_size"
                     android:layout_gravity="center"
                     android:contentDescription="@string/widget_open_settings"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_widget_settings" />
             </FrameLayout>
         </LinearLayout>
@@ -270,10 +277,11 @@
                 android:background="@drawable/widget_surface_active">
                 <ImageView
                     android:id="@+id/widgetControlTopConfirmYesIcon"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
+                    android:layout_width="@dimen/widget_icon_toolbar_size"
+                    android:layout_height="@dimen/widget_icon_toolbar_size"
                     android:layout_gravity="center"
                     android:contentDescription="@string/widget_confirm"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_widget_check" />
             </FrameLayout>
             <TextView
@@ -296,10 +304,11 @@
                 android:background="@drawable/widget_surface_danger">
                 <ImageView
                     android:id="@+id/widgetControlTopConfirmNoIcon"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
+                    android:layout_width="@dimen/widget_icon_toolbar_size"
+                    android:layout_height="@dimen/widget_icon_toolbar_size"
                     android:layout_gravity="center"
                     android:contentDescription="@string/widget_cancel"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_widget_close" />
             </FrameLayout>
         </LinearLayout>
@@ -339,9 +348,10 @@
                 android:orientation="horizontal">
                 <ImageView
                     android:id="@+id/widgetControlFullBatteryIcon"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
+                    android:layout_width="@dimen/widget_icon_status_size"
+                    android:layout_height="@dimen/widget_icon_status_size"
                     android:contentDescription="@string/battery"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_battery" />
                 <TextView
                     android:id="@+id/widgetControlFullBattery"
@@ -363,9 +373,10 @@
                 android:orientation="horizontal">
                 <ImageView
                     android:id="@+id/widgetControlFullStorageIcon"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
+                    android:layout_width="@dimen/widget_icon_status_size"
+                    android:layout_height="@dimen/widget_icon_status_size"
                     android:contentDescription="@string/widget_storage"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_widget_storage" />
                 <TextView
                     android:id="@+id/widgetControlFullStorage"
@@ -408,9 +419,10 @@
                         android:orientation="vertical">
                         <ImageView
                             android:id="@+id/widgetControlVideoIdleIcon"
-                            android:layout_width="41dp"
-                            android:layout_height="41dp"
+                            android:layout_width="@dimen/widget_icon_primary_size"
+                            android:layout_height="@dimen/widget_icon_primary_size"
                             android:contentDescription="@string/widget_video"
+                            android:scaleType="fitCenter"
                             android:src="@drawable/ic_widget_video" />
                     </LinearLayout>
 
@@ -423,9 +435,10 @@
                         android:visibility="gone">
                         <ImageView
                             android:id="@+id/widgetControlVideoRecordingIcon"
-                            android:layout_width="41dp"
-                            android:layout_height="41dp"
+                            android:layout_width="@dimen/widget_icon_primary_size"
+                            android:layout_height="@dimen/widget_icon_primary_size"
                             android:contentDescription="@string/widget_video"
+                            android:scaleType="fitCenter"
                             android:src="@drawable/ic_widget_video" />
                         <TextView
                             android:id="@+id/widgetControlVideoTimer"
@@ -470,10 +483,11 @@
                     android:visibility="gone">
                     <ImageView
                         android:id="@+id/widgetControlVideoHighlightIcon"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="@dimen/widget_icon_utility_size"
+                        android:layout_height="@dimen/widget_icon_utility_size"
                         android:layout_gravity="center"
                         android:contentDescription="@string/widget_add_highlight"
+                        android:scaleType="fitCenter"
                         android:src="@drawable/ic_widget_highlight" />
                 </FrameLayout>
             </LinearLayout>
@@ -487,10 +501,11 @@
                 android:background="@drawable/widget_surface_selector">
                 <ImageView
                     android:id="@+id/widgetControlPhotoIcon"
-                    android:layout_width="47dp"
-                    android:layout_height="47dp"
+                    android:layout_width="@dimen/widget_icon_primary_size"
+                    android:layout_height="@dimen/widget_icon_primary_size"
                     android:layout_gravity="center"
                     android:contentDescription="@string/widget_photo"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_widget_photo" />
                 <TextView
                     android:id="@+id/widgetControlPhotoStatus"

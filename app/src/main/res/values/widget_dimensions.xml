@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Shared by photo/video fields and Cam Control; state never changes icon size. -->
+    <dimen name="widget_icon_primary_size">50dp</dimen>
+    <dimen name="widget_icon_utility_size">40dp</dimen>
+    <dimen name="widget_icon_toolbar_size">34dp</dimen>
+    <dimen name="widget_icon_status_size">22dp</dimen>
+    <dimen name="widget_icon_primary_padding">8dp</dimen>
+    <dimen name="widget_icon_utility_padding">5dp</dimen>
+    <dimen name="widget_icon_status_padding">3dp</dimen>
+</resources>
