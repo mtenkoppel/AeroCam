@@ -8,5 +8,7 @@
         android:pathData="M15,8v8H5V8h10m1,-2H4c-0.55,0 -1,0.45 -1,1v10c0,0.55 0.45,1 1,1h12c0.55,0 1,-0.45 1,-1v-3.5l4,4v-11l-4,4V7c0,-0.55 -0.45,-1 -1,-1z" />
     <path
         android:fillColor="@color/dji_icon_disabled_strike"
+        android:strokeColor="@color/dji_surface_muted"
+        android:strokeWidth="0.6"
         android:pathData="M3.3,2L2,3.3 20.7,22 22,20.7z" />
 </vector>

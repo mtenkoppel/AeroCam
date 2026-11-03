@@ -444,12 +444,6 @@ class MainActivity : Activity() {
             DjiSettings.KEY_LOW_STORAGE_ALERT,
             false,
         )
-        settingsSwitch(
-            alertsGroup,
-            getString(R.string.alert_action_notifications_setting),
-            DjiSettings.KEY_ACTION_NOTIFICATIONS,
-            false,
-        )
 
         val styleGroup = group(content, getString(R.string.theme_mode))
         settingsSwitch(

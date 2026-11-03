@@ -92,7 +92,6 @@
     <string name="alert_settings">Hinweise während der Fahrt</string>
     <string name="alert_low_battery_setting">Kameraakku bei 20 % niedrig</string>
     <string name="alert_low_storage_setting">SD-Karte unter 5 GB</string>
-    <string name="alert_action_notifications_setting">Foto- und Aufnahmehinweise</string>
     <string name="group_information">Informationen</string>
     <string name="group_actions">Aktionen</string>
     <string name="debug_status">Statusdetails</string>
@@ -147,9 +146,6 @@
     <string name="gallery_state_feedback">Kurze Rückmeldung</string>
     <string name="gallery_state_keep_awake">Wach halten an</string>
     <string name="gallery_state_sleep_confirmation">Ausschalten bestätigen</string>
-    <string name="alert_recording_started">Aufnahme gestartet</string>
-    <string name="alert_recording_stopped">Aufnahme beendet</string>
-    <string name="alert_photo_captured">Foto aufgenommen</string>
     <string name="alert_highlight_added">Highlight hinzugefügt</string>
     <string name="alert_osmo_battery_low">Osmo-Akku niedrig</string>
     <string name="alert_battery_remaining">%1$d%% verbleibend</string>

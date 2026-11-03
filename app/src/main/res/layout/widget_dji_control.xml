@@ -191,7 +191,7 @@
                     android:layout_height="32dp"
                     android:layout_gravity="center"
                     android:contentDescription="@string/widget_open_settings"
-                    android:src="@drawable/ic_widget_more" />
+                    android:src="@drawable/ic_widget_settings" />
             </FrameLayout>
 
             <FrameLayout
@@ -250,7 +250,7 @@
                     android:layout_height="32dp"
                     android:layout_gravity="center"
                     android:contentDescription="@string/widget_open_settings"
-                    android:src="@drawable/ic_widget_more" />
+                    android:src="@drawable/ic_widget_settings" />
             </FrameLayout>
         </LinearLayout>
 

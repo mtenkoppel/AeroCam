@@ -49,8 +49,8 @@ mode.
 - **Photo capture:** Take photos directly from a focused data field or the
   full-screen control field.
 - **Camera monitoring:** View camera battery and remaining card space, with
-  optional one-time alerts for low battery, low storage, and photo or recording
-  events.
+  optional one-time alerts for low battery and low storage, plus highlight-added
+  feedback.
 - **Light and dark themes:** Choose light, dark, or follow the Karoo system
   appearance.
 - **Six languages:** English, German, Spanish, French, Italian, and Portuguese
