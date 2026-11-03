@@ -84,4 +84,17 @@ class DjiPhotoDataType(extension: String) : DjiWidgetDataType(extension, TYPE_ID
     }
 }
 
+/** Video/photo while idle; the existing video field takes over during recording. */
+class DjiVideoPhotoDataType(extension: String) : DjiWidgetDataType(extension, TYPE_ID) {
+    override fun startView(context: Context, config: ViewConfig, emitter: ViewEmitter) {
+        observe(context, config, emitter) {
+            DjiWidgetRenderer.videoPhoto(context, config, it)
+        }
+    }
+
+    companion object {
+        const val TYPE_ID = "dji-video-photo"
+    }
+}
+
 private const val TAG = "KarooPoC"
