@@ -1,4 +1,4 @@
-# How Auto highlights work
+# How auto highlights work
 
 ## What is a highlight?
 

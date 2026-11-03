@@ -46,6 +46,9 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".HelpActivity" android:exported="false" />
+        <activity android:name=".SetupActivity" android:exported="false" />
+
         <activity
             android:name=".WidgetGalleryActivity"
             android:exported="false" />

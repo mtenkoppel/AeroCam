@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="174" viewBox="0 0 320 174" role="img" aria-labelledby="title desc">
+<title id="title">DJI camera quick menu with the lock highlighted</title><desc id="desc">Two rows of four menu tiles. The lock is the second tile from the left in the bottom row, highlighted in white. This is a simplified illustration based on the onboarding menu.</desc>
+<rect x="1" y="1" width="318" height="172" rx="14" fill="#0c0c0c" stroke="#555"/>
+<g fill="#272727"><rect x="12" y="13" width="65" height="64" rx="8"/><rect x="89" y="13" width="65" height="64" rx="8"/><rect x="166" y="13" width="65" height="64" rx="8"/><rect x="243" y="13" width="65" height="64" rx="8"/><rect x="12" y="93" width="65" height="64" rx="8"/><rect x="166" y="93" width="65" height="64" rx="8"/><rect x="243" y="93" width="65" height="64" rx="8"/></g>
+<rect x="88" y="92" width="67" height="66" rx="8" fill="#fff" stroke="#fff" stroke-width="3"/>
+<g stroke="#bdbdbd" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="44.5" cy="35" r="7"/><path d="M32 59v-4a12.5 12.5 0 0 1 25 0v4"/>
+<circle cx="198.5" cy="45" r="9"/><path d="M198.5 27v-4m0 44v-4m18-18h4m-44 0h4m5-13-3-3m31 31-3-3m0-25 3-3m-31 31 3-3"/>
+<circle cx="275.5" cy="45" r="11"/><circle cx="275.5" cy="45" r="4"/><path d="M275.5 29v-5m0 42v-5m16-16h5m-42 0h5m5-11-4-4m31 31-4-4m0-23 4-4m-31 31 4-4"/>
+<path d="M34 120a13 13 0 1 1 0 16m0-16v-9m0 9h9"/>
+<path d="M185 122h6l6-6v24l-6-6h-6v-12Zm21-2a11 11 0 0 1 0 16m5-22a18 18 0 0 1 0 28"/>
+<rect x="260" y="112" width="31" height="27" rx="3"/><circle cx="269" cy="120" r="2.5"/><path d="m261 136 9-9 6 5 8-10 7 10"/>
+</g>
+<text x="121.5" y="54" fill="#bdbdbd" font-family="Arial,sans-serif" font-size="23" font-weight="bold" text-anchor="middle">QS</text>
+<g fill="none" stroke="#080808" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="108" y="119" width="27" height="22" rx="3"/><path d="M113 119v-8a8.5 8.5 0 0 1 17 0v8"/><path d="M121.5 127v6"/></g>
+<text x="121.5" y="152" fill="#111" font-family="Arial,sans-serif" font-size="8" font-weight="bold" letter-spacing="1" text-anchor="middle">LOCK</text>
+</svg>
