@@ -170,12 +170,19 @@
     <string name="dji_recording">DJI-Aufnahme</string>
     <string name="dji_recording_description">DJI-Videoaufnahme starten oder stoppen</string>
     <string name="find_dji_handshake">DJI suchen und verbinden</string>
-    <string name="highlight_descent_speed_threshold">Geschwindigkeitsschwelle Abfahrt (km/h)</string>
-    <string name="highlight_high_speed_descent">Schnelle Abfahrt</string>
+    <string name="highlight_descent_speed_threshold">Tempo bergab (km/h)</string>
+    <string name="highlight_high_speed_descent">Abfahrtsmarker</string>
     <string name="keep_awake_interval">QS-Intervall (Sekunden)</string>
     <string name="open_widget_gallery">Widget-Galerie öffnen</string>
     <string name="status_format">%1$s: %2$s</string>
     <string name="switch_camera_mode">Video-/Fotomodus wechseln</string>
     <string name="waiting_for_screen_off">Warten auf ausgeschaltetes Display</string>
     <string name="dji_independence_notice">AeroCam ist ein unabhängiges Projekt und steht in keiner Verbindung zu DJI. Es wird von DJI weder unterstützt noch gesponsert. DJI und Osmo sind Marken ihrer jeweiligen Inhaber.</string>
+    <string name="highlight_descent_grade_threshold">Gefälle (%)</string>
+    <string name="highlight_uphill">Anstiegsmarker</string>
+    <string name="highlight_uphill_speed_threshold">Tempo bergauf (km/h)</string>
+    <string name="highlight_uphill_grade_threshold">Steigung (%)</string>
+    <string name="highlight_uphill_summary">Beide Schwellen müssen erreicht sein. Positive Steigung.</string>
+    <string name="highlight_descent_summary">Beide Schwellen müssen erreicht sein. Negatives Gefälle.</string>
+    <string name="highlight_uphill_feedback">Anstieg</string>
 </resources>

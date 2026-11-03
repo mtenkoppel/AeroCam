@@ -7,6 +7,10 @@ object OnboardingPolicy {
         return standbySeconds - 30
     }
     fun threshold(text: String): Int? = text.toIntOrNull()?.takeIf { it > 0 }
+    fun gradientSpeed(text: String, uphill: Boolean): Int? =
+        text.toIntOrNull()?.takeIf { it in (if (uphill) 1..80 else 40..80) }
+    fun gradient(text: String, uphill: Boolean): Int? =
+        text.toIntOrNull()?.takeIf { it in (if (uphill) 1..30 else -30..-1) }
     fun powerMessage(value: Int): Int = when {
         value > 500 -> 3
         value >= 350 -> 2

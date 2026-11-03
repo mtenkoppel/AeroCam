@@ -433,6 +433,28 @@ class MainActivity : Activity() {
         )
         peakHeartRateThresholdRow.visibility = if (peakHeartRateSwitch.isChecked) View.VISIBLE else View.GONE
         triggerGroup.addView(peakHeartRateThresholdRow, fullWidthParams(bottomMargin = dp(14)))
+        fun gradientRows(uphill: Boolean) {
+            val rows = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+            val toggle = settingsSwitch(triggerGroup,
+                getString(if (uphill) R.string.highlight_uphill else R.string.highlight_high_speed_descent),
+                if (uphill) DjiSettings.KEY_UPHILL_HIGHLIGHTS else DjiSettings.KEY_HIGH_SPEED_DESCENT_HIGHLIGHTS,
+                false) { checked -> rows.visibility = if (checked) View.VISIBLE else View.GONE }
+            rows.addView(secondaryText(getString(if (uphill) R.string.highlight_uphill_summary else R.string.highlight_descent_summary)))
+            rows.addView(numberRow(
+                getString(if (uphill) R.string.highlight_uphill_speed_threshold else R.string.highlight_descent_speed_threshold),
+                if (uphill) DjiSettings.KEY_UPHILL_SPEED_KPH else DjiSettings.KEY_DESCENT_SPEED_KPH,
+                if (uphill) DjiSettings.DEFAULT_UPHILL_SPEED_KPH else DjiSettings.DEFAULT_DESCENT_SPEED_KPH,
+                if (uphill) 1 else 40, 80))
+            rows.addView(numberRow(
+                getString(if (uphill) R.string.highlight_uphill_grade_threshold else R.string.highlight_descent_grade_threshold),
+                if (uphill) DjiSettings.KEY_UPHILL_GRADE_PERCENT else DjiSettings.KEY_DESCENT_GRADE_PERCENT,
+                if (uphill) DjiSettings.DEFAULT_UPHILL_GRADE_PERCENT else DjiSettings.DEFAULT_DESCENT_GRADE_PERCENT,
+                if (uphill) 1 else -30, if (uphill) 30 else -1))
+            rows.visibility = if (toggle.isChecked) View.VISIBLE else View.GONE
+            triggerGroup.addView(rows, fullWidthParams(bottomMargin = dp(14)))
+        }
+        gradientRows(true)
+        gradientRows(false)
         settingsSwitch(
             triggerGroup,
             getString(R.string.highlight_ride_bookmarks),
@@ -799,7 +821,9 @@ class MainActivity : Activity() {
         maximum: Int,
     ): LinearLayout {
         val input = EditText(this).apply {
-            inputType = InputType.TYPE_CLASS_NUMBER
+            inputType = InputType.TYPE_CLASS_NUMBER or
+                (if (minimum < 0) InputType.TYPE_NUMBER_FLAG_SIGNED else 0)
+            contentDescription = label
             imeOptions = EditorInfo.IME_ACTION_DONE
             setSingleLine(true)
             setSelectAllOnFocus(true)

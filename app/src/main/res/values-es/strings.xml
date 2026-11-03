@@ -170,12 +170,19 @@
     <string name="dji_recording">Grabación DJI</string>
     <string name="dji_recording_description">Iniciar o detener la grabación DJI</string>
     <string name="find_dji_handshake">Buscar y conectar DJI</string>
-    <string name="highlight_descent_speed_threshold">Umbral de velocidad de descenso (km/h)</string>
-    <string name="highlight_high_speed_descent">Marcador de descenso rápido</string>
+    <string name="highlight_descent_speed_threshold">Velocidad de bajada (km/h)</string>
+    <string name="highlight_high_speed_descent">Marcador de bajada</string>
     <string name="keep_awake_interval">Intervalo QS (segundos)</string>
     <string name="open_widget_gallery">Abrir galería de widgets</string>
     <string name="status_format">%1$s: %2$s</string>
     <string name="switch_camera_mode">Cambiar modo Vídeo/Foto</string>
     <string name="waiting_for_screen_off">Esperando a que se apague la pantalla</string>
     <string name="dji_independence_notice">AeroCam es un proyecto independiente y no está afiliado, respaldado ni patrocinado por DJI. DJI y Osmo son marcas de sus respectivos propietarios.</string>
+    <string name="highlight_descent_grade_threshold">Pendiente de bajada (%)</string>
+    <string name="highlight_uphill">Marcador de subida</string>
+    <string name="highlight_uphill_speed_threshold">Velocidad de subida (km/h)</string>
+    <string name="highlight_uphill_grade_threshold">Pendiente de subida (%)</string>
+    <string name="highlight_uphill_summary">Se requieren ambos umbrales. La subida tiene pendiente positiva.</string>
+    <string name="highlight_descent_summary">Se requieren ambos umbrales. La bajada tiene pendiente negativa.</string>
+    <string name="highlight_uphill_feedback">Subida</string>
 </resources>

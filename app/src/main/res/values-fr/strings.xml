@@ -170,12 +170,19 @@
     <string name="dji_recording">Enregistrement DJI</string>
     <string name="dji_recording_description">Démarrer ou arrêter l’enregistrement DJI</string>
     <string name="find_dji_handshake">Rechercher et connecter DJI</string>
-    <string name="highlight_descent_speed_threshold">Seuil de vitesse en descente (km/h)</string>
-    <string name="highlight_high_speed_descent">Marqueur de descente rapide</string>
+    <string name="highlight_descent_speed_threshold">Vitesse en descente (km/h)</string>
+    <string name="highlight_high_speed_descent">Marqueur de descente</string>
     <string name="keep_awake_interval">Intervalle QS (secondes)</string>
     <string name="open_widget_gallery">Ouvrir la galerie de widgets</string>
     <string name="status_format">%1$s : %2$s</string>
     <string name="switch_camera_mode">Basculer entre Vidéo et Photo</string>
     <string name="waiting_for_screen_off">En attente de l’extinction de l’écran</string>
     <string name="dji_independence_notice">AeroCam est un projet indépendant, sans affiliation, approbation ni parrainage de DJI. DJI et Osmo sont des marques de leurs propriétaires respectifs.</string>
+    <string name="highlight_descent_grade_threshold">Pente en descente (%)</string>
+    <string name="highlight_uphill">Marqueur de montée</string>
+    <string name="highlight_uphill_speed_threshold">Vitesse en montée (km/h)</string>
+    <string name="highlight_uphill_grade_threshold">Pente en montée (%)</string>
+    <string name="highlight_uphill_summary">Les deux seuils sont requis. Pente positive en montée.</string>
+    <string name="highlight_descent_summary">Les deux seuils sont requis. Pente négative en descente.</string>
+    <string name="highlight_uphill_feedback">Montée</string>
 </resources>

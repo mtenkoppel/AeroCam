@@ -64,4 +64,8 @@
     <string name="ob_speed_fun2">You’re the king of aero.</string>
     <string name="ob_speed_fun3">On public roads, speed limits apply to you too 😉</string>
     <string name="ob_replay">Camera setup guide</string>
+    <string name="ob_bookmarks" formatted="false">Adds start/end markers while the camera is recording. Bookmarks do not start a recording.</string>
+    <string name="ob_gradient_threshold" formatted="false">Choose both thresholds. Both must be met for this direction to trigger.</string>
+    <string name="ob_uphill_range" formatted="false">Enter speed from 1 to 80 km/h and gradient from +1 to +30%.</string>
+    <string name="ob_downhill_range" formatted="false">Enter speed from 40 to 80 km/h and gradient from −30 to −1%.</string>
 </resources>
