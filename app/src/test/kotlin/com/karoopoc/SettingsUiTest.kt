@@ -5,6 +5,10 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
+import org.json.JSONObject
+import org.json.JSONArray
 import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
@@ -42,6 +46,31 @@ class SettingsUiTest {
         view.draw(Canvas(bitmap))
         val folder = File("build/reports/settings-ui").apply { mkdirs() }
         File(folder, "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+        fun node(v: View): JSONObject {
+            val result = JSONObject().put("type", v.javaClass.simpleName).put("x", v.left).put("y", v.top)
+                .put("width", v.width).put("height", v.height).put("visible", v.visibility == View.VISIBLE)
+                .put("paddingLeft", v.paddingLeft).put("paddingTop", v.paddingTop)
+                .put("paddingRight", v.paddingRight).put("paddingBottom", v.paddingBottom)
+            val bg = v.background
+            if (bg is ColorDrawable) result.put("background", bg.color)
+            if (bg is GradientDrawable) { result.put("background", bg.color?.defaultColor); result.put("radius", bg.cornerRadius) }
+            if (v is TextView) {
+                result.put("text", v.text.toString()).put("textSize", v.textSize).put("textColor", v.currentTextColor)
+                    .put("bold", v.typeface?.isBold == true).put("gravity", v.gravity)
+                    .put("lineHeight", v.lineHeight).put("compoundPaddingLeft", v.compoundPaddingLeft)
+                    .put("compoundPaddingRight", v.compoundPaddingRight)
+                val lines = JSONArray()
+                v.layout?.let { l -> for (i in 0 until l.lineCount) lines.put(JSONObject()
+                    .put("text", v.text.subSequence(l.getLineStart(i), l.getLineEnd(i)).toString())
+                    .put("x", l.getLineLeft(i)).put("baseline", l.getLineBaseline(i))) }
+                result.put("lines", lines)
+            }
+            if (v is Switch) result.put("checked", v.isChecked)
+            if (v is ImageView && v.contentDescription != null) result.put("imageDescription", v.contentDescription.toString())
+            if (v is ViewGroup) result.put("children", JSONArray((0 until v.childCount).map { node(v.getChildAt(it)) }))
+            return result
+        }
+        File(folder, "$name.json").writeText(node(view).toString(2))
         return view
     }
 
@@ -76,6 +105,9 @@ class SettingsUiTest {
             assertFalse(switches.containsKey("Photo and recording alerts"))
             assertEquals(1, views(activity).filterIsInstance<Spinner>().size)
             render(activity, "settings-$mode")
+            activity.findViewById<ScrollView>(R.id.settings_scroll).fullScroll(View.FOCUS_DOWN)
+            render(activity, "settings-$mode-bottom")
+            activity.findViewById<ScrollView>(R.id.settings_scroll).scrollTo(0, 0)
             button(activity, "Status").performClick()
             render(activity, "status-$mode")
             button(activity, "Help").performClick()
@@ -127,6 +159,8 @@ class SettingsUiTest {
             render(activity, "article-${article.fileName.removeSuffix(".md")}")
             assertTrue(views(activity).filterIsInstance<Toolbar>().isNotEmpty())
             assertFalse(views(activity).filterIsInstance<TextView>().any { it.text.toString() == "Settings" })
+            activity.findViewById<ScrollView>(R.id.article_scroll).fullScroll(View.FOCUS_DOWN)
+            render(activity, "article-${article.fileName.removeSuffix(".md")}-bottom")
             if (article.fileName == "get-ready-for-a-ride.md") assertEquals(1, views(activity).filterIsInstance<ImageView>().count { it.contentDescription == "Swipe down on the camera, then tap the highlighted lock." })
             controller.pause().stop().destroy()
         }
@@ -134,6 +168,27 @@ class SettingsUiTest {
         assertFalse(standby.contains("QS"))
         assertFalse(standby.contains("## Battery use"))
         assertTrue(standby.contains("4 hours"))
+    }
+
+    @Test fun `numeric limits and disabled child preferences survive the UI refactor`() {
+        val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
+        val activity = controller.get()
+        val power = views(activity).filterIsInstance<Switch>().first { it.text.toString() == "Peak power marker" }
+        power.isChecked = true
+        val input = views(activity).filterIsInstance<EditText>().first()
+        input.setText("100")
+        input.onEditorAction(android.view.inputmethod.EditorInfo.IME_ACTION_DONE)
+        val prefs = DjiSettings.preferences(activity)
+        assertEquals(300, prefs.getInt(DjiSettings.KEY_PEAK_POWER_WATTS, 500))
+        input.setText("invalid")
+        input.onEditorAction(android.view.inputmethod.EditorInfo.IME_ACTION_DONE)
+        assertEquals(500, prefs.getInt(DjiSettings.KEY_PEAK_POWER_WATTS, 0))
+        val master = views(activity).filterIsInstance<Switch>().first { it.text.toString() == "Auto-highlights" }
+        master.isChecked = false
+        assertTrue(prefs.getBoolean(DjiSettings.KEY_PEAK_POWER_HIGHLIGHTS, false))
+        master.isChecked = true
+        assertTrue(power.isChecked)
+        controller.pause().stop().destroy()
     }
 
     @Test fun `restarting onboarding preserves every saved setting`() {
