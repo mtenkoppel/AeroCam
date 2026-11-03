@@ -170,7 +170,7 @@
     <string name="dji_recording">Enregistrement DJI</string>
     <string name="dji_recording_description">Démarrer ou arrêter l’enregistrement DJI</string>
     <string name="find_dji_handshake">Rechercher et connecter DJI</string>
-    <string name="highlight_descent_speed_threshold">Seuil de vitesse en descente (km/h)</string>
+    <string name="highlight_descent_speed_threshold">Vitesse en descente (km/h)</string>
     <string name="highlight_high_speed_descent">Marqueur de descente</string>
     <string name="keep_awake_interval">Intervalle QS (secondes)</string>
     <string name="open_widget_gallery">Ouvrir la galerie de widgets</string>
@@ -214,10 +214,10 @@
     <string name="help_number">%1$02d</string>
     <string name="setup_search_timeout">La recherche prend plus de temps que prévu. Vérifie la caméra et réessaie.</string>
     <string name="highlight_descent_grade_threshold">Pente en descente (%)</string>
-    <string name="highlight_descent_summary">Les seuils de vitesse et de pente doivent être atteints. Saisis une pente négative pour la descente.</string>
+    <string name="highlight_descent_summary">Les deux seuils sont requis. Pente négative en descente.</string>
     <string name="highlight_uphill">Marqueur de montée</string>
     <string name="highlight_uphill_speed_threshold">Vitesse en montée (km/h)</string>
     <string name="highlight_uphill_grade_threshold">Pente en montée (%)</string>
-    <string name="highlight_uphill_summary">Les seuils de vitesse et de pente doivent être atteints. Saisis une pente positive pour la montée.</string>
+    <string name="highlight_uphill_summary">Les deux seuils sont requis. Pente positive en montée.</string>
     <string name="highlight_uphill_feedback">Montée</string>
 </resources>

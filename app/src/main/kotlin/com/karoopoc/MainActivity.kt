@@ -96,6 +96,8 @@ class MainActivity : Activity() {
                 gravity = Gravity.CENTER
                 minHeight = ui.dp(48)
                 setSingleLine(true)
+                setHorizontallyScrolling(false)
+                ellipsize = TextUtils.TruncateAt.END
                 if (Build.VERSION.SDK_INT >= 26) setAutoSizeTextTypeUniformWithConfiguration(12, 16, 1, TypedValue.COMPLEX_UNIT_SP)
                 isFocusable = true
                 val value = TypedValue()

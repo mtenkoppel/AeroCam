@@ -170,7 +170,7 @@
     <string name="dji_recording">Grabación DJI</string>
     <string name="dji_recording_description">Iniciar o detener la grabación DJI</string>
     <string name="find_dji_handshake">Buscar y conectar DJI</string>
-    <string name="highlight_descent_speed_threshold">Umbral de velocidad de descenso (km/h)</string>
+    <string name="highlight_descent_speed_threshold">Velocidad de bajada (km/h)</string>
     <string name="highlight_high_speed_descent">Marcador de bajada</string>
     <string name="keep_awake_interval">Intervalo QS (segundos)</string>
     <string name="open_widget_gallery">Abrir galería de widgets</string>
@@ -214,10 +214,10 @@
     <string name="help_number">%1$02d</string>
     <string name="setup_search_timeout">La búsqueda está tardando más de lo esperado. Comprueba la cámara e inténtalo de nuevo.</string>
     <string name="highlight_descent_grade_threshold">Pendiente de bajada (%)</string>
-    <string name="highlight_descent_summary">Deben alcanzarse los umbrales de velocidad y pendiente. Introduce una pendiente negativa para la bajada.</string>
+    <string name="highlight_descent_summary">Se requieren ambos umbrales. La bajada tiene pendiente negativa.</string>
     <string name="highlight_uphill">Marcador de subida</string>
     <string name="highlight_uphill_speed_threshold">Velocidad de subida (km/h)</string>
     <string name="highlight_uphill_grade_threshold">Pendiente de subida (%)</string>
-    <string name="highlight_uphill_summary">Deben alcanzarse los umbrales de velocidad y pendiente. Introduce una pendiente positiva para la subida.</string>
+    <string name="highlight_uphill_summary">Se requieren ambos umbrales. La subida tiene pendiente positiva.</string>
     <string name="highlight_uphill_feedback">Subida</string>
 </resources>

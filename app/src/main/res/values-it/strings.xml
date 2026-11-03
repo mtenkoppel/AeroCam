@@ -170,7 +170,7 @@
     <string name="dji_recording">Registrazione DJI</string>
     <string name="dji_recording_description">Avvia o interrompi la registrazione DJI</string>
     <string name="find_dji_handshake">Cerca e connetti DJI</string>
-    <string name="highlight_descent_speed_threshold">Soglia velocità discesa (km/h)</string>
+    <string name="highlight_descent_speed_threshold">Velocità in discesa (km/h)</string>
     <string name="highlight_high_speed_descent">Marcatore discesa</string>
     <string name="keep_awake_interval">Intervallo QS (secondi)</string>
     <string name="open_widget_gallery">Apri galleria widget</string>
@@ -214,10 +214,10 @@
     <string name="help_number">%1$02d</string>
     <string name="setup_search_timeout">La ricerca sta richiedendo più tempo del previsto. Controlla la fotocamera e riprova.</string>
     <string name="highlight_descent_grade_threshold">Pendenza in discesa (%)</string>
-    <string name="highlight_descent_summary">Devono essere raggiunte le soglie di velocità e pendenza. Inserisci una pendenza negativa per la discesa.</string>
+    <string name="highlight_descent_summary">Sono richieste entrambe le soglie. Pendenza negativa in discesa.</string>
     <string name="highlight_uphill">Marcatore salita</string>
     <string name="highlight_uphill_speed_threshold">Velocità in salita (km/h)</string>
     <string name="highlight_uphill_grade_threshold">Pendenza in salita (%)</string>
-    <string name="highlight_uphill_summary">Devono essere raggiunte le soglie di velocità e pendenza. Inserisci una pendenza positiva per la salita.</string>
+    <string name="highlight_uphill_summary">Sono richieste entrambe le soglie. Pendenza positiva in salita.</string>
     <string name="highlight_uphill_feedback">Salita</string>
 </resources>

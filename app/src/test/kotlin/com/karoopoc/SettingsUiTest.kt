@@ -51,7 +51,7 @@ class SettingsUiTest {
         }
         if (name.contains("gradients")) {
             val scroll = activity.findViewById<ScrollView>(R.id.settings_scroll)
-            val target = descendants(view).filterIsInstance<Switch>().first { it.text.toString() == activity.getString(R.string.highlight_uphill) }
+            val target = descendants(view).filterIsInstance<Switch>().first { it.text.toString() == activity.getString(if (name.contains("downhill")) R.string.highlight_high_speed_descent else R.string.highlight_uphill) }
             val rect = android.graphics.Rect()
             target.getDrawingRect(rect)
             scroll.offsetDescendantRectToMyCoords(target, rect)
@@ -248,6 +248,7 @@ class SettingsUiTest {
         assertFalse(GradientSpeedTrigger().update(64.0, -8.0, settings.highSpeedDescentHighlights, settings.descentSpeedKph, settings.descentGradePercent))
         assertTrue(GradientSpeedTrigger().update(65.0, -8.0, settings.highSpeedDescentHighlights, settings.descentSpeedKph, settings.descentGradePercent))
         render(activity, "settings-gradients-light")
+        render(activity, "settings-gradients-downhill-light")
         controller.recreate()
         activity = controller.get()
         assertEquals(-8, input(R.string.highlight_descent_grade_threshold).text.toString().toInt())
@@ -264,6 +265,9 @@ class SettingsUiTest {
             .putBoolean(DjiSettings.KEY_HIGH_SPEED_DESCENT_HIGHLIGHTS, true).commit()
         val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
         render(controller.get(), "settings-gradients-de-dark")
+        render(controller.get(), "settings-gradients-downhill-de-dark")
+        val label = button(controller.get(), controller.get().getString(R.string.settings))
+        assertTrue("German tab label must fit", label.paint.measureText(label.text.toString()) <= label.width - label.paddingLeft - label.paddingRight)
         assertTrue(views(controller.get()).filterIsInstance<Switch>().any { it.text.toString() == "Anstiegsmarker" })
         controller.pause().stop().destroy()
         val article = Robolectric.buildActivity(HelpActivity::class.java,

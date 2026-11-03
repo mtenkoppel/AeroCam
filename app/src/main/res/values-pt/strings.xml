@@ -170,7 +170,7 @@
     <string name="dji_recording">Gravação DJI</string>
     <string name="dji_recording_description">Iniciar ou parar a gravação DJI</string>
     <string name="find_dji_handshake">Procurar e ligar DJI</string>
-    <string name="highlight_descent_speed_threshold">Limite de velocidade de descida (km/h)</string>
+    <string name="highlight_descent_speed_threshold">Velocidade na descida (km/h)</string>
     <string name="highlight_high_speed_descent">Marcador de descida</string>
     <string name="keep_awake_interval">Intervalo QS (segundos)</string>
     <string name="open_widget_gallery">Abrir galeria de widgets</string>
@@ -214,10 +214,10 @@
     <string name="help_number">%1$02d</string>
     <string name="setup_search_timeout">A pesquisa está a demorar mais do que o esperado. Verifica a câmara e tenta novamente.</string>
     <string name="highlight_descent_grade_threshold">Inclinação da descida (%)</string>
-    <string name="highlight_descent_summary">Os limites de velocidade e inclinação têm de ser atingidos. Introduz uma inclinação negativa para a descida.</string>
+    <string name="highlight_descent_summary">Ambos os limites são necessários. Inclinação negativa na descida.</string>
     <string name="highlight_uphill">Marcador de subida</string>
-    <string name="highlight_uphill_speed_threshold">Velocidade de subida (km/h)</string>
+    <string name="highlight_uphill_speed_threshold">Velocidade na subida (km/h)</string>
     <string name="highlight_uphill_grade_threshold">Inclinação da subida (%)</string>
-    <string name="highlight_uphill_summary">Os limites de velocidade e inclinação têm de ser atingidos. Introduz uma inclinação positiva para a subida.</string>
+    <string name="highlight_uphill_summary">Ambos os limites são necessários. Inclinação positiva na subida.</string>
     <string name="highlight_uphill_feedback">Subida</string>
 </resources>
