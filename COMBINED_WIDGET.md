@@ -51,3 +51,21 @@ using the existing ViewConfig/RemoteViews/UpdateGraphicConfig integration; no SD
 or toolchain upgrade is involved. Validation results and device versions are
 recorded below when available. The HTML dummy illustrates the resulting behavior;
 it is not the implementation or evidence of BLE delivery.
+
+## Validation — 2026-11-03
+
+Implementation and native harness at `da19b62`:
+
+- CI run 41610003493: unit tests and debug build passed.
+- Signed test build 41609999275: release build and signing verification passed.
+- Native verification build 41609999336: passed; run on the connected Karoo k24,
+  Android 12/API 32, 480×800 at 300 dpi.
+- **1,060 native pixel comparisons passed**, including pressed states and layout
+  after RemoteViews reapplication. Spinner visibility and click bindings passed.
+  130 example images were collected; idle, success and recording images reviewed.
+- Both isolated helper packages were removed. The rider installation was unchanged.
+
+The public KOS version was not identified (launcher version 4.217.1-ad98202524
+is not the KOS version). These are rendering and build checks, not a live camera
+or ride regression. The HTML preview uses simulated camera response timing;
+actual responses continue to use the existing controller.
