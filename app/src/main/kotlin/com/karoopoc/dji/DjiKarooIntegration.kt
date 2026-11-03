@@ -13,7 +13,6 @@ import io.hammerhead.karooext.models.OnNavigationState
 import io.hammerhead.karooext.models.OnStreamState
 import io.hammerhead.karooext.models.RideState
 import io.hammerhead.karooext.models.StreamState
-import io.hammerhead.karooext.models.SystemNotification
 import io.hammerhead.karooext.models.UserProfile
 import kotlin.math.cos
 import kotlin.math.sin
@@ -133,12 +132,11 @@ class DjiKarooIntegration(
     private fun onCameraState(state: DjiCameraState) {
         latestCameraState = state
         if (connectionNotification.onConnectionState(state.connection == CameraConnectionState.CONNECTED)) {
-            karooSystem.dispatch(
-                SystemNotification(
-                    id = "dji-camera-connected",
-                    message = appContext.getString(R.string.notification_connected),
-                    header = appContext.getString(R.string.app_name),
-                ),
+            showAlert(
+                "dji-camera-connected",
+                appContext.getString(R.string.notification_connected),
+                null,
+                R.color.dji_confirm,
             )
         }
         val settings = DjiSettings.read(appContext)
