@@ -152,7 +152,7 @@ internal class SettingsViews(val activity: Activity) {
         ) { checked ->
             autoHighlightsContent.visibility = if (checked) View.VISIBLE else View.GONE
         }
-        autoHighlightsContent = LinearLayout(this).apply {
+        autoHighlightsContent = LinearLayout(activity).apply {
             orientation = LinearLayout.VERTICAL
             visibility = if (autoHighlightsSwitch.isChecked) View.VISIBLE else View.GONE
         }
