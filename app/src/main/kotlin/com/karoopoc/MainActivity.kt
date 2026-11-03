@@ -7,6 +7,12 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
+import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -190,10 +196,13 @@ class MainActivity : Activity() {
                 background = ui.cardBackground()
                 setPadding(ui.dp(12), ui.dp(12), ui.dp(12), ui.dp(12))
             }
-            card.addView(ui.action("${getString(R.string.help_number, index + 1)}  ${getString(article.titleRes)}") {
-                HelpActivity.open(this, article.fileName)
-            }, ui.fullWidthParams())
-            card.addView(ui.secondaryText(getString(article.summaryRes)), ui.fullWidthParams())
+            val title = "${getString(R.string.help_number, index + 1)}  ${getString(article.titleRes)}"
+            val label = SpannableStringBuilder(title + "\n" + getString(article.summaryRes)).apply {
+                setSpan(StyleSpan(Typeface.BOLD), 0, title.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                setSpan(AbsoluteSizeSpan(13, true), title.length + 1, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                setSpan(ForegroundColorSpan(ui.palette.textSecondary), title.length + 1, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+            card.addView(ui.action(label) { HelpActivity.open(this, article.fileName) }, ui.fullWidthParams())
             content.addView(card, ui.fullWidthParams(bottomMargin = ui.dp(12)))
         }
         return ui.scroll(content, R.id.help_scroll)

@@ -51,6 +51,7 @@ class SettingsUiTest {
                 .put("width", v.width).put("height", v.height).put("visible", v.visibility == View.VISIBLE)
                 .put("paddingLeft", v.paddingLeft).put("paddingTop", v.paddingTop)
                 .put("paddingRight", v.paddingRight).put("paddingBottom", v.paddingBottom)
+                .put("scrollX", v.scrollX).put("scrollY", v.scrollY)
             val bg = v.background
             if (bg is ColorDrawable) result.put("background", bg.color)
             if (bg is GradientDrawable) { result.put("background", bg.color?.defaultColor); result.put("radius", bg.cornerRadius) }
@@ -113,6 +114,8 @@ class SettingsUiTest {
             button(activity, "Help").performClick()
             render(activity, "help-$mode")
             assertEquals(before, DjiSettings.preferences(context).all)
+            controller.recreate()
+            assertEquals(View.VISIBLE, controller.get().findViewById<ScrollView>(R.id.help_scroll).visibility)
             controller.pause().stop().destroy()
         }
     }

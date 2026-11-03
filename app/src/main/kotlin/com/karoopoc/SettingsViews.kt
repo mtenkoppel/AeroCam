@@ -120,7 +120,7 @@ internal class SettingsViews(val activity: Activity) {
             }
         } finally { refreshing = false }
     }
-    fun action(label: String, action: () -> Unit): Button = Button(activity, null, android.R.attr.borderlessButtonStyle).apply {
+    fun action(label: CharSequence, action: () -> Unit): Button = Button(activity, null, android.R.attr.borderlessButtonStyle).apply {
         text = label
         isAllCaps = false
         textSize = 14f
