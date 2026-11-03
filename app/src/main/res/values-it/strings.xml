@@ -75,6 +75,10 @@
     <string name="bonus_highlight">Aggiungi highlight DJI</string>
     <string name="bonus_settings">Impostazioni DJI</string>
     <string name="automatic_highlights">Highlight automatici</string>
+    <string name="highlight_cooldown">Pausa tra highlight automatici</string>
+    <string name="highlight_cooldown_summary">Tempo minimo tra highlight attivati da una soglia. Highlight manuali, giri, vette e segnalibri del percorso sono sempre consentiti. Gli eventi ignorati non vengono rimandati.</string>
+    <string name="highlight_cooldown_off">Disattivata</string>
+    <string name="highlight_cooldown_seconds">%1$d secondi</string>
     <string name="automatic_highlights_summary">Aggiungi automaticamente highlight a una registrazione</string>
     <string name="automatic_highlights_enabled">Highlight automatici</string>
     <string name="highlight_auto_start_recording">Avvio automatico registrazione</string>
@@ -178,8 +182,4 @@
     <string name="switch_camera_mode">Cambia modalità Video/Foto</string>
     <string name="waiting_for_screen_off">In attesa dello spegnimento dello schermo</string>
     <string name="dji_independence_notice">AeroCam è un progetto indipendente e non è affiliato, approvato o sponsorizzato da DJI. DJI e Osmo sono marchi dei rispettivi proprietari.</string>
-    <string name="highlight_cooldown">Pausa tra highlight automatici</string>
-    <string name="highlight_cooldown_summary">Tempo minimo tra highlight attivati da una soglia. Highlight manuali, giri, vette e segnalibri del percorso sono sempre consentiti. Gli eventi ignorati non vengono rimandati.</string>
-    <string name="highlight_cooldown_off">Disattivata</string>
-    <string name="highlight_cooldown_seconds">%1$d secondi</string>
 </resources>

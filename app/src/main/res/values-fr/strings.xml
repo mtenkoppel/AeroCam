@@ -75,6 +75,10 @@
     <string name="bonus_highlight">Ajouter un temps fort DJI</string>
     <string name="bonus_settings">Réglages DJI</string>
     <string name="automatic_highlights">Temps forts automatiques</string>
+    <string name="highlight_cooldown">Délai entre les temps forts automatiques</string>
+    <string name="highlight_cooldown_summary">Délai minimal entre les temps forts déclenchés par un seuil. Les temps forts manuels, tours, sommets et repères de sortie restent disponibles. Les événements ignorés ne sont pas reportés.</string>
+    <string name="highlight_cooldown_off">Désactivé</string>
+    <string name="highlight_cooldown_seconds">%1$d secondes</string>
     <string name="automatic_highlights_summary">Ajouter automatiquement des temps forts à un enregistrement</string>
     <string name="automatic_highlights_enabled">Temps forts automatiques</string>
     <string name="highlight_auto_start_recording">Démarrer automatiquement l’enregistrement</string>
@@ -178,8 +182,4 @@
     <string name="switch_camera_mode">Basculer entre Vidéo et Photo</string>
     <string name="waiting_for_screen_off">En attente de l’extinction de l’écran</string>
     <string name="dji_independence_notice">AeroCam est un projet indépendant, sans affiliation, approbation ni parrainage de DJI. DJI et Osmo sont des marques de leurs propriétaires respectifs.</string>
-    <string name="highlight_cooldown">Délai entre les temps forts automatiques</string>
-    <string name="highlight_cooldown_summary">Délai minimal entre les temps forts déclenchés par un seuil. Les temps forts manuels, tours, sommets et repères de sortie restent disponibles. Les événements ignorés ne sont pas reportés.</string>
-    <string name="highlight_cooldown_off">Désactivé</string>
-    <string name="highlight_cooldown_seconds">%1$d secondes</string>
 </resources>
