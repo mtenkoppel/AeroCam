@@ -145,7 +145,7 @@ class MainActivity : Activity() {
         }
         advanced.addView(connectButton, ui.fullWidthParams())
         advanced.addView(forgetButton, ui.fullWidthParams())
-        advanced.addView(ui.action(getString(R.string.restart_onboarding)) { SetupActivity.open(this) }, ui.fullWidthParams())
+        advanced.addView(ui.action(getString(R.string.restart_onboarding)) { startActivity(android.content.Intent(this, OnboardingActivity::class.java).putExtra("replay", true)) }, ui.fullWidthParams())
         advanced.addView(ui.action(getString(R.string.reset_all_settings)) { showResetAllConfirmation() }, ui.fullWidthParams())
         return ui.scroll(content, R.id.settings_scroll)
     }

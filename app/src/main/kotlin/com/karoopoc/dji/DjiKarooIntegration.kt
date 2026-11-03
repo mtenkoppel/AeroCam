@@ -26,6 +26,7 @@ class DjiKarooIntegration(
 
     private var rideState: RideState = RideState.Idle
     private var latestCameraState = DjiCameraState()
+    private val connectionNotification = CameraConnectionNotificationPolicy()
     private var latestLocation: OnLocationChanged? = null
     private var latestSpeedMetersPerSecond: Double? = null
     private var latestElevationMeters: Double? = null
@@ -130,6 +131,15 @@ class DjiKarooIntegration(
 
     private fun onCameraState(state: DjiCameraState) {
         latestCameraState = state
+        if (connectionNotification.onConnectionState(state.connection == CameraConnectionState.CONNECTED)) {
+            showAlert(
+                "dji-camera-connected",
+                appContext.getString(R.string.notification_connected),
+                null,
+                R.color.dji_confirm,
+            )
+        }
+        val settings = DjiSettings.read(appContext)
         if (state.recording) autoStartRecordingPending = false
         if (!previousRecording && state.recording) maybeSendStartBookmark()
         previousRecording = state.recording
