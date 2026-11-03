@@ -36,7 +36,7 @@ jobs:
           test -n "$AEROCAM_KEYSTORE_PASSWORD"
           test -n "$AEROCAM_KEY_ALIAS"
           test -n "$AEROCAM_KEY_PASSWORD"
-          ./gradlew testDebugUnitTest assembleRelease
+          ./gradlew testDebugUnitTest assembleDebug assembleRelease
       - name: Verify signature
         run: |
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --print-certs app/build/outputs/apk/release/app-release.apk

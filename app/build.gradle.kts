@@ -16,8 +16,9 @@ android {
         applicationId = "com.karoopoc"
         minSdk = 23
         targetSdk = 34
-        versionCode = 21
-        versionName = "0.9.0-beta.3-qs-recovery.1"
+        versionCode = 27
+        versionName = "0.9.0-beta.4"
+        testInstrumentationRunner = "com.karoopoc.widget.WidgetRenderingInstrumentation"
     }
 
     signingConfigs {
@@ -37,12 +38,20 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Isolated native rendering checks must not replace the rider's app.
+            if (providers.gradleProperty("widgetCapture").orNull == "true") {
+                applicationIdSuffix = ".capture"
+            }
+        }
         release {
             isMinifyEnabled = false
             signingConfig = signingConfigs.findByName("release")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+    testOptions { unitTests.isIncludeAndroidResources = true }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -55,4 +64,5 @@ android {
 dependencies {
     implementation(libs.hammerhead.karoo.ext)
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.robolectric:robolectric:4.14.1")
 }

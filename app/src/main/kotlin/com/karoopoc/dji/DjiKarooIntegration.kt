@@ -26,6 +26,7 @@ class DjiKarooIntegration(
 
     private var rideState: RideState = RideState.Idle
     private var latestCameraState = DjiCameraState()
+    private val connectionNotification = CameraConnectionNotificationPolicy()
     private var latestLocation: OnLocationChanged? = null
     private var latestSpeedMetersPerSecond: Double? = null
     private var latestElevationMeters: Double? = null
@@ -40,13 +41,13 @@ class DjiKarooIntegration(
     private var powerWasAbove = false
     private var speedWasAbove = false
     private var hrWasInZoneFive = false
-    private var descentWasActive = false
+    private val downhillTrigger = GradientSpeedTrigger()
+    private val uphillTrigger = GradientSpeedTrigger()
     private var startBookmarkSent = false
     private var batteryAlertArmed = true
     private var storageAlertArmed = true
     private var autoStartRecordingPending = false
     private var previousRecording = false
-    private var previousPhotoState = PhotoCaptureState.IDLE
     private var previousHighlightCount = 0
 
     fun start() {
@@ -56,7 +57,7 @@ class DjiKarooIntegration(
         karooSystem.addConsumer<Lap> { lap ->
             val settings = DjiSettings.read(appContext)
             if (settings.autoHighlightsEnabled && settings.lapHighlights) {
-                requestHighlight(appContext.getString(R.string.highlight_lap_feedback, lap.number))
+                requestHighlight(appContext.getString(R.string.highlight_lap_feedback, lap.number), cooldownExempt = true)
             }
         }
         karooSystem.addConsumer<UserProfile> { _ -> }
@@ -130,27 +131,18 @@ class DjiKarooIntegration(
 
     private fun onCameraState(state: DjiCameraState) {
         latestCameraState = state
+        if (connectionNotification.onConnectionState(state.connection == CameraConnectionState.CONNECTED)) {
+            showAlert(
+                "dji-camera-connected",
+                appContext.getString(R.string.notification_connected),
+                null,
+                R.color.dji_confirm,
+            )
+        }
         val settings = DjiSettings.read(appContext)
         if (state.recording) autoStartRecordingPending = false
-
-        if (settings.actionNotifications && !previousRecording && state.recording) {
-            showAlert("dji-recording", appContext.getString(R.string.alert_recording_started), null, R.color.dji_confirm)
-            maybeSendStartBookmark()
-        } else if (settings.actionNotifications && previousRecording && !state.recording) {
-            showAlert("dji-recording", appContext.getString(R.string.alert_recording_stopped), null, R.color.dji_neutral)
-        } else if (!previousRecording && state.recording) {
-            maybeSendStartBookmark()
-        }
+        if (!previousRecording && state.recording) maybeSendStartBookmark()
         previousRecording = state.recording
-
-        if (
-            settings.actionNotifications &&
-            previousPhotoState != PhotoCaptureState.COMPLETE &&
-            state.photoState == PhotoCaptureState.COMPLETE
-        ) {
-            showAlert("dji-photo", appContext.getString(R.string.alert_photo_captured), null, R.color.dji_confirm)
-        }
-        previousPhotoState = state.photoState
 
         if (state.highlightCount > previousHighlightCount) {
             showAlert("dji-highlight-${state.highlightCount}", appContext.getString(R.string.alert_highlight_added), null, R.color.dji_confirm)
@@ -165,7 +157,7 @@ class DjiKarooIntegration(
         val settings = DjiSettings.read(appContext)
         if (!settings.autoHighlightsEnabled || !settings.rideBookmarks) return
         startBookmarkSent = true
-        requestHighlight(appContext.getString(R.string.highlight_ride_start_feedback))
+        requestHighlight(appContext.getString(R.string.highlight_ride_start_feedback), cooldownExempt = true)
     }
 
     private fun onPower(watts: Double) {
@@ -178,7 +170,7 @@ class DjiKarooIntegration(
         if (settings.peakPowerHighlights && !powerWasAbove && watts >= threshold) {
             requestHighlight(appContext.getString(R.string.highlight_peak_power_feedback, watts.toInt()))
         }
-        powerWasAbove = if (powerWasAbove) watts >= threshold - 50.0 else watts >= threshold
+        powerWasAbove = if (powerWasAbove) ThresholdPolicy.remainsAbove(watts, threshold, 50.0) else watts >= threshold
     }
 
     private fun onSpeed(metersPerSecond: Double) {
@@ -187,7 +179,7 @@ class DjiKarooIntegration(
         val settings = DjiSettings.read(appContext)
         if (!settings.autoHighlightsEnabled) {
             speedWasAbove = false
-            checkHighSpeedDescent()
+            checkGradientTriggers()
             publishGpsTelemetry()
             return
         }
@@ -195,8 +187,8 @@ class DjiKarooIntegration(
         if (settings.maxSpeedHighlights && !speedWasAbove && kph >= threshold) {
             requestHighlight(appContext.getString(R.string.highlight_max_speed_feedback, kph.toInt()))
         }
-        speedWasAbove = if (speedWasAbove) kph >= threshold - 3.0 else kph >= threshold
-        checkHighSpeedDescent()
+        speedWasAbove = if (speedWasAbove) ThresholdPolicy.remainsAbove(kph, threshold, 3.0) else kph >= threshold
+        checkGradientTriggers()
         publishGpsTelemetry()
     }
 
@@ -211,26 +203,26 @@ class DjiKarooIntegration(
         if (settings.peakHeartRateHighlights && !hrWasInZoneFive && inZoneFive) {
             requestHighlight(appContext.getString(R.string.highlight_peak_hr_feedback, heartRate.toInt()))
         }
-        hrWasInZoneFive = if (hrWasInZoneFive) heartRate >= threshold - 3 else inZoneFive
+        hrWasInZoneFive = if (hrWasInZoneFive) ThresholdPolicy.remainsAbove(heartRate, threshold, 3.0) else inZoneFive
     }
 
     private fun onGrade(grade: Double) {
         latestGradePercent = grade
-        checkHighSpeedDescent()
+        checkGradientTriggers()
     }
 
-    private fun checkHighSpeedDescent() {
-        val speedKph = (latestSpeedMetersPerSecond ?: return) * 3.6
-        val grade = latestGradePercent ?: return
+    private fun checkGradientTriggers() {
         val settings = DjiSettings.read(appContext)
-        val active = speedKph >= settings.descentSpeedKph && grade <= -3.0
-        if (settings.highSpeedDescentHighlights && !descentWasActive && active) {
+        val speedKph = latestSpeedMetersPerSecond?.times(3.6)
+        if (downhillTrigger.update(speedKph, latestGradePercent,
+                settings.autoHighlightsEnabled && settings.highSpeedDescentHighlights,
+                settings.descentSpeedKph, settings.descentGradePercent)) {
             requestHighlight(appContext.getString(R.string.highlight_descent_feedback))
         }
-        descentWasActive = if (descentWasActive) {
-            speedKph >= settings.descentSpeedKph - 3 && grade <= -2.0
-        } else {
-            active
+        if (uphillTrigger.update(speedKph, latestGradePercent,
+                settings.autoHighlightsEnabled && settings.uphillHighlights,
+                settings.uphillSpeedKph, settings.uphillGradePercent)) {
+            requestHighlight(appContext.getString(R.string.highlight_uphill_feedback))
         }
     }
 
@@ -247,7 +239,7 @@ class DjiKarooIntegration(
             val summit = climb.startDistance + climb.length
             val key = "${climb.startDistance.toInt()}:${climb.length.toInt()}:${climb.grade}"
             if (distance >= summit && completedClimbs.add(key)) {
-                requestHighlight(appContext.getString(R.string.highlight_climb_feedback))
+                requestHighlight(appContext.getString(R.string.highlight_climb_feedback), cooldownExempt = true)
             }
         }
     }
@@ -288,7 +280,7 @@ class DjiKarooIntegration(
         )
     }
 
-    private fun requestHighlight(reason: String) {
+    private fun requestHighlight(reason: String, cooldownExempt: Boolean = false) {
         if (!DjiSettings.read(appContext).autoHighlightsEnabled) {
             Log.i(TAG, "Automatic highlight skipped reason=$reason autoHighlights=false")
             return
@@ -314,7 +306,7 @@ class DjiKarooIntegration(
             return
         }
         Log.i(TAG, "Automatic highlight requested reason=$reason")
-        DjiCameraController.addHighlight(appContext, reason)
+        DjiCameraController.addHighlight(appContext, reason, cooldownLimited = !cooldownExempt)
     }
 
     private fun checkThresholdAlerts(state: DjiCameraState) {
@@ -365,7 +357,8 @@ class DjiKarooIntegration(
         powerWasAbove = false
         speedWasAbove = false
         hrWasInZoneFive = false
-        descentWasActive = false
+        downhillTrigger.reset()
+        uphillTrigger.reset()
     }
 
     companion object {

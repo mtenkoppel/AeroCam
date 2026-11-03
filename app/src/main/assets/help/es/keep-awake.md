@@ -1,34 +1,23 @@
-# Cómo funciona Mantener activa
+# Evitar reposo
 
-## Por qué existe
+La cámara se apaga al vencer el temporizador, normalmente tras 5 minutos, aunque siga conectada.
 
-AeroCam no puede encender de forma fiable una DJI Osmo Action que se ha apagado por completo.
+1. Ajusta el apagado automático a 5 minutos
 
-**Mantener activa** evita esta limitación. Envía periódicamente una pulsación del botón QS para reiniciar el temporizador de apagado automático. La cámara permanece conectada y preparada aunque sus pantallas estén apagadas.
+Settings → Auto Power Off → 5 minutos
 
-> **Batería:** Mantener activa consume mucha más batería que un modo de espera real.
+Quiero otro tiempo de espera: Elige aquí el mismo tiempo de Auto Power Off que en tu DJI.
 
-## Configurar la cámara
+2. Desactiva los sonidos (opcional)
 
-Mantener activa funciona mejor con estos ajustes:
+Settings → Sounds → Mute
 
-1. Ajusta **Single Screen Preview** a **Screen off when locked** para apagar las pantallas sin desconectar la cámara.
-2. Ajusta **Auto Power Off** a un mínimo de **2 minutos**.
-3. Conecta la cámara al Karoo y bloquea su pantalla. Esto apaga las pantallas y ahorra algo de energía.
-4. Desactiva los sonidos si no quieres oír un clic con cada comando QS.
+3. Activa el apagado de pantalla al bloquear
 
-Los nombres de los menús pueden variar ligeramente según el firmware.
+Settings → Single Screen Preview (Scrn Off when Locked) → On
 
-## Durante una ruta
+Desliza hacia abajo y toca el candado: fila inferior, segundo icono desde la izquierda.
 
-Activa Mantener activa desde Control de cámara. AeroCam envía un comando QS inmediatamente y lo repite con el intervalo configurado.
+Con cinco minutos en la cámara, el intervalo es de cuatro minutos y treinta segundos. Para uno o dos minutos, elige el mismo tiempo en la guía. AeroCam no puede leer el temporizador. La función se pausa al grabar. Al reconectar comienza un nuevo intervalo. Activarla estando conectado o detener una grabación puede enviar un pulso inmediato. No puede despertar una cámara apagada.
 
-Si se pierde la conexión, AeroCam reanuda la función después de volver a conectarse. Espera brevemente para que la cámara esté preparada.
-
-Mantener activa se pausa durante una grabación, porque el mismo comando QS crea un destacado. Se reanuda cuando termina la grabación.
-
-## Uso de batería
-
-En una prueba, la batería bajó del **100 % al 64 % en aproximadamente 1 hora y 56 minutos**. Es solo una referencia práctica: la temperatura, las grabaciones, las pantallas y el estado de la batería afectan al resultado.
-
-> **Importante:** Mantener activa evita el apagado. No puede encender una cámara que ya está totalmente apagada.
+Mantener la cámara encendida consume batería. Con 1.770 mAh obtuvimos unas 4 horas en espera. La autonomía real varía.

@@ -1,0 +1,4 @@
+<resources>
+    <string name="dji_video_photo">Video + Foto</string>
+    <string name="dji_video_photo_description">Video- und Fotosteuerung; während der Aufnahme erscheint das Videofeld</string>
+</resources>

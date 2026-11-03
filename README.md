@@ -5,7 +5,7 @@
 # AeroCam
 
 [![CI](https://github.com/mtenkoppel/AeroCam/actions/workflows/ci.yml/badge.svg)](https://github.com/mtenkoppel/AeroCam/actions/workflows/ci.yml)
-[![Release: v0.9.0-beta.3](https://img.shields.io/badge/release-v0.9.0--beta.3-2563EB)](https://github.com/mtenkoppel/AeroCam/releases)
+[![Release: v0.9.0-beta.4](https://img.shields.io/badge/release-v0.9.0--beta.4-2563EB)](https://github.com/mtenkoppel/AeroCam/releases)
 [![License: GPLv3](https://img.shields.io/badge/license-GPLv3-2563EB)](LICENSE)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.1.21-7F52FF)](https://kotlinlang.org/)
 
@@ -29,7 +29,7 @@ mode.
 > [!NOTE]
 > DJI cameras cannot currently be woken from a complete power-off through the
 > standard Android Bluetooth APIs available on Karoo. AeroCam works around this
-> limitation with **Keep awake**, which keeps a connected camera responsive
+> limitation with **Prevent standby**, which keeps a connected camera responsive
 > while allowing its screens to remain off. A fully powered-off camera must
 > still be turned on manually.
 
@@ -49,8 +49,8 @@ mode.
 - **Photo capture:** Take photos directly from a focused data field or the
   full-screen control field.
 - **Camera monitoring:** View camera battery and remaining card space, with
-  optional one-time alerts for low battery, low storage, and photo or recording
-  events.
+  optional one-time alerts for low battery and low storage, plus highlight-added
+  feedback.
 - **Light and dark themes:** Choose light, dark, or follow the Karoo system
   appearance.
 - **Six languages:** English, German, Spanish, French, Italian, and Portuguese
@@ -78,7 +78,15 @@ marker.
 - **Ride bookmarks:** Adds markers at the start and end of a ride when recording
   is active.
 
-### Keep Awake
+### Prevent standby
+Automatic threshold highlights share a **30-second cooldown** by default. In
+Auto Highlights settings, choose **Off, 15, 30, or 60 seconds**. Speed, power,
+heart rate, and gradient triggers share this interval. Manual highlights, laps,
+climb summits, and ride bookmarks always bypass it. Every successfully sent
+highlight starts the interval for subsequent threshold highlights. Suppressed
+triggers are discarded, never deferred; the existing threshold reset margins
+still apply. Starting a recording alone does not start the cooldown.
+
 
 Keep awake periodically sends a lightweight camera-control command so the Osmo
 does not reach its automatic power-off timeout. This lets the camera remain
@@ -93,6 +101,9 @@ to power off, but testing showed it remains practical for up to 3 hour rides.
   small data-field positions, including beside maps or media controls.
 - **Video:** A compact recording control optimized for small data fields, with
   recording duration, highlight control, and temporary action feedback.
+- **Video + Photo:** Video on the left and photo on the right while idle. During
+  recording, the existing video field takes over, including timer, highlights
+  and feedback. Stopping restores both controls.
 - **Cam Control:** Best used as a full-screen data field. It combines connection,
   battery, storage, Keep awake, video, photo, camera power-off, and app access in
   one riding dashboard.
@@ -131,9 +142,11 @@ Pairing is required only once:
 4. Accept the connection and security code shown on the camera.
 
 AeroCam stores the paired camera and will try to reconnect automatically when
-the camera is available.
+the camera is available. After first pairing, an optional guide walks through
+camera settings, ride triggers and widgets. Replay it with **Camera setup guide**
+in Settings or Help. See [ONBOARDING_SPEC.md](ONBOARDING_SPEC.md).
 
-### Set Up Keep Awake
+### Set Up Prevent standby
 
 Keep awake works best when the camera is configured for low-distraction use:
 
@@ -146,7 +159,8 @@ Keep awake works best when the camera is configured for low-distraction use:
 4. Set Auto Power Off to **five minutes**. The new default QS interval is
    **four minutes thirty seconds**, leaving time for acknowledgement retries.
    Previously saved custom intervals remain unchanged. Shorter camera timers
-   require a correspondingly shorter app interval; guided configuration is pending.
+   require a correspondingly shorter app interval; choose the matching timer in the
+   camera setup guide.
 5. After AeroCam connects, lock the camera screen. The displays turn off while
    AeroCam periodically prevents the camera from fully powering down.
 
@@ -184,6 +198,12 @@ The validated build combination is Kotlin 2.1.21, Android Gradle Plugin 8.6.1,
 Gradle 8.7, and Java 17, with compile SDK 35 / target SDK 34. Karoo Extensions
 remains at 1.1.9. These versions were selected for compatibility and tested on
 hardware; they are not a claim that every dependency is the newest available.
+### Cooldown validation
+
+The cooldown uses the existing karoo-ext 1.1.9 integration; no SDK or KOS
+requirement changes. Official 1.1.9 release notes specify KOS 1.634.2440 or later:
+https://github.com/hammerheadnav/karoo-ext/releases/tag/1.1.9
+No Karoo or camera firmware has been physically tested for this change.
 
 ### Requirements
 

@@ -16,6 +16,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
 import com.karoopoc.widget.DjiCameraStatusDataType
+import com.karoopoc.widget.DjiVideoPhotoDataType
 import com.karoopoc.widget.DjiPhotoDataType
 import com.karoopoc.widget.DjiPowerDataType
 import com.karoopoc.widget.DjiWidgetController
@@ -47,6 +48,7 @@ class KarooPocExtension : KarooExtension("karoo-poc", "1.20") {
             DjiCameraStatusDataType(extension),
             DjiPowerDataType(extension),
             DjiPhotoDataType(extension),
+            DjiVideoPhotoDataType(extension),
         )
     }
 
@@ -199,6 +201,7 @@ class KarooPocExtension : KarooExtension("karoo-poc", "1.20") {
                     DataType.dataTypeId(extension, DjiCameraStatusDataType.TYPE_ID),
                     DataType.dataTypeId(extension, DjiPowerDataType.TYPE_ID),
                     DataType.dataTypeId(extension, DjiPhotoDataType.TYPE_ID),
+                    DataType.dataTypeId(extension, DjiVideoPhotoDataType.TYPE_ID),
                 ),
                 displayName = name,
             ),

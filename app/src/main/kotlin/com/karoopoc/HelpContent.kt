@@ -7,6 +7,7 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 
@@ -18,10 +19,11 @@ data class HelpArticle(
 
 object HelpContent {
     val articles = listOf(
-        HelpArticle("how-to-use.md", R.string.help_how_to_use, R.string.help_how_to_use_summary),
-        HelpArticle("keep-awake.md", R.string.help_keep_awake, R.string.help_keep_awake_summary),
-        HelpArticle("auto-highlights.md", R.string.help_auto_highlights, R.string.help_auto_highlights_summary),
-        HelpArticle("tips-and-tricks.md", R.string.help_tips, R.string.help_tips_summary),
+        HelpArticle("get-ready-for-a-ride.md", R.string.help_ride, R.string.help_ride_summary),
+        HelpArticle("prevent-standby.md", R.string.help_standby, R.string.help_standby_summary),
+        HelpArticle("auto-highlights.md", R.string.help_highlights, R.string.help_highlights_summary),
+        HelpArticle("different-widgets.md", R.string.help_widgets, R.string.help_widgets_summary),
+        HelpArticle("gps-telemetry.md", R.string.help_gps, R.string.help_gps_summary),
     )
 
     fun load(context: Context, fileName: String): String {
@@ -47,6 +49,25 @@ object HelpContent {
         }
 
         parseBlocks(markdown).forEach { block ->
+            if (block.kind == BlockKind.IMAGE) {
+                content.addView(ImageView(context).apply {
+                    setImageResource(R.drawable.dji_lock_menu)
+                    contentDescription = context.getString(R.string.lock_menu_caption)
+                    adjustViewBounds = true
+                    scaleType = ImageView.ScaleType.FIT_CENTER
+                }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(120)).apply {
+                    topMargin = dp(8)
+                })
+                content.addView(TextView(context).apply {
+                    text = context.getString(R.string.lock_menu_caption)
+                    textSize = 12f
+                    setTextColor(palette.textSecondary)
+                }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                    topMargin = dp(6)
+                    bottomMargin = dp(12)
+                })
+                return@forEach
+            }
             val view = TextView(context).apply {
                 text = inlineMarkdown(block.text)
                 setTextColor(if (block.kind == BlockKind.CALLOUT) palette.textPrimary else block.color(palette))
@@ -90,6 +111,10 @@ object HelpContent {
             val line = rawLine.trim()
             when {
                 line.isEmpty() -> flushParagraph()
+                line.matches(Regex("!\\[.*]\\(dji-lock-menu\\)")) -> {
+                    flushParagraph()
+                    blocks += Block(BlockKind.IMAGE, "")
+                }
                 line.startsWith("### ") -> {
                     flushParagraph()
                     blocks += Block(BlockKind.SUBHEADING, line.removePrefix("### "))
@@ -140,6 +165,7 @@ object HelpContent {
     }
 
     private enum class BlockKind {
+        IMAGE,
         TITLE,
         HEADING,
         SUBHEADING,

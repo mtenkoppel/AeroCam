@@ -1,36 +1,20 @@
 # AeroCam help content
 
-Help articles are Markdown files grouped by language code.
+The app supports English (`en`), German (`de`), Spanish (`es`), French (`fr`), Italian (`it`) and Portuguese (`pt`). Every language contains all five active Help topics and the camera setup guide:
 
-```text
-help/
-├── en/
-│   ├── how-to-use.md
-│   ├── keep-awake.md
-│   ├── auto-highlights.md
-│   └── tips-and-tricks.md
-└── de/
-    └── ...same filenames...
-```
+- `get-ready-for-a-ride.md`
+- `prevent-standby.md`
+- `auto-highlights.md`
+- `different-widgets.md`
+- `gps-telemetry.md`
+- `recommended-camera-setup.md`
 
-To add a translation, copy the `en` directory, rename it to the language code, and translate the contents. Keep the filenames unchanged. AeroCam uses English when a translated file is missing.
+Keep filenames identical across language folders. `HelpContent.load` chooses the device language (including regional variants such as `pt-BR` → `pt`) and retains English as a fallback for unsupported languages or a missing file. Older filenames remain legacy assets and are not in the Help index.
 
-Supported formatting:
+Supported Markdown: headings (`#`, `##`, `###`), bulleted/numbered lists, bold text and callouts. The ride guide uses the local `dji-lock-menu` illustration token; its caption and accessibility description come from the localized `lock_menu_caption` string. Keep the token unchanged when translating.
 
-- `#`, `##` and `###` headings
-- Bulleted and numbered lists
-- `**bold text**`
-- `> **Label:** Callout text`
+Use the actual translated app labels in navigation instructions. The English DJI menu names are retained as identifiers because camera menus differ by language and firmware. Keep paragraphs short for the Karoo display. Prevent-standby Help describes user-facing behavior without explaining internal camera commands.
 
-Keep paragraphs short for the Karoo display. Images can later be referenced from a language folder without changing the article structure, once image rendering is added to the Help view.
+Uphill and downhill are independent, opt-in triggers. Each requires its own speed and signed gradient thresholds to be met together. Use positive percentages for uphill and negative percentages for downhill. The existing downhill defaults remain off / 50 km/h / −3%; uphill starts off / 20 km/h / +3%.
 
-Use these terms consistently:
-
-- **Keep awake**: periodic QS commands that prevent automatic power-off
-- **Auto highlights**: automatic highlight creation during a ride
-- **Trigger**: the ride event that requests a highlight
-- **Highlight**: a marker inside a video recording
-- **Auto-start recording**: start recording when a trigger occurs while idle
-- **Auto-reconnect**: reconnect to the already paired camera when it is turned on
-- **Data field**: an AeroCam control placed on a Karoo ride page
-- **Put camera to sleep**: fully power off the camera; AeroCam cannot reverse this
+The localization tests check active-file coverage, language resolution, localized image descriptions and matching UI string keys/format arguments across every supported language.

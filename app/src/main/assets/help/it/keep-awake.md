@@ -1,32 +1,23 @@
-# Come funziona Mantieni attiva
+# Impedisci standby
 
-## Perché esiste
+La fotocamera si spegne allo scadere del timer, di solito dopo 5 minuti, anche se è connessa.
 
-AeroCam non può riaccendere in modo affidabile una DJI Osmo Action completamente spenta.
+1. Imposta lo spegnimento automatico su 5 minuti
 
-**Mantieni attiva** aggira questo limite. AeroCam invia regolarmente una pressione del pulsante QS per azzerare il timer di spegnimento automatico. La fotocamera resta connessa e pronta anche con gli schermi spenti.
+Settings → Auto Power Off → 5 minuti
 
-> **Batteria:** Mantieni attiva consuma molto più di una vera modalità standby.
+Voglio un altro tempo di standby: Scegli qui lo stesso tempo Auto Power Off della DJI.
 
-## Configurare la fotocamera
+2. Disattiva i suoni (facoltativo)
 
-1. Imposta **Single Screen Preview** su **Screen off when locked** per spegnere gli schermi lasciando disponibile la fotocamera.
-2. Imposta **Auto Power Off** ad almeno **2 minuti**.
-3. Connetti la fotocamera al Karoo e blocca lo schermo. Gli schermi si spengono e consumano meno.
-4. Disattiva i suoni se non vuoi sentire un clic a ogni comando QS.
+Settings → Sounds → Mute
 
-I nomi dei menu possono cambiare leggermente tra versioni firmware.
+3. Attiva lo spegnimento dello schermo al blocco
 
-## Durante un’uscita
+Settings → Single Screen Preview (Scrn Off when Locked) → On
 
-Attiva Mantieni attiva da Controllo fotocamera. AeroCam invia subito un comando QS e lo ripete con l’intervallo impostato.
+Scorri verso il basso e tocca il lucchetto: seconda icona da sinistra nella riga inferiore.
 
-Se la connessione si interrompe, AeroCam riprende dopo la riconnessione. Attende brevemente che la fotocamera sia pronta.
+Con cinque minuti sulla fotocamera, l’intervallo è quattro minuti e trenta secondi. Per uno o due minuti, scegli lo stesso tempo nella guida. AeroCam non può leggere il timer. La funzione è sospesa durante la registrazione. La riconnessione avvia un nuovo intervallo. Attivarla mentre sei connesso o interrompere la registrazione può inviare subito un impulso. Non può riaccendere una fotocamera spenta.
 
-La funzione si mette in pausa durante una registrazione, perché lo stesso comando QS crea un highlight. Riprende quando la registrazione termina.
-
-## Uso della batteria
-
-In un test, la batteria è scesa dal **100% al 64% in circa 1 ora e 56 minuti**. È solo un riferimento: temperatura, registrazioni, schermi e stato della batteria influiscono sul risultato.
-
-> **Importante:** Mantieni attiva evita lo spegnimento. Non può accendere una fotocamera già completamente spenta.
+Tenere accesa la fotocamera consuma batteria. Nei nostri test, 1.770 mAh hanno garantito circa 4 ore di attesa. L’autonomia varia.
