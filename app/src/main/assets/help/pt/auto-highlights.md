@@ -2,38 +2,47 @@
 
 ## O que é um destaque?
 
-Um destaque marca um momento interessante numa gravação e ajuda a encontrá-lo sem rever todo o vídeo.
+Um destaque marca um momento interessante numa gravação de vídeo. Ajuda-te a encontrá-lo mais tarde sem rever a gravação inteira.
 
-O AeroCam pode adicioná-lo quando acontece um evento durante a volta. Esse evento chama-se **acionador**.
+O AeroCam pode adicionar um destaque quando acontece algo durante a tua volta. O evento que o provoca chama-se **acionador**.
 
 ## Acionadores disponíveis
 
-- **Volta:** Começa uma nova volta.
-- **Potência máxima:** A potência ultrapassa o limite definido.
-- **Velocidade máxima:** A velocidade ultrapassa o limite definido.
-- **Topo da subida:** O Karoo indica o fim de uma subida.
-- **Frequência cardíaca máxima:** A frequência ultrapassa o limite definido.
-- **Descida rápida:** O AeroCam deteta uma descida rápida.
-- **Início/fim da volta:** A volta começa ou termina.
+- **Marcador de volta:** Começa uma nova volta.
+- **Pico de potência:** A tua potência ultrapassa o limite definido.
+- **Velocidade máxima:** A tua velocidade ultrapassa o limite definido.
+- **Topo de subida:** O Karoo indica o fim de uma subida.
+- **Pico de frequência cardíaca:** A tua frequência cardíaca ultrapassa o limite definido.
+- **Marcador de subida:** São atingidos os limites definidos de velocidade de subida e de inclinação positiva.
+- **Marcador de descida:** São atingidos os limites definidos de velocidade de descida e de inclinação negativa.
+- **Marcadores de início e fim:** A tua atividade começa ou termina.
 
-Apenas são usados os acionadores ativados nas Definições.
+Só são utilizados os acionadores que ativares nas definições.
+
+## Limites para subidas e descidas
+
+Ativa a subida, a descida ou ambas de forma independente. Cada direção tem os seus próprios limites de velocidade e inclinação, e **ambos os limites têm de ser atingidos**.
+
+Usa uma **inclinação positiva para subidas** e uma **negativa para descidas**. Por exemplo, numa subida, **20 km/h** e **+5%** significam pelo menos 20 km/h numa inclinação ascendente de 5% ou superior. Numa descida, **60 km/h** e **−6%** significam pelo menos 60 km/h numa inclinação descendente de 6% ou superior.
+
+Os valores de descida existentes continuam a ser **50 km/h** e **−3%**; o acionador permanece desativado até o ativares. O novo acionador de subida também começa desativado, com **20 km/h** e **+3%** como valores iniciais. Pequenas oscilações em torno de um limite não criam destaques repetidos.
 
 ## Durante uma gravação
 
-Quando ocorre um acionador, o AeroCam envia um comando de destaque. Os campos Vídeo e Controlo da câmara mostram brevemente qual foi detetado.
+Quando ocorre um acionador durante uma gravação, o AeroCam envia à câmara um comando para adicionar um destaque. Os campos de dados Video e Cam Control mostram brevemente o acionador detetado.
 
 ## Início automático da gravação
 
-Normalmente, os destaques automáticos só funcionam quando já existe uma gravação.
+Normalmente, os destaques automáticos só são adicionados quando já existe uma gravação em curso.
 
-Ative **Iniciar gravação automaticamente** para que um acionador inicie uma gravação quando a câmara está inativa.
+Ativa **Iniciar gravação automaticamente** se quiseres que um acionador inicie uma gravação quando a câmara não está a gravar.
 
-O primeiro acionador inicia a gravação, mas **não** é adicionado como destaque. Os seguintes podem adicionar destaques.
+O primeiro acionador inicia a gravação, mas **não** é adicionado como destaque. Os acionadores seguintes podem adicionar destaques a essa gravação.
 
-Isto mantém os comandos numa ordem segura e evita enviá-los quase ao mesmo tempo.
+Isto mantém os comandos da câmara numa ordem segura e evita enviar Iniciar gravação e Adicionar destaque quase ao mesmo tempo.
 
-## Escolher limites
+## Escolher os limites
 
-Escolha valores que representem momentos que quer realmente encontrar. Um limite demasiado fácil pode criar demasiados destaques.
+Escolhe valores que correspondam a momentos que queiras encontrar novamente. Se for demasiado fácil atingir um limite, a gravação pode acumular demasiados destaques.
 
-Comece com um valor exigente e ajuste-o após algumas voltas.
+Começa com um valor exigente e ajusta-o depois de algumas voltas.

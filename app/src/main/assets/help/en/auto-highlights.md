@@ -1,4 +1,4 @@
-# How Auto highlights work
+# How auto highlights work
 
 ## What is a highlight?
 
@@ -13,10 +13,19 @@ AeroCam can add a highlight when something happens during your ride. The event t
 - **Max speed marker:** Your speed crosses the threshold you set.
 - **Climb summit marker:** Karoo reports the end of a climb.
 - **Peak heart rate marker:** Your heart rate crosses the threshold you set.
-- **High-speed descent marker:** AeroCam detects a fast descent.
+- **Uphill marker:** Both your selected uphill speed and positive gradient thresholds are met.
+- **Downhill marker:** Both your selected downhill speed and negative gradient thresholds are met.
 - **Ride start/end bookmarks:** Your ride starts or ends.
 
 Only triggers that you enable in Settings are used.
+
+## Uphill and downhill thresholds
+
+Enable uphill, downhill, or both independently. Each direction has its own speed and gradient thresholds, and **both thresholds must be met**.
+
+Use a **positive gradient for uphill** and a **negative gradient for downhill**. For example, uphill at **20 km/h** and **+5%** means at least 20 km/h on a 5% climb or steeper. Downhill at **60 km/h** and **−6%** means at least 60 km/h on a 6% descent or steeper.
+
+The existing downhill values remain **50 km/h** and **−3%**, with the trigger off unless you enable it. The new uphill trigger also starts off, with **20 km/h** and **+3%** as initial values. Small fluctuations around a threshold do not create repeated highlights.
 
 ## When recording is active
 
