@@ -47,7 +47,6 @@ class DjiKarooIntegration(
     private var storageAlertArmed = true
     private var autoStartRecordingPending = false
     private var previousRecording = false
-    private var previousPhotoState = PhotoCaptureState.IDLE
     private var previousHighlightCount = 0
 
     fun start() {
@@ -131,27 +130,9 @@ class DjiKarooIntegration(
 
     private fun onCameraState(state: DjiCameraState) {
         latestCameraState = state
-        val settings = DjiSettings.read(appContext)
         if (state.recording) autoStartRecordingPending = false
-
-        if (settings.actionNotifications && !previousRecording && state.recording) {
-            showAlert("dji-recording", appContext.getString(R.string.alert_recording_started), null, R.color.dji_confirm)
-            maybeSendStartBookmark()
-        } else if (settings.actionNotifications && previousRecording && !state.recording) {
-            showAlert("dji-recording", appContext.getString(R.string.alert_recording_stopped), null, R.color.dji_neutral)
-        } else if (!previousRecording && state.recording) {
-            maybeSendStartBookmark()
-        }
+        if (!previousRecording && state.recording) maybeSendStartBookmark()
         previousRecording = state.recording
-
-        if (
-            settings.actionNotifications &&
-            previousPhotoState != PhotoCaptureState.COMPLETE &&
-            state.photoState == PhotoCaptureState.COMPLETE
-        ) {
-            showAlert("dji-photo", appContext.getString(R.string.alert_photo_captured), null, R.color.dji_confirm)
-        }
-        previousPhotoState = state.photoState
 
         if (state.highlightCount > previousHighlightCount) {
             showAlert("dji-highlight-${state.highlightCount}", appContext.getString(R.string.alert_highlight_added), null, R.color.dji_confirm)

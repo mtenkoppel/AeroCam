@@ -96,7 +96,6 @@
     <string name="alert_settings">Avisos durante la ruta</string>
     <string name="alert_low_battery_setting">Batería de cámara baja al 20 %</string>
     <string name="alert_low_storage_setting">Tarjeta SD por debajo de 5 GB</string>
-    <string name="alert_action_notifications_setting">Avisos de fotos y grabaciones</string>
     <string name="group_information">Información</string>
     <string name="group_actions">Acciones</string>
     <string name="debug_status">Detalles de estado</string>
@@ -151,9 +150,6 @@
     <string name="gallery_state_feedback">Respuesta breve</string>
     <string name="gallery_state_keep_awake">Mantener activa</string>
     <string name="gallery_state_sleep_confirmation">Confirmación de apagado</string>
-    <string name="alert_recording_started">Grabación iniciada</string>
-    <string name="alert_recording_stopped">Grabación detenida</string>
-    <string name="alert_photo_captured">Foto capturada</string>
     <string name="alert_highlight_added">Destacado añadido</string>
     <string name="alert_osmo_battery_low">Batería de Osmo baja</string>
     <string name="alert_battery_remaining">Queda %1$d%%</string>

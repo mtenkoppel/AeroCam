@@ -13,7 +13,6 @@ import com.karoopoc.MainActivity
 import com.karoopoc.R
 import com.karoopoc.dji.CameraConnectionState
 import com.karoopoc.dji.DjiCameraState
-import com.karoopoc.dji.DjiSettings
 import com.karoopoc.dji.PhotoCaptureState
 import io.hammerhead.karooext.models.ViewConfig
 
@@ -102,13 +101,12 @@ object DjiWidgetRenderer {
         val recordingLayout = recordingLayoutFor(config, size)
         val connectPrompt = ConnectPrompt.VIDEO in viewState.connectPrompts
         val awaitingResponse = viewState.videoAwaitingResponse
-        val hideCaptions = DjiSettings.hideFieldCaptions(context)
 
         return RemoteViews(context.packageName, R.layout.widget_dji_video).apply {
             setInt(R.id.widgetVideoRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
             applyWidgetFrame(R.id.widgetVideoRoot)
-            applyCaptionIconScale(hideCaptions, 8, R.id.widgetVideoIcon)
-            applyCaptionIconScale(hideCaptions, 6, R.id.widgetVideoHighlightIcon)
+            applyIconPadding(context, R.dimen.widget_icon_primary_padding, R.id.widgetVideoIcon)
+            applyIconPadding(context, R.dimen.widget_icon_utility_padding, R.id.widgetVideoHighlightIcon)
             setTextViewTextSize(
                 R.id.widgetVideoTimer,
                 TypedValue.COMPLEX_UNIT_SP,
@@ -257,12 +255,11 @@ object DjiWidgetRenderer {
         val connectPrompt = ConnectPrompt.PHOTO in viewState.connectPrompts
         val awaitingResponse = viewState.photoAwaitingResponse
         val photoBlocked = state.recording
-        val hideCaptions = DjiSettings.hideFieldCaptions(context)
 
         return RemoteViews(context.packageName, R.layout.widget_dji_photo).apply {
             setInt(R.id.widgetPhotoRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
             applyWidgetFrame(R.id.widgetPhotoRoot)
-            applyCaptionIconScale(hideCaptions, 8, R.id.widgetPhotoIcon)
+            applyIconPadding(context, R.dimen.widget_icon_primary_padding, R.id.widgetPhotoIcon)
             setTextViewTextSize(
                 R.id.widgetPhotoStatus,
                 TypedValue.COMPLEX_UNIT_SP,
@@ -341,14 +338,13 @@ object DjiWidgetRenderer {
         val size = DjiWidgetLayout.sizeFor(config)
         val connected = state.connection == CameraConnectionState.CONNECTED
         val connectPrompt = ConnectPrompt.CONTROL in viewState.connectPrompts
-        val hideCaptions = DjiSettings.hideFieldCaptions(context)
 
         return RemoteViews(context.packageName, R.layout.widget_dji_control).apply {
             setInt(R.id.widgetControlRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
             applyWidgetFrame(R.id.widgetControlRoot)
-            applyCaptionIconScale(
-                hideCaptions,
-                5,
+            applyIconPadding(
+                context,
+                R.dimen.widget_icon_utility_padding,
                 R.id.widgetControlKeepAwakeIcon,
                 R.id.widgetControlSleepIcon,
                 R.id.widgetControlConfirmYesIcon,
@@ -359,14 +355,18 @@ object DjiWidgetRenderer {
                 R.id.widgetControlOfflineMoreIcon,
                 R.id.widgetControlTopConfirmYesIcon,
                 R.id.widgetControlTopConfirmNoIcon,
+                R.id.widgetControlVideoHighlightIcon,
+            )
+            applyIconPadding(
+                context,
+                R.dimen.widget_icon_primary_padding,
                 R.id.widgetControlVideoIdleIcon,
                 R.id.widgetControlVideoRecordingIcon,
-                R.id.widgetControlVideoHighlightIcon,
                 R.id.widgetControlPhotoIcon,
             )
-            applyCaptionIconScale(
-                hideCaptions,
-                3,
+            applyIconPadding(
+                context,
+                R.dimen.widget_icon_status_padding,
                 R.id.widgetControlFullBatteryIcon,
                 R.id.widgetControlFullStorageIcon,
             )
@@ -723,12 +723,12 @@ object DjiWidgetRenderer {
         setViewPadding(rootId, 10, 10, 10, 10)
     }
 
-    private fun RemoteViews.applyCaptionIconScale(
-        hideCaptions: Boolean,
-        padding: Int,
+    private fun RemoteViews.applyIconPadding(
+        context: Context,
+        paddingRes: Int,
         vararg iconIds: Int,
     ) {
-        val appliedPadding = if (hideCaptions) 0 else padding
+        val appliedPadding = context.resources.getDimensionPixelSize(paddingRes)
         iconIds.forEach { setViewPadding(it, appliedPadding, appliedPadding, appliedPadding, appliedPadding) }
     }
 

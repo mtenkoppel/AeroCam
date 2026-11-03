@@ -13,11 +13,11 @@
 
         <ImageView
             android:id="@+id/widgetPhotoIcon"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/widget_icon_primary_size"
+            android:layout_height="@dimen/widget_icon_primary_size"
             android:layout_gravity="center"
             android:contentDescription="@string/widget_take_photo"
-            android:scaleType="centerInside"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_widget_photo" />
 
         <TextView

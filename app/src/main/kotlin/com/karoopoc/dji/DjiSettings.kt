@@ -23,7 +23,6 @@ data class DjiAutomationSettings(
     val rideBookmarks: Boolean,
     val lowBatteryAlert: Boolean,
     val lowStorageAlert: Boolean,
-    val actionNotifications: Boolean,
 )
 
 object DjiSettings {
@@ -49,7 +48,6 @@ object DjiSettings {
     const val KEY_RIDE_BOOKMARKS = "highlight_ride_bookmarks"
     const val KEY_LOW_BATTERY_ALERT = "alert_low_battery"
     const val KEY_LOW_STORAGE_ALERT = "alert_low_storage"
-    const val KEY_ACTION_NOTIFICATIONS = "alert_camera_actions"
     const val KEY_THEME_MODE = "theme_mode"
     const val KEY_KEEP_AWAKE_ENABLED = "keep_awake_enabled"
     const val KEY_KEEP_AWAKE_INTERVAL_SECONDS = "keep_awake_interval_seconds"
@@ -69,6 +67,10 @@ object DjiSettings {
 
     fun read(context: Context): DjiAutomationSettings {
         val prefs = preferences(context)
+        // Remove only the retired option; preserve pairing and all other settings.
+        if (prefs.contains("alert_camera_actions")) {
+            prefs.edit().remove("alert_camera_actions").apply()
+        }
         return DjiAutomationSettings(
             autoHighlightsEnabled = prefs.getBoolean(KEY_AUTO_HIGHLIGHTS_ENABLED, true),
             autoStartRecording = prefs.getBoolean(KEY_AUTO_START_RECORDING, false),
@@ -95,7 +97,6 @@ object DjiSettings {
             rideBookmarks = prefs.getBoolean(KEY_RIDE_BOOKMARKS, true),
             lowBatteryAlert = prefs.getBoolean(KEY_LOW_BATTERY_ALERT, true),
             lowStorageAlert = prefs.getBoolean(KEY_LOW_STORAGE_ALERT, false),
-            actionNotifications = prefs.getBoolean(KEY_ACTION_NOTIFICATIONS, false),
         )
     }
 

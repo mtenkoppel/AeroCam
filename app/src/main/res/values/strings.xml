@@ -112,7 +112,6 @@
     <string name="alert_settings">In-ride alerts</string>
     <string name="alert_low_battery_setting">Low camera battery at 20%</string>
     <string name="alert_low_storage_setting">Low SD card below 5 GB</string>
-    <string name="alert_action_notifications_setting">Photo and recording alerts</string>
     <string name="group_information">Information</string>
     <string name="group_actions">Actions</string>
     <string name="reset_all_settings">Reset all settings</string>
@@ -166,9 +165,6 @@
     <string name="gallery_state_feedback">Brief feedback</string>
     <string name="gallery_state_keep_awake">Prevent standby · On</string>
     <string name="gallery_state_sleep_confirmation">Deep-sleep confirmation</string>
-    <string name="alert_recording_started">Recording started</string>
-    <string name="alert_recording_stopped">Recording stopped</string>
-    <string name="alert_photo_captured">Photo captured</string>
     <string name="alert_highlight_added">Highlight added</string>
     <string name="alert_osmo_battery_low">Osmo battery low</string>
     <string name="alert_battery_remaining">%1$d%% remaining</string>

@@ -19,8 +19,7 @@
     <color name="dji_text_on_accent">#FFFFFF</color>
 
     <color name="dji_icon_primary">#FFFFFF</color>
-    <color name="dji_icon_disabled_fill">#777777</color>
-    <color name="dji_icon_disabled_strike">#303030</color>
+    <color name="dji_icon_disabled_fill">#969696</color>
     <color name="dji_icon_blocked_fill">#9A9A9A</color>
     <color name="dji_icon_blocked_strike">#FF4D4D</color>
 

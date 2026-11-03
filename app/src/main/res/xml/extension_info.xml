@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ExtensionInfo
     displayName="@string/extension_name"
-    icon="@drawable/ic_launcher_foreground"
+    icon="@drawable/aerocam_launcher_legacy"
     id="karoo-poc"
     scansDevices="true"
     configurable="true">
@@ -9,19 +9,19 @@
         description="@string/dji_status_description"
         displayName="@string/dji_status"
         graphical="true"
-        icon="@drawable/ic_launcher_foreground"
+        icon="@drawable/aerocam_launcher_legacy"
         typeId="dji-status" />
     <DataType
         description="@string/dji_power_description"
         displayName="@string/dji_power"
         graphical="true"
-        icon="@drawable/ic_coffee"
+        icon="@drawable/aerocam_launcher_legacy"
         typeId="dji-power" />
     <DataType
         description="@string/dji_photo_description"
         displayName="@string/dji_photo"
         graphical="true"
-        icon="@drawable/ic_launcher_foreground"
+        icon="@drawable/aerocam_launcher_legacy"
         typeId="dji-photo" />
     <DataType
         description="@string/dji_video_photo_description"
