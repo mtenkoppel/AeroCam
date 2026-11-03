@@ -13,6 +13,7 @@ import io.hammerhead.karooext.models.OnNavigationState
 import io.hammerhead.karooext.models.OnStreamState
 import io.hammerhead.karooext.models.RideState
 import io.hammerhead.karooext.models.StreamState
+import io.hammerhead.karooext.models.SystemNotification
 import io.hammerhead.karooext.models.UserProfile
 import kotlin.math.cos
 import kotlin.math.sin
@@ -26,6 +27,7 @@ class DjiKarooIntegration(
 
     private var rideState: RideState = RideState.Idle
     private var latestCameraState = DjiCameraState()
+    private val connectionNotification = CameraConnectionNotificationPolicy()
     private var latestLocation: OnLocationChanged? = null
     private var latestSpeedMetersPerSecond: Double? = null
     private var latestElevationMeters: Double? = null
@@ -130,6 +132,15 @@ class DjiKarooIntegration(
 
     private fun onCameraState(state: DjiCameraState) {
         latestCameraState = state
+        if (connectionNotification.onConnectionState(state.connection == CameraConnectionState.CONNECTED)) {
+            karooSystem.dispatch(
+                SystemNotification(
+                    id = "dji-camera-connected",
+                    message = appContext.getString(R.string.notification_connected),
+                    header = appContext.getString(R.string.app_name),
+                ),
+            )
+        }
         val settings = DjiSettings.read(appContext)
         if (state.recording) autoStartRecordingPending = false
 
