@@ -178,52 +178,12 @@ uninstalled first, which also removes AeroCam settings and its saved camera.
 
 This project is currently in beta. Review the release notes before updating.
 
-## Day-to-day development with GitHub
-
-GitHub Actions can build, test, and sign AeroCam without Android Studio or a local
-Android SDK. Your Mac only needs Git, GitHub CLI (`gh`), and ADB for this route.
-Use a `codex/…` branch for a focused change. Pushing it runs **Signed test build**;
-the workflow also supports manual dispatch once present on the default branch.
-Only trusted repository pushes use release secrets; fork pull requests must not
-receive signing secrets.
-
-1. Push the change and wait for the matching commit's **Signed test build** run.
-2. Download its `aerocam-signed-<commit>` artifact (retained for 14 days):
-   `gh run download RUN_ID --repo mtenkoppel/AeroCam --name aerocam-signed-COMMIT --dir /tmp/aerocam-build`
-3. Verify the run succeeded, then install with
-   `./scripts/install-release.sh /tmp/aerocam-build/app-release.apk`.
-4. Open the desired screen and run `./scripts/capture-screenshot.sh`.
-
-The signed workflow verifies the established release certificate. Release-signed
-updates preserve settings when installed over a release-signed installation.
-An older debug installation needs a separately authorized one-time migration;
-never uninstall automatically to solve a signature mismatch.
-
-A test artifact is not a published release. The separate release workflow publishes
-only when a version tag is pushed; do that only as part of an intentional release.
-Keep signing secrets in GitHub and retain secure independent backups. Do not put
-keystores or passwords in repository files or downloadable artifacts.
-
-### Requesting work with issues
-
-Create a [GitHub issue](https://github.com/mtenkoppel/AeroCam/issues/new/choose)
-using **Bug report** or **Change request**, then give the issue link or number to
-the coding assistant in chat. Include the desired outcome and device versions.
-The assistant reads the issue and comments, implements a focused change, runs the
-checks, and opens a linked PR. Creating an issue alone does not automatically
-start an agent; no background issue monitor is configured.
-
-See [AGENTS.md](AGENTS.md) for agent guidance and
-[PROJECT_REVIEW.md](PROJECT_REVIEW.md) for the initial review and follow-up work.
-
 ## Build from source
 
 The validated build combination is Kotlin 2.1.21, Android Gradle Plugin 8.6.1,
 Gradle 8.7, and Java 17, with compile SDK 35 / target SDK 34. Karoo Extensions
 remains at 1.1.9. These versions were selected for compatibility and tested on
 hardware; they are not a claim that every dependency is the newest available.
-See [toolchain validation](TOOLCHAIN_VALIDATION.md) for evidence
-and rollback instructions.
 
 ### Requirements
 
@@ -347,8 +307,3 @@ AeroCam is licensed under the [GNU General Public License v3.0](LICENSE)
 (`GPL-3.0-only`). Distributed modified versions must provide corresponding
 source code under the same license. GPLv3 permits commercial use and resale;
 its purpose here is to ensure that distributed derivatives remain open.
-
-## Developer ride diagnostics
-
-See [KEEP_AWAKE_RECOVERY.md](KEEP_AWAKE_RECOVERY.md) for acknowledgement handling,
-USB-only opt-in logging, retrieval, limits, and the hardware validation checklist.
