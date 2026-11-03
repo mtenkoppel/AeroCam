@@ -131,7 +131,8 @@ class SetupActivity : DetailActivity() {
         searchingUntil = SystemClock.elapsedRealtime() + 10_000L
         search.text = getString(R.string.pairing_searching)
         search.isEnabled = false
-        DjiCameraController.discover(this)
+        if (DjiCameraController.state().configured) DjiCameraController.connect(this)
+        else DjiCameraController.discover(this)
         handler.postDelayed({ renderConnection(DjiCameraController.state()) }, 10_000L)
     }
 
@@ -157,6 +158,7 @@ class SetupActivity : DetailActivity() {
             connecting -> R.string.pairing_accept
             searching && state.lastMessage.contains("found", ignoreCase = true) -> R.string.pairing_found
             searching || latched -> R.string.pairing_searching
+            state.configured -> R.string.connect_known_dji
             else -> R.string.pairing_search
         })
         search.isEnabled = !connecting && !searching && !latched && !connected
