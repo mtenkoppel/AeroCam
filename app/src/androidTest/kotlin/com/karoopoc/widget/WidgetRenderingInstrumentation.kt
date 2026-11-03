@@ -85,9 +85,20 @@ class WidgetRenderingInstrumentation : Instrumentation() {
                                     check(actual.hasOnClickListeners())
                                     comparisons += 2
                                 }
+                                val beforeReapply = bitmap(combined)
                                 combinedRemote.reapply(context, combined)
+                                combined.measure(View.MeasureSpec.makeMeasureSpec(config.viewSize.first, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(config.viewSize.second, View.MeasureSpec.EXACTLY))
+                                combined.layout(0, 0, config.viewSize.first, config.viewSize.second)
                                 check(combined.findViewById<FrameLayout>(R.id.widgetCombinedVideo).childCount == 1)
                                 check(combined.findViewById<FrameLayout>(R.id.widgetCombinedPhoto).childCount == 1)
+                                val afterReapply = bitmap(combined)
+                                check(beforeReapply.sameAs(afterReapply)) { "Reapply changed rendering: $theme/$size/$scenario" }
+                                beforeReapply.recycle(); afterReapply.recycle()
+                                comparisons++
+                            }
+                            if (state.videoAwaitingResponse != null) check(combined.findViewById<View>(R.id.widgetVideoSpinner).visibility == View.VISIBLE)
+                            if (!state.camera.recording && (state.photoAwaitingResponse != null || state.camera.photoState == PhotoCaptureState.CAPTURING)) {
+                                check(combined.findViewById<View>(R.id.widgetPhotoSpinner).visibility == View.VISIBLE)
                             }
                             if (!captionsHidden) save(combined, "${theme.preferenceValue}-$size-$scenario")
                         }
