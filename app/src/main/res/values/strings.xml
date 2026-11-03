@@ -226,11 +226,11 @@
     <string name="diagnostic_reconnect">Reconnect camera</string>
     <string name="diagnostic_connection_hint">Manual test only. Bluetooth stays on. Disconnect is blocked while recording or a camera action is pending.</string>
     <string name="diagnostic_connection_paused">Camera connection paused. Use Reconnect camera to resume. Restarting the app service also ends this debug pause.</string>
-    <string name="highlight_descent_grade_threshold">Downhill gradient (%)</string>
-    <string name="highlight_uphill">Uphill marker</string>
-    <string name="highlight_uphill_speed_threshold">Uphill speed (km/h)</string>
-    <string name="highlight_uphill_grade_threshold">Uphill gradient (%)</string>
-    <string name="highlight_uphill_summary">Both thresholds required. Use a positive uphill gradient.</string>
-    <string name="highlight_descent_summary">Both thresholds required. Use a negative downhill gradient.</string>
-    <string name="highlight_uphill_feedback">Uphill</string>
+    
+    
+    
+    
+    
+    
+    
 </resources>
