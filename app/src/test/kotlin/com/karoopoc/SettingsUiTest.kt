@@ -76,7 +76,7 @@ class SettingsUiTest {
     }
 
     @Test fun `opening settings does not write defaults or change saved preferences`() {
-        val context = RuntimeEnvironment.getApplication<android.app.Application>()
+        val context = RuntimeEnvironment.getApplication()
         val prefs = DjiSettings.preferences(context)
         prefs.edit().putBoolean(DjiSettings.KEY_KEEP_AWAKE_ENABLED, true)
             .putBoolean(DjiSettings.KEY_HIDE_FIELD_CAPTIONS, true)
@@ -92,7 +92,7 @@ class SettingsUiTest {
 
     @Test fun `new UI retains original defaults and native controls in both appearances`() {
         for (mode in listOf("dark", "light")) {
-            val context = RuntimeEnvironment.getApplication<android.app.Application>()
+            val context = RuntimeEnvironment.getApplication()
             DjiSettings.preferences(context).edit().putString(DjiSettings.KEY_THEME_MODE, mode).commit()
             val before = DjiSettings.preferences(context).all.toMap()
             val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
@@ -153,7 +153,7 @@ class SettingsUiTest {
     }
 
     @Test fun `all help pages render outside tab container with image and language fallback`() {
-        val context = RuntimeEnvironment.getApplication<android.app.Application>()
+        val context = RuntimeEnvironment.getApplication()
         assertEquals(5, HelpContent.articles.size)
         HelpContent.articles.forEach { article ->
             val intent = Intent(context, HelpActivity::class.java).putExtra("help_file", article.fileName)
@@ -195,7 +195,7 @@ class SettingsUiTest {
     }
 
     @Test fun `restarting onboarding preserves every saved setting`() {
-        val context = RuntimeEnvironment.getApplication<android.app.Application>()
+        val context = RuntimeEnvironment.getApplication()
         val prefs = DjiSettings.preferences(context)
         prefs.edit().putBoolean(DjiSettings.KEY_KEEP_AWAKE_ENABLED, true)
             .putInt(DjiSettings.KEY_KEEP_AWAKE_INTERVAL_SECONDS, 42).commit()
