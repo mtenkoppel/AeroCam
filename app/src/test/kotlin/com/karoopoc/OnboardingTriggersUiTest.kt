@@ -128,6 +128,18 @@ class OnboardingTriggersUiTest {
         assertFalse(DjiSettings.read(a).uphillHighlights); assertFalse(DjiSettings.read(a).highSpeedDescentHighlights)
         controller.pause().stop().destroy()
     }
+    @Test @Config(qualifiers = "de-w256dp-h427dp-port-300dpi")
+    fun translatedGradientEditorUsesNativeDarkThemeAndSignedInputs() {
+        prefs.edit().putString(DjiSettings.KEY_THEME_MODE,"dark").commit()
+        seed(); val controller=launch(); val a=controller.get()
+        toggle(a,R.string.highlight_high_speed_descent).performClick()
+        assertEquals("-3",input(a,R.string.highlight_descent_grade_threshold).text.toString())
+        render(a,"downhill-thresholds-de-dark")
+        a.onBackPressed(); toggle(a,R.string.highlight_ride_bookmarks).performClick()
+        render(a,"bookmark-option-de-dark",R.string.highlight_ride_bookmarks)
+        controller.pause().stop().destroy()
+    }
+
     @Test fun replayLoadsExistingChoicesAndOpeningDoesNotOverwriteThem() {
         prefs.edit().putBoolean(DjiSettings.KEY_UPHILL_HIGHLIGHTS,true).putBoolean(DjiSettings.KEY_HIGH_SPEED_DESCENT_HIGHLIGHTS,true)
             .putBoolean(DjiSettings.KEY_RIDE_BOOKMARKS,true).putInt(DjiSettings.KEY_UPHILL_SPEED_KPH,18)

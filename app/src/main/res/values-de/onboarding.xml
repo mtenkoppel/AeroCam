@@ -65,7 +65,7 @@
     <string name="ob_speed_fun3">Auf öffentlichen Straßen gelten Tempolimits auch für dich 😉</string>
     <string name="ob_replay">Kamera-Einrichtung</string>
     <string name="ob_bookmarks" formatted="false">Setzt Start-/Endmarkierungen, während die Kamera aufnimmt. Lesezeichen starten keine Aufnahme.</string>
-    <string name="ob_gradient_threshold" formatted="false">Lege beide Schwellen fest. Für diesen Auslöser müssen beide erreicht werden.</string>
+    <string name="ob_gradient_threshold" formatted="false">Beide Schwellen müssen erreicht werden.</string>
     <string name="ob_uphill_range" formatted="false">Gib ein Tempo von 1 bis 80 km/h und eine Steigung von +1 bis +30% ein.</string>
     <string name="ob_downhill_range" formatted="false">Gib ein Tempo von 40 bis 80 km/h und ein Gefälle von −30 bis −1% ein.</string>
 </resources>

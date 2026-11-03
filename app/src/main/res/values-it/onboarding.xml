@@ -65,7 +65,7 @@
     <string name="ob_speed_fun3">Sulle strade pubbliche, i limiti valgono anche per te 😉</string>
     <string name="ob_replay">Guida alla configurazione</string>
     <string name="ob_bookmarks" formatted="false">Aggiunge marcatori di inizio e fine mentre la videocamera registra. I marcatori non avviano una registrazione.</string>
-    <string name="ob_gradient_threshold" formatted="false">Scegli entrambe le soglie. Devono essere raggiunte entrambe per attivare questa direzione.</string>
+    <string name="ob_gradient_threshold" formatted="false">Entrambe le soglie devono essere raggiunte.</string>
     <string name="ob_uphill_range" formatted="false">Inserisci una velocità da 1 a 80 km/h e una pendenza da +1 a +30%.</string>
     <string name="ob_downhill_range" formatted="false">Inserisci una velocità da 40 a 80 km/h e una pendenza da −30 a −1%.</string>
 </resources>

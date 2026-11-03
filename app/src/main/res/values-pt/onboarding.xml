@@ -65,7 +65,7 @@
     <string name="ob_speed_fun3">Na via pública, os limites de velocidade também se aplicam a ti 😉</string>
     <string name="ob_replay">Guia de configuração</string>
     <string name="ob_bookmarks" formatted="false">Adiciona marcadores de início e fim enquanto a câmara grava. Os marcadores não iniciam uma gravação.</string>
-    <string name="ob_gradient_threshold" formatted="false">Escolha ambos os limites. Ambos têm de ser atingidos para ativar esta direção.</string>
+    <string name="ob_gradient_threshold" formatted="false">Ambos os limites têm de ser atingidos.</string>
     <string name="ob_uphill_range" formatted="false">Introduza uma velocidade de 1 a 80 km/h e uma inclinação de +1 a +30%.</string>
     <string name="ob_downhill_range" formatted="false">Introduza uma velocidade de 40 a 80 km/h e uma inclinação de −30 a −1%.</string>
 </resources>
