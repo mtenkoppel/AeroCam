@@ -105,7 +105,7 @@ class MainActivity : Activity() {
             }
             val indicator = View(this)
             val tabContainer = ui.column().apply {
-                addView(label, ui.fullWidthParams())
+                addView(label, LinearLayout.LayoutParams(-1, ui.dp(48)))
                 addView(indicator, LinearLayout.LayoutParams(-1, ui.dp(2)))
             }
             tabs[tab] = TabBinding(label, indicator, View(this))

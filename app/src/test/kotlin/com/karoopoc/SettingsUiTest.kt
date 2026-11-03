@@ -14,6 +14,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.karoopoc.dji.DjiSettings
+import com.karoopoc.dji.DjiCameraController
+import com.karoopoc.dji.DjiCameraState
+import com.karoopoc.dji.CameraConnectionState
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -42,6 +45,9 @@ class SettingsUiTest {
         val view = (activity.findViewById<ViewGroup>(android.R.id.content)).getChildAt(0)
         view.measure(View.MeasureSpec.makeMeasureSpec(480, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(755, View.MeasureSpec.EXACTLY))
         view.layout(0, 0, 480, 755)
+        if (name.endsWith("-bottom")) descendants(view).filterIsInstance<ScrollView>().filter { it.visibility == View.VISIBLE }.forEach {
+            it.scrollTo(0, it.getChildAt(0).height)
+        }
         val bitmap = Bitmap.createBitmap(480, 755, Bitmap.Config.ARGB_8888)
         view.draw(Canvas(bitmap))
         val folder = File("build/reports/settings-ui").apply { mkdirs() }
@@ -109,8 +115,15 @@ class SettingsUiTest {
             activity.findViewById<ScrollView>(R.id.settings_scroll).fullScroll(View.FOCUS_DOWN)
             render(activity, "settings-$mode-bottom")
             activity.findViewById<ScrollView>(R.id.settings_scroll).scrollTo(0, 0)
+            activity.onRequestPermissionsResult(1001, arrayOf(android.Manifest.permission.BLUETOOTH_SCAN, android.Manifest.permission.BLUETOOTH_CONNECT), intArrayOf(0, 0))
+            DjiCameraController.publish(DjiCameraState(configured = true, connection = CameraConnectionState.CONNECTED,
+                batteryPercent = 84, remainingCapacityMb = 59_802, remainingRecordingSeconds = 8520,
+                lastMessage = "Camera connected; ready"))
             button(activity, "Status").performClick()
             render(activity, "status-$mode")
+            DjiCameraController.publish(DjiCameraState(lastMessage = "No camera paired"))
+            render(activity, "status-$mode-unpaired")
+            assertEquals(View.VISIBLE, button(activity, "Start Setup").visibility)
             button(activity, "Help").performClick()
             render(activity, "help-$mode")
             assertEquals(before, DjiSettings.preferences(context).all)
