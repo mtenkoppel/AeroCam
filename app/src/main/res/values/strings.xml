@@ -108,7 +108,7 @@
     <string name="highlight_peak_heart_rate_threshold">Heart rate threshold (bpm)</string>
     <string name="highlight_high_speed_descent">Downhill marker</string>
     <string name="highlight_descent_speed_threshold">Downhill speed (km/h)</string>
-    <string name="highlight_ride_bookmarks">Ride start/end bookmarks</string>
+    <string name="highlight_ride_bookmarks">Ride start/end markers</string>
     <string name="alert_settings">In-ride alerts</string>
     <string name="alert_low_battery_setting">Low camera battery at 20%</string>
     <string name="alert_low_storage_setting">Low SD card below 5 GB</string>

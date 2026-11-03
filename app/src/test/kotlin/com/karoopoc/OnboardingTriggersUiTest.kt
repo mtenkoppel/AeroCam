@@ -155,4 +155,17 @@ class OnboardingTriggersUiTest {
         assertEquals("-8",input(a,R.string.highlight_descent_grade_threshold).text.toString())
         controller.pause().stop().destroy()
     }
+
+    @Test fun normalOnboardingKeepsExistingBookmarkChoiceUntilUserChangesIt() {
+        prefs.edit().putBoolean(DjiSettings.KEY_RIDE_BOOKMARKS, true).commit()
+        seed()
+        val controller = launch(); val a = controller.get()
+        assertTrue(toggle(a, R.string.highlight_ride_bookmarks).isChecked)
+        assertTrue(DjiSettings.read(a).rideBookmarks)
+        toggle(a, R.string.highlight_ride_bookmarks).performClick()
+        assertTrue(DjiSettings.read(a).rideBookmarks)
+        click(a, R.string.ob_next)
+        assertFalse(DjiSettings.read(a).rideBookmarks)
+        controller.pause().stop().destroy()
+    }
 }

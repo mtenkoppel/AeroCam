@@ -6,6 +6,16 @@ Ein Highlight markiert einen interessanten Moment innerhalb einer Videoaufnahme.
 
 AeroCam kann ein Highlight hinzufügen, wenn während deiner Fahrt etwas Bestimmtes passiert. Dieses Ereignis heißt **Auslöser**.
 
+## Markierungen für Fahrtstart/-ende
+
+Bei neuen Installationen ist diese Option aus. Updates erhalten vorhandene Einstellungen und den bisherigen Standard älterer Installationen. Aktiviere **Auto-Highlights** und **Markierungen für Fahrtstart/-ende**, um sie zu nutzen.
+
+- Eine Startmarkierung wird nur gesetzt, wenn die Kamera beim Fahrtstart bereits aufnimmt. Eine später gestartete Aufnahme erhält keine nachträgliche Fahrtstartmarkierung.
+- Eine Endmarkierung wird beim Beenden einer aktiven oder pausierten Fahrt gesetzt, sofern die Kamera noch aufnimmt. Der Karoo meldet für Speichern und Verwerfen denselben Endzustand; beides kann daher eine Endmarkierung erzeugen.
+- Pausieren und Fortsetzen setzen keine Markierungen. Verpasste Markierungen werden nicht nachgeholt, auch nicht nach einer erneuten Verbindung.
+- Diese Markierungen starten niemals eine Aufnahme, auch bei aktivem automatischem Aufnahmestart. Die Wartezeit für automatische Schwellen-Highlights gilt für sie nicht.
+
+
 ## Verfügbare Auslöser
 
 - **Rundenmarker:** Eine neue Runde beginnt.
@@ -15,7 +25,7 @@ AeroCam kann ein Highlight hinzufügen, wenn während deiner Fahrt etwas Bestimm
 - **Herzfrequenzspitze:** Deine Herzfrequenz überschreitet die eingestellte Schwelle.
 - **Anstiegsmarker:** Sowohl die eingestellte Geschwindigkeit bergauf als auch die positive Steigung werden erreicht.
 - **Abfahrtsmarker:** Sowohl die eingestellte Geschwindigkeit bergab als auch das negative Gefälle werden erreicht.
-- **Marker bei Fahrtstart/-ende:** Deine Fahrt beginnt oder endet.
+- **Markierungen für Fahrtstart/-ende:** Markiert Fahrtstart und Fahrtende nur, wenn die Kamera bereits aufnimmt. Pausen und Fortsetzen setzen keine Markierungen. Startet niemals eine Aufnahme.
 
 Es werden nur die Auslöser verwendet, die du in den Einstellungen aktivierst.
 

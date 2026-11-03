@@ -6,6 +6,16 @@ Un temps fort marque un moment intéressant dans un enregistrement vidéo. Il pe
 
 AeroCam peut ajouter un temps fort lorsqu’un événement se produit pendant ta sortie. Cet événement est appelé **déclencheur**.
 
+## Repères de début/fin de sortie
+
+Cette option est désactivée pour les nouvelles installations. Les mises à jour conservent les choix existants et la valeur par défaut des anciennes installations. Activez **Temps forts automatiques** et **Repères de début/fin de sortie** pour l’utiliser.
+
+- Un repère de début est ajouté uniquement si la caméra enregistre déjà au départ. Commencer à filmer plus tard n’ajoute pas de repère de départ rétroactif.
+- Un repère de fin est ajouté lorsque la sortie active ou en pause se termine, si la caméra enregistre encore. Karoo signale le même état final pour enregistrer ou abandonner une sortie ; les deux peuvent donc créer ce repère.
+- Les pauses et reprises n’ajoutent aucun repère. Les repères manqués ne sont pas ajoutés plus tard, même après une reconnexion.
+- Ces repères ne démarrent jamais un enregistrement, même avec le démarrage automatique activé, et ignorent le délai minimal des repères automatiques à seuil.
+
+
 ## Déclencheurs disponibles
 
 - **Marqueur de tour :** Un nouveau tour commence.
@@ -15,7 +25,7 @@ AeroCam peut ajouter un temps fort lorsqu’un événement se produit pendant ta
 - **Pic de fréquence cardiaque :** Ta fréquence cardiaque dépasse le seuil choisi.
 - **Marqueur de montée :** Les seuils choisis de vitesse en montée et de pente positive sont tous les deux atteints.
 - **Marqueur de descente :** Les seuils choisis de vitesse en descente et de pente négative sont tous les deux atteints.
-- **Marqueurs de début et de fin :** Ta sortie commence ou se termine.
+- **Repères de début/fin de sortie:** Marque le début et la fin de la sortie uniquement si la caméra enregistre déjà. Les pauses et reprises n’ajoutent aucun repère. Ne démarre jamais un enregistrement.
 
 Seuls les déclencheurs activés dans les réglages sont utilisés.
 

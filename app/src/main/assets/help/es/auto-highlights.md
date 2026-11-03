@@ -6,6 +6,16 @@ Un destacado marca un momento interesante dentro de una grabación de vídeo. Te
 
 AeroCam puede añadir un destacado cuando ocurre algo durante tu salida. El evento que lo provoca se llama **activador**.
 
+## Marcadores de inicio/fin de ruta
+
+Esta opción está desactivada en instalaciones nuevas. Las actualizaciones conservan las elecciones existentes y el valor predeterminado anterior de instalaciones antiguas. Activa **Destacados automáticos** y **Marcadores de inicio/fin de ruta** para usarla.
+
+- Solo se añade un marcador de inicio si la cámara ya está grabando al comenzar la ruta. Empezar a grabar más tarde no añade un marcador de inicio retrasado.
+- Se añade un marcador de fin al finalizar una ruta activa o en pausa, si la cámara sigue grabando. Karoo informa del mismo estado final al guardar y descartar una ruta; ambas acciones pueden producir este marcador.
+- Pausar y reanudar no añade marcadores. Los marcadores omitidos no se recuperan más tarde ni al reconectar.
+- Estos marcadores nunca inician una grabación, incluso con el inicio automático activado, y no están sujetos al intervalo mínimo de los marcadores automáticos por umbral.
+
+
 ## Activadores disponibles
 
 - **Marcador de vuelta:** Comienza una nueva vuelta.
@@ -15,7 +25,7 @@ AeroCam puede añadir un destacado cuando ocurre algo durante tu salida. El even
 - **Pico de frecuencia cardíaca:** Tu frecuencia cardíaca supera el umbral configurado.
 - **Marcador de subida:** Se alcanzan tanto la velocidad de subida como la pendiente positiva configuradas.
 - **Marcador de bajada:** Se alcanzan tanto la velocidad de bajada como la pendiente negativa configuradas.
-- **Marcadores de inicio y fin:** Tu salida comienza o termina.
+- **Marcadores de inicio/fin de ruta:** Marca el inicio y el final de la ruta solo si la cámara ya está grabando. Pausar y reanudar no añade marcadores. Nunca inicia una grabación.
 
 Solo se utilizan los activadores que habilites en Ajustes.
 

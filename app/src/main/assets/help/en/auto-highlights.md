@@ -6,6 +6,16 @@ A highlight marks an interesting moment inside a video recording. It helps you f
 
 AeroCam can add a highlight when something happens during your ride. The event that causes it is called a **trigger**.
 
+## Ride start/end markers
+
+This option is off for new installations. Updates preserve existing choices and the previous default for older installations. Enable both **Auto highlights** and **Ride start/end markers** to use it.
+
+- A start marker is added only when the camera is already recording as the ride starts. Starting the camera later does not add a delayed ride-start marker.
+- An end marker is added when an active or paused ride finishes, provided the camera is still recording. Karoo reports the same end state for saving and discarding a ride, so both can produce an end marker.
+- Pausing and resuming do not add markers. Missed markers are not saved for later; reconnecting does not add a backdated marker.
+- These markers never start a recording, even with Auto-start recording enabled, and bypass the automatic threshold cooldown.
+
+
 ## Available triggers
 
 - **Lap marker:** A new lap starts.
@@ -15,7 +25,7 @@ AeroCam can add a highlight when something happens during your ride. The event t
 - **Peak heart rate marker:** Your heart rate crosses the threshold you set.
 - **Uphill marker:** Both your selected uphill speed and positive gradient thresholds are met.
 - **Downhill marker:** Both your selected downhill speed and negative gradient thresholds are met.
-- **Ride start/end bookmarks:** Your ride starts or ends.
+- **Ride start/end markers:** Marks the ride start and end only when the camera is already recording. Pauses and resumes add no markers. Never starts a recording.
 
 Only triggers that you enable in Settings are used.
 
