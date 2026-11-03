@@ -178,4 +178,8 @@
     <string name="switch_camera_mode">Alternar modo Vídeo/Fotografia</string>
     <string name="waiting_for_screen_off">A aguardar que o ecrã se desligue</string>
     <string name="dji_independence_notice">O AeroCam é um projeto independente e não é afiliado, aprovado ou patrocinado pela DJI. DJI e Osmo são marcas dos respetivos proprietários.</string>
+    <string name="highlight_cooldown">Intervalo entre destaques automáticos</string>
+    <string name="highlight_cooldown_summary">Tempo mínimo entre destaques por limiar. Destaques manuais, voltas, cumes e marcadores de percurso são sempre permitidos. Os eventos ignorados não são guardados para depois.</string>
+    <string name="highlight_cooldown_off">Desativado</string>
+    <string name="highlight_cooldown_seconds">%1$d segundos</string>
 </resources>

@@ -56,7 +56,7 @@ class DjiKarooIntegration(
         karooSystem.addConsumer<Lap> { lap ->
             val settings = DjiSettings.read(appContext)
             if (settings.autoHighlightsEnabled && settings.lapHighlights) {
-                requestHighlight(appContext.getString(R.string.highlight_lap_feedback, lap.number))
+                requestHighlight(appContext.getString(R.string.highlight_lap_feedback, lap.number), cooldownExempt = true)
             }
         }
         karooSystem.addConsumer<UserProfile> { _ -> }
@@ -165,7 +165,7 @@ class DjiKarooIntegration(
         val settings = DjiSettings.read(appContext)
         if (!settings.autoHighlightsEnabled || !settings.rideBookmarks) return
         startBookmarkSent = true
-        requestHighlight(appContext.getString(R.string.highlight_ride_start_feedback))
+        requestHighlight(appContext.getString(R.string.highlight_ride_start_feedback), cooldownExempt = true)
     }
 
     private fun onPower(watts: Double) {
@@ -247,7 +247,7 @@ class DjiKarooIntegration(
             val summit = climb.startDistance + climb.length
             val key = "${climb.startDistance.toInt()}:${climb.length.toInt()}:${climb.grade}"
             if (distance >= summit && completedClimbs.add(key)) {
-                requestHighlight(appContext.getString(R.string.highlight_climb_feedback))
+                requestHighlight(appContext.getString(R.string.highlight_climb_feedback), cooldownExempt = true)
             }
         }
     }
@@ -288,7 +288,7 @@ class DjiKarooIntegration(
         )
     }
 
-    private fun requestHighlight(reason: String) {
+    private fun requestHighlight(reason: String, cooldownExempt: Boolean = false) {
         if (!DjiSettings.read(appContext).autoHighlightsEnabled) {
             Log.i(TAG, "Automatic highlight skipped reason=$reason autoHighlights=false")
             return
@@ -314,7 +314,7 @@ class DjiKarooIntegration(
             return
         }
         Log.i(TAG, "Automatic highlight requested reason=$reason")
-        DjiCameraController.addHighlight(appContext, reason)
+        DjiCameraController.addHighlight(appContext, reason, cooldownLimited = !cooldownExempt)
     }
 
     private fun checkThresholdAlerts(state: DjiCameraState) {

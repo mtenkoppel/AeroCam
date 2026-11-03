@@ -78,6 +78,14 @@ marker.
 - **Ride bookmarks:** Adds markers at the start and end of a ride when recording
   is active.
 
+Automatic threshold highlights share a **30-second cooldown** by default. In
+Auto Highlights settings, choose **Off, 15, 30, or 60 seconds**. Speed, power,
+heart rate, and gradient triggers share this interval. Manual highlights, laps,
+climb summits, and ride bookmarks always bypass it. Every successfully sent
+highlight starts the interval for subsequent threshold highlights. Suppressed
+triggers are discarded, never deferred; the existing threshold reset margins
+still apply. Starting a recording alone does not start the cooldown.
+
 ### Keep Awake
 
 Keep awake periodically sends a lightweight camera-control command so the Osmo
@@ -177,6 +185,13 @@ uninstalled first, which also removes AeroCam settings and its saved camera.
 This project is currently in beta. Review the release notes before updating.
 
 ## Build from source
+
+### Cooldown validation
+
+The cooldown uses the existing karoo-ext 1.1.9 integration; no SDK or KOS
+requirement changes. Official 1.1.9 release notes specify KOS 1.634.2440 or later:
+https://github.com/hammerheadnav/karoo-ext/releases/tag/1.1.9
+No Karoo or camera firmware has been physically tested for this change.
 
 ### Requirements
 

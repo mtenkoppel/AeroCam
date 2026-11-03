@@ -68,6 +68,8 @@ class DjiOsmoBleClient(
     private var latestVideoResolution: Int? = null
     private var latestVideoFps: Int? = null
     private var latestRecording = false
+    private val highlightCooldown = HighlightCooldown()
+    private var pendingHighlightCooldownLimited = false
     private var highlightCount = 0
     private var highlightFeedback: String? = null
     private var pendingHighlightFeedback: String? = null
@@ -367,17 +369,18 @@ class DjiOsmoBleClient(
         sleepCameraNow()
     }
 
-    fun addHighlight(feedback: String? = null) {
+    fun addHighlight(feedback: String? = null, cooldownLimited: Boolean = false) {
         if (!latestRecording) {
             logStatus("DJI highlight skipped: camera is not recording")
             return
         }
+        pendingHighlightCooldownLimited = cooldownLimited
         pendingHighlightFeedback = feedback
         if (!runWhenReady(PendingCameraAction.HIGHLIGHT)) {
             return
         }
 
-        addHighlightNow(pendingHighlightFeedback.also { pendingHighlightFeedback = null })
+        addHighlightNow(pendingHighlightFeedback.also { pendingHighlightFeedback = null }, pendingHighlightCooldownLimited)
     }
 
     fun toggleMode() {
@@ -457,7 +460,7 @@ class DjiOsmoBleClient(
         )
     }
 
-    private fun addHighlightNow(feedback: String? = null) {
+    private fun addHighlightNow(feedback: String? = null, cooldownLimited: Boolean = false) {
         if (!latestRecording) {
             logStatus("DJI highlight cancelled: recording is no longer active")
             return
@@ -466,9 +469,11 @@ class DjiOsmoBleClient(
         enqueueOperation(
             label = "recording highlight",
             priority = CommandPriority.USER_ACTION,
-            coalesceKey = HIGHLIGHT_OPERATION_KEY,
+            coalesceKey = if (cooldownLimited) AUTO_HIGHLIGHT_OPERATION_KEY else HIGHLIGHT_OPERATION_KEY,
+            cooldownLimitedHighlight = cooldownLimited,
             steps = listOf(keyReportStep(DjiProtocol.qsButtonShortPressPayload(), "highlight QS press")),
             onComplete = {
+                highlightCooldown.onSent(SystemClock.elapsedRealtime())
                 highlightCount += 1
                 showHighlightFeedback(feedback ?: "HIGHLIGHT")
                 logStatus("DJI highlight sent")
@@ -599,6 +604,7 @@ class DjiOsmoBleClient(
                     PendingCameraAction.SLEEP -> sleepCameraNow()
                     PendingCameraAction.HIGHLIGHT -> addHighlightNow(
                         pendingHighlightFeedback.also { pendingHighlightFeedback = null },
+                        pendingHighlightCooldownLimited,
                     )
                     PendingCameraAction.TOGGLE_MODE -> toggleModeNow()
                 }
@@ -1211,8 +1217,10 @@ class DjiOsmoBleClient(
         steps: List<CommandStep>,
         coalesceKey: String? = null,
         onComplete: () -> Unit = {},
+        cooldownLimitedHighlight: Boolean = false,
     ) {
         mainHandler.post {
+            if (cooldownLimitedHighlight && !allowThresholdHighlight()) return@post
             if (coalesceKey != null) {
                 operationQueue.removeAll { it.coalesceKey == coalesceKey }
             }
@@ -1223,11 +1231,20 @@ class DjiOsmoBleClient(
                 steps = steps,
                 order = operationOrder,
                 coalesceKey = coalesceKey,
+                cooldownLimitedHighlight = cooldownLimitedHighlight,
                 onComplete = onComplete,
             )
             Log.i(TAG, "DJI command queued label=$label priority=$priority depth=${operationQueue.size}")
             drainOperationQueue()
         }
+    }
+
+    private fun allowThresholdHighlight(): Boolean {
+        val allowed = highlightCooldown.allows(
+            SystemClock.elapsedRealtime(), DjiSettings.highlightCooldownSeconds(appContext),
+        )
+        if (!allowed) logStatus("DJI automatic highlight skipped: cooldown active")
+        return allowed
     }
 
     private fun drainOperationQueue() {
@@ -1236,6 +1253,11 @@ class DjiOsmoBleClient(
             .maxWithOrNull(compareBy<CameraOperation> { it.priority.weight }.thenBy { -it.order })
             ?: return
         operationQueue.remove(next)
+        // Recheck after earlier queued highlights finish, including manual/event markers.
+        if (next.cooldownLimitedHighlight && !allowThresholdHighlight()) {
+            drainOperationQueue()
+            return
+        }
         activeOperation = ActiveOperation(next)
         Log.i(TAG, "DJI command started label=${next.label} priority=${next.priority}")
         executeActiveOperationStep()
@@ -1249,7 +1271,7 @@ class DjiOsmoBleClient(
             drainOperationQueue()
             return
         }
-        if (active.operation.coalesceKey == HIGHLIGHT_OPERATION_KEY && !latestRecording) {
+        if (active.operation.coalesceKey in listOf(HIGHLIGHT_OPERATION_KEY, AUTO_HIGHLIGHT_OPERATION_KEY) && !latestRecording) {
             Log.i(TAG, "DJI highlight command cancelled before execution: recording stopped")
             activeOperation = null
             drainOperationQueue()
@@ -1651,6 +1673,7 @@ class DjiOsmoBleClient(
         val steps: List<CommandStep>,
         val order: Long,
         val coalesceKey: String?,
+        val cooldownLimitedHighlight: Boolean,
         val onComplete: () -> Unit,
     )
 
@@ -1710,6 +1733,7 @@ class DjiOsmoBleClient(
         private const val PREVENT_SLEEP_TAG = "KarooPreventSleep"
         private const val LABEL_GPS = "real GPS data push"
         private const val KEEP_AWAKE_OPERATION_KEY = "keep-awake"
+        private const val AUTO_HIGHLIGHT_OPERATION_KEY = "automatic-recording-highlight"
         private const val HIGHLIGHT_OPERATION_KEY = "recording-highlight"
         private const val MODE_OPERATION_KEY = "mode-switch"
 

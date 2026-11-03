@@ -54,10 +54,13 @@ object DjiCameraController {
 
     fun toggleRecording(context: Context) = dispatch(context, DjiCameraService.ACTION_RECORD_TOGGLE)
 
-    fun addHighlight(context: Context, feedback: String? = null) = dispatch(
+    fun addHighlight(context: Context, feedback: String? = null, cooldownLimited: Boolean = false) = dispatch(
         context,
         DjiCameraService.ACTION_HIGHLIGHT,
-        extras = { feedback?.let { putExtra(DjiCameraService.EXTRA_HIGHLIGHT_FEEDBACK, it) } },
+        extras = {
+            feedback?.let { putExtra(DjiCameraService.EXTRA_HIGHLIGHT_FEEDBACK, it) }
+            putExtra(DjiCameraService.EXTRA_HIGHLIGHT_COOLDOWN_LIMITED, cooldownLimited)
+        },
     )
 
     fun toggleMode(context: Context) = dispatch(context, DjiCameraService.ACTION_MODE_TOGGLE)
@@ -226,7 +229,10 @@ class DjiCameraService : Service() {
             ACTION_RECORD_TOGGLE -> {
                 if (client.state().recording) client.stopVideoRecording() else client.startVideoRecording()
             }
-            ACTION_HIGHLIGHT -> client.addHighlight(intent?.getStringExtra(EXTRA_HIGHLIGHT_FEEDBACK))
+            ACTION_HIGHLIGHT -> client.addHighlight(
+                intent?.getStringExtra(EXTRA_HIGHLIGHT_FEEDBACK),
+                intent?.getBooleanExtra(EXTRA_HIGHLIGHT_COOLDOWN_LIMITED, false) ?: false,
+            )
             ACTION_MODE_TOGGLE -> client.toggleMode()
             ACTION_SLEEP -> {
                 client.setKeepAwake(false, DjiCameraController.keepAwakeIntervalSeconds(this))
@@ -370,6 +376,7 @@ class DjiCameraService : Service() {
         const val ACTION_GPS_UPDATED = "com.karoopoc.dji.GPS_UPDATED"
 
         const val EXTRA_RIDE_ACTIVE = "ride_active"
+        const val EXTRA_HIGHLIGHT_COOLDOWN_LIMITED = "highlight_cooldown_limited"
         const val EXTRA_HIGHLIGHT_FEEDBACK = "highlight_feedback"
         const val EXTRA_GPS_LATITUDE = "gps_latitude"
         const val EXTRA_GPS_LONGITUDE = "gps_longitude"
