@@ -12,7 +12,7 @@
     <string name="theme_system">Utiliser le système</string>
     <string name="theme_dark">Sombre</string>
     <string name="theme_light">Clair</string>
-    <string name="keep_osmo_awake">Maintenir la caméra active</string>
+    <string name="keep_osmo_awake">Empêcher la veille</string>
     <string name="recording">Enregistrement</string>
     <string name="card_space">Espace sur la carte</string>
     <string name="settings">Réglages</string>
@@ -22,7 +22,7 @@
     <string name="help_back">Retour à l’aide</string>
     <string name="help_how_to_use">Utiliser AeroCam</string>
     <string name="help_how_to_use_summary">Connectez votre caméra et choisissez le bon champ de données.</string>
-    <string name="help_keep_awake">Fonctionnement du maintien actif</string>
+    <string name="help_keep_awake">Empêcher la veille</string>
     <string name="help_keep_awake_summary">Gardez la caméra prête et comprenez l’impact sur la batterie.</string>
     <string name="help_auto_highlights">Fonctionnement des temps forts automatiques</string>
     <string name="help_auto_highlights_summary">Marquez automatiquement les moments intéressants d’un enregistrement.</string>
@@ -51,8 +51,8 @@
     <string name="searching">Recherche</string>
     <string name="connecting">Connexion</string>
     <string name="connected">Connectée</string>
-    <string name="start_keep_awake">Activer le maintien actif</string>
-    <string name="stop_keep_awake">Désactiver le maintien actif</string>
+    <string name="start_keep_awake">Activer empêcher la veille</string>
+    <string name="stop_keep_awake">Désactiver empêcher la veille</string>
     <string name="take_picture">Prendre une photo</string>
     <string name="start_recording">Démarrer l’enregistrement</string>
     <string name="stop_recording_with_time">Arrêter l’enregistrement %1$s</string>
@@ -61,7 +61,7 @@
     <string name="ble_permissions_denied">Autorisations BLE refusées ; commandes DJI indisponibles</string>
     <string name="dji_camera_service">Connexion à la caméra DJI</string>
     <string name="notification_recording">Enregistrement %1$s</string>
-    <string name="notification_keep_awake">Connectée ; maintien actif activé</string>
+    <string name="notification_keep_awake">Empêcher la veille · Activé</string>
     <string name="notification_connected">Caméra DJI connectée</string>
     <string name="notification_connecting">Connexion à la caméra DJI</string>
     <string name="notification_disconnected">Caméra DJI déconnectée</string>
@@ -120,8 +120,8 @@
     <string name="widget_deep_sleep">Éteindre la caméra</string>
     <string name="widget_storage">Stockage</string>
     <string name="widget_add_highlight">Ajouter un temps fort</string>
-    <string name="widget_keep_awake_on">MAINTIEN ACTIF OUI</string>
-    <string name="widget_keep_awake_off">MAINTIEN ACTIF NON</string>
+    <string name="widget_keep_awake_on">Empêcher la veille · Activé</string>
+    <string name="widget_keep_awake_off">Empêcher la veille · Désactivé</string>
     <string name="widget_highlight_feedback">TEMPS FORT</string>
     <string name="widget_speed_feedback">VITESSE</string>
     <string name="widget_video_fallback">VIDÉO</string>
@@ -145,7 +145,7 @@
     <string name="gallery_state_reconnecting">Reconnexion automatique</string>
     <string name="gallery_state_recording">Enregistrement</string>
     <string name="gallery_state_feedback">Retour bref</string>
-    <string name="gallery_state_keep_awake">Maintien actif</string>
+    <string name="gallery_state_keep_awake">Empêcher la veille · Activé</string>
     <string name="gallery_state_sleep_confirmation">Confirmation d’arrêt</string>
     <string name="alert_recording_started">Enregistrement démarré</string>
     <string name="alert_recording_stopped">Enregistrement arrêté</string>
@@ -170,12 +170,19 @@
     <string name="dji_recording">Enregistrement DJI</string>
     <string name="dji_recording_description">Démarrer ou arrêter l’enregistrement DJI</string>
     <string name="find_dji_handshake">Rechercher et connecter DJI</string>
-    <string name="highlight_descent_speed_threshold">Seuil de vitesse en descente (km/h)</string>
-    <string name="highlight_high_speed_descent">Marqueur de descente rapide</string>
+    <string name="highlight_descent_speed_threshold">Vitesse en descente (km/h)</string>
+    <string name="highlight_high_speed_descent">Marqueur de descente</string>
     <string name="keep_awake_interval">Intervalle QS (secondes)</string>
     <string name="open_widget_gallery">Ouvrir la galerie de widgets</string>
     <string name="status_format">%1$s : %2$s</string>
     <string name="switch_camera_mode">Basculer entre Vidéo et Photo</string>
     <string name="waiting_for_screen_off">En attente de l’extinction de l’écran</string>
     <string name="dji_independence_notice">AeroCam est un projet indépendant, sans affiliation, approbation ni parrainage de DJI. DJI et Osmo sont des marques de leurs propriétaires respectifs.</string>
+    <string name="highlight_descent_grade_threshold">Pente en descente (%)</string>
+    <string name="highlight_uphill">Marqueur de montée</string>
+    <string name="highlight_uphill_speed_threshold">Vitesse en montée (km/h)</string>
+    <string name="highlight_uphill_grade_threshold">Pente en montée (%)</string>
+    <string name="highlight_uphill_summary">Les deux seuils sont requis. Pente positive en montée.</string>
+    <string name="highlight_descent_summary">Les deux seuils sont requis. Pente négative en descente.</string>
+    <string name="highlight_uphill_feedback">Montée</string>
 </resources>

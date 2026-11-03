@@ -16,8 +16,8 @@ android {
         applicationId = "com.karoopoc"
         minSdk = 23
         targetSdk = 34
-        versionCode = 21
-        versionName = "0.9.0-beta.3-qs-recovery.1"
+        versionCode = 22
+        versionName = "0.9.0-beta.3-onboarding.1"
     }
 
     signingConfigs {
@@ -43,6 +43,8 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+    testOptions { unitTests.isIncludeAndroidResources = true }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -55,4 +57,5 @@ android {
 dependencies {
     implementation(libs.hammerhead.karoo.ext)
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.robolectric:robolectric:4.14.1")
 }

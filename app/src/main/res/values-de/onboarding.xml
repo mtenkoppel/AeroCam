@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ob_back">Zurück</string>
+    <string name="ob_continue">Weiter</string>
+    <string name="ob_paired">Deine DJI-Kamera ist mit AeroCam gekoppelt. AeroCam kann sich jetzt automatisch wieder verbinden.</string>
+    <string name="ob_welcome">Weniger einstellen.\nMehr fahren.</string>
+    <string name="ob_intro">Nimm dir einen Moment, um deine DJI-Kamera für die Fahrt einzurichten.</string>
+    <string name="ob_skip">Überspringen</string>
+    <string name="ob_start">Einrichtung starten</string>
+    <string name="ob_prevent_title">AeroCam kann verhindern, dass deine DJI-Kamera automatisch in den Standby wechselt.</string>
+    <string name="ob_prevent_body">Deine Kamera schaltet sich nach Ablauf des Timers aus – normalerweise nach 5 Minuten, auch bei aktiver Verbindung.</string>
+    <string name="ob_prevent_recommend">AeroCam kann das verhindern. Wir empfehlen „Standby verhindern“ zu aktivieren.</string>
+    <string name="ob_battery">Das verbraucht Akku. In unseren Tests hielt ein Akku mit 1.770 mAh etwa 4 Stunden im Bereitschaftsbetrieb. Die tatsächliche Laufzeit variiert.</string>
+    <string name="ob_enable">Standby verhindern aktivieren</string>
+    <string name="ob_camera_title">Stellen wir jetzt gemeinsam deine DJI-Kamera ein.</string>
+    <string name="ob_poweroff_title">1. Automatisches Ausschalten auf %1$d Minuten stellen</string>
+    <string name="ob_poweroff_reason">AeroCam verhindert das Ausschalten, muss dafür aber den eingestellten Timer kennen.</string>
+    <string name="ob_poweroff_path">Settings → Auto Power Off → %1$d Minuten</string>
+    <string name="ob_other_timer">Ich möchte eine andere Standby-Zeit</string>
+    <string name="ob_mute">2. Töne ausschalten (optional)</string>
+    <string name="ob_mute_reason">Sonst hörst du während der Fahrt immer wieder Klicks.</string>
+    <string name="ob_mute_path">Settings → Sounds → Mute</string>
+    <string name="ob_screen">3. Display beim Sperren ausschalten lassen</string>
+    <string name="ob_screen_reason">Wenn du die Kamera sperrst, geht das Display aus und spart wertvollen Akku.</string>
+    <string name="ob_screen_path">Settings → Single Screen Preview (Scrn Off when Locked) → On</string>
+    <string name="ob_next">Weiter</string>
+    <string name="ob_timer_title">Eine andere Standby-Zeit</string>
+    <string name="ob_timer_body">Wähle hier dieselbe Zeit für Auto Power Off wie auf deiner DJI-Kamera.</string>
+    <string name="ob_minutes">%1$d Minuten</string>
+    <string name="ob_ride_title">Bei deiner nächsten Fahrt kannst du einfach:</string>
+    <string name="ob_turn_on">1. Kamera einschalten</string>
+    <string name="ob_auto_connect">AeroCam verbindet sich automatisch</string>
+    <string name="ob_lock">2. DJI-Kamera sperren</string>
+    <string name="ob_lock_body">Dadurch geht das Display aus</string>
+    <string name="ob_lock_tip">Nach unten wischen, dann auf das Schloss tippen: untere Reihe, zweites Symbol von links.</string>
+    <string name="ob_prevents">3. AeroCam verhindert Standby</string>
+    <string name="ob_controls">Mache Fotos, starte Aufnahmen und setze Highlights jederzeit vom Karoo aus.</string>
+    <string name="ob_later">Du kannst es später aktivieren</string>
+    <string name="ob_later_body">Standby verhindern ist vorerst aus. Aktiviere es in den Einstellungen oder einem Widget mit Kaffeesymbol.</string>
+    <string name="ob_later_faq">Passe vorher einige Einstellungen deiner DJI-Kamera an. Die Schritte findest du in den FAQ.</string>
+    <string name="ob_triggers_intro">AeroCam kann Highlights markieren oder sogar automatisch eine Aufnahme starten.</string>
+    <string name="ob_lap">Wenn du eine Runde aufzeichnest</string>
+    <string name="ob_power">Leistung überschreitet deinen Schwellenwert</string>
+    <string name="ob_speed">Geschwindigkeit überschreitet deinen Schwellenwert</string>
+    <string name="ob_summit">Am Gipfel eines Anstiegs deiner Route</string>
+    <string name="ob_hr">Herzfrequenz überschreitet deinen Schwellenwert</string>
+    <string name="ob_auto_start_body">Bei einem gewählten Auslöser automatisch aufnehmen.</string>
+    <string name="ob_threshold">Wähle den Schwellenwert für diesen Auslöser.</string>
+    <string name="ob_save_threshold">Schwellenwert speichern</string>
+    <string name="ob_positive_number">Gib eine positive ganze Zahl ein.</string>
+    <string name="ob_awesome">Großartig.</string>
+    <string name="ob_widgets">Füge jetzt AeroCam-Widgets zum Fahrbildschirm deines Karoo hinzu.</string>
+    <string name="ob_sizes">Es gibt verschiedene Größen. Probiere aus, was dir am besten passt.</string>
+    <string name="ob_sample">Beispiel-Steuerungswidget</string>
+    <string name="ob_fun">Viel Spaß mit AeroCam</string>
+    <string name="ob_convenient">Steuere deine Kamera bequem vom Karoo aus.</string>
+    <string name="ob_data">AeroCam überträgt GPS, Geschwindigkeit und Höhe automatisch an deine DJI-Kamera, damit sie in unterstützten Videos gespeichert werden.</string>
+    <string name="ob_overlay">Zeige diese Daten mit DJI Mimo an oder probiere GPStitch, einen Open-Source-Overlay-Editor.</string>
+    <string name="ob_done">Fertig</string>
+    <string name="ob_power_fun1">Wow, du hast ordentlich Power.</string>
+    <string name="ob_power_fun2">Du bist eine Maschine.</string>
+    <string name="ob_power_fun3">Hey Pogačar, unterschreibst du meine Kappe?</string>
+    <string name="ob_speed_fun1">Du kleiner Raser.</string>
+    <string name="ob_speed_fun2">Du bist der König der Aerodynamik.</string>
+    <string name="ob_speed_fun3">Auf öffentlichen Straßen gelten Tempolimits auch für dich 😉</string>
+    <string name="ob_replay">Kamera-Einrichtung</string>
+    <string name="ob_bookmarks" formatted="false">Setzt Start-/Endmarkierungen, während die Kamera aufnimmt. Lesezeichen starten keine Aufnahme.</string>
+    <string name="ob_gradient_threshold" formatted="false">Beide Schwellen müssen erreicht werden.</string>
+    <string name="ob_uphill_range" formatted="false">Gib ein Tempo von 1 bis 80 km/h und eine Steigung von +1 bis +30% ein.</string>
+    <string name="ob_downhill_range" formatted="false">Gib ein Tempo von 40 bis 80 km/h und ein Gefälle von −30 bis −1% ein.</string>
+</resources>

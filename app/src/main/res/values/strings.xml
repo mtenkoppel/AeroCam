@@ -13,7 +13,7 @@
     <string name="theme_system">Use system</string>
     <string name="theme_dark">Dark</string>
     <string name="theme_light">Light</string>
-    <string name="keep_osmo_awake">Keep cam awake</string>
+    <string name="keep_osmo_awake">Prevent standby</string>
     <string name="recording">Recording</string>
     <string name="card_space">Card space</string>
     <string name="settings">Settings</string>
@@ -23,7 +23,7 @@
     <string name="help_back">Back to Help</string>
     <string name="help_how_to_use">How to use AeroCam</string>
     <string name="help_how_to_use_summary">Connect your camera and choose the right data field.</string>
-    <string name="help_keep_awake">How Keep awake works</string>
+    <string name="help_keep_awake">Prevent standby</string>
     <string name="help_keep_awake_summary">Keep the camera ready and understand the battery cost.</string>
     <string name="help_auto_highlights">How Auto highlights work</string>
     <string name="help_auto_highlights_summary">Automatically mark interesting moments in a recording.</string>
@@ -36,7 +36,7 @@
     <string name="pairing_accept">Accept connection on camera</string>
     <string name="pairing_connected">Connected</string>
     <string name="pairing_connected_icon">✓</string>
-    <string name="pairing_steps_title">Steps</string>
+    <string name="pairing_steps_title">Connect camera</string>
     <string name="pairing_step_1">1. Turn on cam</string>
     <string name="pairing_step_2">2. Go to Settings &gt; Bluetooth Remote Controller and keep the screen open</string>
     <string name="pairing_step_3">3. Press search on your Karoo</string>
@@ -57,8 +57,8 @@
     <string name="searching">Searching</string>
     <string name="connecting">Connecting</string>
     <string name="connected">Connected</string>
-    <string name="start_keep_awake">Start keep awake</string>
-    <string name="stop_keep_awake">Stop keep awake</string>
+    <string name="start_keep_awake">Enable prevent standby</string>
+    <string name="stop_keep_awake">Disable prevent standby</string>
     <string name="take_picture">Take picture</string>
     <string name="start_recording">Start recording</string>
     <string name="stop_recording_with_time">Stop recording %1$s</string>
@@ -69,7 +69,7 @@
     <string name="ble_permissions_denied">BLE permissions denied; DJI controls unavailable</string>
     <string name="dji_camera_service">DJI camera connection</string>
     <string name="notification_recording">Recording %1$s</string>
-    <string name="notification_keep_awake">Connected; keep awake active</string>
+    <string name="notification_keep_awake">Prevent standby · On</string>
     <string name="notification_connected">DJI camera connected</string>
     <string name="notification_connecting">Connecting to DJI camera</string>
     <string name="notification_disconnected">DJI camera disconnected</string>
@@ -102,8 +102,8 @@
     <string name="highlight_climb_summit">Climb summit marker</string>
     <string name="highlight_peak_heart_rate">Peak heart rate marker</string>
     <string name="highlight_peak_heart_rate_threshold">Heart rate threshold (bpm)</string>
-    <string name="highlight_high_speed_descent">High-speed descent marker</string>
-    <string name="highlight_descent_speed_threshold">Descent speed threshold (km/h)</string>
+    <string name="highlight_high_speed_descent">Downhill marker</string>
+    <string name="highlight_descent_speed_threshold">Downhill speed (km/h)</string>
     <string name="highlight_ride_bookmarks">Ride start/end bookmarks</string>
     <string name="alert_settings">In-ride alerts</string>
     <string name="alert_low_battery_setting">Low camera battery at 20%</string>
@@ -135,8 +135,8 @@
     <string name="widget_deep_sleep">Deep sleep</string>
     <string name="widget_storage">Storage</string>
     <string name="widget_add_highlight">Add highlight</string>
-    <string name="widget_keep_awake_on">KEEP AWAKE ON</string>
-    <string name="widget_keep_awake_off">KEEP AWAKE OFF</string>
+    <string name="widget_keep_awake_on">Prevent standby · On</string>
+    <string name="widget_keep_awake_off">Prevent standby · Off</string>
     <string name="widget_highlight_feedback">HIGHLIGHT</string>
     <string name="widget_speed_feedback">SPEED</string>
     <string name="widget_video_fallback">VIDEO</string>
@@ -160,7 +160,7 @@
     <string name="gallery_state_reconnecting">Auto-reconnecting</string>
     <string name="gallery_state_recording">Recording</string>
     <string name="gallery_state_feedback">Brief feedback</string>
-    <string name="gallery_state_keep_awake">Keep awake on</string>
+    <string name="gallery_state_keep_awake">Prevent standby · On</string>
     <string name="gallery_state_sleep_confirmation">Deep-sleep confirmation</string>
     <string name="alert_recording_started">Recording started</string>
     <string name="alert_recording_stopped">Recording stopped</string>
@@ -183,4 +183,11 @@
     <string name="diagnostic_reconnect">Reconnect camera</string>
     <string name="diagnostic_connection_hint">Manual test only. Bluetooth stays on. Disconnect is blocked while recording or a camera action is pending.</string>
     <string name="diagnostic_connection_paused">Camera connection paused. Use Reconnect camera to resume. Restarting the app service also ends this debug pause.</string>
+    <string name="highlight_descent_grade_threshold">Downhill gradient (%)</string>
+    <string name="highlight_uphill">Uphill marker</string>
+    <string name="highlight_uphill_speed_threshold">Uphill speed (km/h)</string>
+    <string name="highlight_uphill_grade_threshold">Uphill gradient (%)</string>
+    <string name="highlight_uphill_summary">Both thresholds required. Use a positive uphill gradient.</string>
+    <string name="highlight_descent_summary">Both thresholds required. Use a negative downhill gradient.</string>
+    <string name="highlight_uphill_feedback">Uphill</string>
 </resources>

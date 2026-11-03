@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ob_back">Indietro</string>
+    <string name="ob_continue">Continua</string>
+    <string name="ob_paired">La tua DJI è associata ad AeroCam. Da ora AeroCam può riconnettersi automaticamente.</string>
+    <string name="ob_welcome">Meno preparativi.\nPiù pedalate.</string>
+    <string name="ob_intro">Dedica un momento a configurare la DJI per usarla durante l’uscita.</string>
+    <string name="ob_skip">Salta</string>
+    <string name="ob_start">Inizia configurazione</string>
+    <string name="ob_prevent_title">AeroCam può impedire alla DJI di entrare automaticamente in standby.</string>
+    <string name="ob_prevent_body">La fotocamera si spegne allo scadere del timer, di solito dopo 5 minuti, anche se è connessa.</string>
+    <string name="ob_prevent_recommend">AeroCam può evitarlo. Consigliamo di attivare Impedisci standby.</string>
+    <string name="ob_battery">Tenere accesa la fotocamera consuma batteria. Nei nostri test, 1.770 mAh hanno garantito circa 4 ore di attesa. L’autonomia varia.</string>
+    <string name="ob_enable">Attiva impedisci standby</string>
+    <string name="ob_camera_title">Configuriamo insieme la tua DJI.</string>
+    <string name="ob_poweroff_title">1. Imposta lo spegnimento automatico su %1$d minuti</string>
+    <string name="ob_poweroff_reason">AeroCam impedisce lo spegnimento, ma deve conoscere il timer della fotocamera.</string>
+    <string name="ob_poweroff_path">Settings → Auto Power Off → %1$d minuti</string>
+    <string name="ob_other_timer">Voglio un altro tempo di standby</string>
+    <string name="ob_mute">2. Disattiva i suoni (facoltativo)</string>
+    <string name="ob_mute_reason">Altrimenti sentirai clic ripetuti durante l’uscita.</string>
+    <string name="ob_mute_path">Settings → Sounds → Mute</string>
+    <string name="ob_screen">3. Attiva lo spegnimento dello schermo al blocco</string>
+    <string name="ob_screen_reason">Quando blocchi la fotocamera, lo schermo si spegne e risparmia batteria.</string>
+    <string name="ob_screen_path">Settings → Single Screen Preview (Scrn Off when Locked) → On</string>
+    <string name="ob_next">Avanti</string>
+    <string name="ob_timer_title">Un altro tempo di standby</string>
+    <string name="ob_timer_body">Scegli qui lo stesso tempo Auto Power Off della DJI.</string>
+    <string name="ob_minutes">%1$d minuti</string>
+    <string name="ob_ride_title">Alla prossima uscita, ti basterà:</string>
+    <string name="ob_turn_on">1. Accendi la fotocamera</string>
+    <string name="ob_auto_connect">AeroCam si connette automaticamente</string>
+    <string name="ob_lock">2. Blocca la DJI</string>
+    <string name="ob_lock_body">Lo schermo si spegnerà</string>
+    <string name="ob_lock_tip">Scorri verso il basso e tocca il lucchetto: seconda icona da sinistra nella riga inferiore.</string>
+    <string name="ob_prevents">3. AeroCam impedisce lo standby</string>
+    <string name="ob_controls">Scatta foto, avvia registrazioni e aggiungi momenti salienti dal Karoo in qualsiasi momento.</string>
+    <string name="ob_later">Puoi attivarlo più tardi</string>
+    <string name="ob_later_body">Impedisci standby è disattivato. Attivalo nelle impostazioni o in un widget con l’icona del caffè.</string>
+    <string name="ob_later_faq">Prima di usarlo, regola la DJI. Trovi i passaggi nelle FAQ.</string>
+    <string name="ob_triggers_intro">AeroCam può aggiungere momenti salienti o avviare automaticamente una registrazione.</string>
+    <string name="ob_lap">Quando registri un giro</string>
+    <string name="ob_power">La potenza supera la soglia</string>
+    <string name="ob_speed">La velocità supera la soglia</string>
+    <string name="ob_summit">In cima a una salita del percorso</string>
+    <string name="ob_hr">La frequenza cardiaca supera la soglia</string>
+    <string name="ob_auto_start_body">Avvia una registrazione quando si verifica un evento selezionato.</string>
+    <string name="ob_threshold">Scegli la soglia per questo evento.</string>
+    <string name="ob_save_threshold">Salva soglia</string>
+    <string name="ob_positive_number">Inserisci un numero intero positivo.</string>
+    <string name="ob_awesome">Fantastico.</string>
+    <string name="ob_widgets">Ora aggiungi i widget AeroCam alla schermata di corsa del Karoo.</string>
+    <string name="ob_sizes">Sono disponibili in varie dimensioni. Provali per trovare quelli adatti a te.</string>
+    <string name="ob_sample">Esempio di widget di controllo</string>
+    <string name="ob_fun">Divertiti con AeroCam</string>
+    <string name="ob_convenient">Controlla comodamente la fotocamera dal Karoo.</string>
+    <string name="ob_data">AeroCam invia GPS, velocità e quota alla DJI per salvarli nelle registrazioni compatibili.</string>
+    <string name="ob_overlay">Visualizza questi dati con DJI Mimo o prova GPStitch, un editor di sovrimpressioni open source.</string>
+    <string name="ob_done">Fine</string>
+    <string name="ob_power_fun1">Accidenti, che potenza.</string>
+    <string name="ob_power_fun2">Sei una macchina.</string>
+    <string name="ob_power_fun3">Ehi Pogačar, mi firmi il cappellino?</string>
+    <string name="ob_speed_fun1">Piccolo diavolo della velocità.</string>
+    <string name="ob_speed_fun2">Sei il re dell’aerodinamica.</string>
+    <string name="ob_speed_fun3">Sulle strade pubbliche, i limiti valgono anche per te 😉</string>
+    <string name="ob_replay">Guida alla configurazione</string>
+    <string name="ob_bookmarks" formatted="false">Aggiunge marcatori di inizio e fine mentre la videocamera registra. I marcatori non avviano una registrazione.</string>
+    <string name="ob_gradient_threshold" formatted="false">Entrambe le soglie devono essere raggiunte.</string>
+    <string name="ob_uphill_range" formatted="false">Inserisci una velocità da 1 a 80 km/h e una pendenza da +1 a +30%.</string>
+    <string name="ob_downhill_range" formatted="false">Inserisci una velocità da 40 a 80 km/h e una pendenza da −30 a −1%.</string>
+</resources>

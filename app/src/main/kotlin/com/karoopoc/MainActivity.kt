@@ -3,6 +3,8 @@ package com.karoopoc
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Intent
+import android.widget.ImageView
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Typeface
@@ -54,6 +56,7 @@ class MainActivity : Activity() {
     private var renderingState = false
     private lateinit var palette: DjiPalette
     private val uiHandler = Handler(Looper.getMainLooper())
+    private var onboardingLaunched = false
     private var pairingFlowActive = false
     private var pairingSuccessVisible = false
     private var pairingSearchingUntilMs = 0L
@@ -190,10 +193,14 @@ class MainActivity : Activity() {
             setBackgroundColor(palette.appBackground)
         }
 
+        content.addView(ImageView(this).apply {
+            setImageResource(R.drawable.aerocam_launcher_foreground)
+            imageTintList = ColorStateList.valueOf(palette.textPrimary)
+        }, LinearLayout.LayoutParams(dp(96), dp(68)))
         content.addView(
             TextView(this).apply {
                 text = getString(R.string.dashboard_title)
-                textSize = 28f
+                textSize = 22f
                 setTypeface(Typeface.DEFAULT_BOLD)
                 setTextColor(palette.textPrimary)
                 gravity = Gravity.CENTER
@@ -211,6 +218,7 @@ class MainActivity : Activity() {
 
         pairingButton = actionButton(getString(R.string.pairing_search)) {
             pairingFlowActive = true
+            OnboardingActivity.prepare(this)
             pairingSuccessVisible = false
             pairingSearchingUntilMs = SystemClock.elapsedRealtime() + 10_000L
             pairingButton.text = getString(R.string.pairing_searching)
@@ -324,6 +332,7 @@ class MainActivity : Activity() {
         }
         connectionGroup.addView(settingsConnectButton, fullWidthParams())
 
+        content.addView(actionButton(getString(R.string.ob_replay)) { launchOnboarding(true) }, fullWidthParams(bottomMargin = dp(12)))
         val automationGroup = group(content, getString(R.string.automatic_highlights))
         val autoHighlightsSwitch = settingsSwitch(
             automationGroup,
@@ -377,8 +386,8 @@ class MainActivity : Activity() {
             getString(R.string.highlight_peak_power_threshold),
             DjiSettings.KEY_PEAK_POWER_WATTS,
             DjiSettings.DEFAULT_PEAK_POWER_WATTS,
-            300,
-            1_000,
+            1,
+            Int.MAX_VALUE,
         )
         peakPowerThresholdRow.visibility = if (peakPowerSwitch.isChecked) View.VISIBLE else View.GONE
         triggerGroup.addView(peakPowerThresholdRow, fullWidthParams(bottomMargin = dp(14)))
@@ -395,8 +404,8 @@ class MainActivity : Activity() {
             getString(R.string.highlight_max_speed_threshold),
             DjiSettings.KEY_MAX_SPEED_KPH,
             DjiSettings.DEFAULT_MAX_SPEED_KPH,
-            30,
-            80,
+            1,
+            Int.MAX_VALUE,
         )
         maxSpeedThresholdRow.visibility = if (maxSpeedSwitch.isChecked) View.VISIBLE else View.GONE
         triggerGroup.addView(maxSpeedThresholdRow, fullWidthParams(bottomMargin = dp(14)))
@@ -419,11 +428,33 @@ class MainActivity : Activity() {
             getString(R.string.highlight_peak_heart_rate_threshold),
             DjiSettings.KEY_PEAK_HEART_RATE_BPM,
             DjiSettings.DEFAULT_PEAK_HEART_RATE_BPM,
-            120,
-            220,
+            1,
+            Int.MAX_VALUE,
         )
         peakHeartRateThresholdRow.visibility = if (peakHeartRateSwitch.isChecked) View.VISIBLE else View.GONE
         triggerGroup.addView(peakHeartRateThresholdRow, fullWidthParams(bottomMargin = dp(14)))
+        fun gradientRows(uphill: Boolean) {
+            val rows = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+            val toggle = settingsSwitch(triggerGroup,
+                getString(if (uphill) R.string.highlight_uphill else R.string.highlight_high_speed_descent),
+                if (uphill) DjiSettings.KEY_UPHILL_HIGHLIGHTS else DjiSettings.KEY_HIGH_SPEED_DESCENT_HIGHLIGHTS,
+                false) { checked -> rows.visibility = if (checked) View.VISIBLE else View.GONE }
+            rows.addView(secondaryText(getString(if (uphill) R.string.highlight_uphill_summary else R.string.highlight_descent_summary)))
+            rows.addView(numberRow(
+                getString(if (uphill) R.string.highlight_uphill_speed_threshold else R.string.highlight_descent_speed_threshold),
+                if (uphill) DjiSettings.KEY_UPHILL_SPEED_KPH else DjiSettings.KEY_DESCENT_SPEED_KPH,
+                if (uphill) DjiSettings.DEFAULT_UPHILL_SPEED_KPH else DjiSettings.DEFAULT_DESCENT_SPEED_KPH,
+                if (uphill) 1 else 40, 80))
+            rows.addView(numberRow(
+                getString(if (uphill) R.string.highlight_uphill_grade_threshold else R.string.highlight_descent_grade_threshold),
+                if (uphill) DjiSettings.KEY_UPHILL_GRADE_PERCENT else DjiSettings.KEY_DESCENT_GRADE_PERCENT,
+                if (uphill) DjiSettings.DEFAULT_UPHILL_GRADE_PERCENT else DjiSettings.DEFAULT_DESCENT_GRADE_PERCENT,
+                if (uphill) 1 else -30, if (uphill) 30 else -1))
+            rows.visibility = if (toggle.isChecked) View.VISIBLE else View.GONE
+            triggerGroup.addView(rows, fullWidthParams(bottomMargin = dp(14)))
+        }
+        gradientRows(true)
+        gradientRows(false)
         settingsSwitch(
             triggerGroup,
             getString(R.string.highlight_ride_bookmarks),
@@ -525,6 +556,7 @@ class MainActivity : Activity() {
             },
             fullWidthParams(bottomMargin = dp(10)),
         )
+        content.addView(actionButton(getString(R.string.ob_replay)) { launchOnboarding(true) }, fullWidthParams(bottomMargin = dp(12)))
         HelpContent.articles.forEach { article ->
             val row = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
@@ -611,6 +643,9 @@ class MainActivity : Activity() {
     }
 
     private fun updatePairingSurface(state: DjiCameraState) {
+        if (state.configured && OnboardingActivity.canResume(this, state.connection == CameraConnectionState.CONNECTED) && !onboardingLaunched) {
+            launchOnboarding()
+        }
         if (pairingFlowActive && state.configured && state.connection == CameraConnectionState.CONNECTED) {
             showPairingSuccess()
         }
@@ -677,6 +712,11 @@ class MainActivity : Activity() {
     }
 
     private fun showPairingSuccess() {
+        if (DjiSettings.preferences(this).contains(OnboardingActivity.DRAFT)) {
+            pairingFlowActive = false
+            if (!onboardingLaunched) launchOnboarding()
+            return
+        }
         if (pairingSuccessVisible) return
         pairingFlowActive = false
         pairingSuccessVisible = true
@@ -691,6 +731,17 @@ class MainActivity : Activity() {
         initialPairingRoot.visibility = View.GONE
         pairingSuccessRoot.visibility = View.GONE
         selectTab(AppTab.SETTINGS)
+    }
+
+    private fun launchOnboarding(replay: Boolean = false) {
+        onboardingLaunched = true
+        startActivityForResult(Intent(this, OnboardingActivity::class.java).putExtra("replay", replay), 3002)
+    }
+
+    @Deprecated("Platform activity result API")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 3002) recreate()
     }
 
     private fun settingsSwitch(
@@ -770,7 +821,9 @@ class MainActivity : Activity() {
         maximum: Int,
     ): LinearLayout {
         val input = EditText(this).apply {
-            inputType = InputType.TYPE_CLASS_NUMBER
+            inputType = InputType.TYPE_CLASS_NUMBER or
+                (if (minimum < 0) InputType.TYPE_NUMBER_FLAG_SIGNED else 0)
+            contentDescription = label
             imeOptions = EditorInfo.IME_ACTION_DONE
             setSingleLine(true)
             setSelectAllOnFocus(true)
