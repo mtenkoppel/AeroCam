@@ -10,6 +10,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.view.Gravity
+import android.transition.Slide
+import android.transition.TransitionManager
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -59,7 +62,7 @@ class SetupActivity : DetailActivity() {
 
     override fun onBackPressed() {
         if (page == Page.CONNECT) super.onBackPressed()
-        else { currentFocus?.clearFocus(); page = Page.entries[page.ordinal - 1]; showPage() }
+        else { currentFocus?.clearFocus(); page = Page.entries[page.ordinal - 1]; showPage(back = true) }
     }
 
     private fun next() {
@@ -74,7 +77,8 @@ class SetupActivity : DetailActivity() {
         setOnClickListener { action() }
     }
 
-    private fun showPage() {
+    private fun showPage(back: Boolean = false) {
+        if (body.isLaidOut) TransitionManager.beginDelayedTransition(body, Slide(if (back) Gravity.START else Gravity.END))
         body.removeAllViews()
         // A fresh binding set prevents listeners retaining removed setup pages.
         ui = SettingsViews(this)
