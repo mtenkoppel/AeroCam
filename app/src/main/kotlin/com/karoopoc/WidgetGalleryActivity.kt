@@ -21,6 +21,7 @@ import io.hammerhead.karooext.models.ViewConfig
 
 class WidgetGalleryActivity : Activity() {
     private lateinit var videoPreview: FrameLayout
+    private lateinit var combinedPreview: FrameLayout
     private lateinit var photoPreview: FrameLayout
     private lateinit var controlPreview: FrameLayout
     private lateinit var palette: DjiPalette
@@ -47,6 +48,7 @@ class WidgetGalleryActivity : Activity() {
             addView(scenarioSpinner())
 
             videoPreview = addPreview(getString(R.string.gallery_video))
+            combinedPreview = addPreview(getString(R.string.dji_video_photo))
             photoPreview = addPreview(getString(R.string.gallery_photo))
             controlPreview = addPreview(getString(R.string.gallery_cam_control))
         }
@@ -110,11 +112,12 @@ class WidgetGalleryActivity : Activity() {
         } else {
             selectedScenario.viewState
         }
-        listOf(videoPreview, photoPreview, controlPreview).forEach { preview ->
+        listOf(videoPreview, photoPreview, combinedPreview, controlPreview).forEach { preview ->
             preview.layoutParams = previewLayoutParams()
             preview.removeAllViews()
         }
         applyPreview(videoPreview, DjiWidgetRenderer.video(this, config, state, interactive = false))
+        applyPreview(combinedPreview, DjiWidgetRenderer.videoPhoto(this, config, state, interactive = false))
         applyPreview(photoPreview, DjiWidgetRenderer.photo(this, config, state, interactive = false))
         applyPreview(controlPreview, DjiWidgetRenderer.cameraControl(this, config, state, interactive = false))
     }

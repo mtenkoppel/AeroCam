@@ -1,0 +1,4 @@
+<resources>
+    <string name="dji_video_photo">Vídeo + Foto</string>
+    <string name="dji_video_photo_description">Controles de vídeo y foto; al grabar se muestra el campo de vídeo</string>
+</resources>

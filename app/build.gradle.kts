@@ -16,8 +16,9 @@ android {
         applicationId = "com.karoopoc"
         minSdk = 23
         targetSdk = 34
-        versionCode = 22
-        versionName = "0.9.0-beta.3-onboarding.1"
+        versionCode = 23
+        versionName = "0.9.0-beta.3-combined.1"
+        testInstrumentationRunner = "com.karoopoc.widget.WidgetRenderingInstrumentation"
     }
 
     signingConfigs {
@@ -37,6 +38,12 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Isolated native rendering checks must not replace the rider's app.
+            if (providers.gradleProperty("widgetCapture").orNull == "true") {
+                applicationIdSuffix = ".capture"
+            }
+        }
         release {
             isMinifyEnabled = false
             signingConfig = signingConfigs.findByName("release")

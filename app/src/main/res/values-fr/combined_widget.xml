@@ -1,0 +1,4 @@
+<resources>
+    <string name="dji_video_photo">Vidéo + Photo</string>
+    <string name="dji_video_photo_description">Commandes vidéo et photo ; pendant un enregistrement, le champ vidéo occupe toute la largeur</string>
+</resources>

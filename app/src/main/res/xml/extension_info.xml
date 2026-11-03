@@ -23,6 +23,12 @@
         graphical="true"
         icon="@drawable/ic_launcher_foreground"
         typeId="dji-photo" />
+    <DataType
+        description="@string/dji_video_photo_description"
+        displayName="@string/dji_video_photo"
+        graphical="true"
+        icon="@drawable/ic_launcher_foreground"
+        typeId="dji-video-photo" />
     <BonusAction
         actionId="dji-record"
         displayName="@string/bonus_record" />

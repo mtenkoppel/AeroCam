@@ -3,6 +3,7 @@ package com.karoopoc.widget
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
@@ -53,6 +54,39 @@ object DjiWidgetLayout {
 }
 
 object DjiWidgetRenderer {
+    /** Compose the real controls; recording uses the standalone video view unchanged. */
+    fun videoPhoto(
+        context: Context,
+        config: ViewConfig,
+        viewState: DjiWidgetViewState,
+        interactive: Boolean = true,
+    ): RemoteViews {
+        if (viewState.camera.recording) return video(context, config, viewState, interactive)
+
+        val gap = context.resources.getDimensionPixelSize(R.dimen.widget_combined_gap)
+        val slotConfig = config.copy(
+            gridSize = Pair((config.gridSize.first / 2).coerceAtLeast(1), config.gridSize.second),
+            viewSize = Pair(
+                ((config.viewSize.first - 20 - gap) / 2).coerceAtLeast(1),
+                (config.viewSize.second - 20).coerceAtLeast(1),
+            ),
+        )
+        fun RemoteViews.withoutOuterFrame(rootId: Int) = apply {
+            // The combined container owns the one outer frame. Keep child surfaces,
+            // selectors, PendingIntents and all state-dependent rendering intact.
+            setViewPadding(rootId, 0, 0, 0, 0)
+            setInt(rootId, "setBackgroundColor", Color.TRANSPARENT)
+        }
+        return RemoteViews(context.packageName, R.layout.widget_dji_video_photo).apply {
+            setInt(R.id.widgetVideoPhotoRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
+            applyWidgetFrame(R.id.widgetVideoPhotoRoot)
+            removeAllViews(R.id.widgetCombinedVideo)
+            removeAllViews(R.id.widgetCombinedPhoto)
+            addView(R.id.widgetCombinedVideo, video(context, slotConfig, viewState, interactive).withoutOuterFrame(R.id.widgetVideoRoot))
+            addView(R.id.widgetCombinedPhoto, photo(context, slotConfig, viewState, interactive).withoutOuterFrame(R.id.widgetPhotoRoot))
+        }
+    }
+
     fun video(
         context: Context,
         config: ViewConfig,

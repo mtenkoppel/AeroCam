@@ -93,6 +93,9 @@ to power off, but testing showed it remains practical for up to 3 hour rides.
   small data-field positions, including beside maps or media controls.
 - **Video:** A compact recording control optimized for small data fields, with
   recording duration, highlight control, and temporary action feedback.
+- **Video + Photo:** Video on the left and photo on the right while idle. During
+  recording, the existing video field takes over, including timer, highlights
+  and feedback. Stopping restores both controls.
 - **Cam Control:** Best used as a full-screen data field. It combines connection,
   battery, storage, Keep awake, video, photo, camera power-off, and app access in
   one riding dashboard.
