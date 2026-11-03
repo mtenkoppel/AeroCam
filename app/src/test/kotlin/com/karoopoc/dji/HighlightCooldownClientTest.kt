@@ -88,6 +88,26 @@ class HighlightCooldownClientTest {
         assertEquals(2, count())
     }
 
+    @Test fun manualSendStartsCooldownButAnotherManualSendIsAllowed() {
+        client.addHighlight("manual")
+        idle()
+        completeWrite(true)
+        client.addHighlight("speed", true)
+        client.addHighlight("lap")
+        idle()
+        assertEquals(1, writes().size)
+        completeWrite(true)
+        assertEquals(2, count())
+    }
+
+    @Test fun disconnectedAutomaticRequestsAreNotSavedForReplay() {
+        field("protocolConnected").setBoolean(client, false)
+        client.addHighlight("speed", true)
+        idle()
+        assertTrue(writes().isEmpty())
+        assertTrue((field("pendingActionsAfterConnect").get(client) as Collection<*>).isEmpty())
+    }
+
     @Test fun stoppedRecordingCancelsQueuedAutomaticMarker() {
         client.addHighlight("manual")
         client.addHighlight("speed", true)

@@ -69,7 +69,6 @@ class DjiOsmoBleClient(
     private var latestVideoFps: Int? = null
     private var latestRecording = false
     private val highlightCooldown = HighlightCooldown()
-    private var pendingHighlightCooldownLimited = false
     private var highlightCount = 0
     private var highlightFeedback: String? = null
     private var pendingHighlightFeedback: String? = null
@@ -374,13 +373,22 @@ class DjiOsmoBleClient(
             logStatus("DJI highlight skipped: camera is not recording")
             return
         }
-        pendingHighlightCooldownLimited = cooldownLimited
+        if (cooldownLimited) {
+            // Threshold moments are not replayed after reconnecting, and cannot
+            // overwrite an exempt highlight waiting for the connection.
+            if (!isProtocolLinkFresh()) {
+                logStatus("DJI automatic highlight skipped: camera connection is not ready")
+                return
+            }
+            addHighlightNow(feedback, cooldownLimited = true)
+            return
+        }
         pendingHighlightFeedback = feedback
         if (!runWhenReady(PendingCameraAction.HIGHLIGHT)) {
             return
         }
 
-        addHighlightNow(pendingHighlightFeedback.also { pendingHighlightFeedback = null }, pendingHighlightCooldownLimited)
+        addHighlightNow(pendingHighlightFeedback.also { pendingHighlightFeedback = null })
     }
 
     fun toggleMode() {
@@ -604,7 +612,6 @@ class DjiOsmoBleClient(
                     PendingCameraAction.SLEEP -> sleepCameraNow()
                     PendingCameraAction.HIGHLIGHT -> addHighlightNow(
                         pendingHighlightFeedback.also { pendingHighlightFeedback = null },
-                        pendingHighlightCooldownLimited,
                     )
                     PendingCameraAction.TOGGLE_MODE -> toggleModeNow()
                 }
