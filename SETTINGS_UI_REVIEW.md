@@ -62,3 +62,13 @@ The runtime now reads both selected values for each direction. Independent state
 The ride-end bookmark inconsistency was explained to the user: its direct camera-command path checks ride bookmarks and recording but skips the auto-highlights master check. That behavior has not been changed by this follow-up.
 
 All active Help pages, the camera setup guide, image accessibility text and new settings/setup UI strings are translated into the five additional supported languages. The supported-language resource keys now match English completely. English fallback remains available for unsupported languages. This resolves the earlier descent-switch and translation deferrals; it supersedes the original UI-only scope for the explicitly requested gradient behavior.
+
+### Follow-up validation
+
+- Commit `411c646` passes Android build and all 20 tests: https://github.com/mtenkoppel/AeroCam/actions/runs/41622100347
+- Six detector tests cover the separate speed/gradient conditions, signed directions, independent enablement, hysteresis/re-arming and invalid sensor data.
+- Native UI tests save distinct uphill/downhill values, pass the saved values to the detector, verify recreation/persistence and signed numeric input, and check that the German Settings tab fits.
+- Localization checks cover 36 active Help/setup files, all 221 UI string keys in each supported language, format arguments, localized illustration descriptions, a regional Portuguese locale and unsupported-language fallback.
+- Native renders were reviewed in English/light and German/dark, including a separate downhill viewport showing the saved negative gradient. The English browser prototype was synced too; its JavaScript syntax check passes. Its browser automation connection was unavailable for interaction testing during this follow-up.
+- Figma now includes the independent controls, editable numeric-input components, uphill/downhill enabled examples, updated English Help and a German Help example: https://www.figma.com/design/9lQyWc0V7x2CLGFpwwVym5/AeroCam?node-id=40-5058
+- No Karoo installation or physical-camera test was performed.
