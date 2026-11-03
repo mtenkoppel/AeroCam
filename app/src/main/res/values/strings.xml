@@ -226,11 +226,11 @@
     <string name="diagnostic_reconnect">Reconnect camera</string>
     <string name="diagnostic_connection_hint">Manual test only. Bluetooth stays on. Disconnect is blocked while recording or a camera action is pending.</string>
     <string name="diagnostic_connection_paused">Camera connection paused. Use Reconnect camera to resume. Restarting the app service also ends this debug pause.</string>
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
 </resources>

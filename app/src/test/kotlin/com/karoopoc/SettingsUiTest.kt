@@ -230,7 +230,7 @@ class SettingsUiTest {
         assertEquals(300, prefs.getInt(DjiSettings.KEY_PEAK_POWER_WATTS, 500))
         input.setText("invalid")
         input.onEditorAction(android.view.inputmethod.EditorInfo.IME_ACTION_DONE)
-        assertEquals(500, prefs.getInt(DjiSettings.KEY_PEAK_POWER_WATTS, 0))
+        assertEquals(DjiSettings.DEFAULT_PEAK_POWER_WATTS, prefs.getInt(DjiSettings.KEY_PEAK_POWER_WATTS, 0))
         val master = views(activity).filterIsInstance<Switch>().first { it.text.toString() == "Auto-highlights" }
         master.isChecked = false
         assertTrue(prefs.getBoolean(DjiSettings.KEY_PEAK_POWER_HIGHLIGHTS, false))
