@@ -245,7 +245,7 @@ class MainActivity : Activity() {
         // INVISIBLE keeps the connection card's footprint stable through reconnects.
         connectionHint.visibility = if (state.configured) View.INVISIBLE else View.VISIBLE
         startSetup.visibility = if (state.configured) View.INVISIBLE else View.VISIBLE
-        connectButton.isEnabled = !connecting && !connected && state.configured
+        connectButton.isEnabled = !connecting && !connected && state.configured && !state.diagnosticConnectionPaused
         forgetButton.isEnabled = hasBlePermission && state.configured
         ui.refresh()
     }

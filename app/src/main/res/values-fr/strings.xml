@@ -220,4 +220,9 @@
     <string name="highlight_uphill_grade_threshold">Pente en montée (%)</string>
     <string name="highlight_uphill_summary">Les deux seuils sont requis. Pente positive en montée.</string>
     <string name="highlight_uphill_feedback">Montée</string>
+    <string name="diagnostic_connection_title">Débogage : connexion de la caméra</string>
+    <string name="diagnostic_disconnect">Déconnecter la caméra</string>
+    <string name="diagnostic_reconnect">Reconnecter la caméra</string>
+    <string name="diagnostic_connection_hint">Test manuel uniquement. Le Bluetooth reste activé. La déconnexion est bloquée pendant un enregistrement ou une action de caméra en attente.</string>
+    <string name="diagnostic_connection_paused">Connexion de la caméra en pause. Utilisez Reconnecter la caméra pour reprendre. Redémarrer le service de l’application met également fin à cette pause de débogage.</string>
 </resources>

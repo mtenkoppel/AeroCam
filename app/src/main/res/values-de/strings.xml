@@ -220,4 +220,9 @@
     <string name="highlight_uphill_grade_threshold">Steigung (%)</string>
     <string name="highlight_uphill_summary">Beide Schwellen müssen erreicht sein. Positive Steigung.</string>
     <string name="highlight_uphill_feedback">Anstieg</string>
+    <string name="diagnostic_connection_title">Debug: Kameraverbindung</string>
+    <string name="diagnostic_disconnect">Kamera trennen</string>
+    <string name="diagnostic_reconnect">Kamera erneut verbinden</string>
+    <string name="diagnostic_connection_hint">Nur für manuelle Tests. Bluetooth bleibt eingeschaltet. Trennen ist während einer Aufnahme oder eines ausstehenden Kamerabefehls gesperrt.</string>
+    <string name="diagnostic_connection_paused">Kameraverbindung pausiert. Mit „Kamera erneut verbinden“ fortsetzen. Ein Neustart des App-Dienstes beendet diese Debug-Pause ebenfalls.</string>
 </resources>

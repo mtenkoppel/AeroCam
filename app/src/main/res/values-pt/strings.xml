@@ -220,4 +220,9 @@
     <string name="highlight_uphill_grade_threshold">Inclinação da subida (%)</string>
     <string name="highlight_uphill_summary">Ambos os limites são necessários. Inclinação positiva na subida.</string>
     <string name="highlight_uphill_feedback">Subida</string>
+    <string name="diagnostic_connection_title">Depuração: ligação da câmara</string>
+    <string name="diagnostic_disconnect">Desligar câmara</string>
+    <string name="diagnostic_reconnect">Voltar a ligar a câmara</string>
+    <string name="diagnostic_connection_hint">Apenas para testes manuais. O Bluetooth permanece ativo. A desconexão é bloqueada durante uma gravação ou uma ação pendente da câmara.</string>
+    <string name="diagnostic_connection_paused">Ligação da câmara em pausa. Use Voltar a ligar a câmara para continuar. Reiniciar o serviço da aplicação também termina esta pausa de depuração.</string>
 </resources>

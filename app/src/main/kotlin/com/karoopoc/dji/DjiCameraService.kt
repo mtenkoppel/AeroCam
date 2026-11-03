@@ -48,6 +48,10 @@ object DjiCameraController {
 
     fun connect(context: Context) = dispatch(context, DjiCameraService.ACTION_CONNECT)
 
+    fun diagnosticDisconnect(context: Context) = dispatch(context, DjiCameraService.ACTION_DIAGNOSTIC_DISCONNECT)
+
+    fun diagnosticReconnect(context: Context) = dispatch(context, DjiCameraService.ACTION_DIAGNOSTIC_RECONNECT)
+
     fun takePhoto(context: Context) = dispatch(context, DjiCameraService.ACTION_PHOTO)
 
     fun startRecording(context: Context) = dispatch(context, DjiCameraService.ACTION_RECORD_START)
@@ -219,6 +223,8 @@ class DjiCameraService : Service() {
             }
             ACTION_DISCOVER -> client.startDiscoveryAndHandshake()
             ACTION_CONNECT -> client.autoConnectKnownDevice()
+            ACTION_DIAGNOSTIC_DISCONNECT -> client.diagnosticDisconnect()
+            ACTION_DIAGNOSTIC_RECONNECT -> client.diagnosticReconnect()
             ACTION_PHOTO -> client.triggerPhoto()
             ACTION_RECORD_START -> {
                 if (!client.state().recording) client.startVideoRecording()
@@ -357,6 +363,8 @@ class DjiCameraService : Service() {
 
         const val ACTION_START = "com.karoopoc.dji.START"
         const val ACTION_DISCOVER = "com.karoopoc.dji.DISCOVER"
+        const val ACTION_DIAGNOSTIC_DISCONNECT = "com.karoopoc.dji.DIAGNOSTIC_DISCONNECT"
+        const val ACTION_DIAGNOSTIC_RECONNECT = "com.karoopoc.dji.DIAGNOSTIC_RECONNECT"
         const val ACTION_CONNECT = "com.karoopoc.dji.CONNECT"
         const val ACTION_PHOTO = "com.karoopoc.dji.PHOTO"
         const val ACTION_RECORD_START = "com.karoopoc.dji.RECORD_START"

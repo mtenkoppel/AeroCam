@@ -220,4 +220,9 @@
     <string name="highlight_uphill_grade_threshold">Pendiente de subida (%)</string>
     <string name="highlight_uphill_summary">Se requieren ambos umbrales. La subida tiene pendiente positiva.</string>
     <string name="highlight_uphill_feedback">Subida</string>
+    <string name="diagnostic_connection_title">Depuración: conexión de la cámara</string>
+    <string name="diagnostic_disconnect">Desconectar cámara</string>
+    <string name="diagnostic_reconnect">Reconectar cámara</string>
+    <string name="diagnostic_connection_hint">Solo para pruebas manuales. Bluetooth permanece activado. No se puede desconectar mientras se graba o hay una acción de cámara pendiente.</string>
+    <string name="diagnostic_connection_paused">Conexión de la cámara en pausa. Usa Reconectar cámara para continuar. Reiniciar el servicio de la aplicación también finaliza esta pausa de depuración.</string>
 </resources>

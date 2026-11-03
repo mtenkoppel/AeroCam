@@ -220,4 +220,9 @@
     <string name="highlight_uphill_grade_threshold">Pendenza in salita (%)</string>
     <string name="highlight_uphill_summary">Sono richieste entrambe le soglie. Pendenza positiva in salita.</string>
     <string name="highlight_uphill_feedback">Salita</string>
+    <string name="diagnostic_connection_title">Debug: connessione videocamera</string>
+    <string name="diagnostic_disconnect">Disconnetti videocamera</string>
+    <string name="diagnostic_reconnect">Riconnetti videocamera</string>
+    <string name="diagnostic_connection_hint">Solo per test manuali. Il Bluetooth rimane attivo. La disconnessione è bloccata durante una registrazione o un comando della videocamera in sospeso.</string>
+    <string name="diagnostic_connection_paused">Connessione della videocamera in pausa. Usa Riconnetti videocamera per riprendere. Anche il riavvio del servizio termina questa pausa di debug.</string>
 </resources>

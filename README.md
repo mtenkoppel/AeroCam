@@ -7,7 +7,7 @@
 [![CI](https://github.com/mtenkoppel/AeroCam/actions/workflows/ci.yml/badge.svg)](https://github.com/mtenkoppel/AeroCam/actions/workflows/ci.yml)
 [![Release: v0.9.0-beta.3](https://img.shields.io/badge/release-v0.9.0--beta.3-2563EB)](https://github.com/mtenkoppel/AeroCam/releases)
 [![License: GPLv3](https://img.shields.io/badge/license-GPLv3-2563EB)](LICENSE)
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF)](https://kotlinlang.org/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.1.21-7F52FF)](https://kotlinlang.org/)
 
 **Website:** [mtenkoppel.github.io/AeroCam](https://mtenkoppel.github.io/AeroCam/)
 
@@ -143,8 +143,10 @@ Keep awake works best when the camera is configured for low-distraction use:
    produce distracting tones.
 3. Configure Single Screen Preview so the front display remains off when the
    camera is locked.
-4. Set Auto Power Off to at least two minutes, then choose a Keep awake interval
-   shorter than that timeout.
+4. Set Auto Power Off to **five minutes**. The new default QS interval is
+   **four minutes thirty seconds**, leaving time for acknowledgement retries.
+   Previously saved custom intervals remain unchanged. Shorter camera timers
+   require a correspondingly shorter app interval; guided configuration is pending.
 5. After AeroCam connects, lock the camera screen. The displays turn off while
    AeroCam periodically prevents the camera from fully powering down.
 
@@ -178,9 +180,14 @@ This project is currently in beta. Review the release notes before updating.
 
 ## Build from source
 
+The validated build combination is Kotlin 2.1.21, Android Gradle Plugin 8.6.1,
+Gradle 8.7, and Java 17, with compile SDK 35 / target SDK 34. Karoo Extensions
+remains at 1.1.9. These versions were selected for compatibility and tested on
+hardware; they are not a claim that every dependency is the newest available.
+
 ### Requirements
 
-- Android Studio with JDK 17
+- JDK 17 and Android SDK command-line tools (Android Studio is optional)
 - Android SDK 35
 - A GitHub account and token with `read:packages`
 - A Karoo in developer mode for USB deployment
