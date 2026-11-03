@@ -292,8 +292,10 @@ internal class SettingsViews(val activity: Activity) {
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onNothingSelected(parent: AdapterView<*>?) = Unit
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    if (!refreshing) DjiSettings.setInt(activity,
-                        DjiSettings.KEY_HIGHLIGHT_COOLDOWN_SECONDS, options[position])
+                    val seconds = options[position]
+                    if (!refreshing && seconds != DjiSettings.highlightCooldownSeconds(activity)) {
+                        DjiSettings.setInt(activity, DjiSettings.KEY_HIGHLIGHT_COOLDOWN_SECONDS, seconds)
+                    }
                 }
             }
         }
