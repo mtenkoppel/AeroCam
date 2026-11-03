@@ -17,6 +17,7 @@ import com.karoopoc.dji.DjiSettings
 import com.karoopoc.dji.DjiCameraController
 import com.karoopoc.dji.DjiCameraState
 import com.karoopoc.dji.CameraConnectionState
+import com.karoopoc.dji.GradientSpeedTrigger
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -47,6 +48,14 @@ class SettingsUiTest {
         view.layout(0, 0, 480, 755)
         if (name.endsWith("-bottom")) descendants(view).filterIsInstance<ScrollView>().filter { it.visibility == View.VISIBLE }.forEach {
             it.scrollTo(0, it.getChildAt(0).height)
+        }
+        if (name.contains("gradients")) {
+            val scroll = activity.findViewById<ScrollView>(R.id.settings_scroll)
+            val target = descendants(view).filterIsInstance<Switch>().first { it.text.toString() == activity.getString(R.string.highlight_uphill) }
+            val rect = android.graphics.Rect()
+            target.getDrawingRect(rect)
+            scroll.offsetDescendantRectToMyCoords(target, rect)
+            scroll.scrollTo(0, rect.top - 12)
         }
         val bitmap = Bitmap.createBitmap(480, 755, Bitmap.Config.ARGB_8888)
         view.draw(Canvas(bitmap))
@@ -87,11 +96,15 @@ class SettingsUiTest {
         prefs.edit().putBoolean(DjiSettings.KEY_KEEP_AWAKE_ENABLED, true)
             .putBoolean(DjiSettings.KEY_HIDE_FIELD_CAPTIONS, true)
             .putInt(DjiSettings.KEY_KEEP_AWAKE_INTERVAL_SECONDS, 37)
-            .putInt(DjiSettings.KEY_PEAK_POWER_WATTS, 620).commit()
+            .putInt(DjiSettings.KEY_PEAK_POWER_WATTS, 620)
+            .putBoolean(DjiSettings.KEY_HIGH_SPEED_DESCENT_HIGHLIGHTS, true)
+            .putInt(DjiSettings.KEY_DESCENT_SPEED_KPH, 65).commit()
         val before = prefs.all.toMap()
         val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
         render(controller.get(), "settings-saved-values")
         assertEquals(before, prefs.all)
+        assertEquals(65, DjiSettings.read(controller.get()).descentSpeedKph)
+        assertEquals(-3, DjiSettings.read(controller.get()).descentGradePercent)
         assertTrue(views(controller.get()).filterIsInstance<Switch>().first { it.text.toString() == "Keep camera awake" }.isChecked)
         controller.pause().stop().destroy()
     }
@@ -205,6 +218,58 @@ class SettingsUiTest {
         master.isChecked = true
         assertTrue(power.isChecked)
         controller.pause().stop().destroy()
+    }
+
+    @Test fun `separate direction controls save values consumed by their triggers`() {
+        val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
+        var activity = controller.get()
+        fun toggle(id: Int) = views(activity).filterIsInstance<Switch>().first { it.text.toString() == activity.getString(id) }
+        fun input(id: Int) = views(activity).filterIsInstance<EditText>().first { field ->
+            descendants(field.parent as View).filterIsInstance<TextView>().any { it.text.toString() == activity.getString(id) }
+        }
+        fun save(id: Int, value: String) { input(id).setText(value); input(id).onEditorAction(android.view.inputmethod.EditorInfo.IME_ACTION_DONE) }
+        assertFalse(toggle(R.string.highlight_uphill).isChecked)
+        assertFalse(toggle(R.string.highlight_high_speed_descent).isChecked)
+        assertEquals(50, DjiSettings.read(activity).descentSpeedKph)
+        assertEquals(-3, DjiSettings.read(activity).descentGradePercent)
+        toggle(R.string.highlight_uphill).isChecked = true
+        toggle(R.string.highlight_high_speed_descent).isChecked = true
+        save(R.string.highlight_uphill_speed_threshold, "18")
+        save(R.string.highlight_uphill_grade_threshold, "+5")
+        save(R.string.highlight_descent_speed_threshold, "65")
+        save(R.string.highlight_descent_grade_threshold, "-8")
+        val settings = DjiSettings.read(activity)
+        assertEquals(18, settings.uphillSpeedKph)
+        assertEquals(5, settings.uphillGradePercent)
+        assertEquals(65, settings.descentSpeedKph)
+        assertEquals(-8, settings.descentGradePercent)
+        assertTrue(input(R.string.highlight_descent_grade_threshold).inputType and android.text.InputType.TYPE_NUMBER_FLAG_SIGNED != 0)
+        assertTrue(GradientSpeedTrigger().update(18.0, 5.0, settings.uphillHighlights, settings.uphillSpeedKph, settings.uphillGradePercent))
+        assertFalse(GradientSpeedTrigger().update(64.0, -8.0, settings.highSpeedDescentHighlights, settings.descentSpeedKph, settings.descentGradePercent))
+        assertTrue(GradientSpeedTrigger().update(65.0, -8.0, settings.highSpeedDescentHighlights, settings.descentSpeedKph, settings.descentGradePercent))
+        render(activity, "settings-gradients-light")
+        controller.recreate()
+        activity = controller.get()
+        assertEquals(-8, input(R.string.highlight_descent_grade_threshold).text.toString().toInt())
+        toggle(R.string.highlight_uphill).isChecked = false
+        assertTrue(toggle(R.string.highlight_high_speed_descent).isChecked)
+        controller.pause().stop().destroy()
+    }
+
+    @Test @Config(qualifiers = "de-w256dp-h427dp-port-300dpi")
+    fun `translated direction controls and help render with German resources`() {
+        val context = RuntimeEnvironment.getApplication()
+        DjiSettings.preferences(context).edit().putString(DjiSettings.KEY_THEME_MODE, "dark")
+            .putBoolean(DjiSettings.KEY_UPHILL_HIGHLIGHTS, true)
+            .putBoolean(DjiSettings.KEY_HIGH_SPEED_DESCENT_HIGHLIGHTS, true).commit()
+        val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
+        render(controller.get(), "settings-gradients-de-dark")
+        assertTrue(views(controller.get()).filterIsInstance<Switch>().any { it.text.toString() == "Anstiegsmarker" })
+        controller.pause().stop().destroy()
+        val article = Robolectric.buildActivity(HelpActivity::class.java,
+            Intent(context, HelpActivity::class.java).putExtra("help_file", "get-ready-for-a-ride.md")).setup()
+        render(article.get(), "article-ride-de")
+        article.pause().stop().destroy()
     }
 
     @Test fun `restarting onboarding preserves every saved setting`() {

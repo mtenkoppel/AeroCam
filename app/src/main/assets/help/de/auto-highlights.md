@@ -2,38 +2,47 @@
 
 ## Was ist ein Highlight?
 
-Ein Highlight markiert einen interessanten Moment in einer Videoaufnahme. Dadurch findest du ihn später wieder, ohne die gesamte Aufnahme anzusehen.
+Ein Highlight markiert einen interessanten Moment innerhalb einer Videoaufnahme. So findest du ihn später wieder, ohne die gesamte Aufnahme anzusehen.
 
-AeroCam kann ein Highlight hinzufügen, wenn während deiner Fahrt etwas passiert. Das Ereignis, das es auslöst, heißt **Auslöser**.
+AeroCam kann ein Highlight hinzufügen, wenn während deiner Fahrt etwas Bestimmtes passiert. Dieses Ereignis heißt **Auslöser**.
 
 ## Verfügbare Auslöser
 
-- **Rundenmarkierung:** Eine neue Runde beginnt.
-- **Leistungsspitze:** Deine Leistung überschreitet den eingestellten Wert.
-- **Höchstgeschwindigkeit:** Deine Geschwindigkeit überschreitet den eingestellten Wert.
-- **Ankunft am Gipfel:** Karoo meldet das Ende eines Anstiegs.
-- **Herzfrequenzspitze:** Deine Herzfrequenz überschreitet den eingestellten Wert.
-- **Schnelle Abfahrt:** AeroCam erkennt eine schnelle Abfahrt.
-- **Fahrtstart/-ende:** Deine Fahrt beginnt oder endet.
+- **Rundenmarker:** Eine neue Runde beginnt.
+- **Leistungsspitze:** Deine Leistung überschreitet die eingestellte Schwelle.
+- **Höchstgeschwindigkeit:** Deine Geschwindigkeit überschreitet die eingestellte Schwelle.
+- **Gipfelmarker:** Der Karoo meldet das Ende eines Anstiegs.
+- **Herzfrequenzspitze:** Deine Herzfrequenz überschreitet die eingestellte Schwelle.
+- **Anstiegsmarker:** Sowohl die eingestellte Geschwindigkeit bergauf als auch die positive Steigung werden erreicht.
+- **Abfahrtsmarker:** Sowohl die eingestellte Geschwindigkeit bergab als auch das negative Gefälle werden erreicht.
+- **Marker bei Fahrtstart/-ende:** Deine Fahrt beginnt oder endet.
 
-Nur in den Einstellungen aktivierte Auslöser werden verwendet.
+Es werden nur die Auslöser verwendet, die du in den Einstellungen aktivierst.
 
-## Während einer Aufnahme
+## Schwellen für Anstiege und Abfahrten
 
-Wenn während einer Aufnahme ein Auslöser erkannt wird, sendet AeroCam einen Highlight-Befehl an die Kamera. Die Datenfelder Video und Kamerasteuerung zeigen kurz an, welcher Auslöser erkannt wurde.
+Aktiviere Anstiege, Abfahrten oder beide unabhängig voneinander. Jede Richtung hat eigene Schwellen für Geschwindigkeit und Steigung beziehungsweise Gefälle. **Beide Schwellen müssen erreicht sein**.
+
+Nutze eine **positive Prozentzahl für Anstiege** und eine **negative für Abfahrten**. Bergauf bedeuten beispielsweise **20 km/h** und **+5%** mindestens 20 km/h auf einem Anstieg mit mindestens 5% Steigung. Bergab bedeuten **60 km/h** und **−6%** mindestens 60 km/h bei einem Gefälle von mindestens 6%.
+
+Die bisherigen Abfahrtswerte bleiben **50 km/h** und **−3%**. Der Auslöser bleibt ausgeschaltet, solange du ihn nicht aktivierst. Auch der neue Anstiegsauslöser ist zunächst aus; seine Ausgangswerte sind **20 km/h** und **+3%**. Kleine Schwankungen um eine Schwelle erzeugen keine wiederholten Highlights.
+
+## Bei laufender Aufnahme
+
+Wird während einer Aufnahme ein Auslöser erkannt, sendet AeroCam einen Highlight-Befehl an die Kamera. Die Datenfelder Video und Cam Control zeigen kurz an, welcher Auslöser erkannt wurde.
 
 ## Aufnahme automatisch starten
 
 Normalerweise fügt Auto-Highlights nur dann Highlights hinzu, wenn bereits eine Aufnahme läuft.
 
-Aktiviere **Aufnahme automatisch starten**, wenn ein Auslöser bei inaktiver Kamera eine Aufnahme starten soll.
+Aktiviere **Aufnahme automatisch starten**, wenn ein Auslöser die Aufnahme bei inaktiver Kamera starten soll.
 
-Der erste Auslöser startet die Aufnahme, wird aber **nicht** als Highlight hinzugefügt. Spätere Auslöser können Highlights zu dieser Aufnahme hinzufügen.
+Der erste Auslöser startet die Aufnahme, wird aber **nicht** als Highlight hinzugefügt. Spätere Auslöser können Highlights in dieser Aufnahme setzen.
 
-Dadurch werden die Kamerabefehle in einer sicheren Reihenfolge gesendet und Aufnahme starten und Highlight hinzufügen nicht fast gleichzeitig ausgeführt.
+So bleiben die Kamerabefehle in einer sicheren Reihenfolge. Aufnahme starten und Highlight hinzufügen werden nicht nahezu gleichzeitig gesendet.
 
-## Schwellenwerte auswählen
+## Schwellen wählen
 
-Wähle Werte, die Momente darstellen, die du wirklich wiederfinden möchtest. Ist ein Wert zu leicht erreichbar, kann die Aufnahme zu viele Highlights enthalten.
+Wähle Werte für Momente, die du später wiederfinden möchtest. Ist eine Schwelle zu leicht zu erreichen, können zu viele Highlights entstehen.
 
 Beginne mit einem anspruchsvollen Wert und passe ihn nach einigen Fahrten an.

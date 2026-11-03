@@ -40,7 +40,8 @@ class DjiKarooIntegration(
     private var powerWasAbove = false
     private var speedWasAbove = false
     private var hrWasInZoneFive = false
-    private var descentWasActive = false
+    private val downhillTrigger = GradientSpeedTrigger()
+    private val uphillTrigger = GradientSpeedTrigger()
     private var startBookmarkSent = false
     private var batteryAlertArmed = true
     private var storageAlertArmed = true
@@ -187,7 +188,7 @@ class DjiKarooIntegration(
         val settings = DjiSettings.read(appContext)
         if (!settings.autoHighlightsEnabled) {
             speedWasAbove = false
-            checkHighSpeedDescent()
+            checkGradientTriggers()
             publishGpsTelemetry()
             return
         }
@@ -196,7 +197,7 @@ class DjiKarooIntegration(
             requestHighlight(appContext.getString(R.string.highlight_max_speed_feedback, kph.toInt()))
         }
         speedWasAbove = if (speedWasAbove) kph >= threshold - 3.0 else kph >= threshold
-        checkHighSpeedDescent()
+        checkGradientTriggers()
         publishGpsTelemetry()
     }
 
@@ -216,21 +217,21 @@ class DjiKarooIntegration(
 
     private fun onGrade(grade: Double) {
         latestGradePercent = grade
-        checkHighSpeedDescent()
+        checkGradientTriggers()
     }
 
-    private fun checkHighSpeedDescent() {
-        val speedKph = (latestSpeedMetersPerSecond ?: return) * 3.6
-        val grade = latestGradePercent ?: return
+    private fun checkGradientTriggers() {
         val settings = DjiSettings.read(appContext)
-        val active = speedKph >= settings.descentSpeedKph && grade <= -3.0
-        if (settings.highSpeedDescentHighlights && !descentWasActive && active) {
+        val speedKph = latestSpeedMetersPerSecond?.times(3.6)
+        if (downhillTrigger.update(speedKph, latestGradePercent,
+                settings.autoHighlightsEnabled && settings.highSpeedDescentHighlights,
+                settings.descentSpeedKph, settings.descentGradePercent)) {
             requestHighlight(appContext.getString(R.string.highlight_descent_feedback))
         }
-        descentWasActive = if (descentWasActive) {
-            speedKph >= settings.descentSpeedKph - 3 && grade <= -2.0
-        } else {
-            active
+        if (uphillTrigger.update(speedKph, latestGradePercent,
+                settings.autoHighlightsEnabled && settings.uphillHighlights,
+                settings.uphillSpeedKph, settings.uphillGradePercent)) {
+            requestHighlight(appContext.getString(R.string.highlight_uphill_feedback))
         }
     }
 
@@ -365,7 +366,8 @@ class DjiKarooIntegration(
         powerWasAbove = false
         speedWasAbove = false
         hrWasInZoneFive = false
-        descentWasActive = false
+        downhillTrigger.reset()
+        uphillTrigger.reset()
     }
 
     companion object {

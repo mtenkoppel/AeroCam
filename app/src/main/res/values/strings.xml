@@ -102,7 +102,7 @@
     <string name="highlight_climb_summit">Climb summit marker</string>
     <string name="highlight_peak_heart_rate">Peak heart rate marker</string>
     <string name="highlight_peak_heart_rate_threshold">Heart rate threshold (bpm)</string>
-    <string name="highlight_high_speed_descent">High-speed descent marker</string>
+    <string name="highlight_high_speed_descent">Downhill marker</string>
     <string name="highlight_descent_speed_threshold">Descent speed threshold (km/h)</string>
     <string name="highlight_ride_bookmarks">Ride start/end bookmarks</string>
     <string name="alert_settings">In-ride alerts</string>
@@ -214,4 +214,11 @@
     <string name="setup_skip">Skip</string>
     <string name="help_number">%1$02d</string>
     <string name="setup_search_timeout">Search is taking longer than expected. Check the camera and try again.</string>
+    <string name="highlight_descent_grade_threshold">Downhill gradient (%)</string>
+    <string name="highlight_descent_summary">Both speed and gradient must meet the thresholds. Enter a negative downhill gradient.</string>
+    <string name="highlight_uphill">Uphill marker</string>
+    <string name="highlight_uphill_speed_threshold">Uphill speed threshold (km/h)</string>
+    <string name="highlight_uphill_grade_threshold">Uphill gradient (%)</string>
+    <string name="highlight_uphill_summary">Both speed and gradient must meet the thresholds. Enter a positive uphill gradient.</string>
+    <string name="highlight_uphill_feedback">Uphill</string>
 </resources>

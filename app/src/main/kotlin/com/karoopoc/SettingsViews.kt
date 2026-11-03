@@ -35,6 +35,8 @@ internal class SettingsViews(val activity: Activity) {
     private lateinit var peakPowerThresholdRow: LinearLayout
     private lateinit var maxSpeedThresholdRow: LinearLayout
     private lateinit var peakHeartRateThresholdRow: LinearLayout
+    private lateinit var descentThresholdRows: LinearLayout
+    private lateinit var uphillThresholdRows: LinearLayout
     private fun getString(id: Int) = activity.getString(id)
     fun dp(value: Int): Int = (value * activity.resources.displayMetrics.density + .5f).toInt()
     fun fullWidthParams(topMargin: Int = 0, bottomMargin: Int = 0) = LinearLayout.LayoutParams(-1, -2).apply {
@@ -236,6 +238,52 @@ internal class SettingsViews(val activity: Activity) {
         )
         peakHeartRateThresholdRow.visibility = if (peakHeartRateSwitch.isChecked) View.VISIBLE else View.GONE
         triggerGroup.addView(peakHeartRateThresholdRow, fullWidthParams(bottomMargin = dp(14)))
+        val uphillSwitch = settingsSwitch(
+            triggerGroup,
+            getString(R.string.highlight_uphill),
+            DjiSettings.KEY_UPHILL_HIGHLIGHTS,
+            false,
+        ) { checked ->
+            uphillThresholdRows.visibility = if (checked) View.VISIBLE else View.GONE
+        }
+        uphillThresholdRows = column().apply {
+            visibility = if (uphillSwitch.isChecked) View.VISIBLE else View.GONE
+            addView(secondaryText(getString(R.string.highlight_uphill_summary)), fullWidthParams(bottomMargin = dp(8)))
+            addView(numberRow(getString(R.string.highlight_uphill_speed_threshold),
+                DjiSettings.KEY_UPHILL_SPEED_KPH, DjiSettings.DEFAULT_UPHILL_SPEED_KPH, 1, 80),
+                fullWidthParams(bottomMargin = dp(8)))
+            addView(numberRow(getString(R.string.highlight_uphill_grade_threshold),
+                DjiSettings.KEY_UPHILL_GRADE_PERCENT, DjiSettings.DEFAULT_UPHILL_GRADE_PERCENT, 1, 30),
+                fullWidthParams(bottomMargin = dp(14)))
+        }
+        triggerGroup.addView(uphillThresholdRows, fullWidthParams())
+        val descentSwitch = settingsSwitch(
+            triggerGroup,
+            getString(R.string.highlight_high_speed_descent),
+            DjiSettings.KEY_HIGH_SPEED_DESCENT_HIGHLIGHTS,
+            false,
+        ) { checked ->
+            descentThresholdRows.visibility = if (checked) View.VISIBLE else View.GONE
+        }
+        descentThresholdRows = column().apply {
+            visibility = if (descentSwitch.isChecked) View.VISIBLE else View.GONE
+            addView(secondaryText(getString(R.string.highlight_descent_summary)), fullWidthParams(bottomMargin = dp(8)))
+            addView(numberRow(
+                getString(R.string.highlight_descent_speed_threshold),
+                DjiSettings.KEY_DESCENT_SPEED_KPH,
+                DjiSettings.DEFAULT_DESCENT_SPEED_KPH,
+                40,
+                80,
+            ), fullWidthParams(bottomMargin = dp(8)))
+            addView(numberRow(
+                getString(R.string.highlight_descent_grade_threshold),
+                DjiSettings.KEY_DESCENT_GRADE_PERCENT,
+                DjiSettings.DEFAULT_DESCENT_GRADE_PERCENT,
+                DjiSettings.MIN_DESCENT_GRADE_PERCENT,
+                DjiSettings.MAX_DESCENT_GRADE_PERCENT,
+            ), fullWidthParams(bottomMargin = dp(14)))
+        }
+        triggerGroup.addView(descentThresholdRows, fullWidthParams())
         settingsSwitch(
             triggerGroup,
             getString(R.string.highlight_ride_bookmarks),
@@ -280,7 +328,7 @@ internal class SettingsViews(val activity: Activity) {
         maximum: Int,
     ): LinearLayout {
         val input = EditText(activity).apply {
-            inputType = InputType.TYPE_CLASS_NUMBER
+            inputType = InputType.TYPE_CLASS_NUMBER or if (minimum < 0) InputType.TYPE_NUMBER_FLAG_SIGNED else 0
             imeOptions = EditorInfo.IME_ACTION_DONE
             setSingleLine(true)
             setSelectAllOnFocus(true)

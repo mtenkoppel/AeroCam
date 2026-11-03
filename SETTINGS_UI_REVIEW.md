@@ -51,3 +51,14 @@ See the CI test results and native render artifacts for the current commit. Robo
 - Figma: https://www.figma.com/design/9lQyWc0V7x2CLGFpwwVym5/AeroCam?node-id=36-1656
 - The Settings section contains 20 editable viewport/content references, 39 reusable reference components, and editable Roboto text. No flattened UI screenshot is used as a design layer.
 - No installation on the user's Karoo, merge, or release was performed. Camera hardware/ride regression remains a device validation step.
+
+
+## Follow-up: independent gradient triggers and localization
+
+The user subsequently authorized exposing gradient triggers and explicitly requested uphill and downhill as independent options, each requiring both its own speed and gradient thresholds. The UI now includes both native switches and four numeric inputs. Downhill retains its existing off / 50 km/h / −3% behavior, preference key and speed limits (40–80 km/h). The new uphill option starts off / 20 km/h / +3%, with speed limits 1–80 km/h. Gradient ranges are +1…+30% uphill and −30…−1% downhill. Signed numeric input is enabled for downhill.
+
+The runtime now reads both selected values for each direction. Independent state machines retain the old downhill hysteresis margins, suppress duplicate markers near thresholds, reset when disabled, and handle missing/non-finite sensor values. Low thresholds can re-arm at a stop or on flat ground. Camera commands and recording/ride guards are unchanged.
+
+The ride-end bookmark inconsistency was explained to the user: its direct camera-command path checks ride bookmarks and recording but skips the auto-highlights master check. That behavior has not been changed by this follow-up.
+
+All active Help pages, the camera setup guide, image accessibility text and new settings/setup UI strings are translated into the five additional supported languages. The supported-language resource keys now match English completely. English fallback remains available for unsupported languages. This resolves the earlier descent-switch and translation deferrals; it supersedes the original UI-only scope for the explicitly requested gradient behavior.
