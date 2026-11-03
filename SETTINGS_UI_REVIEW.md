@@ -41,3 +41,13 @@ Five topics: ride preparation, prevent standby, auto highlights, different widge
 ## Validation
 
 See the CI test results and native render artifacts for the current commit. Robolectric tests exercise unchanged defaults/saved values, native controls in both appearances, stable debug layout, platform confirmation cancellation, all Help topics, and setup reopening without preference changes. These are Android software renders at a 480 × 755 app viewport (the Karoo's 480 × 800 display minus its 45-pixel status bar), not physical-camera or on-device Bluetooth tests.
+
+
+### Verified result
+
+- Android build and all nine tests passed for commit `66a99cc`: https://github.com/mtenkoppel/AeroCam/actions/runs/41616186775
+- The defaults and all runtime camera, BLE, automation, and widget source files are unchanged from the baseline.
+- Native renders were reviewed at 480 × 755 app pixels in dark and light. Review caught and fixed tab hit targets (now fixed at 48dp) and confirmed complete bottom-of-page rendering.
+- Figma: https://www.figma.com/design/9lQyWc0V7x2CLGFpwwVym5/AeroCam?node-id=36-1656
+- The Settings section contains 20 editable viewport/content references, 39 reusable reference components, and editable Roboto text. No flattened UI screenshot is used as a design layer.
+- No installation on the user's Karoo, merge, or release was performed. Camera hardware/ride regression remains a device validation step.
