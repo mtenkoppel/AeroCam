@@ -144,7 +144,7 @@ Pairing is required only once:
 AeroCam stores the paired camera and will try to reconnect automatically when
 the camera is available. After first pairing, an optional guide walks through
 camera settings, ride triggers and widgets. Replay it with **Camera setup guide**
-in Settings or Help. See [ONBOARDING_SPEC.md](ONBOARDING_SPEC.md).
+in Settings or Help.
 
 ### Set Up Prevent standby
 
