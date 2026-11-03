@@ -5,7 +5,8 @@
     <dimen name="widget_icon_utility_size">40dp</dimen>
     <dimen name="widget_icon_toolbar_size">34dp</dimen>
     <dimen name="widget_icon_status_size">22dp</dimen>
-    <dimen name="widget_icon_primary_padding">8dp</dimen>
+    <!-- 28.8dp content canvas × 20/24 artwork width = 24dp visible glyph. -->
+    <dimen name="widget_icon_primary_padding">10.6dp</dimen>
     <dimen name="widget_icon_utility_padding">5dp</dimen>
     <dimen name="widget_icon_status_padding">3dp</dimen>
 </resources>

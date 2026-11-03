@@ -16,8 +16,8 @@ android {
         applicationId = "com.karoopoc"
         minSdk = 23
         targetSdk = 34
-        versionCode = 21
-        versionName = "0.9.0-beta.3-qs-recovery.1"
+        versionCode = 26
+        versionName = "0.9.0-beta.3-ui-icons.1"
     }
 
     signingConfigs {
