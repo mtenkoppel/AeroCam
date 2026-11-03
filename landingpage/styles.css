@@ -414,6 +414,12 @@ h2 { font-size: clamp(1.8rem, 3.6vw, 2.6rem); font-weight: 830; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; transition: none; }
+  .strip-logo .wind { animation: none; }
+  .orb-human, .orb-machine, .orb-core { animation: none; }
+  .orb-human { left: calc(50% - 178px); }
+  .orb-machine { right: calc(50% - 178px); }
+  .orb-core { opacity: 0.8; }
+}
 
 /* ------------------------------ responsive ------------------------------ */
 @media (max-width: 960px) {
