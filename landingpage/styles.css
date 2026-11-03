@@ -461,3 +461,42 @@ section[id] { scroll-margin-top: 82px; }
 
 /* Keep the explanatory copy fixed at the top as trigger details expand. */
 #highlights .split { align-items: start; }
+
+/* Cockpit composition: devices lead, bicycle contours recede. */
+.hero-inner { grid-template-columns: 1.08fr 1fr; gap: 38px; }
+.hero-cockpit {
+  position: relative; width: 100%; aspect-ratio: .88;
+  align-self: center; isolation: isolate;
+}
+.hero-cockpit::before {
+  content: "";
+  position: absolute; inset: 0 -8%; z-index: -1;
+  background: radial-gradient(ellipse at 50% 33%, #000b 10%, #0006 40%, transparent 70%);
+}
+.cockpit-art {
+  position: relative; width: 100%;
+  mask-image: linear-gradient(to bottom, #000 0%, #000 53%, transparent 86%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 53%, transparent 86%);
+}
+@media (max-width: 960px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 28px; }
+  .hero-cockpit { max-width: 560px; margin: 0 auto; }
+}
+@media (max-width: 600px) {
+  .hero-cockpit { aspect-ratio: .95; }
+}
+
+.hero-cockpit img { display: block; width: 100%; height: auto; }
+.cockpit-recording-dot {
+  position: absolute; left: 48.8%; top: 26%;
+  width: 1.2%; aspect-ratio: 1; border-radius: 50%;
+  background: #ff0505; transform: translate(-50%, -50%);
+  animation: cockpit-recording-blink 1.6s steps(1, end) infinite;
+}
+@keyframes cockpit-recording-blink {
+  0%, 64% { opacity: 1; }
+  65%, 100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cockpit-recording-dot { animation: none; }
+}
