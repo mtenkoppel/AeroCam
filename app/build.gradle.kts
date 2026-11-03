@@ -7,6 +7,7 @@ val releaseKeystorePath = providers.environmentVariable("AEROCAM_KEYSTORE_PATH")
 val releaseKeystorePassword = providers.environmentVariable("AEROCAM_KEYSTORE_PASSWORD").orNull
 val releaseKeyAlias = providers.environmentVariable("AEROCAM_KEY_ALIAS").orNull
 val releaseKeyPassword = providers.environmentVariable("AEROCAM_KEY_PASSWORD").orNull
+val notificationTrial = providers.gradleProperty("notificationTrial").orNull == "true"
 
 android {
     namespace = "com.karoopoc"
@@ -16,8 +17,8 @@ android {
         applicationId = "com.karoopoc"
         minSdk = 23
         targetSdk = 34
-        versionCode = 21
-        versionName = "0.9.0-beta.3-qs-recovery.1"
+        versionCode = 24
+        versionName = "0.9.0-beta.3-notification.1"
     }
 
     signingConfigs {
@@ -37,6 +38,15 @@ android {
     }
 
     buildTypes {
+        debug {
+            if (notificationTrial) {
+                // Update the rider's existing app without changing its signing identity.
+                signingConfig = requireNotNull(signingConfigs.findByName("release")) {
+                    "Notification trial debug APKs require the established release signing key"
+                }
+                versionNameSuffix = "-debug"
+            }
+        }
         release {
             isMinifyEnabled = false
             signingConfig = signingConfigs.findByName("release")

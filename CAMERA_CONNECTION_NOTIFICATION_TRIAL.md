@@ -10,7 +10,28 @@ and recording updates do not repeat it. A reconnect sends it again using the
 same notification ID, updating the existing Control Center entry. Starting
 observation with an already connected camera announces it once.
 
-No BLE transport, connection lifecycle, dependencies, or signing changes.
+No BLE transport, connection lifecycle, or dependency changes. The dedicated
+debug trial uses the existing AeroCam release certificate so it can update the
+installed app while retaining pairing and settings.
+
+## Installable trial build
+
+The branch's Signed test build workflow also runs
+`./gradlew -PnotificationTrial=true assembleDebug`, verifies its signing
+certificate, and uploads a separate `aerocam-notification-trial-debug-<commit>`
+artifact. The APK is debuggable, uses application ID `com.karoopoc`, and has
+version code 24 / version name `0.9.0-beta.3-notification.1-debug`.
+This is an update to AeroCam, not a second camera controller. The notification
+is always enabled on this experimental branch; no settings toggle is required.
+
+The connected Karoo reported installed version code 22
+(`0.9.0-beta.3-onboarding.1`) when preparing the trial on 2026-11-03. This trial
+is based on master and does not include the separate onboarding or combined
+photo/video branches. It preserves their saved preferences but does not include
+their experimental screens. Install only after a passing cloud build using
+`adb install -r AeroCam-notification-trial-debug.apk`; never uninstall or clear
+app data. Return to another branch with the same certificate and an equal or
+higher version code. No automatic rollback or downgrade is attempted.
 
 ## Compatibility and verification
 
@@ -23,8 +44,8 @@ No BLE transport, connection lifecycle, dependencies, or signing changes.
 - Added automated coverage: connection edge policy tests. Required validation:
   the existing unit suite (`testDebugUnitTest`) and debug assembly (`assembleDebug`).
   The local attempt could not start because no Java runtime is configured.
-  Cloud validation is pending approval to push this branch; no passing build
-  or test run is claimed.
+  Cloud validation runs on the dedicated branch; see its matching commit's
+  Signed test build for the unit suite and both debug/release assembly results.
 - Physical device/firmware tested for this change: none yet. No installation
   or release publication is part of this trial implementation.
 

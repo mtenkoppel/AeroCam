@@ -37,6 +37,33 @@ jobs:
           test -n "$AEROCAM_KEY_ALIAS"
           test -n "$AEROCAM_KEY_PASSWORD"
           ./gradlew testDebugUnitTest assembleRelease
+      - name: Build notification trial debug APK
+        if: github.ref == 'refs/heads/codex/camera-connected-notification'
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AEROCAM_KEYSTORE_PATH: ${{ runner.temp }}/aerocam-release.jks
+          AEROCAM_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          AEROCAM_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          AEROCAM_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: ./gradlew -PnotificationTrial=true assembleDebug
+      - name: Verify notification trial debug signature
+        if: github.ref == 'refs/heads/codex/camera-connected-notification'
+        run: |
+          apk=app/build/outputs/apk/debug/app-debug.apk
+          certificate=$("$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --print-certs "$apk" | sed -n 's/^Signer #1 certificate SHA-256 digest: //p')
+          test "$certificate" = "cf5c62d207d7a6e7b03b056604c30873180390d11129f791231e19844ceab0ce"
+          mkdir -p notification-trial
+          cp "$apk" notification-trial/AeroCam-notification-trial-debug.apk
+          cd notification-trial
+          sha256sum AeroCam-notification-trial-debug.apk > AeroCam-notification-trial-debug.apk.sha256
+      - uses: actions/upload-artifact@v4
+        if: github.ref == 'refs/heads/codex/camera-connected-notification'
+        with:
+          name: aerocam-notification-trial-debug-${{ github.sha }}
+          path: notification-trial/
+          if-no-files-found: error
+          retention-days: 14
       - name: Verify signature
         run: |
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --print-certs app/build/outputs/apk/release/app-release.apk
