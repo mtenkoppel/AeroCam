@@ -153,8 +153,10 @@ class SettingsUiTest {
             arrayOf(android.Manifest.permission.BLUETOOTH_SCAN, android.Manifest.permission.BLUETOOTH_CONNECT), intArrayOf(0, 0))
         DjiCameraController.publish(DjiCameraState(configured = true, connection = CameraConnectionState.DISCONNECTED,
             diagnosticConnectionPaused = true))
+        shadowOf(Looper.getMainLooper()).idle()
         assertFalse(button(activity, activity.getString(R.string.connect_known_dji)).isEnabled)
         DjiCameraController.publish(DjiCameraState(configured = true, connection = CameraConnectionState.DISCONNECTED))
+        shadowOf(Looper.getMainLooper()).idle()
         assertTrue(button(activity, activity.getString(R.string.connect_known_dji)).isEnabled)
         controller.pause().stop().destroy()
     }
