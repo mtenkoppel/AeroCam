@@ -20,8 +20,11 @@ No BLE transport, connection lifecycle, dependencies, or signing changes.
 - API checked 2026-11-03:
   https://hammerheadnav.github.io/karoo-ext/karoo-ext/io.hammerhead.karooext.models/-system-notification/index.html
 - SDK release notes: https://github.com/hammerheadnav/karoo-ext/releases/tag/1.1.9
-- Automated checks: connection edge policy tests plus the existing unit suite
-  and debug assembly. See the matching branch's GitHub Actions run for results.
+- Added automated coverage: connection edge policy tests. Required validation:
+  the existing unit suite (`testDebugUnitTest`) and debug assembly (`assembleDebug`).
+  The local attempt could not start because no Java runtime is configured.
+  Cloud validation is pending approval to push this branch; no passing build
+  or test run is claimed.
 - Physical device/firmware tested for this change: none yet. No installation
   or release publication is part of this trial implementation.
 
