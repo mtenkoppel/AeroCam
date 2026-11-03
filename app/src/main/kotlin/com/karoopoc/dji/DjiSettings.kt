@@ -5,6 +5,7 @@ import android.content.Context
 data class DjiAutomationSettings(
     val autoHighlightsEnabled: Boolean,
     val autoStartRecording: Boolean,
+    val highlightCooldownSeconds: Int,
     val lapHighlights: Boolean,
     val peakPowerHighlights: Boolean,
     val peakPowerWatts: Int,
@@ -29,6 +30,7 @@ object DjiSettings {
     const val PREFERENCES_NAME = "dji_osmo_poc"
 
     const val KEY_AUTO_HIGHLIGHTS_ENABLED = "auto_highlights_enabled"
+    const val KEY_HIGHLIGHT_COOLDOWN_SECONDS = "highlight_cooldown_seconds"
     const val KEY_AUTO_START_RECORDING = "highlight_auto_start_recording"
     const val KEY_LAP_HIGHLIGHTS = "highlight_lap"
     const val KEY_PEAK_POWER_HIGHLIGHTS = "highlight_peak_power"
@@ -70,6 +72,7 @@ object DjiSettings {
         return DjiAutomationSettings(
             autoHighlightsEnabled = prefs.getBoolean(KEY_AUTO_HIGHLIGHTS_ENABLED, true),
             autoStartRecording = prefs.getBoolean(KEY_AUTO_START_RECORDING, false),
+            highlightCooldownSeconds = highlightCooldownSeconds(context),
             lapHighlights = prefs.getBoolean(KEY_LAP_HIGHLIGHTS, false),
             peakPowerHighlights = prefs.getBoolean(KEY_PEAK_POWER_HIGHLIGHTS, false),
             peakPowerWatts = prefs.getInt(KEY_PEAK_POWER_WATTS, DEFAULT_PEAK_POWER_WATTS)
@@ -95,6 +98,10 @@ object DjiSettings {
             actionNotifications = prefs.getBoolean(KEY_ACTION_NOTIFICATIONS, false),
         )
     }
+
+    fun highlightCooldownSeconds(context: Context): Int = HighlightCooldown.normalize(
+        preferences(context).getInt(KEY_HIGHLIGHT_COOLDOWN_SECONDS, HighlightCooldown.DEFAULT_SECONDS),
+    )
 
     fun setBoolean(context: Context, key: String, value: Boolean) {
         preferences(context).edit().putBoolean(key, value).apply()

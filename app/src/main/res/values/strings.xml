@@ -89,6 +89,10 @@
     <string name="bonus_highlight">DJI Add Highlight</string>
     <string name="bonus_settings">DJI Settings</string>
     <string name="automatic_highlights">Auto highlights</string>
+    <string name="highlight_cooldown">Automatic highlight cooldown</string>
+    <string name="highlight_cooldown_summary">Minimum time between threshold highlights. Manual highlights, laps, summits, and ride bookmarks are always allowed. Skipped triggers are not saved for later.</string>
+    <string name="highlight_cooldown_off">Off</string>
+    <string name="highlight_cooldown_seconds">%1$d seconds</string>
     <string name="automatic_highlights_summary">Automatically add highlights to a recording</string>
     <string name="automatic_highlights_enabled">Auto-highlights</string>
     <string name="highlight_auto_start_recording">Auto-start recording</string>

@@ -79,6 +79,15 @@ marker.
   is active.
 
 ### Prevent standby
+Automatic threshold highlights share a **30-second cooldown** by default. In
+Auto Highlights settings, choose **Off, 15, 30, or 60 seconds**. Speed, power,
+heart rate, and gradient triggers share this interval. Manual highlights, laps,
+climb summits, and ride bookmarks always bypass it. Every successfully sent
+highlight starts the interval for subsequent threshold highlights. Suppressed
+triggers are discarded, never deferred; the existing threshold reset margins
+still apply. Starting a recording alone does not start the cooldown.
+
+### Keep Awake
 
 Keep awake periodically sends a lightweight camera-control command so the Osmo
 does not reach its automatic power-off timeout. This lets the camera remain
@@ -187,6 +196,12 @@ The validated build combination is Kotlin 2.1.21, Android Gradle Plugin 8.6.1,
 Gradle 8.7, and Java 17, with compile SDK 35 / target SDK 34. Karoo Extensions
 remains at 1.1.9. These versions were selected for compatibility and tested on
 hardware; they are not a claim that every dependency is the newest available.
+### Cooldown validation
+
+The cooldown uses the existing karoo-ext 1.1.9 integration; no SDK or KOS
+requirement changes. Official 1.1.9 release notes specify KOS 1.634.2440 or later:
+https://github.com/hammerheadnav/karoo-ext/releases/tag/1.1.9
+No Karoo or camera firmware has been physically tested for this change.
 
 ### Requirements
 

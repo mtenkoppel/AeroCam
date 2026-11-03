@@ -123,7 +123,11 @@ class SettingsUiTest {
             assertEquals(true, switches["Low camera battery at 20%"])
             assertEquals(false, switches["Hide data field captions"])
             assertFalse(switches.containsKey("Photo and recording alerts"))
-            assertEquals(1, views(activity).filterIsInstance<Spinner>().size)
+            val spinners = views(activity).filterIsInstance<Spinner>()
+            assertEquals(2, spinners.size)
+            assertEquals("30 seconds", spinners.single {
+                it.contentDescription == activity.getString(R.string.highlight_cooldown)
+            }.selectedItem)
             render(activity, "settings-$mode")
             activity.findViewById<ScrollView>(R.id.settings_scroll).fullScroll(View.FOCUS_DOWN)
             render(activity, "settings-$mode-bottom")

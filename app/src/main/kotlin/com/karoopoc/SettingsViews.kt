@@ -12,6 +12,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import com.karoopoc.dji.DjiCameraController
+import com.karoopoc.dji.HighlightCooldown
 import com.karoopoc.dji.DjiSettings
 import com.karoopoc.widget.DjiWidgetController
 
@@ -30,6 +31,7 @@ internal class SettingsViews(val activity: Activity) {
     private data class NumericBinding(val view: EditText, val key: String, val default: Int)
     private val toggles = mutableListOf<ToggleBinding>()
     private val numericBindings = mutableListOf<NumericBinding>()
+    private var cooldownSpinner: Spinner? = null
     private var refreshing = false
     private lateinit var autoHighlightsContent: LinearLayout
     private lateinit var peakPowerThresholdRow: LinearLayout
@@ -108,6 +110,9 @@ internal class SettingsViews(val activity: Activity) {
     fun refresh() {
         refreshing = true
         try {
+            cooldownSpinner?.setSelection(
+                HighlightCooldown.OPTIONS_SECONDS.indexOf(DjiSettings.highlightCooldownSeconds(activity)), false,
+            )
             val prefs = DjiSettings.preferences(activity)
             toggles.forEach { binding ->
                 val checked = prefs.getBoolean(binding.key, binding.default)
@@ -171,6 +176,7 @@ internal class SettingsViews(val activity: Activity) {
             summary = getString(R.string.highlight_auto_start_recording_summary),
         )
 
+        autoHighlightsContent.addView(cooldownRow(), fullWidthParams(bottomMargin = dp(12)))
         val triggerGroup = subgroup(autoHighlightsContent, getString(R.string.highlight_triggers))
         settingsSwitch(
             triggerGroup,
@@ -319,6 +325,32 @@ internal class SettingsViews(val activity: Activity) {
             }
         }, fullWidthParams())
     }
+    private fun cooldownRow(): LinearLayout = column().apply {
+        addView(labelText(getString(R.string.highlight_cooldown)))
+        addView(secondaryText(getString(R.string.highlight_cooldown_summary)))
+        val options = HighlightCooldown.OPTIONS_SECONDS
+        val spinner = Spinner(activity).apply {
+            contentDescription = getString(R.string.highlight_cooldown)
+            adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_dropdown_item,
+                options.map { seconds ->
+                    if (seconds == 0) getString(R.string.highlight_cooldown_off)
+                    else activity.getString(R.string.highlight_cooldown_seconds, seconds)
+                })
+            setSelection(options.indexOf(DjiSettings.highlightCooldownSeconds(activity)), false)
+            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    val seconds = options[position]
+                    if (!refreshing && seconds != DjiSettings.highlightCooldownSeconds(activity)) {
+                        DjiSettings.setInt(activity, DjiSettings.KEY_HIGHLIGHT_COOLDOWN_SECONDS, seconds)
+                    }
+                }
+            }
+        }
+        cooldownSpinner = spinner
+        addView(spinner, fullWidthParams())
+    }
+
     private fun labelText(value: String) = text(value, 14f)
     private fun numberRow(
         label: String,

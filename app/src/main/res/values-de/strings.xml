@@ -75,6 +75,10 @@
     <string name="bonus_highlight">DJI Highlight hinzufügen</string>
     <string name="bonus_settings">DJI Einstellungen</string>
     <string name="automatic_highlights">Auto-Highlights</string>
+    <string name="highlight_cooldown">Pause für automatische Highlights</string>
+    <string name="highlight_cooldown_summary">Mindestabstand zwischen Schwellenwert-Highlights. Manuelle Highlights, Runden, Gipfel und Fahrtmarkierungen sind immer möglich. Übersprungene Auslöser werden nicht nachgeholt.</string>
+    <string name="highlight_cooldown_off">Aus</string>
+    <string name="highlight_cooldown_seconds">%1$d Sekunden</string>
     <string name="automatic_highlights_summary">Highlights automatisch zu einer Aufnahme hinzufügen</string>
     <string name="automatic_highlights_enabled">Auto-Highlights</string>
     <string name="highlight_auto_start_recording">Aufnahme automatisch starten</string>

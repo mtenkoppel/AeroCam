@@ -75,6 +75,10 @@
     <string name="bonus_highlight">Adicionar destaque DJI</string>
     <string name="bonus_settings">Definições DJI</string>
     <string name="automatic_highlights">Destaques automáticos</string>
+    <string name="highlight_cooldown">Intervalo entre destaques automáticos</string>
+    <string name="highlight_cooldown_summary">Tempo mínimo entre destaques por limiar. Destaques manuais, voltas, cumes e marcadores de percurso são sempre permitidos. Os eventos ignorados não são guardados para depois.</string>
+    <string name="highlight_cooldown_off">Desativado</string>
+    <string name="highlight_cooldown_seconds">%1$d segundos</string>
     <string name="automatic_highlights_summary">Adicionar destaques automaticamente a uma gravação</string>
     <string name="automatic_highlights_enabled">Destaques automáticos</string>
     <string name="highlight_auto_start_recording">Iniciar gravação automaticamente</string>
