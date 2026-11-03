@@ -1,7 +1,7 @@
 name: Signed test build
 on:
   push:
-    branches: [master, 'codex/**']
+    branches: [master]
   workflow_dispatch:
 permissions:
   contents: read

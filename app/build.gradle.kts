@@ -13,7 +13,8 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.karoopoc"
+        applicationId = "com.karoopoc.capture"
+        testInstrumentationRunner = "com.karoopoc.CaptureInstrumentation"
         minSdk = 23
         targetSdk = 34
         versionCode = 22
