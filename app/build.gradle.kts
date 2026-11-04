@@ -39,6 +39,10 @@ android {
 
     buildTypes {
         debug {
+            // Explicit opt-in for release-signed, debuggable device test APKs.
+            if (providers.gradleProperty("releaseSignedDebug").orNull == "true") {
+                signingConfig = signingConfigs.getByName("release")
+            }
             // Isolated native rendering checks must not replace the rider's app.
             if (providers.gradleProperty("widgetCapture").orNull == "true") {
                 applicationIdSuffix = ".capture"
