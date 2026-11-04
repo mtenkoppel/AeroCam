@@ -176,7 +176,6 @@ internal class SettingsViews(val activity: Activity) {
             summary = getString(R.string.highlight_auto_start_recording_summary),
         )
 
-        autoHighlightsContent.addView(cooldownRow(), fullWidthParams(bottomMargin = dp(12)))
         val triggerGroup = subgroup(autoHighlightsContent, getString(R.string.highlight_triggers))
         settingsSwitch(
             triggerGroup,
@@ -330,9 +329,18 @@ internal class SettingsViews(val activity: Activity) {
             }
         }, fullWidthParams())
     }
+    fun cooldown(parent: LinearLayout) {
+        parent.addView(action(getString(R.string.highlight_cooldown)) {
+            val editor = cooldownRow().apply { setPadding(dp(20), dp(8), dp(20), dp(8)) }
+            android.app.AlertDialog.Builder(activity)
+                .setTitle(R.string.highlight_cooldown)
+                .setView(editor)
+                .setPositiveButton(android.R.string.ok, null)
+                .setOnDismissListener { cooldownSpinner = null }
+                .show()
+        }, fullWidthParams())
+    }
     private fun cooldownRow(): LinearLayout = column().apply {
-        addView(labelText(getString(R.string.highlight_cooldown)))
-        addView(secondaryText(getString(R.string.highlight_cooldown_summary)))
         val options = HighlightCooldown.OPTIONS_SECONDS
         val spinner = Spinner(activity).apply {
             contentDescription = getString(R.string.highlight_cooldown)
@@ -354,6 +362,7 @@ internal class SettingsViews(val activity: Activity) {
         }
         cooldownSpinner = spinner
         addView(spinner, fullWidthParams())
+        addView(secondaryText(getString(R.string.highlight_cooldown_summary)), fullWidthParams(topMargin = dp(8)))
     }
 
     private fun labelText(value: String) = text(value, 14f)

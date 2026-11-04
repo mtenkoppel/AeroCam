@@ -201,6 +201,7 @@ class OnboardingTriggersUiTest {
         var dialog = org.robolectric.shadows.ShadowAlertDialog.getLatestAlertDialog()
         assertTrue(dialog.isShowing)
         dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).performClick()
+        shadowOf(Looper.getMainLooper()).idle()
         val skipPairing = shadowOf(a).nextStartedActivity
         assertEquals(OnboardingActivity::class.java.name, skipPairing.component!!.className)
         assertTrue(skipPairing.getBooleanExtra("replay", false))
@@ -208,6 +209,7 @@ class OnboardingTriggersUiTest {
         OnboardingActivity.open(a)
         dialog = org.robolectric.shadows.ShadowAlertDialog.getLatestAlertDialog()
         dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).performClick()
+        shadowOf(Looper.getMainLooper()).idle()
         assertEquals(SetupActivity::class.java.name, shadowOf(a).nextStartedActivity.component!!.className)
         com.karoopoc.dji.DjiCameraController.publish(com.karoopoc.dji.DjiCameraState())
         host.pause().stop().destroy()

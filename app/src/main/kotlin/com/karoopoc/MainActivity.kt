@@ -132,6 +132,7 @@ class MainActivity : Activity() {
         ui.alerts(content)
         ui.style(content)
         val advanced = ui.group(content, getString(R.string.advanced_settings))
+        ui.cooldown(advanced)
         connectButton = ui.action(getString(R.string.connect_known_dji)) {
             SetupActivity.open(this)
         }
