@@ -90,6 +90,12 @@ class LoggingPrivacyTest {
     }
 
     @Test fun serviceKeepsPairingStatusInUiStateWithoutCopyingItToLogcat() {
+        // The host JVM has no Karoo app-store service. Exercise the disconnected service path.
+        shadowOf(RuntimeEnvironment.getApplication()).apply {
+            declareActionUnbindable("KarooSystem")
+            setUnbindServiceCallsOnServiceDisconnected(false)
+            setUnbindServiceShouldThrowIllegalArgument(false)
+        }
         val service = Robolectric.buildService(DjiCameraService::class.java).create()
         try {
             client = DjiCameraService::class.java.getDeclaredField("client").apply { isAccessible = true }
