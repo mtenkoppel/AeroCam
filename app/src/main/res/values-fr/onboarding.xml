@@ -9,10 +9,10 @@
     <string name="ob_start">Commencer</string>
     <string name="ob_prevent_title">AeroCam peut empêcher votre DJI de se mettre automatiquement en veille.</string>
     <string name="ob_prevent_body">La caméra s’éteint à la fin du délai, généralement après 5 minutes, même si elle reste connectée.</string>
-    <string name="ob_prevent_recommend">AeroCam peut l’éviter. Nous recommandons d’activer Empêcher la veille.</string>
-    <string name="ob_battery">Garder la caméra allumée consomme de la batterie. Nos tests avec 1 770 mAh ont donné environ 4 heures d’attente. L’autonomie réelle varie.</string>
-    <string name="ob_enable">Activer empêcher la veille</string>
-    <string name="ob_camera_title">Réglons maintenant votre caméra DJI ensemble.</string>
+    <string name="ob_prevent_recommend">Nous vous recommandons vivement d’activer cette fonction.</string>
+    <string name="ob_battery">Maintenir la caméra active consomme de la batterie. Lors de nos tests, nous avons obtenu environ quatre heures de veille avec cette fonction activée.</string>
+    <string name="ob_enable">Activer</string>
+    <string name="ob_camera_title">Configurons votre caméra DJI.</string>
     <string name="ob_poweroff_title">1. Réglez l’arrêt automatique sur %1$d minutes</string>
     <string name="ob_poweroff_reason">AeroCam empêche l’arrêt, mais doit connaître le délai réglé sur la caméra.</string>
     <string name="ob_poweroff_path">Settings → Auto Power Off → %1$d minutes</string>
@@ -20,7 +20,7 @@
     <string name="ob_mute">2. Coupez les sons (facultatif)</string>
     <string name="ob_mute_reason">Sinon, vous entendrez des clics répétés pendant la sortie.</string>
     <string name="ob_mute_path">Settings → Sounds → Mute</string>
-    <string name="ob_screen">3. Activez l’extinction de l’écran au verrouillage</string>
+    <string name="ob_screen">3. Éteindre l’écran au verrouillage (facultatif)</string>
     <string name="ob_screen_reason">Lorsque vous verrouillez la caméra, l’écran s’éteint pour économiser la batterie.</string>
     <string name="ob_screen_path">Settings → Single Screen Preview (Scrn Off when Locked) → On</string>
     <string name="ob_next">Suivant</string>

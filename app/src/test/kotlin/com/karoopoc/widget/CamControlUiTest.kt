@@ -41,6 +41,9 @@ class CamControlUiTest {
         return view
     }
     private fun save(view: View, name: String) {
+        val width = view.width; val height = view.height
+        view.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY))
+        view.layout(0, 0, width, height)
         val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
         view.draw(Canvas(bitmap))
         val dir = File("build/reports/settings-ui/cam-control").apply { mkdirs() }
@@ -125,6 +128,62 @@ class CamControlUiTest {
             DjiWidgetViewState(camera.copy(connection = CameraConnectionState.DISCONNECTED))).reapply(context, view)
         assertFalse(view.findViewById<View>(R.id.widgetControlFullSleep).hasOnClickListeners())
     }
+    @Test fun feedbackAndConfirmationOccupyTheirIntendedSlotsAndRestoreOnReapply() {
+        val fullConfig = ViewConfig(Pair(60,60), Pair(480,420), 32)
+        val normal = render(420)
+        val power = normal.findViewById<View>(R.id.widgetControlFullSleep)
+        val powerTop = power.top; val powerHeight = power.height
+        DjiWidgetRenderer.cameraControl(context, fullConfig, DjiWidgetViewState(camera, sleepConfirmation = true)).reapply(context, normal)
+        normal.measure(View.MeasureSpec.makeMeasureSpec(480, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(420, View.MeasureSpec.EXACTLY)); normal.layout(0,0,480,420)
+        val confirm = normal.findViewById<View>(R.id.widgetControlTopConfirm)
+        assertEquals(powerTop, confirm.top); assertEquals(powerHeight, confirm.height)
+        assertEquals(View.VISIBLE, normal.findViewById<View>(R.id.widgetControlFullUtility).visibility)
+        assertEquals(android.view.Gravity.CENTER, normal.findViewById<TextView>(R.id.widgetControlTopConfirmText).gravity)
+        save(normal, "qa2-confirmation-power-row")
+        DjiWidgetRenderer.cameraControl(context, fullConfig, DjiWidgetViewState(camera, controlFeedback = "Prevent standby · On")).reapply(context, normal)
+        assertEquals(View.VISIBLE, normal.findViewById<View>(R.id.widgetControlFeedback).visibility)
+        assertEquals(View.GONE, normal.findViewById<View>(R.id.widgetControlMore).visibility)
+        save(normal, "qa2-full-feedback")
+        DjiWidgetRenderer.cameraControl(context, fullConfig, DjiWidgetViewState(camera)).reapply(context, normal)
+        assertEquals(View.GONE, normal.findViewById<View>(R.id.widgetControlFeedback).visibility)
+        assertEquals(View.VISIBLE, normal.findViewById<View>(R.id.widgetControlFullStatus).visibility)
+        assertEquals(View.VISIBLE, normal.findViewById<View>(R.id.widgetControlMore).visibility)
+        val compactConfig = ViewConfig(Pair(60,30), Pair(480,189),32)
+        val compact = render(189)
+        DjiWidgetRenderer.cameraControl(context, compactConfig, DjiWidgetViewState(camera, controlFeedback="Prevent standby · Off")).reapply(context, compact)
+        assertEquals(View.VISIBLE, compact.findViewById<View>(R.id.widgetControlMessageContainer).visibility)
+        assertEquals(View.GONE, compact.findViewById<View>(R.id.widgetControlMessageSettings).visibility)
+        assertEquals(View.GONE, compact.findViewById<View>(R.id.widgetControlMain).visibility)
+        save(compact, "qa2-compact-feedback")
+        DjiWidgetRenderer.cameraControl(context, compactConfig, DjiWidgetViewState(camera)).reapply(context, compact)
+        assertEquals(View.VISIBLE, compact.findViewById<View>(R.id.widgetControlMain).visibility)
+        assertTrue(compact.findViewById<View>(R.id.widgetControlSettings).hasOnClickListeners())
+    }
+
+    @Test fun captionsAndButtonBoundsMatchAcrossSingleAndCombinedFields() {
+        val config = ViewConfig(Pair(60,30), Pair(480,144),32)
+        val state = DjiWidgetViewState(camera)
+        val widgets = listOf("video" to DjiWidgetRenderer.video(context,config,state),
+            "photo" to DjiWidgetRenderer.photo(context,config,state),
+            "combined" to DjiWidgetRenderer.videoPhoto(context,config,state))
+        var captionBounds: List<Int>? = null
+        var buttonBounds: List<Int>? = null
+        for ((name, body) in widgets) {
+            val field = DjiWidgetRenderer.captionedField(context, R.string.dji_status, true, body)
+                .apply(context, FrameLayout(context))
+            field.measure(View.MeasureSpec.makeMeasureSpec(480,View.MeasureSpec.EXACTLY),View.MeasureSpec.makeMeasureSpec(189,View.MeasureSpec.EXACTLY));field.layout(0,0,480,189)
+            val caption = field.findViewById<TextView>(R.id.widgetFieldCaption)
+            val bounds = listOf(caption.top,caption.height,caption.paddingLeft)
+            if (captionBounds == null) captionBounds = bounds else assertEquals(captionBounds,bounds)
+            val id = if (name=="photo") R.id.widgetPhotoPrimary else R.id.widgetVideoPrimary
+            val button = field.findViewById<View>(id)
+            val pos = IntArray(2);button.getLocationInWindow(pos)
+            val dimensions = listOf(pos[1],button.height)
+            if(buttonBounds==null) buttonBounds=dimensions else assertEquals(buttonBounds,dimensions)
+            save(field,"qa2-caption-$name")
+        }
+    }
+
     @Test fun halfWidthShowsOnlyStatusAtShortAndTallHeightsAndRestoresFullWidthControls() {
         for (theme in listOf("light", "dark")) {
             DjiSettings.preferences(context).edit().putString(DjiSettings.KEY_THEME_MODE,theme).commit()

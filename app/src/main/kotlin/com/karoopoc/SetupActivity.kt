@@ -93,11 +93,11 @@ class SetupActivity : DetailActivity() {
         when (page) {
             Page.CONNECT -> {
                 body.addView(android.widget.ImageView(this).apply {
-                    setImageResource(R.drawable.aerocam_launcher_foreground)
+                    setImageResource(R.drawable.aerocam_pairing)
                     imageTintList = android.content.res.ColorStateList.valueOf(ui.palette.textPrimary)
                     scaleType = android.widget.ImageView.ScaleType.FIT_CENTER
                     importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
-                }, android.widget.LinearLayout.LayoutParams(ui.dp(64), ui.dp(64)).apply {
+                }, android.widget.LinearLayout.LayoutParams(ui.dp(100), ui.dp(80)).apply {
                     gravity = Gravity.CENTER_HORIZONTAL
                     bottomMargin = ui.dp(12)
                 })

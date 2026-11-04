@@ -78,14 +78,14 @@ class WidgetAlignmentUiTest {
             for (alignment in ViewConfig.Alignment.entries) {
                 val compact = DjiWidgetRenderer.cameraControl(context, config(alignment), state)
                     .apply(context, FrameLayout(context))
-                checkText(compact, R.id.widgetControlBattery, alignment)
-                checkText(compact, R.id.widgetControlStorage, alignment)
+                checkText(compact, R.id.widgetControlBattery, ViewConfig.Alignment.CENTER)
+                checkText(compact, R.id.widgetControlStorage, ViewConfig.Alignment.CENTER)
                 save(compact, 189, "$theme-compact-$alignment")
                 val remote = DjiWidgetRenderer.cameraControl(context, config(alignment, true), state)
                 if (full == null) full = remote.apply(context, FrameLayout(context)) else remote.reapply(context, full)
                 for (id in listOf(R.id.widgetControlFullBatteryGroup, R.id.widgetControlFullStorageGroup,
                     R.id.widgetControlVideoRecording)) {
-                    assertEquals(horizontal(alignment), full!!.findViewById<LinearLayout>(id).gravity and Gravity.HORIZONTAL_GRAVITY_MASK)
+                    assertEquals(if (id == R.id.widgetControlVideoRecording) horizontal(alignment) else Gravity.CENTER_HORIZONTAL, full!!.findViewById<LinearLayout>(id).gravity and Gravity.HORIZONTAL_GRAVITY_MASK)
                 }
                 checkText(full!!, R.id.widgetControlVideoFeedback, alignment)
                 assertEquals(DjiTheme.widgetPalette(context).batteryLow,

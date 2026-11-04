@@ -240,7 +240,7 @@ class OnboardingTriggersUiTest {
             assertEquals(0, backPosition[0])
             assertEquals(backPosition[1] + back.height, actionPosition[1] + primary.height)
             assertTrue(actionPosition[0] >= backPosition[0] + back.width)
-            assertEquals((68 * a.resources.displayMetrics.density + .5f).toInt(), back.width)
+            assertEquals((54 * a.resources.displayMetrics.density + .5f).toInt(), back.width)
             assertEquals(back.width, back.height)
             assertEquals(back.height, primary.height)
             assertEquals(480, actionPosition[0] + primary.width)
@@ -262,10 +262,32 @@ class OnboardingTriggersUiTest {
         }
     }
 
+    @Test fun compactCameraStepsUseDialogsAndAwesomeCompletesWithoutExtraPage() {
+        seed(JSONObject().put("page", "CAMERA"))
+        val camera = launch(); val a = camera.get()
+        assertFalse(views(a).filterIsInstance<Button>().any { it.text.toString() == a.getString(R.string.ob_skip) || it.text.toString() == a.getString(R.string.ob_other_timer) })
+        val info = views(a).filterIsInstance<ImageButton>().first { it.contentDescription == a.getString(R.string.ob_screen) }
+        info.performClick()
+        val dialog = org.robolectric.shadows.ShadowAlertDialog.getLatestAlertDialog()
+        assertEquals(a.getString(R.string.ob_screen_reason), dialog.findViewById<TextView>(android.R.id.message).text.toString())
+        dialog.dismiss()
+        camera.pause().stop().destroy()
+        for (page in listOf("WIDGETS", "FINAL")) {
+            seed(JSONObject().put("page", page))
+            val c = launch(); val activity = c.get()
+            assertTrue(views(activity).filterIsInstance<TextView>().any { it.text.toString() == activity.getString(R.string.ob_awesome) })
+            click(activity, R.string.ob_done)
+            assertTrue(activity.isFinishing)
+            assertTrue(prefs.getBoolean(OnboardingActivity.DONE, false))
+            assertFalse(prefs.contains(OnboardingActivity.DRAFT))
+            c.pause().stop().destroy()
+        }
+    }
+
     @Test fun renderPolishedOnboardingPagesInBothThemes() {
         for (theme in listOf("light", "dark")) {
             prefs.edit().putString(DjiSettings.KEY_THEME_MODE, theme).commit()
-            for (page in listOf("WELCOME", "CAMERA", "RIDE", "WIDGETS")) {
+            for (page in listOf("WELCOME", "STANDBY", "CAMERA", "RIDE", "WIDGETS")) {
                 seed(JSONObject().put("page", page))
                 val controller = launch()
                 render(controller.get(), "$page-$theme")

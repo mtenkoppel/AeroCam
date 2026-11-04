@@ -9,10 +9,10 @@
     <string name="ob_start">Einrichtung starten</string>
     <string name="ob_prevent_title">AeroCam kann verhindern, dass deine DJI-Kamera automatisch in den Standby wechselt.</string>
     <string name="ob_prevent_body">Deine Kamera schaltet sich nach Ablauf des Timers aus – normalerweise nach 5 Minuten, auch bei aktiver Verbindung.</string>
-    <string name="ob_prevent_recommend">AeroCam kann das verhindern. Wir empfehlen „Standby verhindern“ zu aktivieren.</string>
-    <string name="ob_battery">Das verbraucht Akku. In unseren Tests hielt ein Akku mit 1.770 mAh etwa 4 Stunden im Bereitschaftsbetrieb. Die tatsächliche Laufzeit variiert.</string>
-    <string name="ob_enable">Standby verhindern aktivieren</string>
-    <string name="ob_camera_title">Stellen wir jetzt gemeinsam deine DJI-Kamera ein.</string>
+    <string name="ob_prevent_recommend">Wir empfehlen dringend, diese Funktion zu aktivieren.</string>
+    <string name="ob_battery">Die Kamera wach zu halten verbraucht Akku. In unseren Tests erreichten wir mit dieser Funktion rund vier Stunden Standby-Zeit.</string>
+    <string name="ob_enable">Aktivieren</string>
+    <string name="ob_camera_title">Richten wir deine DJI-Kamera ein.</string>
     <string name="ob_poweroff_title">1. Automatisches Ausschalten auf %1$d Minuten stellen</string>
     <string name="ob_poweroff_reason">AeroCam verhindert das Ausschalten, muss dafür aber den eingestellten Timer kennen.</string>
     <string name="ob_poweroff_path">Settings → Auto Power Off → %1$d Minuten</string>
@@ -20,7 +20,7 @@
     <string name="ob_mute">2. Töne ausschalten (optional)</string>
     <string name="ob_mute_reason">Sonst hörst du während der Fahrt immer wieder Klicks.</string>
     <string name="ob_mute_path">Settings → Sounds → Mute</string>
-    <string name="ob_screen">3. Display beim Sperren ausschalten lassen</string>
+    <string name="ob_screen">3. Display beim Sperren ausschalten (optional)</string>
     <string name="ob_screen_reason">Wenn du die Kamera sperrst, geht das Display aus und spart wertvollen Akku.</string>
     <string name="ob_screen_path">Settings → Single Screen Preview (Scrn Off when Locked) → On</string>
     <string name="ob_next">Weiter</string>

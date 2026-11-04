@@ -90,6 +90,23 @@ class SettingsUiTest {
         return view
     }
 
+    @Test fun rootTabsDoNotBecomeBackDestinationsAndContentExtendsBehindBackTab() {
+        val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
+        val activity = controller.get()
+        val root = render(activity,"qa2-navigation-overlay") as ViewGroup
+        val content = root.getChildAt(0)
+        assertEquals(root.height, content.height)
+        val back = activity.findViewById<ImageButton>(R.id.karoo_back)
+        assertEquals((54 * activity.resources.displayMetrics.density + .5f).toInt(), back.width)
+        for (label in listOf(R.string.status_tab,R.string.help_tab,R.string.settings)) {
+            views(activity).filterIsInstance<TextView>().first { it.text.toString() == activity.getString(label) }.performClick()
+        }
+        assertNull(shadowOf(activity).nextStartedActivity)
+        back.performClick()
+        assertTrue(activity.isFinishing)
+        controller.pause().stop().destroy()
+    }
+
     @Test fun `opening settings does not write defaults or change saved preferences`() {
         val context = RuntimeEnvironment.getApplication()
         val prefs = DjiSettings.preferences(context)

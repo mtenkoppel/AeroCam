@@ -58,6 +58,12 @@ class MainActivity : Activity() {
         if (requestBlePermissions()) observeCamera()
     }
 
+    // Root tabs are peers, not Back destinations. Clear older AeroCam instances as well.
+    @Deprecated("Uses Activity back navigation")
+    override fun onBackPressed() {
+        finishAffinity()
+    }
+
     override fun onResume() {
         super.onResume()
         if (::ui.isInitialized) {
@@ -138,6 +144,7 @@ class MainActivity : Activity() {
         ui.style(content)
         val advanced = ui.group(content, getString(R.string.advanced_settings))
         ui.cooldown(advanced)
+        ui.standbyTime(advanced)
         connectButton = ui.action(getString(R.string.connect_known_dji)) {
             SetupActivity.open(this)
         }

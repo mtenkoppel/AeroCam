@@ -59,7 +59,7 @@ internal class SettingsViews(val activity: Activity) {
     fun group(parent: LinearLayout, title: String, icon: Int? = null): LinearLayout {
         val card = column().apply {
             background = cardBackground()
-            setPadding(dp(10), dp(10), dp(10), dp(10))
+            setPadding(dp(8), dp(10), dp(8), dp(10))
         }
         card.addView(text(title, 18f, true).apply {
             if (icon != null) {
@@ -304,6 +304,29 @@ internal class SettingsViews(val activity: Activity) {
         settingsSwitch(card, getString(R.string.hide_field_captions), DjiSettings.KEY_HIDE_FIELD_CAPTIONS, false,
             getString(R.string.captions_summary)) { DjiWidgetController.refresh() }
     }
+    fun standbyTime(parent: LinearLayout) {
+        parent.addView(action(getString(R.string.ob_timer_title)) {
+            val times = listOf(60, 120, 300)
+            val interval = DjiSettings.preferences(activity).getInt(DjiSettings.KEY_KEEP_AWAKE_INTERVAL_SECONDS, 270)
+            val selected = times.indexOf(interval + 30).coerceAtLeast(0)
+            val picker = Spinner(activity).apply {
+                contentDescription = getString(R.string.ob_timer_title)
+                adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_dropdown_item,
+                    times.map { activity.getString(R.string.ob_minutes, it / 60) })
+                setSelection(selected)
+            }
+            val body = column().apply {
+                setPadding(dp(16), dp(8), dp(16), dp(8))
+                addView(picker)
+                addView(secondaryText(getString(R.string.ob_timer_body)), fullWidthParams(topMargin = dp(8)))
+            }
+            android.app.AlertDialog.Builder(activity).setTitle(R.string.ob_timer_title).setView(body)
+                .setPositiveButton(android.R.string.ok) { _, _ ->
+                    DjiCameraController.setKeepAwakeInterval(activity, OnboardingPolicy.intervalSeconds(times[picker.selectedItemPosition]))
+                }.setNegativeButton(android.R.string.cancel, null).show()
+        }, fullWidthParams())
+    }
+
     fun cooldown(parent: LinearLayout) {
         parent.addView(action(getString(R.string.highlight_cooldown)) {
             val editor = cooldownRow().apply { setPadding(dp(20), dp(8), dp(20), dp(8)) }

@@ -16,20 +16,29 @@ import android.widget.LinearLayout
 
 /** Keeps the Karoo-style Back control at the physical bottom-left, clear of content. */
 internal object KarooNavigation {
-    fun buttonSize(activity: Activity): Int = (68 * activity.resources.displayMetrics.density + .5f).toInt()
+    fun buttonSize(activity: Activity): Int = (54 * activity.resources.displayMetrics.density + .5f).toInt()
 
     fun bottomInset(activity: Activity): Int = (10 * activity.resources.displayMetrics.density + .5f).toInt()
 
     fun wrap(activity: Activity, content: View): View {
         fun dp(value: Int) = (value * activity.resources.displayMetrics.density + .5f).toInt()
-        val root = LinearLayout(activity).apply {
-            orientation = LinearLayout.VERTICAL
+        val root = FrameLayout(activity).apply {
             setBackgroundColor(DjiTheme.appPalette(activity).appBackground)
         }
-        root.addView(content, LinearLayout.LayoutParams(-1, 0, 1f))
-        val footer = FrameLayout(activity).apply { setPadding(0, 0, 0, bottomInset(activity)) }
-        footer.addView(backButton(activity), FrameLayout.LayoutParams(dp(68), dp(68), Gravity.LEFT or Gravity.BOTTOM))
-        root.addView(footer, LinearLayout.LayoutParams(-1, dp(68) + bottomInset(activity)))
+        fun insetScrolls(view: View) {
+            if (view is android.widget.ScrollView) {
+                view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight,
+                    view.paddingBottom + buttonSize(activity) + bottomInset(activity))
+                view.clipToPadding = false
+            } else if (view is android.view.ViewGroup) {
+                for (i in 0 until view.childCount) insetScrolls(view.getChildAt(i))
+            }
+        }
+        insetScrolls(content)
+        root.addView(content, FrameLayout.LayoutParams(-1, -1))
+        root.addView(backButton(activity), FrameLayout.LayoutParams(buttonSize(activity), buttonSize(activity), Gravity.LEFT or Gravity.BOTTOM).apply {
+            bottomMargin = bottomInset(activity)
+        })
         return root
     }
 
@@ -38,8 +47,8 @@ internal object KarooNavigation {
         fun dp(value: Int) = (value * activity.resources.displayMetrics.density + .5f).toInt()
         val shape = GradientDrawable().apply {
             setColor(activity.getColor(R.color.karoo_back_background))
-            cornerRadii = floatArrayOf(0f, 0f, dp(34).toFloat(), dp(34).toFloat(),
-                dp(34).toFloat(), dp(34).toFloat(), 0f, 0f)
+            cornerRadii = floatArrayOf(0f, 0f, dp(27).toFloat(), dp(27).toFloat(),
+                dp(27).toFloat(), dp(27).toFloat(), 0f, 0f)
         }
         return ImageButton(activity).apply {
             id = R.id.karoo_back
@@ -59,7 +68,7 @@ internal object KarooNavigation {
     /** Forward actions meet the physical right edge, mirroring the Back tab. */
     fun forwardButton(activity: Activity, label: String, click: () -> Unit): Button {
         fun dp(value: Int) = (value * activity.resources.displayMetrics.density + .5f).toInt()
-        val radius = dp(34).toFloat()
+        val radius = dp(27).toFloat()
         val shape = GradientDrawable().apply {
             setColor(activity.getColor(R.color.karoo_forward_background))
             cornerRadii = floatArrayOf(radius, radius, 0f, 0f, 0f, 0f, radius, radius)
@@ -70,9 +79,9 @@ internal object KarooNavigation {
             textSize = 19f
             typeface = Typeface.DEFAULT_BOLD
             gravity = Gravity.CENTER
-            minHeight = dp(68)
+            minHeight = dp(54)
             minWidth = dp(125)
-            maxWidth = (activity.resources.displayMetrics.widthPixels - dp(76)).coerceAtLeast(dp(125))
+            maxWidth = (activity.resources.displayMetrics.widthPixels - dp(62)).coerceAtLeast(dp(125))
             setTextColor(ColorStateList(arrayOf(intArrayOf(-android.R.attr.state_enabled), intArrayOf()),
                 intArrayOf(0x99FFFFFF.toInt(), Color.WHITE)))
             backgroundTintList = null

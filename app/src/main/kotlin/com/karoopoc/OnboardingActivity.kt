@@ -65,12 +65,13 @@ class OnboardingActivity : Activity() {
 
     private fun restore() {
         val prefs = DjiSettings.preferences(this)
+        standby = (prefs.getInt(DjiSettings.KEY_KEEP_AWAKE_INTERVAL_SECONDS, 270) + 30).takeIf { it in listOf(60, 120, 300) } ?: 300
         triggers[7] = prefs.getBoolean(DjiSettings.KEY_RIDE_BOOKMARKS, false)
         val raw = prefs.getString(DRAFT, null)
         if (raw != null) runCatching {
             val json = JSONObject(raw)
             page = Page.valueOf(json.getString("page"))
-            standby = json.optInt("standby", 300).takeIf { it in listOf(60, 120, 300) } ?: 300
+            standby = json.optInt("standby", standby).takeIf { it in listOf(60, 120, 300) } ?: 300
             edit = json.optInt("edit", 1).takeIf { it in valueKeys } ?: 1
             inputDraft = json.optString("input", "250")
             requireSpeed = booleanArrayOf(json.optBoolean("uphillRequireSpeed", true), json.optBoolean("descentRequireSpeed", true))
@@ -146,16 +147,17 @@ class OnboardingActivity : Activity() {
         DjiWidgetController.refresh()
     }
     private fun render() {
-        val root = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL; setBackgroundColor(palette.appBackground)
+        val root = FrameLayout(this).apply {
+            setBackgroundColor(palette.appBackground)
             setPadding(0, dp(4), 0, 0)
         }
         content = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         root.addView(ScrollView(this).apply {
             isFillViewport = false
-            setPadding(dp(16), 0, dp(16), 0)
+            setPadding(dp(8), 0, dp(8), KarooNavigation.buttonSize(this@OnboardingActivity) + dp(20))
+            clipToPadding = false
             addView(content)
-        }, LinearLayout.LayoutParams(-1, 0, 1f))
+        }, FrameLayout.LayoutParams(-1, -1))
         val navigation = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.BOTTOM
@@ -166,7 +168,7 @@ class OnboardingActivity : Activity() {
         navigation.addView(footer, LinearLayout.LayoutParams(0, -2, 1f).apply {
             leftMargin = dp(8)
         })
-        root.addView(navigation)
+        root.addView(navigation, FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM))
         setContentView(root)
         when (page) {
             Page.PAIRED -> {
@@ -176,15 +178,15 @@ class OnboardingActivity : Activity() {
             }
             Page.WELCOME -> {
                 title(R.string.ob_welcome); paragraph(R.string.ob_intro)
-                art(R.drawable.ob_devices, 145)
                 action(R.string.ob_skip, false) { complete() }
                 action(R.string.ob_start) { go(Page.STANDBY) }
             }
             Page.STANDBY -> {
-                title(R.string.ob_prevent_title); paragraph(R.string.ob_prevent_body)
-                paragraph(R.string.ob_prevent_recommend)
-                art(R.drawable.ic_coffee, 72)
-                paragraph(R.string.ob_battery, true)
+                title(R.string.ob_prevent_title); paragraph(R.string.ob_prevent_recommend)
+                content.addView(text(getString(R.string.ob_battery), 15f, true).apply {
+                    background = SettingsViews(this@OnboardingActivity).cardBackground()
+                    setPadding(dp(8), dp(8), dp(8), dp(8))
+                }, params(12))
                 action(R.string.ob_skip, false) { skipStandby() }
                 action(R.string.ob_enable) {
                     DjiCameraController.setKeepAwake(this, false)
@@ -193,18 +195,9 @@ class OnboardingActivity : Activity() {
             }
             Page.CAMERA -> {
                 title(R.string.ob_camera_title)
-                heading(getString(R.string.ob_poweroff_title, standby / 60))
-                paragraph(R.string.ob_poweroff_reason, true)
-                heading(getString(R.string.ob_poweroff_path, standby / 60), 16f)
-                content.addView(button(getString(R.string.ob_other_timer), false) { go(Page.TIMER) }.apply {
-                    setTextColor(getColor(if (palette.textPrimary == android.graphics.Color.WHITE)
-                        R.color.dji_surface_success else R.color.dji_confirm))
-                })
-                heading(getString(R.string.ob_mute)); paragraph(R.string.ob_mute_reason, true)
-                heading(getString(R.string.ob_mute_path), 16f)
-                heading(getString(R.string.ob_screen)); paragraph(R.string.ob_screen_reason, true)
-                heading(getString(R.string.ob_screen_path), 16f)
-                action(R.string.ob_skip, false) { skipStandby() }
+                cameraStep(getString(R.string.ob_poweroff_title, standby / 60), getString(R.string.ob_poweroff_path, standby / 60), R.string.ob_poweroff_reason)
+                cameraStep(getString(R.string.ob_mute), getString(R.string.ob_mute_path), R.string.ob_mute_reason)
+                cameraStep(getString(R.string.ob_screen), getString(R.string.ob_screen_path), R.string.ob_screen_reason)
                 action(R.string.ob_next) {
                     // Interval is persisted before enabling; no scheduler or BLE changes.
                     DjiCameraController.setKeepAwakeInterval(this, OnboardingPolicy.intervalSeconds(standby))
@@ -340,11 +333,10 @@ class OnboardingActivity : Activity() {
             }
             Page.WIDGETS -> {
                 title(R.string.ob_awesome); paragraph(R.string.ob_widgets); paragraph(R.string.ob_sizes)
-                action(R.string.ob_next) { go(Page.FINAL) }
+                action(R.string.ob_done) { complete() }
             }
-            Page.FINAL -> {
-                title(R.string.ob_fun); paragraph(R.string.ob_convenient)
-                paragraph(R.string.ob_data); paragraph(R.string.ob_overlay)
+            Page.FINAL -> { // Resume older drafts at the new final page.
+                title(R.string.ob_awesome); paragraph(R.string.ob_widgets); paragraph(R.string.ob_sizes)
                 action(R.string.ob_done) { complete() }
             }
         }
@@ -373,11 +365,30 @@ class OnboardingActivity : Activity() {
         val level = if (i == 1) OnboardingPolicy.powerMessage(value) else OnboardingPolicy.speedMessage(value)
         return if (level == 0) "" else getString(resources[level])
     }
-    private fun title(id: Int) = heading(getString(id), 19f)
-    private fun heading(value: String, size: Float = 19f) {
-        content.addView(text(value, size).apply { typeface = Typeface.DEFAULT_BOLD }, params(14))
+    private fun title(id: Int) {
+        content.addView(text(getString(id), 19f).apply { typeface = Typeface.DEFAULT_BOLD }, params(12))
     }
-    private fun paragraph(id: Int, muted: Boolean = false) { content.addView(text(getString(id), if (muted) 15f else 17f, muted), params(16)) }
+    private fun cameraStep(name: String, path: String, explanation: Int) {
+        val row = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        val copy = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        copy.addView(text(name, 17f).apply { typeface = Typeface.DEFAULT_BOLD }, params(4))
+        copy.addView(text(path, 15f))
+        row.addView(copy, LinearLayout.LayoutParams(0, -2, 1f))
+        row.addView(ImageButton(this).apply {
+            setImageResource(android.R.drawable.ic_dialog_info)
+            imageTintList = ColorStateList.valueOf(getColor(R.color.karoo_forward_background))
+            setBackgroundColor(android.graphics.Color.TRANSPARENT)
+            contentDescription = name
+            setPadding(dp(8), dp(8), dp(8), dp(8))
+            setOnClickListener { AlertDialog.Builder(this@OnboardingActivity)
+                .setTitle(name).setMessage(explanation).setPositiveButton(android.R.string.ok, null).show() }
+        }, LinearLayout.LayoutParams(dp(44), dp(44)))
+        content.addView(row, params(16))
+    }
+    private fun heading(value: String, size: Float = 17f) {
+        content.addView(text(value, size).apply { typeface = Typeface.DEFAULT_BOLD }, params(4))
+    }
+    private fun paragraph(id: Int, muted: Boolean = false) { content.addView(text(getString(id), if (muted) 15f else 17f, muted), params(10)) }
     private fun text(value: String, size: Float, muted: Boolean = false) = TextView(this).apply {
         text = value; textSize = size; setTextColor(if (muted) palette.textSecondary else palette.textPrimary)
         setLineSpacing(dp(2).toFloat(), 1f)

@@ -27,7 +27,7 @@ open class DetailActivity : Activity() {
         window.returnTransition = Slide(Gravity.END)
         ui = SettingsViews(this)
         val root = ui.column().apply { setBackgroundColor(ui.palette.appBackground) }
-        body = ui.column().apply { setPadding(ui.dp(16), ui.dp(12), ui.dp(16), ui.dp(16)) }
+        body = ui.column().apply { setPadding(ui.dp(8), ui.dp(12), ui.dp(8), ui.dp(16)) }
         root.addView(ui.scroll(body, R.id.article_scroll), LinearLayout.LayoutParams(-1, 0, 1f))
         setContentView(KarooNavigation.wrap(this, root))
     }

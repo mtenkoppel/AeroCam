@@ -227,15 +227,15 @@
                 <LinearLayout
                     android:id="@+id/widgetControlFullBatteryGroup"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+
                     android:gravity="center"
                     android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/widgetControlFullBatteryIcon"
-                        android:layout_width="@dimen/widget_icon_status_size"
-                        android:layout_height="match_parent"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
                         android:contentDescription="@string/battery"
                         android:scaleType="fitCenter"
                         android:src="@drawable/ic_battery" />
@@ -254,15 +254,15 @@
                 <LinearLayout
                     android:id="@+id/widgetControlFullStorageGroup"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+
                     android:gravity="center"
                     android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/widgetControlFullStorageIcon"
-                        android:layout_width="@dimen/widget_icon_status_size"
-                        android:layout_height="match_parent"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
                         android:contentDescription="@string/widget_storage"
                         android:scaleType="fitCenter"
                         android:src="@drawable/ic_widget_storage" />
@@ -295,6 +295,11 @@
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_widget_settings" />
             </FrameLayout>
+            <TextView android:id="@+id/widgetControlFeedback" android:layout_width="0dp"
+                android:layout_height="match_parent" android:layout_weight="1" android:layout_marginStart="6dp"
+                android:paddingStart="8dp" android:paddingEnd="8dp" android:gravity="center"
+                android:textSize="18sp" android:textColor="@color/dji_text_primary_dark"
+                android:background="@drawable/widget_surface_dark" android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
@@ -359,63 +364,6 @@
                     android:contentDescription="@string/widget_open_settings"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_widget_settings" />
-            </FrameLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/widgetControlTopConfirm"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:baselineAligned="false"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <FrameLayout
-                android:id="@+id/widgetControlTopConfirmYes"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/widget_surface_active">
-
-                <ImageView
-                    android:id="@+id/widgetControlTopConfirmYesIcon"
-                    android:layout_width="@dimen/widget_icon_toolbar_size"
-                    android:layout_height="@dimen/widget_icon_toolbar_size"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/widget_confirm"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_widget_check" />
-            </FrameLayout>
-
-            <TextView
-                android:id="@+id/widgetControlTopConfirmText"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="6dp"
-                android:layout_marginEnd="6dp"
-                android:layout_weight="1"
-                android:background="@drawable/widget_surface_dark"
-                android:gravity="center"
-                android:text="@string/widget_turn_off"
-                android:textColor="@color/dji_text_primary_dark"
-                android:textSize="16sp" />
-
-            <FrameLayout
-                android:id="@+id/widgetControlTopConfirmNo"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/widget_surface_danger">
-
-                <ImageView
-                    android:id="@+id/widgetControlTopConfirmNoIcon"
-                    android:layout_width="@dimen/widget_icon_toolbar_size"
-                    android:layout_height="@dimen/widget_icon_toolbar_size"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/widget_cancel"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_widget_close" />
             </FrameLayout>
         </LinearLayout>
 
@@ -589,5 +537,63 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_widget_sleep" />
         </FrameLayout>
+        <LinearLayout
+            android:id="@+id/widgetControlTopConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="@dimen/widget_control_group_gap"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <FrameLayout
+                android:id="@+id/widgetControlTopConfirmYes"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_surface_active">
+
+                <ImageView
+                    android:id="@+id/widgetControlTopConfirmYesIcon"
+                    android:layout_width="@dimen/widget_icon_toolbar_size"
+                    android:layout_height="@dimen/widget_icon_toolbar_size"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/widget_confirm"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_widget_check" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/widgetControlTopConfirmText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/widget_surface_dark"
+                android:gravity="center"
+                android:text="@string/widget_turn_off"
+                android:textColor="@color/dji_text_primary_dark"
+                android:textSize="16sp" />
+
+            <FrameLayout
+                android:id="@+id/widgetControlTopConfirmNo"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_surface_danger">
+
+                <ImageView
+                    android:id="@+id/widgetControlTopConfirmNoIcon"
+                    android:layout_width="@dimen/widget_icon_toolbar_size"
+                    android:layout_height="@dimen/widget_icon_toolbar_size"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/widget_cancel"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_widget_close" />
+            </FrameLayout>
+        </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>
