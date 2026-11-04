@@ -169,7 +169,7 @@ class CamControlUiTest {
         var captionBounds: List<Int>? = null
         var buttonBounds: List<Int>? = null
         for ((name, body) in widgets) {
-            val field = DjiWidgetRenderer.captionedField(context, R.string.dji_status, true, body)
+            val field = DjiWidgetRenderer.captionedField(context, when(name) { "photo" -> R.string.dji_photo; "combined" -> R.string.dji_video_photo; else -> R.string.dji_status }, true, body)
                 .apply(context, FrameLayout(context))
             field.measure(View.MeasureSpec.makeMeasureSpec(480,View.MeasureSpec.EXACTLY),View.MeasureSpec.makeMeasureSpec(189,View.MeasureSpec.EXACTLY));field.layout(0,0,480,189)
             val caption = field.findViewById<TextView>(R.id.widgetFieldCaption)

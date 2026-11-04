@@ -267,6 +267,7 @@ class OnboardingTriggersUiTest {
         val camera = launch(); val a = camera.get()
         assertFalse(views(a).filterIsInstance<Button>().any { it.text.toString() == a.getString(R.string.ob_skip) || it.text.toString() == a.getString(R.string.ob_other_timer) })
         val info = views(a).filterIsInstance<ImageButton>().first { it.contentDescription == a.getString(R.string.ob_screen) }
+        assertEquals(ImageView.ScaleType.FIT_CENTER, info.scaleType)
         info.performClick()
         val dialog = org.robolectric.shadows.ShadowAlertDialog.getLatestAlertDialog()
         assertEquals(a.getString(R.string.ob_screen_reason), dialog.findViewById<TextView>(android.R.id.message).text.toString())

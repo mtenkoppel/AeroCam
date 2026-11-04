@@ -375,6 +375,7 @@ class OnboardingActivity : Activity() {
         row.addView(copy, LinearLayout.LayoutParams(0, -2, 1f))
         row.addView(ImageButton(this).apply {
             setImageResource(android.R.drawable.ic_dialog_info)
+            scaleType = ImageView.ScaleType.FIT_CENTER
             imageTintList = ColorStateList.valueOf(getColor(R.color.karoo_forward_background))
             setBackgroundColor(android.graphics.Color.TRANSPARENT)
             contentDescription = name

@@ -20,7 +20,7 @@
     <string name="ob_mute">2. Turn off sounds (optional)</string>
     <string name="ob_mute_reason">Otherwise you’ll hear repeated clicks during your ride.</string>
     <string name="ob_mute_path">Settings → Sounds → Mute</string>
-    <string name="ob_screen">3. Enable turning off the display when locked (optional)</string>
+    <string name="ob_screen">3. Turn off the display when locked (optional)</string>
     <string name="ob_screen_reason">Now, when you lock your camera, the display turns off and saves precious battery.</string>
     <string name="ob_screen_path">Settings → Single Screen Preview (Scrn Off when Locked) → On</string>
     <string name="ob_next">Next</string>
