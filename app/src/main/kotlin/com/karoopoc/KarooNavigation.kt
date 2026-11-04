@@ -16,6 +16,8 @@ import android.widget.LinearLayout
 
 /** Keeps the Karoo-style Back control at the physical bottom-left, clear of content. */
 internal object KarooNavigation {
+    fun buttonSize(activity: Activity): Int = (68 * activity.resources.displayMetrics.density + .5f).toInt()
+
     fun wrap(activity: Activity, content: View): View {
         fun dp(value: Int) = (value * activity.resources.displayMetrics.density + .5f).toInt()
         val root = LinearLayout(activity).apply {

@@ -160,7 +160,7 @@ class OnboardingActivity : Activity() {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.BOTTOM
         }
-        navigation.addView(KarooNavigation.backButton(this), LinearLayout.LayoutParams(dp(68), dp(68)))
+        navigation.addView(KarooNavigation.backButton(this), LinearLayout.LayoutParams(KarooNavigation.buttonSize(this), KarooNavigation.buttonSize(this)))
         footer = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.RIGHT }
         navigation.addView(footer, LinearLayout.LayoutParams(0, -2, 1f).apply {
             leftMargin = dp(8)
@@ -396,7 +396,7 @@ class OnboardingActivity : Activity() {
     private fun action(id: Int, primary: Boolean = true, click: () -> Unit): Button {
         if (primary) {
             return KarooNavigation.forwardButton(this, getString(id), click).also {
-                footer.addView(it, LinearLayout.LayoutParams(-2, dp(68)))
+                footer.addView(it, LinearLayout.LayoutParams(-2, KarooNavigation.buttonSize(this)))
             }
         }
         // Skip belongs to the page, after its instructions, rather than to the fixed navigation bar.
