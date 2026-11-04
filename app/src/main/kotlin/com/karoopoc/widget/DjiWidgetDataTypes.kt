@@ -45,7 +45,7 @@ abstract class DjiWidgetDataType(extension: String, typeId: String) : DataTypeIm
         Log.i(TAG, "DJI field start type=$typeId size=${config.viewSize} grid=${config.gridSize}")
         val showCaption = !DjiSettings.hideFieldCaptions(context)
         emitter.onNext(UpdateGraphicConfig(showHeader = false))
-        val captionHeight = if (showCaption) (24 * context.resources.displayMetrics.density + .5f).toInt() else 0
+        val captionHeight = if (showCaption) context.resources.getDimensionPixelSize(R.dimen.widget_field_caption_height) else 0
         val bodyConfig = config.copy(viewSize = config.viewSize.first to (config.viewSize.second - captionHeight).coerceAtLeast(1))
         val cancel = DjiWidgetController.observe(context) {
             val body = render(bodyConfig, it)
