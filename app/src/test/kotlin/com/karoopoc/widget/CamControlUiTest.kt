@@ -110,4 +110,19 @@ class CamControlUiTest {
         }
         host.pause().stop().destroy()
     }
+    @Test fun feedbackExpiryAndDisconnectReapplyRestoreExistingControlState() {
+        val config = ViewConfig(Pair(60,60), Pair(480,420), 32)
+        val view = render(420, DjiWidgetViewState(camera.copy(recording = true, highlightFeedback = "HIGHLIGHT")))
+        val timer = view.findViewById<TextView>(R.id.widgetControlVideoTimer)
+        val group = view.findViewById<View>(R.id.widgetControlVideoRecording)
+        assertTrue(group.paddingBottom > 0)
+        DjiWidgetRenderer.cameraControl(context, config, DjiWidgetViewState(camera.copy(recording = true))).reapply(context, view)
+        assertEquals(0, group.paddingBottom)
+        assertEquals(28f * context.resources.displayMetrics.scaledDensity, timer.textSize, .1f)
+        DjiWidgetRenderer.cameraControl(context, config, DjiWidgetViewState(camera)).reapply(context, view)
+        assertTrue(view.findViewById<View>(R.id.widgetControlFullSleep).hasOnClickListeners())
+        DjiWidgetRenderer.cameraControl(context, config,
+            DjiWidgetViewState(camera.copy(connection = CameraConnectionState.DISCONNECTED))).reapply(context, view)
+        assertFalse(view.findViewById<View>(R.id.widgetControlFullSleep).hasOnClickListeners())
+    }
 }

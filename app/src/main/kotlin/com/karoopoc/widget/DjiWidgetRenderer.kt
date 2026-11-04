@@ -383,6 +383,7 @@ object DjiWidgetRenderer {
             setViewVisibility(R.id.widgetControlFull, View.GONE)
             setViewVisibility(R.id.widgetControlPhoto, View.GONE)
             setViewVisibility(R.id.widgetControlFullSleep, View.GONE)
+            setOnClickPendingIntent(R.id.widgetControlFullSleep, null)
             if (interactive) {
                 setOnClickPendingIntent(R.id.widgetControlSettings, openAppIntent(context, 314))
                 setOnClickPendingIntent(R.id.widgetControlMessageSettings, openAppIntent(context, 315))
@@ -562,6 +563,10 @@ object DjiWidgetRenderer {
                     .measureText(formatStorage(context, state.remainingCapacityMb)).coerceAtLeast(1f)
                 setTextViewTextSize(R.id.widgetControlFullStorage, TypedValue.COMPLEX_UNIT_PX,
                     minOf(headerText, headerText * storageWidth / measuredStorage * .95f))
+                // RemoteViews can reapply to an existing tree after feedback expires.
+                setViewPadding(R.id.widgetControlVideoRecording, 0, 0, 0, 0)
+                setTextViewTextSize(R.id.widgetControlVideoTimer, TypedValue.COMPLEX_UNIT_SP, 28f)
+                setTextViewTextSize(R.id.widgetControlVideoFeedback, TypedValue.COMPLEX_UNIT_SP, 16f)
                 if (state.recording && state.highlightFeedback != null) {
                     // Keep the existing timer and highlight feedback legible in the shorter row.
                     val caption = (rowHeight * .24f).coerceAtLeast(11f)
