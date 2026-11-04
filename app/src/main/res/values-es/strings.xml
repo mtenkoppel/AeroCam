@@ -227,5 +227,7 @@
     <string name="diagnostic_connection_paused">Conexión de la cámara en pausa. Usa Reconectar cámara para continuar. Reiniciar el servicio de la aplicación también finaliza esta pausa de depuración.</string>
     <string name="highlight_require_speed">Exigir también velocidad</string>
     <string name="ob_restart_pairing_title">¿Volver a vincular la cámara?</string>
-    <string name="ob_restart_pairing_message">Ya hay una cámara guardada. ¿Quieres reiniciar la vinculación? Elige No para conservarla y continuar la configuración.</string>
+    <string name="ob_restart_pairing_message">Ya hay una cámara guardada. Puedes volver a vincularla o conservarla y continuar la configuración.</string>
+    <string name="ob_pair_again">Volver a vincular</string>
+    <string name="ob_skip_pairing">Omitir vinculación</string>
 </resources>

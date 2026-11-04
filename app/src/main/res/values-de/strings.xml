@@ -227,5 +227,7 @@
     <string name="diagnostic_connection_paused">Kameraverbindung pausiert. Mit „Kamera erneut verbinden“ fortsetzen. Ein Neustart des App-Dienstes beendet diese Debug-Pause ebenfalls.</string>
     <string name="highlight_require_speed">Zusätzlich Geschwindigkeit prüfen</string>
     <string name="ob_restart_pairing_title">Kamera erneut koppeln?</string>
-    <string name="ob_restart_pairing_message">Eine Kamera ist bereits gespeichert. Möchtest du die Kopplung neu starten? Mit Nein behältst du sie und setzt die Einrichtung fort.</string>
+    <string name="ob_restart_pairing_message">Eine Kamera ist bereits gespeichert. Du kannst sie erneut koppeln oder behalten und die Einrichtung fortsetzen.</string>
+    <string name="ob_pair_again">Erneut koppeln</string>
+    <string name="ob_skip_pairing">Kopplung überspringen</string>
 </resources>

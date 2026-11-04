@@ -227,5 +227,7 @@
     <string name="diagnostic_connection_paused">Connexion de la caméra en pause. Utilisez Reconnecter la caméra pour reprendre. Redémarrer le service de l’application met également fin à cette pause de débogage.</string>
     <string name="highlight_require_speed">Exiger aussi une vitesse</string>
     <string name="ob_restart_pairing_title">Associer à nouveau la caméra ?</string>
-    <string name="ob_restart_pairing_message">Une caméra est déjà enregistrée. Veux-tu recommencer son association ? Choisis Non pour la conserver et poursuivre la configuration.</string>
+    <string name="ob_restart_pairing_message">Une caméra est déjà enregistrée. Tu peux l’associer à nouveau ou la conserver et poursuivre la configuration.</string>
+    <string name="ob_pair_again">Associer à nouveau</string>
+    <string name="ob_skip_pairing">Passer l’association</string>
 </resources>

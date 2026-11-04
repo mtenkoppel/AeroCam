@@ -235,5 +235,7 @@
 
     <string name="highlight_require_speed">Also require speed</string>
     <string name="ob_restart_pairing_title">Pair the camera again?</string>
-    <string name="ob_restart_pairing_message">A camera is already saved. Would you like to restart pairing? Choose No to keep it and continue setup.</string>
+    <string name="ob_restart_pairing_message">A camera is already saved. You can pair again or keep it and continue setup.</string>
+    <string name="ob_pair_again">Pair again</string>
+    <string name="ob_skip_pairing">Skip pairing</string>
 </resources>

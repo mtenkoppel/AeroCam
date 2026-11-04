@@ -401,15 +401,17 @@ class OnboardingActivity : Activity() {
             AlertDialog.Builder(activity)
                 .setTitle(R.string.ob_restart_pairing_title)
                 .setMessage(R.string.ob_restart_pairing_message)
-                .setPositiveButton(android.R.string.yes) { _, _ ->
+                .setPositiveButton(R.string.ob_pair_again) { _, _ ->
                     DjiSettings.preferences(activity).edit().remove(DRAFT).apply()
                     DjiCameraController.forget(activity)
                     SetupActivity.open(activity)
                 }
-                .setNegativeButton(android.R.string.no) { _, _ ->
+                .setNeutralButton(R.string.ob_skip_pairing) { _, _ ->
                     DjiSettings.preferences(activity).edit().remove(DRAFT).apply()
                     activity.startActivity(Intent(activity, OnboardingActivity::class.java).putExtra("replay", true))
-                }.show()
+                }
+                .setNegativeButton(android.R.string.cancel, null)
+                .show()
         }
         const val DRAFT = "onboarding_draft_v1"
         const val DONE = "onboarding_completed_v1"
