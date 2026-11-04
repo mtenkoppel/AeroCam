@@ -245,6 +245,7 @@ class MainActivity : Activity() {
         // INVISIBLE keeps the connection card's footprint stable through reconnects.
         connectionHint.visibility = if (state.configured) View.INVISIBLE else View.VISIBLE
         startSetup.visibility = if (connected) View.INVISIBLE else View.VISIBLE
+        startSetup.isEnabled = !connecting && !state.diagnosticConnectionPaused
         startSetup.text = getString(if (state.configured) R.string.connect_known_dji else R.string.start_setup)
         connectButton.isEnabled = !connecting && !connected && state.configured && !state.diagnosticConnectionPaused
         forgetButton.isEnabled = hasBlePermission && state.configured

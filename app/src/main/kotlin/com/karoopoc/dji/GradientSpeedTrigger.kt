@@ -1,6 +1,6 @@
 package com.karoopoc.dji
 
-/** One direction's speed-and-gradient trigger, with hysteresis to avoid repeated markers. */
+/** One direction’s gradient trigger with an optional speed condition, with hysteresis to avoid repeated markers. */
 internal class GradientSpeedTrigger {
     private var active = false
 

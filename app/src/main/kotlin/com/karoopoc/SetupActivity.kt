@@ -179,7 +179,7 @@ class SetupActivity : DetailActivity() {
             state.configured -> R.string.connect_known_dji
             else -> R.string.pairing_search
         })
-        search.isEnabled = !connecting && !searching && !latched && !connected
+        search.isEnabled = !connecting && !searching && !latched && !connected && !state.diagnosticConnectionPaused
         summary.text = getString(when {
             !permissionGranted -> R.string.ble_permissions_denied
             connected -> R.string.pairing_connected
