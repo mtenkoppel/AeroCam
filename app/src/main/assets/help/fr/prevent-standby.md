@@ -18,9 +18,3 @@ La fonction **Empêcher l’arrêt automatique** fonctionne au mieux avec ces r�
 4. Désactive les sons de la caméra si tu le souhaites.
 
 Les noms des menus peuvent varier légèrement selon la version du micrologiciel de la caméra.
-
-## Pendant une sortie
-
-Dans AeroCam, ouvre **Réglages → Empêcher l’arrêt automatique** et active **Garder la caméra active**.
-
-Si la connexion est perdue, AeroCam reprend la fonction lorsque la caméra se reconnecte.

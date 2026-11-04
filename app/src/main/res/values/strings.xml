@@ -215,11 +215,11 @@
     <string name="help_number">%1$02d</string>
     <string name="setup_search_timeout">Search is taking longer than expected. Check the camera and try again.</string>
     <string name="highlight_descent_grade_threshold">Downhill gradient (%)</string>
-    <string name="highlight_descent_summary">Both thresholds required. Use a negative downhill gradient.</string>
+    <string name="highlight_descent_summary">Triggers at your selected downhill gradient. Optionally require a minimum speed too.</string>
     <string name="highlight_uphill">Uphill marker</string>
     <string name="highlight_uphill_speed_threshold">Uphill speed (km/h)</string>
     <string name="highlight_uphill_grade_threshold">Uphill gradient (%)</string>
-    <string name="highlight_uphill_summary">Both thresholds required. Use a positive uphill gradient.</string>
+    <string name="highlight_uphill_summary">Triggers at your selected uphill gradient. Optionally require a minimum speed too.</string>
     <string name="highlight_uphill_feedback">Uphill</string>
     <string name="diagnostic_connection_title">Debug: camera connection</string>
     <string name="diagnostic_disconnect">Disconnect camera</string>
@@ -233,4 +233,7 @@
 
 
 
+    <string name="highlight_require_speed">Also require speed</string>
+    <string name="ob_restart_pairing_title">Pair the camera again?</string>
+    <string name="ob_restart_pairing_message">A camera is already saved. Would you like to restart pairing? Choose No to keep it and continue setup.</string>
 </resources>

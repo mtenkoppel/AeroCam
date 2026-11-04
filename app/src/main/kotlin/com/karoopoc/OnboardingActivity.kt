@@ -1,6 +1,8 @@
 package com.karoopoc
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.Intent
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Typeface
@@ -35,6 +37,8 @@ class OnboardingActivity : Activity() {
     private var autoStart = false
     private var triggers = BooleanArray(8)
     private var values = intArrayOf(0, 250, 40, 0, 165, DjiSettings.DEFAULT_UPHILL_SPEED_KPH, DjiSettings.DEFAULT_DESCENT_SPEED_KPH, 0)
+    private var requireSpeed = booleanArrayOf(true, true)
+    private var speedRequiredDraft = true
     private var replay = false
     private val triggerNames = intArrayOf(R.string.highlight_lap, R.string.highlight_peak_power,
         R.string.highlight_max_speed, R.string.highlight_climb_summit, R.string.highlight_peak_heart_rate,
@@ -65,6 +69,8 @@ class OnboardingActivity : Activity() {
             standby = json.optInt("standby", 300).takeIf { it in listOf(60, 120, 300) } ?: 300
             edit = json.optInt("edit", 1).takeIf { it in valueKeys } ?: 1
             inputDraft = json.optString("input", "250")
+            requireSpeed = booleanArrayOf(json.optBoolean("uphillRequireSpeed", true), json.optBoolean("descentRequireSpeed", true))
+            speedRequiredDraft = json.optBoolean("speedRequiredDraft", true)
             replay = json.optBoolean("replay")
             autoStart = json.optBoolean("autoStart")
             uphillGrade = json.optInt("uphillGrade", DjiSettings.DEFAULT_UPHILL_GRADE_PERCENT)
@@ -89,6 +95,7 @@ class OnboardingActivity : Activity() {
                 settings.uphillSpeedKph, settings.descentSpeedKph, 0)
             uphillGrade = settings.uphillGradePercent
             downhillGrade = settings.descentGradePercent
+            requireSpeed = booleanArrayOf(settings.uphillRequireSpeed, settings.descentRequireSpeed)
             autoStart = settings.autoStartRecording
         }
         persist()
@@ -97,6 +104,8 @@ class OnboardingActivity : Activity() {
     private fun persist() {
         val json = JSONObject().put("page", page.name).put("standby", standby).put("edit", edit)
             .put("gradeInput", gradeDraft).put("uphillGrade", uphillGrade).put("downhillGrade", downhillGrade)
+            .put("uphillRequireSpeed", requireSpeed[0]).put("descentRequireSpeed", requireSpeed[1])
+            .put("speedRequiredDraft", speedRequiredDraft)
             .put("input", inputDraft).put("replay", replay).put("autoStart", autoStart)
             .put("triggers", JSONArray(triggers.toList())).put("values", JSONArray(values.toList()))
             .put("history", JSONArray(history.map { it.name }))
@@ -124,6 +133,8 @@ class OnboardingActivity : Activity() {
         valueKeys.forEach { (i, key) -> editor.putInt(key, values[i]) }
         editor.putInt(DjiSettings.KEY_UPHILL_GRADE_PERCENT, uphillGrade)
             .putInt(DjiSettings.KEY_DESCENT_GRADE_PERCENT, downhillGrade)
+        editor.putBoolean(DjiSettings.KEY_UPHILL_REQUIRE_SPEED, requireSpeed[0])
+            .putBoolean(DjiSettings.KEY_DESCENT_REQUIRE_SPEED, requireSpeed[1])
         val any = triggers.any { it }
         editor.putBoolean(DjiSettings.KEY_AUTO_HIGHLIGHTS_ENABLED, any)
             .putBoolean(DjiSettings.KEY_AUTO_START_RECORDING, canAutoStart() && autoStart)
@@ -176,7 +187,9 @@ class OnboardingActivity : Activity() {
                 heading(getString(R.string.ob_poweroff_title, standby / 60))
                 paragraph(R.string.ob_poweroff_reason, true)
                 heading(getString(R.string.ob_poweroff_path, standby / 60), 16f)
-                content.addView(button(getString(R.string.ob_other_timer), false) { go(Page.TIMER) })
+                content.addView(button(getString(R.string.ob_other_timer), false) { go(Page.TIMER) }.apply {
+                    setTextColor(getColor(R.color.dji_surface_success))
+                })
                 heading(getString(R.string.ob_mute)); paragraph(R.string.ob_mute_reason, true)
                 heading(getString(R.string.ob_mute_path), 16f)
                 heading(getString(R.string.ob_screen)); paragraph(R.string.ob_screen_reason, true)
@@ -201,7 +214,7 @@ class OnboardingActivity : Activity() {
                 title(R.string.ob_ride_title)
                 heading(getString(R.string.ob_turn_on)); paragraph(R.string.ob_auto_connect)
                 heading(getString(R.string.ob_lock)); paragraph(R.string.ob_lock_body)
-                art(R.drawable.ob_lock_menu, 130); paragraph(R.string.ob_lock_tip, true)
+                art(R.drawable.dji_lock_menu, 130, tint = false); paragraph(R.string.ob_lock_tip, true)
                 heading(getString(R.string.ob_prevents)); paragraph(R.string.ob_controls)
                 action(R.string.ob_next) { go(Page.TRIGGERS) }
             }
@@ -247,28 +260,43 @@ class OnboardingActivity : Activity() {
                 title(triggerNames[edit])
                 val gradient = edit == 5 || edit == 6
                 paragraph(if (gradient) R.string.ob_gradient_threshold else R.string.ob_threshold)
+                var speedHeading: TextView? = null
+                var speedToggle: Switch? = null
                 val field = EditText(this).apply {
                     inputType = InputType.TYPE_CLASS_NUMBER; setSingleLine(true)
                     setTextColor(palette.textPrimary); textSize = 24f
                     setText(inputDraft); contentDescription = if (gradient) getString(speedLabel(edit)) else "${getString(triggerNames[edit])} (${unit(edit)})"
                 }
-                if (gradient) heading(getString(speedLabel(edit)), 16f)
-                content.addView(field)
-                if (!gradient) heading(unit(edit), 16f)
                 val gradeField = if (gradient) EditText(this).apply {
                     inputType = InputType.TYPE_CLASS_NUMBER or (if (edit == 6) InputType.TYPE_NUMBER_FLAG_SIGNED else 0)
                     setSingleLine(true); setTextColor(palette.textPrimary); textSize = 24f
                     contentDescription = getString(gradeLabel(edit)); setText(gradeDraft)
                 }.also { heading(getString(gradeLabel(edit)), 16f); content.addView(it) } else null
+                if (gradient) {
+                    speedToggle = Switch(this).apply {
+                        text = getString(R.string.highlight_require_speed); textSize = 17f
+                        setTextColor(palette.textPrimary); minHeight = dp(53)
+                        isChecked = speedRequiredDraft
+                    }
+                    content.addView(speedToggle)
+                    speedHeading = text(getString(speedLabel(edit)), 16f).apply {
+                        visibility = if (speedRequiredDraft) View.VISIBLE else View.GONE
+                    }
+                    content.addView(speedHeading, params(8))
+                    field.visibility = if (speedRequiredDraft) View.VISIBLE else View.GONE
+                }
+                content.addView(field)
+                if (!gradient) heading(unit(edit), 16f)
                 val note = text("", 16f, true); content.addView(note)
                 fun speedValue() = if (gradient) OnboardingPolicy.gradientSpeed(field.text.toString(), edit == 5)
                     else OnboardingPolicy.threshold(field.text.toString())
                 fun gradeValue() = gradeField?.let { OnboardingPolicy.gradient(it.text.toString(), edit == 5) }
                 val save = action(R.string.ob_save_threshold) {
-                    val speed = speedValue()
+                    val speed = if (gradient && !speedRequiredDraft) values[edit] else speedValue()
                     val grade = gradeValue()
                     if (speed != null && (!gradient || grade != null)) {
                         values[edit] = speed
+                        if (gradient) requireSpeed[edit - 5] = speedRequiredDraft
                         if (edit == 5) uphillGrade = grade!!
                         if (edit == 6) downhillGrade = grade!!
                         triggers[edit] = true; persist(); onBackPressed()
@@ -276,9 +304,11 @@ class OnboardingActivity : Activity() {
                 }
                 fun update() {
                     val value = speedValue()
-                    save.isEnabled = value != null && (!gradient || gradeValue() != null)
+                    save.isEnabled = (value != null || (gradient && !speedRequiredDraft)) && (!gradient || gradeValue() != null)
                     note.text = if (!save.isEnabled) getString(if (gradient) {
-                        if (edit == 5) R.string.ob_uphill_range else R.string.ob_downhill_range
+                        if (!speedRequiredDraft) {
+                            if (edit == 5) R.string.ob_uphill_grade_range else R.string.ob_downhill_grade_range
+                        } else if (edit == 5) R.string.ob_uphill_range else R.string.ob_downhill_range
                     } else R.string.ob_positive_number) else if (gradient) "" else feedback(edit, value!!)
                 }
                 fun watch(input: EditText, grade: Boolean) = input.addTextChangedListener(object : TextWatcher {
@@ -289,22 +319,17 @@ class OnboardingActivity : Activity() {
                     }
                     override fun afterTextChanged(s: Editable?) = Unit
                 })
+                speedToggle?.setOnCheckedChangeListener { _, checked ->
+                    speedRequiredDraft = checked
+                    field.visibility = if (checked) View.VISIBLE else View.GONE
+                    speedHeading?.visibility = field.visibility
+                    persist(); update()
+                }
                 watch(field, false); gradeField?.let { watch(it, true) }
                 update()
             }
             Page.WIDGETS -> {
                 title(R.string.ob_awesome); paragraph(R.string.ob_widgets); paragraph(R.string.ob_sizes)
-                val sample = LinearLayout(this).apply {
-                    gravity = Gravity.CENTER; setBackgroundColor(palette.previewBackground)
-                    setPadding(dp(10), dp(12), dp(10), dp(12))
-                }
-                listOf(R.drawable.ic_coffee, R.drawable.ic_widget_video, R.drawable.ic_widget_photo).forEach { id ->
-                    sample.addView(ImageView(this).apply {
-                        setImageResource(id); imageTintList = ColorStateList.valueOf(palette.textPrimary)
-                        importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
-                    }, LinearLayout.LayoutParams(0, dp(54), 1f))
-                }
-                content.addView(sample); paragraph(R.string.ob_sample, true)
                 action(R.string.ob_next) { go(Page.FINAL) }
             }
             Page.FINAL -> {
@@ -317,14 +342,15 @@ class OnboardingActivity : Activity() {
     private fun canAutoStart() = triggers.take(7).any { it }
     private fun openThreshold(i: Int) {
         edit = i; inputDraft = values[i].toString()
+        speedRequiredDraft = if (i in 5..6) requireSpeed[i - 5] else true
         gradeDraft = (if (i == 6) downhillGrade else uphillGrade).toString()
         go(Page.THRESHOLD)
     }
     private fun speedLabel(i: Int) = if (i == 5) R.string.highlight_uphill_speed_threshold else R.string.highlight_descent_speed_threshold
     private fun gradeLabel(i: Int) = if (i == 5) R.string.highlight_uphill_grade_threshold else R.string.highlight_descent_grade_threshold
     private fun thresholdLabel(i: Int): String = when (i) {
-        5 -> "${values[i]} km/h · +$uphillGrade%"
-        6 -> "${values[i]} km/h · $downhillGrade%"
+        5 -> if (requireSpeed[0]) "${values[i]} km/h · +$uphillGrade%" else "+$uphillGrade%"
+        6 -> if (requireSpeed[1]) "${values[i]} km/h · $downhillGrade%" else "$downhillGrade%"
         else -> "${values[i]} ${unit(i)}"
     }
     private fun unit(i: Int) = when (i) { 1 -> "W"; 2, 5, 6 -> "km/h"; else -> "bpm" }
@@ -337,18 +363,18 @@ class OnboardingActivity : Activity() {
         val level = if (i == 1) OnboardingPolicy.powerMessage(value) else OnboardingPolicy.speedMessage(value)
         return if (level == 0) "" else getString(resources[level])
     }
-    private fun title(id: Int) = heading(getString(id), 25f)
+    private fun title(id: Int) = heading(getString(id), 19f)
     private fun heading(value: String, size: Float = 19f) {
-        content.addView(text(value, size).apply { setTypeface(Typeface.DEFAULT_BOLD) }, params(14))
+        content.addView(text(value, size).apply { typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL) }, params(14))
     }
     private fun paragraph(id: Int, muted: Boolean = false) { content.addView(text(getString(id), if (muted) 15f else 17f, muted), params(16)) }
     private fun text(value: String, size: Float, muted: Boolean = false) = TextView(this).apply {
         text = value; textSize = size; setTextColor(if (muted) palette.textSecondary else palette.textPrimary)
         setLineSpacing(dp(2).toFloat(), 1f)
     }
-    private fun art(id: Int, height: Int, success: Boolean = false) {
+    private fun art(id: Int, height: Int, success: Boolean = false, tint: Boolean = true) {
         content.addView(ImageView(this).apply {
-            setImageResource(id); imageTintList = ColorStateList.valueOf(if (success) getColor(R.color.dji_surface_success) else palette.textPrimary)
+            setImageResource(id); if (tint) imageTintList = ColorStateList.valueOf(if (success) getColor(R.color.dji_surface_success) else palette.textPrimary)
             adjustViewBounds = true; importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
         }, LinearLayout.LayoutParams(-1, dp(height)).apply { bottomMargin = dp(14) })
     }
@@ -359,11 +385,31 @@ class OnboardingActivity : Activity() {
         setOnClickListener { click() }
     }
     private fun action(id: Int, primary: Boolean = true, click: () -> Unit): Button = button(getString(id), primary, click).also {
+        it.textSize = 19f; it.minHeight = dp(53)
         footer.addView(it, LinearLayout.LayoutParams(-1, -2))
     }
     private fun params(bottom: Int = 0) = LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(bottom) }
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
     companion object {
+        fun open(activity: Activity) {
+            if (!DjiCameraController.state().configured) {
+                DjiSettings.preferences(activity).edit().remove(DRAFT).apply()
+                SetupActivity.open(activity)
+                return
+            }
+            AlertDialog.Builder(activity)
+                .setTitle(R.string.ob_restart_pairing_title)
+                .setMessage(R.string.ob_restart_pairing_message)
+                .setPositiveButton(android.R.string.yes) { _, _ ->
+                    DjiSettings.preferences(activity).edit().remove(DRAFT).apply()
+                    DjiCameraController.forget(activity)
+                    SetupActivity.open(activity)
+                }
+                .setNegativeButton(android.R.string.no) { _, _ ->
+                    DjiSettings.preferences(activity).edit().remove(DRAFT).apply()
+                    activity.startActivity(Intent(activity, OnboardingActivity::class.java).putExtra("replay", true))
+                }.show()
+        }
         const val DRAFT = "onboarding_draft_v1"
         const val DONE = "onboarding_completed_v1"
         fun canResume(context: Context, connected: Boolean): Boolean {

@@ -65,7 +65,9 @@
     <string name="ob_speed_fun3">Na via pública, os limites de velocidade também se aplicam a ti 😉</string>
     <string name="ob_replay">Guia de configuração</string>
     <string name="ob_bookmarks" formatted="false">Marca o início e o fim da volta apenas se a câmara já estiver a gravar. Pausar e retomar não adiciona marcadores. Nunca inicia uma gravação.</string>
-    <string name="ob_gradient_threshold" formatted="false">Ambos os limites têm de ser atingidos.</string>
+    <string name="ob_gradient_threshold" formatted="false">Escolhe uma inclinação. A velocidade é opcional; ativa-a para exigir ambas as condições.</string>
     <string name="ob_uphill_range" formatted="false">Introduza uma velocidade de 1 a 80 km/h e uma inclinação de +1 a +30%.</string>
     <string name="ob_downhill_range" formatted="false">Introduza uma velocidade de 40 a 80 km/h e uma inclinação de −30 a −1%.</string>
+    <string name="ob_uphill_grade_range" formatted="false">Introduz uma inclinação de +1 a +30%.</string>
+    <string name="ob_downhill_grade_range" formatted="false">Introduz uma inclinação de −30 a −1%.</string>
 </resources>

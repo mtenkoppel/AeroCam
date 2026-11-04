@@ -255,9 +255,13 @@ internal class SettingsViews(val activity: Activity) {
         uphillThresholdRows = column().apply {
             visibility = if (uphillSwitch.isChecked) View.VISIBLE else View.GONE
             addView(secondaryText(getString(R.string.highlight_uphill_summary)), fullWidthParams(bottomMargin = dp(8)))
-            addView(numberRow(getString(R.string.highlight_uphill_speed_threshold),
-                DjiSettings.KEY_UPHILL_SPEED_KPH, DjiSettings.DEFAULT_UPHILL_SPEED_KPH, 1, 80),
-                fullWidthParams(bottomMargin = dp(8)))
+            val speedRow = numberRow(getString(R.string.highlight_uphill_speed_threshold),
+                DjiSettings.KEY_UPHILL_SPEED_KPH, DjiSettings.DEFAULT_UPHILL_SPEED_KPH, 1, 80)
+            settingsSwitch(this, getString(R.string.highlight_require_speed), DjiSettings.KEY_UPHILL_REQUIRE_SPEED, true) { checked ->
+                speedRow.visibility = if (checked) View.VISIBLE else View.GONE
+            }
+            speedRow.visibility = if (DjiSettings.read(activity).uphillRequireSpeed) View.VISIBLE else View.GONE
+            addView(speedRow, fullWidthParams(bottomMargin = dp(8)))
             addView(numberRow(getString(R.string.highlight_uphill_grade_threshold),
                 DjiSettings.KEY_UPHILL_GRADE_PERCENT, DjiSettings.DEFAULT_UPHILL_GRADE_PERCENT, 1, 30),
                 fullWidthParams(bottomMargin = dp(14)))
@@ -274,13 +278,13 @@ internal class SettingsViews(val activity: Activity) {
         descentThresholdRows = column().apply {
             visibility = if (descentSwitch.isChecked) View.VISIBLE else View.GONE
             addView(secondaryText(getString(R.string.highlight_descent_summary)), fullWidthParams(bottomMargin = dp(8)))
-            addView(numberRow(
-                getString(R.string.highlight_descent_speed_threshold),
-                DjiSettings.KEY_DESCENT_SPEED_KPH,
-                DjiSettings.DEFAULT_DESCENT_SPEED_KPH,
-                40,
-                80,
-            ), fullWidthParams(bottomMargin = dp(8)))
+            val speedRow = numberRow(getString(R.string.highlight_descent_speed_threshold),
+                DjiSettings.KEY_DESCENT_SPEED_KPH, DjiSettings.DEFAULT_DESCENT_SPEED_KPH, 40, 80)
+            settingsSwitch(this, getString(R.string.highlight_require_speed), DjiSettings.KEY_DESCENT_REQUIRE_SPEED, true) { checked ->
+                speedRow.visibility = if (checked) View.VISIBLE else View.GONE
+            }
+            speedRow.visibility = if (DjiSettings.read(activity).descentRequireSpeed) View.VISIBLE else View.GONE
+            addView(speedRow, fullWidthParams(bottomMargin = dp(8)))
             addView(numberRow(
                 getString(R.string.highlight_descent_grade_threshold),
                 DjiSettings.KEY_DESCENT_GRADE_PERCENT,

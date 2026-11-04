@@ -214,15 +214,18 @@
     <string name="help_number">%1$02d</string>
     <string name="setup_search_timeout">A pesquisa está a demorar mais do que o esperado. Verifica a câmara e tenta novamente.</string>
     <string name="highlight_descent_grade_threshold">Inclinação da descida (%)</string>
-    <string name="highlight_descent_summary">Ambos os limites são necessários. Inclinação negativa na descida.</string>
+    <string name="highlight_descent_summary">Ativa-se na inclinação de descida escolhida. Também podes exigir uma velocidade mínima.</string>
     <string name="highlight_uphill">Marcador de subida</string>
     <string name="highlight_uphill_speed_threshold">Velocidade na subida (km/h)</string>
     <string name="highlight_uphill_grade_threshold">Inclinação da subida (%)</string>
-    <string name="highlight_uphill_summary">Ambos os limites são necessários. Inclinação positiva na subida.</string>
+    <string name="highlight_uphill_summary">Ativa-se na inclinação de subida escolhida. Também podes exigir uma velocidade mínima.</string>
     <string name="highlight_uphill_feedback">Subida</string>
     <string name="diagnostic_connection_title">Depuração: ligação da câmara</string>
     <string name="diagnostic_disconnect">Desligar câmara</string>
     <string name="diagnostic_reconnect">Voltar a ligar a câmara</string>
     <string name="diagnostic_connection_hint">Apenas para testes manuais. O Bluetooth permanece ativo. A desconexão é bloqueada durante uma gravação ou uma ação pendente da câmara.</string>
     <string name="diagnostic_connection_paused">Ligação da câmara em pausa. Use Voltar a ligar a câmara para continuar. Reiniciar o serviço da aplicação também termina esta pausa de depuração.</string>
+    <string name="highlight_require_speed">Exigir também velocidade</string>
+    <string name="ob_restart_pairing_title">Emparelhar a câmara novamente?</string>
+    <string name="ob_restart_pairing_message">Já existe uma câmara guardada. Queres reiniciar o emparelhamento? Escolhe Não para a manter e continuar a configuração.</string>
 </resources>

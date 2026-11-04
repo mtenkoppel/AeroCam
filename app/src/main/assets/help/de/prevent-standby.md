@@ -18,9 +18,3 @@ Die Funktion **Standby verhindern** funktioniert am besten mit diesen Kameraeins
 4. Schalte die Kameratöne aus, wenn du möchtest.
 
 Die Menünamen können je nach Firmware-Version der Kamera etwas abweichen.
-
-## Während einer Fahrt
-
-Öffne in AeroCam **Einstellungen → Standby verhindern** und schalte **Kamera wach halten** ein.
-
-Geht die Verbindung verloren, setzt AeroCam die Funktion nach dem erneuten Verbinden der Kamera fort.

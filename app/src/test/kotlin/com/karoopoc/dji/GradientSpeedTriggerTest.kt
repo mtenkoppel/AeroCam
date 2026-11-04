@@ -58,4 +58,21 @@ class GradientSpeedTriggerTest {
         assertFalse(trigger.update(60.0, Double.NEGATIVE_INFINITY, true, 60, -6))
         assertFalse(trigger.update(60.0, -6.0, true, 60, 0))
     }
+    @org.junit.Test fun gradeOnlyTriggersWithoutSpeedAndRearmsWithGradeHysteresis() {
+        for (grade in listOf(10, -10)) {
+            val detector = GradientSpeedTrigger()
+            org.junit.Assert.assertFalse(detector.update(null, grade * 0.9, true, 30, grade, false))
+            org.junit.Assert.assertTrue(detector.update(null, grade.toDouble(), true, 30, grade, false))
+            org.junit.Assert.assertFalse(detector.update(Double.NaN, grade * 1.2, true, 30, grade, false))
+            org.junit.Assert.assertFalse(detector.update(0.0, grade * 0.95, true, 30, grade, false))
+            org.junit.Assert.assertFalse(detector.update(null, grade * 0.8, true, 30, grade, false))
+            org.junit.Assert.assertTrue(detector.update(0.0, grade.toDouble(), true, 30, grade, false))
+        }
+    }
+    @org.junit.Test fun requiredSpeedStillRejectsMissingSpeed() {
+        val detector = GradientSpeedTrigger()
+        org.junit.Assert.assertFalse(detector.update(null, 10.0, true, 30, 5, true))
+        org.junit.Assert.assertFalse(detector.update(29.0, 10.0, true, 30, 5, true))
+        org.junit.Assert.assertTrue(detector.update(30.0, 5.0, true, 30, 5, true))
+    }
 }

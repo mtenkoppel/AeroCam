@@ -214,15 +214,18 @@
     <string name="help_number">%1$02d</string>
     <string name="setup_search_timeout">La búsqueda está tardando más de lo esperado. Comprueba la cámara e inténtalo de nuevo.</string>
     <string name="highlight_descent_grade_threshold">Pendiente de bajada (%)</string>
-    <string name="highlight_descent_summary">Se requieren ambos umbrales. La bajada tiene pendiente negativa.</string>
+    <string name="highlight_descent_summary">Se activa en la pendiente de bajada elegida. También puedes exigir una velocidad mínima.</string>
     <string name="highlight_uphill">Marcador de subida</string>
     <string name="highlight_uphill_speed_threshold">Velocidad de subida (km/h)</string>
     <string name="highlight_uphill_grade_threshold">Pendiente de subida (%)</string>
-    <string name="highlight_uphill_summary">Se requieren ambos umbrales. La subida tiene pendiente positiva.</string>
+    <string name="highlight_uphill_summary">Se activa en la pendiente de subida elegida. También puedes exigir una velocidad mínima.</string>
     <string name="highlight_uphill_feedback">Subida</string>
     <string name="diagnostic_connection_title">Depuración: conexión de la cámara</string>
     <string name="diagnostic_disconnect">Desconectar cámara</string>
     <string name="diagnostic_reconnect">Reconectar cámara</string>
     <string name="diagnostic_connection_hint">Solo para pruebas manuales. Bluetooth permanece activado. No se puede desconectar mientras se graba o hay una acción de cámara pendiente.</string>
     <string name="diagnostic_connection_paused">Conexión de la cámara en pausa. Usa Reconectar cámara para continuar. Reiniciar el servicio de la aplicación también finaliza esta pausa de depuración.</string>
+    <string name="highlight_require_speed">Exigir también velocidad</string>
+    <string name="ob_restart_pairing_title">¿Volver a vincular la cámara?</string>
+    <string name="ob_restart_pairing_message">Ya hay una cámara guardada. ¿Quieres reiniciar la vinculación? Elige No para conservarla y continuar la configuración.</string>
 </resources>

@@ -214,15 +214,18 @@
     <string name="help_number">%1$02d</string>
     <string name="setup_search_timeout">Die Suche dauert länger als erwartet. Prüfe die Kamera und versuche es erneut.</string>
     <string name="highlight_descent_grade_threshold">Gefälle (%)</string>
-    <string name="highlight_descent_summary">Beide Schwellen müssen erreicht sein. Negatives Gefälle.</string>
+    <string name="highlight_descent_summary">Löst beim gewählten Gefälle aus. Optional muss auch eine Mindestgeschwindigkeit erreicht werden.</string>
     <string name="highlight_uphill">Anstiegsmarker</string>
     <string name="highlight_uphill_speed_threshold">Tempo bergauf (km/h)</string>
     <string name="highlight_uphill_grade_threshold">Steigung (%)</string>
-    <string name="highlight_uphill_summary">Beide Schwellen müssen erreicht sein. Positive Steigung.</string>
+    <string name="highlight_uphill_summary">Löst bei der gewählten Steigung aus. Optional muss auch eine Mindestgeschwindigkeit erreicht werden.</string>
     <string name="highlight_uphill_feedback">Anstieg</string>
     <string name="diagnostic_connection_title">Debug: Kameraverbindung</string>
     <string name="diagnostic_disconnect">Kamera trennen</string>
     <string name="diagnostic_reconnect">Kamera erneut verbinden</string>
     <string name="diagnostic_connection_hint">Nur für manuelle Tests. Bluetooth bleibt eingeschaltet. Trennen ist während einer Aufnahme oder eines ausstehenden Kamerabefehls gesperrt.</string>
     <string name="diagnostic_connection_paused">Kameraverbindung pausiert. Mit „Kamera erneut verbinden“ fortsetzen. Ein Neustart des App-Dienstes beendet diese Debug-Pause ebenfalls.</string>
+    <string name="highlight_require_speed">Zusätzlich Geschwindigkeit prüfen</string>
+    <string name="ob_restart_pairing_title">Kamera erneut koppeln?</string>
+    <string name="ob_restart_pairing_message">Eine Kamera ist bereits gespeichert. Möchtest du die Kopplung neu starten? Mit Nein behältst du sie und setzt die Einrichtung fort.</string>
 </resources>

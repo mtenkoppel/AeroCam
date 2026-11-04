@@ -133,7 +133,7 @@ class MainActivity : Activity() {
         ui.style(content)
         val advanced = ui.group(content, getString(R.string.advanced_settings))
         connectButton = ui.action(getString(R.string.connect_known_dji)) {
-            if (requestBlePermissions()) { observeCamera(); DjiCameraController.connect(this) }
+            SetupActivity.open(this)
         }
         forgetButton = ui.action(getString(R.string.forget_dji_device)) {
             AlertDialog.Builder(this)
@@ -145,7 +145,7 @@ class MainActivity : Activity() {
         }
         advanced.addView(connectButton, ui.fullWidthParams())
         advanced.addView(forgetButton, ui.fullWidthParams())
-        advanced.addView(ui.action(getString(R.string.restart_onboarding)) { startActivity(android.content.Intent(this, OnboardingActivity::class.java).putExtra("replay", true)) }, ui.fullWidthParams())
+        advanced.addView(ui.action(getString(R.string.restart_onboarding)) { OnboardingActivity.open(this) }, ui.fullWidthParams())
         advanced.addView(ui.action(getString(R.string.reset_all_settings)) { showResetAllConfirmation() }, ui.fullWidthParams())
         return ui.scroll(content, R.id.settings_scroll)
     }
@@ -244,7 +244,8 @@ class MainActivity : Activity() {
         })
         // INVISIBLE keeps the connection card's footprint stable through reconnects.
         connectionHint.visibility = if (state.configured) View.INVISIBLE else View.VISIBLE
-        startSetup.visibility = if (state.configured) View.INVISIBLE else View.VISIBLE
+        startSetup.visibility = if (connected) View.INVISIBLE else View.VISIBLE
+        startSetup.text = getString(if (state.configured) R.string.connect_known_dji else R.string.start_setup)
         connectButton.isEnabled = !connecting && !connected && state.configured && !state.diagnosticConnectionPaused
         forgetButton.isEnabled = hasBlePermission && state.configured
         ui.refresh()

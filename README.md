@@ -60,7 +60,7 @@ mode.
 
 Auto highlights use Karoo ride data to mark useful moments while a ride and
 camera recording are active. Each trigger can be enabled separately, and power,
-speed, heart-rate, and descent thresholds can be customized. Optional
+speed, heart-rate, ascent, and descent thresholds can be customized. Optional
 **Auto-start recording** starts recording when a trigger occurs while the camera
 is idle; that first event starts the recording rather than adding an immediate
 marker.
@@ -73,8 +73,8 @@ marker.
   of a climb in the active Karoo route.
 - **Peak heart rate:** Adds a highlight when heart rate crosses the configured
   bpm threshold.
-- **High-speed descent:** Adds a highlight when speed exceeds the configured
-  threshold while the grade indicates a descent.
+- **Ascent and descent:** Separate gradient thresholds for climbs and descents,
+  each with an optional minimum speed condition.
 - **Ride start/end markers:** Marks the actual ride boundaries only if the camera
   is already recording. No delayed start marker is added when recording begins
   mid-ride. Finishing from a paused ride can add an end marker; pauses and resumes

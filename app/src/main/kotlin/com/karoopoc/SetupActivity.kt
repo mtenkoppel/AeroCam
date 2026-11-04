@@ -74,6 +74,8 @@ class SetupActivity : DetailActivity() {
     private fun button(label: Int, action: () -> Unit) = Button(this).apply {
         text = getString(label)
         isAllCaps = false
+        textSize = 19f
+        minHeight = ui.dp(53)
         setOnClickListener { action() }
     }
 
@@ -85,7 +87,13 @@ class SetupActivity : DetailActivity() {
         findViewById<android.widget.ScrollView>(R.id.article_scroll)?.scrollTo(0, 0)
         when (page) {
             Page.CONNECT -> {
-                body.addView(ui.text(getString(R.string.setup_connect_first), 24f, true), ui.fullWidthParams(bottomMargin = ui.dp(12)))
+                body.addView(ui.text(getString(R.string.setup_connect_first), 19f, true), ui.fullWidthParams(bottomMargin = ui.dp(12)))
+                body.addView(android.widget.ImageView(this).apply {
+                    setImageResource(R.drawable.ob_devices)
+                    imageTintList = android.content.res.ColorStateList.valueOf(ui.palette.textPrimary)
+                    adjustViewBounds = true
+                    importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+                }, android.widget.LinearLayout.LayoutParams(-1, ui.dp(145)))
                 summary = ui.secondaryText(getString(R.string.pairing_subtitle)).apply { minLines = 3 }
                 body.addView(summary, ui.fullWidthParams(bottomMargin = ui.dp(12)))
                 listOf(R.string.pairing_step_1, R.string.pairing_step_2, R.string.pairing_step_3, R.string.pairing_step_4).forEach {

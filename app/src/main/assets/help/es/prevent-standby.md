@@ -18,9 +18,3 @@ La función **Evitar el apagado automático** funciona mejor con estos ajustes d
 4. Desactiva los sonidos de la cámara si lo prefieres.
 
 Los nombres de los menús pueden variar ligeramente según la versión del firmware de la cámara.
-
-## Durante una salida
-
-En AeroCam, abre **Ajustes → Evitar el apagado automático** y activa **Mantener la cámara activa**.
-
-Si se pierde la conexión, AeroCam reanuda la función cuando la cámara vuelve a conectarse.

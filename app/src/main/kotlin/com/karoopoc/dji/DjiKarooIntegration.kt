@@ -227,12 +227,12 @@ class DjiKarooIntegration(
         val speedKph = latestSpeedMetersPerSecond?.times(3.6)
         if (downhillTrigger.update(speedKph, latestGradePercent,
                 settings.autoHighlightsEnabled && settings.highSpeedDescentHighlights,
-                settings.descentSpeedKph, settings.descentGradePercent)) {
+                settings.descentSpeedKph, settings.descentGradePercent, settings.descentRequireSpeed)) {
             requestHighlight(appContext.getString(R.string.highlight_descent_feedback))
         }
         if (uphillTrigger.update(speedKph, latestGradePercent,
                 settings.autoHighlightsEnabled && settings.uphillHighlights,
-                settings.uphillSpeedKph, settings.uphillGradePercent)) {
+                settings.uphillSpeedKph, settings.uphillGradePercent, settings.uphillRequireSpeed)) {
             requestHighlight(appContext.getString(R.string.highlight_uphill_feedback))
         }
     }

@@ -6,16 +6,6 @@ A highlight marks an interesting moment inside a video recording. It helps you f
 
 AeroCam can add a highlight when something happens during your ride. The event that causes it is called a **trigger**.
 
-## Ride start/end markers
-
-This option is off for new installations. Updates preserve existing choices and the previous default for older installations. Enable both **Auto highlights** and **Ride start/end markers** to use it.
-
-- A start marker is added only when the camera is already recording as the ride starts. Starting the camera later does not add a delayed ride-start marker.
-- An end marker is added when an active or paused ride finishes, provided the camera is still recording. Karoo reports the same end state for saving and discarding a ride, so both can produce an end marker.
-- Pausing and resuming do not add markers. Missed markers are not saved for later; reconnecting does not add a backdated marker.
-- These markers never start a recording, even with Auto-start recording enabled, and bypass the automatic threshold cooldown.
-
-
 ## Available triggers
 
 - **Lap marker:** A new lap starts.
@@ -23,19 +13,17 @@ This option is off for new installations. Updates preserve existing choices and 
 - **Max speed marker:** Your speed crosses the threshold you set.
 - **Climb summit marker:** Karoo reports the end of a climb.
 - **Peak heart rate marker:** Your heart rate crosses the threshold you set.
-- **Uphill marker:** Both your selected uphill speed and positive gradient thresholds are met.
-- **Downhill marker:** Both your selected downhill speed and negative gradient thresholds are met.
+- **Uphill marker:** Triggers at the selected uphill gradient, with an optional minimum speed.
+- **Downhill marker:** Triggers at the selected downhill gradient, with an optional minimum speed.
 - **Ride start/end markers:** Marks the ride start and end only when the camera is already recording. Pauses and resumes add no markers. Never starts a recording.
 
 Only triggers that you enable in Settings are used.
 
 ## Uphill and downhill thresholds
 
-Enable uphill, downhill, or both independently. Each direction has its own speed and gradient thresholds, and **both thresholds must be met**.
+Enable uphill, downhill, or both independently. Use a positive gradient for uphill and a negative gradient for downhill. Turn off **Also require speed** to trigger on gradient alone. Turn it on to require both gradient and speed.
 
-Use a **positive gradient for uphill** and a **negative gradient for downhill**. For example, uphill at **20 km/h** and **+5%** means at least 20 km/h on a 5% climb or steeper. Downhill at **60 km/h** and **−6%** means at least 60 km/h on a 6% descent or steeper.
-
-The existing downhill values remain **50 km/h** and **−3%**, with the trigger off unless you enable it. The new uphill trigger also starts off, with **20 km/h** and **+3%** as initial values. Small fluctuations around a threshold do not create repeated highlights.
+For example, use **+10%** with speed off to mark a steep climb at any speed. Use **+5%** and **30 km/h** to mark a fast climb. The same choice applies to descents, using a negative gradient. Small fluctuations around a threshold do not create repeated highlights.
 
 ## When recording is active
 

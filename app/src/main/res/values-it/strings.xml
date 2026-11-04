@@ -214,15 +214,18 @@
     <string name="help_number">%1$02d</string>
     <string name="setup_search_timeout">La ricerca sta richiedendo più tempo del previsto. Controlla la fotocamera e riprova.</string>
     <string name="highlight_descent_grade_threshold">Pendenza in discesa (%)</string>
-    <string name="highlight_descent_summary">Sono richieste entrambe le soglie. Pendenza negativa in discesa.</string>
+    <string name="highlight_descent_summary">Si attiva alla pendenza di discesa scelta. Puoi richiedere anche una velocità minima.</string>
     <string name="highlight_uphill">Marcatore salita</string>
     <string name="highlight_uphill_speed_threshold">Velocità in salita (km/h)</string>
     <string name="highlight_uphill_grade_threshold">Pendenza in salita (%)</string>
-    <string name="highlight_uphill_summary">Sono richieste entrambe le soglie. Pendenza positiva in salita.</string>
+    <string name="highlight_uphill_summary">Si attiva alla pendenza di salita scelta. Puoi richiedere anche una velocità minima.</string>
     <string name="highlight_uphill_feedback">Salita</string>
     <string name="diagnostic_connection_title">Debug: connessione videocamera</string>
     <string name="diagnostic_disconnect">Disconnetti videocamera</string>
     <string name="diagnostic_reconnect">Riconnetti videocamera</string>
     <string name="diagnostic_connection_hint">Solo per test manuali. Il Bluetooth rimane attivo. La disconnessione è bloccata durante una registrazione o un comando della videocamera in sospeso.</string>
     <string name="diagnostic_connection_paused">Connessione della videocamera in pausa. Usa Riconnetti videocamera per riprendere. Anche il riavvio del servizio termina questa pausa di debug.</string>
+    <string name="highlight_require_speed">Richiedi anche la velocità</string>
+    <string name="ob_restart_pairing_title">Associare di nuovo la fotocamera?</string>
+    <string name="ob_restart_pairing_message">Una fotocamera è già salvata. Vuoi ricominciare l’associazione? Scegli No per conservarla e continuare la configurazione.</string>
 </resources>
