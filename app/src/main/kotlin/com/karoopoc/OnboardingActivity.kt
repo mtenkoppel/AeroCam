@@ -366,7 +366,7 @@ class OnboardingActivity : Activity() {
     }
     private fun title(id: Int) = heading(getString(id), 19f)
     private fun heading(value: String, size: Float = 19f) {
-        content.addView(text(value, size).apply { typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL) }, params(14))
+        content.addView(text(value, size).apply { typeface = Typeface.DEFAULT_BOLD }, params(14))
     }
     private fun paragraph(id: Int, muted: Boolean = false) { content.addView(text(getString(id), if (muted) 15f else 17f, muted), params(16)) }
     private fun text(value: String, size: Float, muted: Boolean = false) = TextView(this).apply {
