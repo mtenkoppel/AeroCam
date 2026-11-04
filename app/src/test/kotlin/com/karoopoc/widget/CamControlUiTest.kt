@@ -160,6 +160,43 @@ class CamControlUiTest {
         assertTrue(compact.findViewById<View>(R.id.widgetControlSettings).hasOnClickListeners())
     }
 
+    @Test fun halfWidthCaptionMatchesMeasuredBellGeometryAndKeepsCornersTransparent() {
+        val captionHeight = context.resources.getDimensionPixelSize(R.dimen.widget_field_caption_height)
+        val config = ViewConfig(Pair(30,15), Pair(238,125-captionHeight),26)
+        val field = DjiWidgetRenderer.captionedField(context,R.string.dji_status,true,
+            DjiWidgetRenderer.video(context,config,DjiWidgetViewState(camera)))
+            .apply(context,FrameLayout(context))
+        field.measure(View.MeasureSpec.makeMeasureSpec(238,View.MeasureSpec.EXACTLY),View.MeasureSpec.makeMeasureSpec(125,View.MeasureSpec.EXACTLY));field.layout(0,0,238,125)
+        val button = field.findViewById<View>(R.id.widgetVideoPrimary)
+        val bounds=android.graphics.Rect(0,0,button.width,button.height)
+        (field as ViewGroup).offsetDescendantRectToMyCoords(button,bounds)
+        assertEquals(45,bounds.top);assertEquals(72,button.height)
+        assertTrue(field.clipToOutline)
+        val bitmap=Bitmap.createBitmap(238,125,Bitmap.Config.ARGB_8888)
+        bitmap.eraseColor(android.graphics.Color.MAGENTA);field.draw(Canvas(bitmap))
+        for ((x,y) in listOf(0 to 0,237 to 0,0 to 124,237 to 124))
+            assertEquals("Field must not paint outside its rounded corners",android.graphics.Color.MAGENTA,bitmap.getPixel(x,y))
+        bitmap.recycle()
+        save(field,"bell-measured-half-width")
+    }
+
+    @Test fun disconnectedFullControlHasOneCenteredConnectAndDisabledPowerThenRestores() {
+        val config=ViewConfig(Pair(60,60),Pair(480,420),32,ViewConfig.Alignment.LEFT)
+        val view=render(420)
+        DjiWidgetRenderer.cameraControl(context,config,DjiWidgetViewState(camera.copy(connection=CameraConnectionState.DISCONNECTED))).reapply(context,view)
+        val message=view.findViewById<TextView>(R.id.widgetControlTopMessageText)
+        assertEquals(context.getString(R.string.widget_connect),message.text.toString())
+        assertEquals(android.view.Gravity.CENTER,message.gravity)
+        assertEquals(View.GONE,view.findViewById<View>(R.id.widgetControlFullOfflineHint).visibility)
+        assertEquals("",view.findViewById<TextView>(R.id.widgetControlFullOfflineHint).text.toString())
+        val power=view.findViewById<View>(R.id.widgetControlFullSleep)
+        assertFalse(power.isEnabled);assertFalse(power.hasOnClickListeners())
+        save(view,"disconnected-centered-connect")
+        DjiWidgetRenderer.cameraControl(context,config,DjiWidgetViewState(camera)).reapply(context,view)
+        assertTrue(power.isEnabled);assertTrue(power.hasOnClickListeners())
+        save(view,"reconnected-power-restored")
+    }
+
     @Test fun captionsAndButtonBoundsMatchAcrossSingleAndCombinedFields() {
         val config = ViewConfig(Pair(60,30), Pair(480,144),32)
         val state = DjiWidgetViewState(camera)
