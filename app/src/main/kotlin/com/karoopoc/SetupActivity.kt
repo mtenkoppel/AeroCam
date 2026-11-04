@@ -193,7 +193,6 @@ class SetupActivity : DetailActivity() {
         if (connecting || connected) searchingUntil = 0L
         // A stale connected snapshot during Forget must not bypass the Search screen.
         if (connected && connectionRequested && !isFinishing) {
-            com.karoopoc.dji.DjiSettings.preferences(this).edit().remove(OnboardingActivity.DRAFT).apply()
             startActivity(Intent(this, OnboardingActivity::class.java)
                 .putExtra("replay", true).putExtra("paired", true))
             finish()

@@ -80,7 +80,7 @@ class PairingScreensUiTest {
     }
     @Test fun searchedConnectionShowsPairedConfirmationBeforeWelcomeAndPreservesChoices() {
         shadowOf(context).grantPermissions(Manifest.permission.BLUETOOTH_SCAN,Manifest.permission.BLUETOOTH_CONNECT)
-        DjiSettings.preferences(context).edit().putBoolean(OnboardingActivity.DONE,true)
+        DjiSettings.preferences(context).edit().putString(DjiSettings.KEY_THEME_MODE,"dark").putBoolean(OnboardingActivity.DONE,true)
             .putBoolean(DjiSettings.KEY_PEAK_POWER_HIGHLIGHTS,true).putInt(DjiSettings.KEY_PEAK_POWER_WATTS,420).commit()
         val before=DjiSettings.read(context)
         val controller=Robolectric.buildActivity(SetupActivity::class.java).setup()
