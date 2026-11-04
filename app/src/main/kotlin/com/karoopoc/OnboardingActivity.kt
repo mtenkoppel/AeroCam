@@ -150,19 +150,11 @@ class OnboardingActivity : Activity() {
             orientation = LinearLayout.VERTICAL; setBackgroundColor(palette.appBackground)
             setPadding(dp(16), dp(4), dp(16), dp(10))
         }
-        if (page !in listOf(Page.PAIRED, Page.WELCOME)) {
-            root.addView(ImageButton(this).apply {
-                setImageResource(R.drawable.ob_arrow_back); imageTintList = ColorStateList.valueOf(palette.textPrimary)
-                setBackgroundColor(android.graphics.Color.TRANSPARENT)
-                contentDescription = getString(R.string.ob_back)
-                setOnClickListener { onBackPressed() }
-            }, LinearLayout.LayoutParams(dp(48), dp(48)))
-        }
         content = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         root.addView(ScrollView(this).apply { isFillViewport = false; addView(content) }, LinearLayout.LayoutParams(-1, 0, 1f))
         footer = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         root.addView(footer)
-        setContentView(root)
+        setContentView(KarooNavigation.wrap(this, root))
         when (page) {
             Page.PAIRED -> {
                 art(R.drawable.ic_widget_check, 108, true)

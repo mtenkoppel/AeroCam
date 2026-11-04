@@ -2,7 +2,6 @@ package com.karoopoc
 
 import android.Manifest
 import android.app.Activity
-import android.app.ActionBar
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Looper
@@ -61,9 +60,9 @@ class PairingScreensUiTest {
             assertTrue(text.indexOf(a.getString(R.string.pairing_search)) < text.indexOf(a.getString(R.string.pairing_connect_camera)))
             assertTrue(text.contains(a.getString(R.string.pairing_step_4)))
             assertFalse(text.contains(a.getString(R.string.ble_permissions_denied)))
-            assertTrue(a.actionBar!!.displayOptions and ActionBar.DISPLAY_HOME_AS_UP != 0)
+            assertNotNull(a.findViewById<android.widget.ImageButton>(R.id.karoo_back))
             save(a,"pairing-start-$theme")
-            a.onBackPressed();assertTrue(a.isFinishing)
+            a.findViewById<android.widget.ImageButton>(R.id.karoo_back).performClick();assertTrue(a.isFinishing)
             controller.pause().stop().destroy()
         }
     }

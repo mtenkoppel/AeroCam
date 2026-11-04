@@ -7,12 +7,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.transition.Slide
 import android.view.Gravity
-import android.view.MenuItem
 import android.view.Window
 import android.widget.LinearLayout
-import android.widget.Toolbar
 
-/** A real activity: platform back stack, toolbar, transitions, and scroll restoration. */
+/** A real activity: platform back stack, transitions, and scroll restoration. */
 open class DetailActivity : Activity() {
     internal lateinit var ui: SettingsViews
     internal lateinit var body: LinearLayout
@@ -29,21 +27,9 @@ open class DetailActivity : Activity() {
         window.returnTransition = Slide(Gravity.END)
         ui = SettingsViews(this)
         val root = ui.column().apply { setBackgroundColor(ui.palette.appBackground) }
-        val toolbar = Toolbar(this)
-        root.addView(toolbar, LinearLayout.LayoutParams(-1, ui.dp(48)))
-        setActionBar(toolbar)
-        actionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowTitleEnabled(false)
-        }
         body = ui.column().apply { setPadding(ui.dp(16), ui.dp(12), ui.dp(16), ui.dp(16)) }
         root.addView(ui.scroll(body, R.id.article_scroll), LinearLayout.LayoutParams(-1, 0, 1f))
-        setContentView(root)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) { onBackPressed(); return true }
-        return super.onOptionsItemSelected(item)
+        setContentView(KarooNavigation.wrap(this, root))
     }
 }
 

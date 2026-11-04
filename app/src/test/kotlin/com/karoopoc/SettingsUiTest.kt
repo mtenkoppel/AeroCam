@@ -212,7 +212,7 @@ class SettingsUiTest {
             val controller = Robolectric.buildActivity(HelpActivity::class.java, intent).setup()
             val activity = controller.get()
             render(activity, "article-${article.fileName.removeSuffix(".md")}")
-            assertTrue(views(activity).filterIsInstance<Toolbar>().isNotEmpty())
+            assertNotNull(activity.findViewById<android.widget.ImageButton>(R.id.karoo_back))
             assertFalse(views(activity).filterIsInstance<TextView>().any { it.text.toString() == "Settings" })
             activity.findViewById<ScrollView>(R.id.article_scroll).fullScroll(View.FOCUS_DOWN)
             render(activity, "article-${article.fileName.removeSuffix(".md")}-bottom")

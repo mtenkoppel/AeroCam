@@ -37,7 +37,7 @@ class WidgetGalleryActivity : Activity() {
         DjiTheme.applyActivityTheme(this)
         super.onCreate(savedInstanceState)
         palette = DjiTheme.appPalette(this)
-        setContentView(createGallery())
+        setContentView(KarooNavigation.wrap(this, createGallery()))
         renderPreviews()
     }
 

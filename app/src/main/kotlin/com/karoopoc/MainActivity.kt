@@ -53,7 +53,7 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         ui = SettingsViews(this)
         activeTab = savedInstanceState?.getString("tab")?.let { name -> AppTab.entries.find { it.name == name } } ?: AppTab.SETTINGS
-        setContentView(createDashboard())
+        setContentView(KarooNavigation.wrap(this, createDashboard()))
         selectTab(activeTab)
         if (requestBlePermissions()) observeCamera()
     }
