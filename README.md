@@ -5,7 +5,7 @@
 # AeroCam
 
 [![CI](https://github.com/mtenkoppel/AeroCam/actions/workflows/ci.yml/badge.svg)](https://github.com/mtenkoppel/AeroCam/actions/workflows/ci.yml)
-[![Release: v0.9.0-beta.6](https://img.shields.io/badge/release-v0.9.0--beta.6-2563EB)](https://github.com/mtenkoppel/AeroCam/releases)
+[![Release: v1.0](https://img.shields.io/badge/release-v1.0-2563EB)](https://github.com/mtenkoppel/AeroCam/releases)
 [![License: GPLv3](https://img.shields.io/badge/license-GPLv3-2563EB)](LICENSE)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.1.21-7F52FF)](https://kotlinlang.org/)
 
@@ -84,7 +84,7 @@ marker.
 
 ### Prevent standby
 Automatic threshold highlights share a **30-second cooldown** by default. In
-Auto Highlights settings, choose **Off, 15, 30, or 60 seconds**. Speed, power,
+Advanced settings, choose **Off, 15, 30, or 60 seconds**. Speed, power,
 heart rate, and gradient triggers share this interval. Manual highlights, laps,
 climb summits, and ride start/end markers always bypass it. Every successfully sent
 highlight starts the interval for subsequent threshold highlights. Suppressed
@@ -110,7 +110,8 @@ to power off, but testing showed it remains practical for up to 3 hour rides.
   and feedback. Stopping restores both controls.
 - **Cam Control:** Best used as a full-screen data field. It combines connection,
   battery, storage, Keep awake, video, photo, camera power-off, and app access in
-  one riding dashboard.
+  one riding dashboard. Settings remains available in compact full-width fields;
+  half-width fields show battery and storage.
 
 ### Bonus Actions
 
@@ -164,7 +165,7 @@ Keep awake works best when the camera is configured for low-distraction use:
    **four minutes thirty seconds**, leaving time for acknowledgement retries.
    Previously saved custom intervals remain unchanged. Shorter camera timers
    require a correspondingly shorter app interval; choose the matching timer in the
-   camera setup guide.
+   advanced settings.
 5. After AeroCam connects, lock the camera screen. The displays turn off while
    AeroCam periodically prevents the camera from fully powering down.
 
@@ -194,7 +195,7 @@ then open the file and install it. Updates must be signed with the same key as
 the installed version; otherwise Android requires the existing app to be
 uninstalled first, which also removes AeroCam settings and its saved camera.
 
-This project is currently in beta. Review the release notes before updating.
+Review the release notes before updating.
 
 ## Which build should I install?
 
