@@ -16,8 +16,8 @@ android {
         applicationId = "com.karoopoc"
         minSdk = 23
         targetSdk = 34
-        versionCode = 34
-        versionName = "0.9.0-beta.6-designqa.2"
+        versionCode = 36
+        versionName = "0.9.0-beta.6-designqa.3"
         testInstrumentationRunner = "com.karoopoc.widget.WidgetRenderingInstrumentation"
     }
 
