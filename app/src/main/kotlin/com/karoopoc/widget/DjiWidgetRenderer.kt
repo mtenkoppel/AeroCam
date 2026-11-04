@@ -346,7 +346,8 @@ object DjiWidgetRenderer {
                 context,
                 R.dimen.widget_icon_utility_padding,
                 R.id.widgetControlKeepAwakeIcon,
-                R.id.widgetControlSleepIcon,
+                R.id.widgetControlSettingsIcon,
+                R.id.widgetControlMessageSettingsIcon,
                 R.id.widgetControlConfirmYesIcon,
                 R.id.widgetControlConfirmNoIcon,
                 R.id.widgetControlFullKeepAwakeIcon,
@@ -371,7 +372,7 @@ object DjiWidgetRenderer {
                 R.id.widgetControlFullStorageIcon,
             )
             setViewVisibility(R.id.widgetControlMain, View.GONE)
-            setViewVisibility(R.id.widgetControlMessage, View.GONE)
+            setViewVisibility(R.id.widgetControlMessageContainer, View.GONE)
             setViewVisibility(R.id.widgetControlConfirm, View.GONE)
             setViewVisibility(R.id.widgetControlFullShell, View.GONE)
             setViewVisibility(R.id.widgetControlFullUtility, View.GONE)
@@ -380,6 +381,12 @@ object DjiWidgetRenderer {
             setViewVisibility(R.id.widgetControlTopConfirmSpacer, View.GONE)
             setViewVisibility(R.id.widgetControlFullStatus, View.GONE)
             setViewVisibility(R.id.widgetControlFull, View.GONE)
+            setViewVisibility(R.id.widgetControlPhoto, View.GONE)
+            setViewVisibility(R.id.widgetControlFullSleep, View.GONE)
+            if (interactive) {
+                setOnClickPendingIntent(R.id.widgetControlSettings, openAppIntent(context, 314))
+                setOnClickPendingIntent(R.id.widgetControlMessageSettings, openAppIntent(context, 315))
+            }
 
             when {
                 size == DjiWidgetSize.SMALL_HALF -> {
@@ -517,13 +524,10 @@ object DjiWidgetRenderer {
                         } else {
                             R.id.widgetControlKeepAwake
                         }
-                        val sleepId = if (size == DjiWidgetSize.FULL) {
-                            R.id.widgetControlFullSleep
-                        } else {
-                            R.id.widgetControlSleep
-                        }
                         setOnClickPendingIntent(keepAwakeId, actionIntent(context, DjiWidgetActionReceiver.ACTION_KEEP_AWAKE_TOGGLE, 306))
-                        setOnClickPendingIntent(sleepId, actionIntent(context, DjiWidgetActionReceiver.ACTION_SLEEP_REQUEST, 307))
+                        if (size == DjiWidgetSize.FULL) {
+                            setOnClickPendingIntent(R.id.widgetControlFullSleep, actionIntent(context, DjiWidgetActionReceiver.ACTION_SLEEP_REQUEST, 307))
+                        }
                         if (size == DjiWidgetSize.FULL) {
                             setOnClickPendingIntent(R.id.widgetControlMore, openAppIntent(context, 313))
                         }
@@ -545,6 +549,15 @@ object DjiWidgetRenderer {
                 }
             }
 
+            if (size == DjiWidgetSize.FULL) {
+                // Equal weights reserve the fixed gaps before sizing the four rows.
+                // Cap header text to half a row so shorter full-size fields still fit.
+                val rowHeight = (config.viewSize.second - 20 -
+                    context.resources.getDimensionPixelSize(R.dimen.widget_control_total_gaps)).coerceAtLeast(0) / 4
+                val headerText = minOf(18f * context.resources.displayMetrics.scaledDensity, rowHeight * .4f).coerceAtLeast(1f)
+                setTextViewTextSize(R.id.widgetControlFullBattery, TypedValue.COMPLEX_UNIT_PX, headerText)
+                setTextViewTextSize(R.id.widgetControlFullStorage, TypedValue.COMPLEX_UNIT_PX, headerText)
+            }
             setTextViewTextSize(
                 R.id.widgetControlMessageText,
                 TypedValue.COMPLEX_UNIT_SP,
@@ -563,7 +576,7 @@ object DjiWidgetRenderer {
     }
 
     private fun RemoteViews.showControlMessage(message: String) {
-        setViewVisibility(R.id.widgetControlMessage, View.VISIBLE)
+        setViewVisibility(R.id.widgetControlMessageContainer, View.VISIBLE)
         setTextViewText(R.id.widgetControlMessageText, message)
     }
 
@@ -642,6 +655,10 @@ object DjiWidgetRenderer {
     ) {
         setViewVisibility(R.id.widgetControlFullShell, View.VISIBLE)
         setViewVisibility(R.id.widgetControlFull, View.VISIBLE)
+        setViewVisibility(R.id.widgetControlPhoto, View.VISIBLE)
+        setViewVisibility(R.id.widgetControlFullSleep, View.VISIBLE)
+        setInt(R.id.widgetControlFullSleep, "setBackgroundResource",
+            if (connected) R.drawable.widget_surface_selector else R.drawable.widget_surface_dark)
         setInt(
             R.id.widgetControlVideo,
             "setBackgroundResource",
