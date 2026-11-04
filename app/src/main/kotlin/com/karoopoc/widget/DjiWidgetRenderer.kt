@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
 import android.widget.RemoteViews
 import com.karoopoc.DjiPalette
@@ -105,6 +106,7 @@ object DjiWidgetRenderer {
         return RemoteViews(context.packageName, R.layout.widget_dji_video).apply {
             setInt(R.id.widgetVideoRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
             applyWidgetFrame(R.id.widgetVideoRoot)
+            applyTextAlignment(config, R.id.widgetVideoTimer, R.id.widgetVideoMeta, R.id.widgetVideoStatus)
             applyIconPadding(context, R.dimen.widget_icon_primary_padding, R.id.widgetVideoIcon)
             applyIconPadding(context, R.dimen.widget_icon_utility_padding, R.id.widgetVideoHighlightIcon)
             setTextViewTextSize(
@@ -259,6 +261,7 @@ object DjiWidgetRenderer {
         return RemoteViews(context.packageName, R.layout.widget_dji_photo).apply {
             setInt(R.id.widgetPhotoRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
             applyWidgetFrame(R.id.widgetPhotoRoot)
+            applyTextAlignment(config, R.id.widgetPhotoStatus)
             applyIconPadding(context, R.dimen.widget_icon_primary_padding, R.id.widgetPhotoIcon)
             setTextViewTextSize(
                 R.id.widgetPhotoStatus,
@@ -345,6 +348,15 @@ object DjiWidgetRenderer {
         return RemoteViews(context.packageName, R.layout.widget_dji_control).apply {
             setInt(R.id.widgetControlRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
             applyWidgetFrame(R.id.widgetControlRoot)
+            applyTextAlignment(config, R.id.widgetControlBattery, R.id.widgetControlStorage,
+                R.id.widgetControlMessageText, R.id.widgetControlTopMessageText,
+                R.id.widgetControlTopConfirmText, R.id.widgetControlFullOfflineHint,
+                R.id.widgetControlVideoTimer, R.id.widgetControlVideoFeedback)
+            // Move each icon/value pair together inside its existing slot; action buttons stay fixed.
+            for (id in listOf(R.id.widgetControlFullBatteryGroup, R.id.widgetControlFullStorageGroup,
+                R.id.widgetControlVideoRecording)) {
+                setInt(id, "setGravity", dataGravity(config))
+            }
             applyIconPadding(
                 context,
                 R.dimen.widget_icon_utility_padding,
@@ -922,4 +934,19 @@ private fun openAppIntent(context: Context, requestCode: Int): PendingIntent {
         Intent(context, MainActivity::class.java),
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
     )
+}
+
+/** Karoo alignment applies inside data slots, independently of the fixed camera controls. */
+private fun dataGravity(config: ViewConfig): Int = Gravity.CENTER_VERTICAL or when (config.alignment) {
+    ViewConfig.Alignment.LEFT -> Gravity.LEFT
+    ViewConfig.Alignment.CENTER -> Gravity.CENTER_HORIZONTAL
+    ViewConfig.Alignment.RIGHT -> Gravity.RIGHT
+}
+
+private fun RemoteViews.applyTextAlignment(config: ViewConfig, vararg ids: Int) {
+    for (id in ids) {
+        // Some status views specify textAlignment=center in XML, which otherwise overrides gravity.
+        setInt(id, "setTextAlignment", View.TEXT_ALIGNMENT_GRAVITY)
+        setInt(id, "setGravity", dataGravity(config))
+    }
 }
