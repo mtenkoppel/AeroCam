@@ -248,17 +248,18 @@ power-off.
 
 ### Prepare for a Ride
 
-Once the camera has been paired and configured, a reliable pre-ride workflow is:
+Once your camera is paired and configured, getting ready takes just three steps:
 
-1. Check the camera's video settings, including resolution, frame rate, field of
-   view, and stabilization.
-2. Mount the camera and confirm that you are happy with its point of view.
-3. Turn on the Karoo and camera, then confirm that AeroCam reconnects.
-4. If you use Keep awake, enable it and lock the camera display before starting
-   the ride.
+1. Turn on your Karoo and DJI camera.
+2. Wait for AeroCam to connect automatically. Check the AeroCam data field on
+   your Karoo to confirm the connection.
+3. Make sure **Prevent standby** is turned on, then lock the DJI camera screen:
+   swipe down on the camera display and tap the lock icon. With the recommended
+   camera settings, the display turns off while the camera stays connected and
+   ready to use.
 
-You can then leave the AeroCam app itself in the background and use its data
-fields or bonus actions during the ride.
+You can leave AeroCam in the background and use its data fields or bonus actions
+to control the camera during your ride.
 
 ## Contributing
 
