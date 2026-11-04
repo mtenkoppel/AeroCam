@@ -150,7 +150,7 @@ class KarooPocExtension : KarooExtension("karoo-poc", "1.20") {
     }
 
     override fun connectDevice(uid: String, emitter: Emitter<DeviceEvent>) {
-        Log.i(TAG, "Karoo extension connectDevice requested uid=$uid")
+        Log.i(TAG, "Karoo extension connectDevice requested")
 
         emitter.onNext(OnConnectionStatus(ConnectionStatus.SEARCHING))
         emitter.onNext(
@@ -175,7 +175,7 @@ class KarooPocExtension : KarooExtension("karoo-poc", "1.20") {
         DjiWidgetController.connect(this)
 
         emitter.setCancellable {
-            Log.i(TAG, "Karoo extension connectDevice cancelled uid=$uid")
+            Log.i(TAG, "Karoo extension connectDevice cancelled")
             cancel()
         }
     }
@@ -189,8 +189,7 @@ class KarooPocExtension : KarooExtension("karoo-poc", "1.20") {
         val name = result.scanRecord?.deviceName ?: result.device.name ?: "DJI Osmo Action"
         Log.i(
             TAG,
-            "Karoo extension found DJI advertisement name=$name address=$address " +
-                "rssi=${result.rssi} manufacturer=${manufacturerData.toHex()}",
+            "Karoo extension found DJI advertisement rssi=${result.rssi}",
         )
 
         emitter.onNext(

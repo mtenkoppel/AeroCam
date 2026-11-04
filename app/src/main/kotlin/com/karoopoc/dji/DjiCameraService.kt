@@ -179,7 +179,7 @@ object DjiCameraController {
             }
         }.onFailure {
             serviceRequested = false
-            Log.e(TAG, "Unable to dispatch DJI camera action=$action", it)
+            Log.e(TAG, "Unable to dispatch DJI camera action=$action error=${it.javaClass.simpleName}")
         }
     }
 
@@ -200,7 +200,8 @@ class DjiCameraService : Service() {
         createNotificationChannel()
         client = DjiOsmoBleClient(
             context = applicationContext,
-            status = { message -> Log.i(TAG, "DJI camera service: $message") },
+            // Status messages belong to the UI and can contain pairing codes/device identifiers.
+            status = {},
             requestBluetooth = { reason -> requestBluetooth(reason) },
             stateChanged = { state ->
                 DjiCameraController.publish(state)

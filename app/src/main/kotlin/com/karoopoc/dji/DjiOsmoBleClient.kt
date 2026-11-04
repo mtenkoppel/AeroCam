@@ -242,7 +242,7 @@ class DjiOsmoBleClient(
         connectionRejectionHandled = false
         scanTargetAddress = address
 
-        Log.i(TAG, "DJI auto-connect scan started targetAddress=$address")
+        Log.i(TAG, "DJI auto-connect scan started")
 
         val callback = object : ScanCallback() {
             override fun onScanResult(callbackType: Int, result: ScanResult) {
@@ -318,7 +318,7 @@ class DjiOsmoBleClient(
         pendingActionsAfterConnect.clear()
 
         val savedAddress = prefs.getString(KEY_CAMERA_ADDRESS, null)
-        Log.i(TAG, "DJI scan started; savedCameraAddress=$savedAddress")
+        Log.i(TAG, "DJI scan started")
 
         val callback = object : ScanCallback() {
             override fun onScanResult(callbackType: Int, result: ScanResult) {
@@ -773,8 +773,7 @@ class DjiOsmoBleClient(
         if (firstTimeSeen) {
             Log.i(
                 TAG,
-                "DJI advertisement beacon found name=$name address=${result.device.address} " +
-                    "rssi=${result.rssi} manufacturer=${DjiProtocol.hex(advertisement)}",
+                "DJI advertisement beacon found rssi=${result.rssi}",
             )
         }
 
@@ -994,8 +993,7 @@ class DjiOsmoBleClient(
 
         Log.i(
             TAG,
-            "DJI handshake request submitted verifyMode=$verifyMode verifyData=$verifyData " +
-                "controllerId=${DjiProtocol.hex(controllerId)}",
+            "DJI handshake request submitted verifyMode=$verifyMode",
         )
         logStatus("DJI handshake submitted; approve code $verifyData on camera if prompted")
 
@@ -1019,27 +1017,16 @@ class DjiOsmoBleClient(
 
         val frame = DjiProtocol.parseFrame(value)
         if (frame == null) {
-            Log.w(TAG, "DJI RX ignored: not a valid DJI R SDK frame raw=${DjiProtocol.hex(value)}")
+            Log.w(TAG, "DJI RX ignored: not a valid DJI R SDK frame length=${value.size}")
             return
         }
 
         lastCameraRxAtMs = SystemClock.elapsedRealtime()
 
-        // Temporary diagnostic branch: opt in via adb log.tag.AeroCamStatusRaw=VERBOSE.
-        // Capture status only; never include GPS or pairing packets in this diagnostic tag.
-        if (frame.cmdSet == DjiProtocol.CMD_SET_CAMERA &&
-            (frame.cmdId == DjiProtocol.CMD_ID_CAMERA_STATUS_PUSH ||
-                frame.cmdId == DjiProtocol.CMD_ID_NEW_CAMERA_STATUS_PUSH) &&
-            Log.isLoggable("AeroCamStatusRaw", Log.VERBOSE)
-        ) {
-            Log.v("AeroCamStatusRaw", "cmd=${frame.commandName} raw=${DjiProtocol.hex(value)}")
-        }
-
         if (!frame.isRoutineStatusPush()) {
-            Log.i(TAG, "DJI RX raw=${DjiProtocol.hex(value)}")
             Log.i(
                 TAG,
-                "DJI RX frame cmd=${frame.commandName} seq=${frame.seq} cmdType=0x%02X response=${frame.isResponse} payload=${DjiProtocol.hex(frame.payload)}"
+                "DJI RX frame cmd=${frame.commandName} seq=${frame.seq} cmdType=0x%02X response=${frame.isResponse}"
                     .format(frame.cmdType),
             )
         }
@@ -1081,8 +1068,7 @@ class DjiOsmoBleClient(
 
             Log.i(
                 TAG,
-                "DJI camera connection state deviceId=0x%08X verifyMode=$verifyMode verifyData=$verifyData"
-                    .format(deviceId),
+                "DJI camera connection state verifyMode=$verifyMode",
             )
 
             if (verifyMode == 2 && verifyData == 0) {
@@ -1123,7 +1109,7 @@ class DjiOsmoBleClient(
         if (frame.payload.size >= 9) {
             val deviceId = DjiProtocol.readU32(frame.payload, 0)
             val retCode = frame.payload[4].toUByteInt()
-            Log.i(TAG, "DJI connection request response deviceId=0x%08X retCode=$retCode".format(deviceId))
+            Log.i(TAG, "DJI connection request response retCode=$retCode")
             if (retCode == 0) {
                 logStatus("DJI handshake accepted; waiting for camera approval")
             } else {
@@ -1263,12 +1249,12 @@ class DjiOsmoBleClient(
             return
         }
 
-        Log.i(TAG, "DJI new camera state $text")
+        Log.i(TAG, "DJI new camera state received")
     }
 
     private fun logReturnCode(label: String, frame: DjiProtocol.Frame) {
         val retCode = frame.payload.firstOrNull()?.toUByteInt()
-        Log.i(TAG, "DJI $label response retCode=$retCode payload=${DjiProtocol.hex(frame.payload)}")
+        Log.i(TAG, "DJI $label response retCode=$retCode")
     }
 
     private fun queueFrame(
@@ -1420,10 +1406,10 @@ class DjiOsmoBleClient(
             val now = SystemClock.elapsedRealtime()
             if (now - lastGpsTxLogAtMs >= GPS_TX_LOG_INTERVAL_MS) {
                 lastGpsTxLogAtMs = now
-                Log.i(TAG, "DJI TX ${pending.label} sample 10Hz: ${DjiProtocol.hex(pending.frame)}")
+                Log.i(TAG, "DJI TX ${pending.label} sample 10Hz")
             }
         } else {
-            Log.i(TAG, "DJI TX ${pending.label}: ${DjiProtocol.hex(pending.frame)}")
+            Log.i(TAG, "DJI TX ${pending.label}")
         }
         writeInProgress = true
         activeWrite = pending
