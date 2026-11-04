@@ -49,7 +49,7 @@ layouts, including the recording state.
   <tr>
     <td><img src="assets/screenshots/video-photo-small.jpg" alt="Small full-width Video + Photo widget below the map and speed field" width="180"></td>
     <td><img src="assets/screenshots/video-half-idle.png" alt="Half-width Video widget beside the Bell field on a map ride page" width="180"></td>
-    <td><img src="assets/screenshots/video-half.jpg" alt="Half-width Video widget with a red recording timer beside Bell" width="180"></td>
+    <td><img src="assets/screenshots/video-half-recording.png" alt="Half-width Video widget with a red recording timer beside Bell" width="180"></td>
     <td><img src="assets/screenshots/cam-control-full.jpg" alt="Full-screen Cam Control with battery, storage, prevent standby, video, photo, settings and power controls" width="180"></td>
   </tr>
 </table>
