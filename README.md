@@ -4,10 +4,8 @@
 
 # AeroCam
 
-[![CI](https://github.com/mtenkoppel/AeroCam/actions/workflows/ci.yml/badge.svg)](https://github.com/mtenkoppel/AeroCam/actions/workflows/ci.yml)
-[![Release: v1.0](https://img.shields.io/badge/release-v1.0-2563EB)](https://github.com/mtenkoppel/AeroCam/releases)
+[![Release: v1.0](https://img.shields.io/badge/release-v1.0-2563EB)](https://github.com/mtenkoppel/AeroCam/releases/latest)
 [![License: GPLv3](https://img.shields.io/badge/license-GPLv3-2563EB)](LICENSE)
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.1.21-7F52FF)](https://kotlinlang.org/)
 
 **Website:** [mtenkoppel.github.io/AeroCam](https://mtenkoppel.github.io/AeroCam/)
 
@@ -15,6 +13,44 @@ AeroCam is an independent Karoo extension for controlling a DJI Osmo Action
 camera over Bluetooth Low Energy. It provides in-ride camera controls, automatic
 reconnection, GPS telemetry, video highlights, and a configurable keep-awake
 mode.
+
+**[Download the latest release](https://github.com/mtenkoppel/AeroCam/releases/latest)** ·
+[Installation steps](#install-on-your-karoo) · [Screenshots](#screenshots) ·
+[Compatibility](#compatibility)
+
+## Install on your Karoo
+
+**Start here: [open the latest AeroCam release](https://github.com/mtenkoppel/AeroCam/releases/latest).**
+You do not need to build anything or use developer tools.
+
+### Install with your phone
+
+You need a **Karoo 3**, connected to Wi-Fi, and the **Hammerhead Companion App**
+set up with your Karoo on a phone with an internet connection. Update the Karoo
+and Companion App before starting.
+
+1. On your **phone**, open the [latest release](https://github.com/mtenkoppel/AeroCam/releases/latest)
+   and expand **Assets** if the downloads are hidden.
+2. Find the file ending in **`.apk`**, such as **`AeroCam-v1.0.apk`**. This is the
+   app to install. You can ignore the `.sha256` and **Source code** downloads.
+3. **Press and hold the APK link**, choose **Share**, then select the
+   **Hammerhead Companion App**.
+4. Wait for the transfer, then tap **Install on your Karoo** to finish.
+5. Open AeroCam from the Karoo's **Extensions** library and follow the camera
+   pairing and setup guide. Then add AeroCam data fields to your ride pages.
+
+For illustrated steps and requirements, see
+[Hammerhead's official installation guide](https://support.hammerhead.io/hc/en-us/articles/31576497036827-Companion-App-Sideloading).
+If the Companion App is missing from the share menu, try downloading the APK to
+your phone first, then share the downloaded file with the Companion App.
+
+### Update AeroCam
+
+Check the release notes, then install the new release APK using the same steps.
+You can also check for updates on the app's details page on Karoo when it was
+installed from a GitHub URL. **Keep the existing app installed** so your settings
+and paired camera are preserved. If an update fails, ask for help through
+[GitHub Issues](https://github.com/mtenkoppel/AeroCam/issues) before uninstalling.
 
 > [!TIP]
 > **Built with AI. Shaped and proven by a human.** AeroCam combines AI-driven
@@ -121,7 +157,6 @@ marker.
   these markers never start recording. Off for new installations; existing
   choices and the previous default for older installations are preserved.
 
-### Prevent standby
 Automatic threshold highlights share a **30-second cooldown** by default. In
 Advanced settings, choose **Off, 15, 30, or 60 seconds**. Speed, power,
 heart rate, and gradient triggers share this interval. Manual highlights, laps,
@@ -130,6 +165,7 @@ highlight starts the interval for subsequent threshold highlights. Suppressed
 triggers are discarded, never deferred; the existing threshold reset margins
 still apply. Starting a recording alone does not start the cooldown.
 
+### Prevent standby
 
 Keep awake periodically sends a lightweight camera-control command so the Osmo
 does not reach its automatic power-off timeout. This lets the camera remain
@@ -226,130 +262,15 @@ Once the camera has been paired and configured, a reliable pre-ride workflow is:
 You can then leave the AeroCam app itself in the background and use its data
 fields or bonus actions during the ride.
 
-## Install
+## Contributing
 
-Download the newest APK from [GitHub Releases](https://github.com/mtenkoppel/AeroCam/releases).
-On the Karoo, allow installation from the source you use to transfer the APK,
-then open the file and install it. Updates must be signed with the same key as
-the installed version; otherwise Android requires the existing app to be
-uninstalled first, which also removes AeroCam settings and its saved camera.
+For building AeroCam from source or contributing changes, see
+[CONTRIBUTING.md](CONTRIBUTING.md). Maintainer instructions are in
+[Signing and releases](developer/SIGNING_AND_RELEASES.md).
 
-Review the release notes before updating.
-
-## Which build should I install?
-
-For device testing, use the **release-signed APK from Signed test build**. It
-contains the selected branch's changes and updates the existing app in place.
-It does not require a public GitHub release.
-
-| Output | Purpose |
-| --- | --- |
-| CI debug APK | Automated checks and development; do not use it to replace a release-signed installation. |
-| Signed test build: `app-release.apk` | Normal device testing, using the established release key with debugging disabled. |
-| Explicitly requested signed debug APK | Troubleshooting only; the same key with debugging enabled. Not the normal test update. |
-| Public release APK | A versioned, published build after validation. The tag workflow first creates a draft. |
-| Recovery APK | Previous trusted application code rebuilt with a higher version code, for an in-place rollback. |
-
-Keep the current device-test APK and its verified higher-code recovery together.
-Older builds remain archived as evidence. Install with `adb install -r`; do not
-uninstall or clear app data to switch builds. Check the connected device's version
-before installation. The app's version code identifies update order; “signed”
-identifies its key, and “debug” identifies whether debugging is enabled.
-
-## Build from source
-
-The validated build combination is Kotlin 2.1.21, Android Gradle Plugin 8.6.1,
-Gradle 8.7, and Java 17, with compile SDK 35 / target SDK 34. Karoo Extensions
-remains at 1.1.9. These versions were selected for compatibility and tested on
-hardware; they are not a claim that every dependency is the newest available.
-### Cooldown validation
-
-The cooldown uses the existing karoo-ext 1.1.9 integration; no SDK or KOS
-requirement changes. Official 1.1.9 release notes specify KOS 1.634.2440 or later:
-https://github.com/hammerheadnav/karoo-ext/releases/tag/1.1.9
-No Karoo or camera firmware has been physically tested for this change.
-
-### Requirements
-
-- JDK 17 and Android SDK command-line tools (Android Studio is optional)
-- Android SDK 35
-- A GitHub account and token with `read:packages`
-- A Karoo in developer mode for USB deployment
-
-The Gradle wrapper is included, so a separate Gradle installation is not
-required.
-
-1. Clone the repository:
-
-   ```sh
-   git clone https://github.com/mtenkoppel/AeroCam.git
-   cd AeroCam
-   ```
-
-2. Copy `local.properties.example` to `local.properties` and provide access to
-   Hammerhead's GitHub Package:
-
-   ```properties
-   sdk.dir=/Users/you/Library/Android/sdk
-   gpr.user=your-github-username
-   gpr.key=your-github-token
-   ```
-
-   `local.properties` is ignored by Git. CI can instead use `GITHUB_ACTOR` and
-   `GITHUB_TOKEN`.
-
-3. Build and test:
-
-   ```sh
-   ./gradlew testDebugUnitTest assembleDebug
-   ```
-
-   The APK is created at `app/build/outputs/apk/debug/app-debug.apk`.
-
-4. Connect the Karoo over USB-C, approve USB debugging, and install without
-   clearing existing app data:
-
-   ```sh
-   adb devices
-   ./scripts/install-debug.sh
-   ```
-
-To open an installed build, run `./scripts/launch-app.sh`. To follow AeroCam's
-logs, run `./scripts/logcat.sh` or use Android Studio's Logcat window.
-
-### Signing
-
-Android accepts an update only when it is signed by the same key as the
-installed app. Local debug builds normally use `~/.android/debug.keystore`.
-Public releases must use one dedicated release key that is backed up securely;
-losing it prevents future in-place updates.
-
-The release workflow expects these GitHub Actions secrets:
-`RELEASE_KEYSTORE_BASE64`, `RELEASE_KEYSTORE_PASSWORD`, `RELEASE_KEY_ALIAS`,
-and `RELEASE_KEY_PASSWORD`. Never commit a keystore or its passwords.
-
-## Releases
-
-Source code is versioned with Git tags such as `v0.9.0-beta.1`. Installable APKs
-belong on the corresponding GitHub Release rather than in Git history. Each
-release should contain release notes, the APK, and its SHA-256 checksum.
-
-## Dependencies and acknowledgements
-
-- [Hammerhead Karoo Extension SDK](https://github.com/hammerheadnav/karoo-ext)
-  (`io.hammerhead:karoo-ext`), Apache License 2.0
-- Kotlin and the Android Gradle Plugin, used by the build toolchain
-- JUnit 4, used only for tests
-
-See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for attribution details.
-
-The following projects were studied while implementing and validating the BLE
-behavior. They are references, not bundled dependencies:
-
-- [DJI Osmo GPS Controller Demo](https://github.com/dji-sdk/Osmo-GPS-Controller-Demo)
-- [ClipRide GoPro extension for Karoo](https://github.com/yrkan/clipride)
-- [DJI Remote](https://github.com/rhoenschrat/DJI-Remote)
-- [M5StickC Plus 2 Remote for DJI Osmo](https://github.com/theserialhobbyist/M5StickCPlus2_Remote_For_DJI_Osmo)
+Third-party licenses and acknowledgements are listed in
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the
+[contributor guide](CONTRIBUTING.md#dependencies-and-acknowledgements).
 
 ## AI transparency
 
