@@ -196,6 +196,26 @@ uninstalled first, which also removes AeroCam settings and its saved camera.
 
 This project is currently in beta. Review the release notes before updating.
 
+## Which build should I install?
+
+For device testing, use the **release-signed APK from Signed test build**. It
+contains the selected branch's changes and updates the existing app in place.
+It does not require a public GitHub release.
+
+| Output | Purpose |
+| --- | --- |
+| CI debug APK | Automated checks and development; do not use it to replace a release-signed installation. |
+| Signed test build: `app-release.apk` | Normal device testing, using the established release key with debugging disabled. |
+| Explicitly requested signed debug APK | Troubleshooting only; the same key with debugging enabled. Not the normal test update. |
+| Public release APK | A versioned, published build after validation. The tag workflow first creates a draft. |
+| Recovery APK | Previous trusted application code rebuilt with a higher version code, for an in-place rollback. |
+
+Keep the current device-test APK and its verified higher-code recovery together.
+Older builds remain archived as evidence. Install with `adb install -r`; do not
+uninstall or clear app data to switch builds. Check the connected device's version
+before installation. The app's version code identifies update order; “signed”
+identifies its key, and “debug” identifies whether debugging is enabled.
+
 ## Build from source
 
 The validated build combination is Kotlin 2.1.21, Android Gradle Plugin 8.6.1,
