@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Calibrated against native Bell on Karoo at 300dpi: 20px text ink and 72px button. -->
+    <dimen name="widget_field_caption_height">22dp</dimen>
+    <dimen name="widget_field_caption_text">15sp</dimen>
     <!-- Shared by photo/video fields and Cam Control; state never changes icon size. -->
     <dimen name="widget_icon_primary_size">50dp</dimen>
     <dimen name="widget_icon_utility_size">40dp</dimen>

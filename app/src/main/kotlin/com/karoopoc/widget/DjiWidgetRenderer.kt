@@ -76,7 +76,7 @@ object DjiWidgetRenderer {
             gridSize = Pair((config.gridSize.first / 2).coerceAtLeast(1), config.gridSize.second),
             viewSize = Pair(
                 ((config.viewSize.first - 20 - gap) / 2).coerceAtLeast(1),
-                (config.viewSize.second - 11).coerceAtLeast(1),
+                (config.viewSize.second - 12).coerceAtLeast(1),
             ),
         )
         fun RemoteViews.withoutOuterFrame(rootId: Int) = apply {
@@ -367,6 +367,7 @@ object DjiWidgetRenderer {
             }
             setInt(R.id.widgetControlVideoRecording, "setGravity", dataGravity(config))
             setInt(R.id.widgetControlTopConfirmText, "setGravity", Gravity.CENTER)
+            setInt(R.id.widgetControlTopMessageText, "setGravity", Gravity.CENTER)
             setViewVisibility(R.id.widgetControlFeedback, View.GONE)
             setViewVisibility(R.id.widgetControlMore, View.VISIBLE)
             applyIconPadding(
@@ -429,7 +430,7 @@ object DjiWidgetRenderer {
 
                 size == DjiWidgetSize.FULL && viewState.sleepConfirmation && connected -> {
                     showFullUtility(state)
-                    showFullStatus(context, state, true, palette, false)
+                    showFullStatus(context, state, true, palette)
                     showFullControls(context, state, viewState, true, palette)
                     setViewVisibility(R.id.widgetControlFullSleep, View.GONE)
                     setViewVisibility(R.id.widgetControlTopConfirm, View.VISIBLE)
@@ -470,7 +471,6 @@ object DjiWidgetRenderer {
                         state,
                         connected = true,
                         palette = palette,
-                        showReconnectHint = false,
                     )
                     showFullControls(context, state, viewState, connected = true, palette = palette)
                     setViewVisibility(R.id.widgetControlFullStatus, View.GONE)
@@ -489,7 +489,6 @@ object DjiWidgetRenderer {
                     showFullTopMessage(
                         when {
                             connectPrompt -> context.getString(R.string.widget_connecting)
-                            !state.configured -> context.getString(R.string.widget_not_configured)
                             else -> context.getString(R.string.widget_connect)
                         },
                     )
@@ -504,7 +503,6 @@ object DjiWidgetRenderer {
                         state,
                         connected = false,
                         palette = palette,
-                        showReconnectHint = state.configured,
                     )
                     showFullControls(context, state, viewState, connected = false, palette = palette)
                     if (interactive) {
@@ -550,7 +548,6 @@ object DjiWidgetRenderer {
                             state,
                             connected = true,
                             palette = palette,
-                            showReconnectHint = false,
                         )
                         showFullControls(context, state, viewState, connected = true, palette = palette)
                     } else {
@@ -590,7 +587,7 @@ object DjiWidgetRenderer {
             if (size == DjiWidgetSize.FULL) {
                 // Equal weights reserve the fixed gaps before sizing the four rows.
                 // Cap header text to half a row so shorter full-size fields still fit.
-                val rowHeight = (config.viewSize.second - 11 -
+                val rowHeight = (config.viewSize.second - 12 -
                     context.resources.getDimensionPixelSize(R.dimen.widget_control_total_gaps)).coerceAtLeast(0) / 4
                 val headerText = minOf(20f * context.resources.displayMetrics.scaledDensity, rowHeight * .4f).coerceAtLeast(1f)
                 setTextViewTextSize(R.id.widgetControlFullBattery, TypedValue.COMPLEX_UNIT_PX, headerText)
@@ -637,7 +634,7 @@ object DjiWidgetRenderer {
             )
             setTextColor(R.id.widgetControlTopConfirmText, palette.textPrimary)
             if (size == DjiWidgetSize.FULL) {
-                val rowHeight = (config.viewSize.second - 11 -
+                val rowHeight = (config.viewSize.second - 12 -
                     context.resources.getDimensionPixelSize(R.dimen.widget_control_total_gaps)).coerceAtLeast(0) / 4
                 setTextViewTextSize(R.id.widgetControlTopMessageText, TypedValue.COMPLEX_UNIT_PX,
                     minOf(statusTextSize(config, size) * context.resources.displayMetrics.scaledDensity, rowHeight * .4f))
@@ -694,13 +691,12 @@ object DjiWidgetRenderer {
         state: DjiCameraState,
         connected: Boolean,
         palette: DjiPalette,
-        showReconnectHint: Boolean,
     ) {
         setViewVisibility(R.id.widgetControlFullShell, View.VISIBLE)
         setViewVisibility(R.id.widgetControlFullStatus, View.VISIBLE)
         setViewVisibility(
             R.id.widgetControlFullOfflineHint,
-            if (!connected && showReconnectHint) View.VISIBLE else View.GONE,
+            View.GONE,
         )
         setViewVisibility(
             R.id.widgetControlFullBatteryGroup,
@@ -710,7 +706,7 @@ object DjiWidgetRenderer {
             R.id.widgetControlFullStorageGroup,
             if (connected) View.VISIBLE else View.GONE,
         )
-        setTextViewText(R.id.widgetControlFullOfflineHint, context.getString(R.string.widget_auto_reconnect_enabled))
+        setTextViewText(R.id.widgetControlFullOfflineHint, "")
         setTextColor(R.id.widgetControlFullOfflineHint, palette.textSecondary)
         setTextViewText(R.id.widgetControlFullBattery, state.batteryPercent?.let { "$it%" } ?: "--%")
         setTextViewText(R.id.widgetControlFullStorage, formatStorage(context, state.remainingCapacityMb))
@@ -729,6 +725,9 @@ object DjiWidgetRenderer {
         setViewVisibility(R.id.widgetControlFull, View.VISIBLE)
         setViewVisibility(R.id.widgetControlPhoto, View.VISIBLE)
         setViewVisibility(R.id.widgetControlFullSleep, View.VISIBLE)
+        setBoolean(R.id.widgetControlFullSleep, "setEnabled", connected)
+        setImageViewResource(R.id.widgetControlFullSleepIcon,
+            if (connected) R.drawable.ic_widget_sleep else R.drawable.ic_widget_sleep_disabled)
         setInt(R.id.widgetControlFullSleep, "setBackgroundResource",
             if (connected) R.drawable.widget_surface_selector else R.drawable.widget_surface_dark)
         setInt(
@@ -809,7 +808,7 @@ object DjiWidgetRenderer {
     }
 
     private fun RemoteViews.applyWidgetFrame(rootId: Int) {
-        setViewPadding(rootId, 10, 4, 10, 7)
+        setViewPadding(rootId, 10, 4, 10, 8)
     }
 
     private fun RemoteViews.applyIconPadding(
