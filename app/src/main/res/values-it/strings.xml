@@ -230,4 +230,5 @@
     <string name="ob_restart_pairing_message">Una fotocamera è già salvata. Puoi associarla di nuovo o conservarla e continuare la configurazione.</string>
     <string name="ob_pair_again">Associa di nuovo</string>
     <string name="ob_skip_pairing">Salta associazione</string>
+    <string name="pairing_connect_camera">Collega la fotocamera</string>
 </resources>

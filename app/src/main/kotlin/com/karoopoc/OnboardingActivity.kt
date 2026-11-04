@@ -86,7 +86,7 @@ class OnboardingActivity : Activity() {
         }.onFailure { page = Page.WELCOME; history.clear() }
         if (raw == null && intent.getBooleanExtra("replay", false)) {
             replay = true
-            page = Page.WELCOME
+            page = if (intent.getBooleanExtra("paired", false)) Page.PAIRED else Page.WELCOME
             val settings = DjiSettings.read(this)
             triggers = booleanArrayOf(settings.lapHighlights, settings.peakPowerHighlights, settings.maxSpeedHighlights,
                 settings.climbSummitHighlights, settings.peakHeartRateHighlights,

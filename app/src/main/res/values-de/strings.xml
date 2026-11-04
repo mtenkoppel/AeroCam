@@ -230,4 +230,5 @@
     <string name="ob_restart_pairing_message">Eine Kamera ist bereits gespeichert. Du kannst sie erneut koppeln oder behalten und die Einrichtung fortsetzen.</string>
     <string name="ob_pair_again">Erneut koppeln</string>
     <string name="ob_skip_pairing">Kopplung überspringen</string>
+    <string name="pairing_connect_camera">Kamera verbinden</string>
 </resources>
