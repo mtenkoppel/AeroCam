@@ -26,25 +26,24 @@ class SettingsThemeTest {
         DjiSettings.preferences(RuntimeEnvironment.getApplication()).edit().clear().commit()
     }
 
-    @Test fun `system follows a light system`() = checkControls(false, DjiThemeMode.SYSTEM)
-    @Test fun `system follows a dark system`() = checkControls(true, DjiThemeMode.SYSTEM)
-    @Test fun `light overrides a light system`() = checkControls(false, DjiThemeMode.LIGHT)
-    @Test fun `light overrides a dark system`() = checkControls(true, DjiThemeMode.LIGHT)
-    @Test fun `dark overrides a light system`() = checkControls(false, DjiThemeMode.DARK)
-    @Test fun `dark overrides a dark system`() = checkControls(true, DjiThemeMode.DARK)
+    @Test fun `menus stay light on a light system`() = checkControls(false, "system")
+    @Test fun `menus stay light on a dark system`() = checkControls(true, "system")
+    @Test fun `legacy light preference on a light system`() = checkControls(false, "light")
+    @Test fun `legacy light preference on a dark system`() = checkControls(true, "light")
+    @Test fun `legacy dark preference on a light system`() = checkControls(false, "dark")
+    @Test fun `legacy dark preference on a dark system`() = checkControls(true, "dark")
 
-    private fun checkControls(systemDark: Boolean, mode: DjiThemeMode) {
+    private fun checkControls(systemDark: Boolean, mode: String) {
         RuntimeEnvironment.setQualifiers(if (systemDark) "+night" else "+notnight")
         val application = RuntimeEnvironment.getApplication()
-        DjiTheme.writeMode(application, mode)
+        DjiSettings.preferences(application).edit().putString(DjiSettings.KEY_THEME_MODE, mode).commit()
         val before = DjiSettings.preferences(application).all.toMap()
         val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
         try {
             val activity = controller.get()
-            val light = mode == DjiThemeMode.LIGHT || (mode == DjiThemeMode.SYSTEM && !systemDark)
-            assertControls(activity, light)
+            assertControls(activity)
             controller.recreate()
-            assertControls(controller.get(), light)
+            assertControls(controller.get())
             assertEquals("Rendering must preserve settings", before, DjiSettings.preferences(application).all)
             assertEquals("An app override must not change the system configuration", systemDark,
                 application.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES)
@@ -53,12 +52,11 @@ class SettingsThemeTest {
         }
     }
 
-    private fun assertControls(activity: Activity, light: Boolean) {
-        assertEquals("Native resources must match the app palette", light,
+    private fun assertControls(activity: Activity) {
+        assertEquals("Native resources must match the app palette", true,
             activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK != Configuration.UI_MODE_NIGHT_YES)
-        assertEquals(light, DjiTheme.isLight(activity))
         val palette = SettingsViews(activity).palette
-        assertEquals(if (light) Color.WHITE else Color.BLACK, palette.appBackground)
+        assertEquals(Color.WHITE, palette.appBackground)
         val attributes = activity.obtainStyledAttributes(intArrayOf(android.R.attr.forceDarkAllowed))
         try { assertFalse("Android must not recolor an explicitly themed screen", attributes.getBoolean(0, true)) }
         finally { attributes.recycle() }
@@ -77,7 +75,7 @@ class SettingsThemeTest {
             assertNativeColors(it.context, palette.previewBackground)
         }
         val spinners = controls.filterIsInstance<Spinner>()
-        assertEquals(2, spinners.size)
+        assertEquals("Only the cooldown selector remains", 1, spinners.size)
         spinners.forEach { spinner ->
             for (index in 0 until spinner.adapter.count) {
                 val selected = spinner.adapter.getView(index, null, spinner) as TextView

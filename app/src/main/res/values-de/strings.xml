@@ -9,9 +9,6 @@
     <string name="battery">Akku</string>
     <string name="hide_field_captions">Datenfeldtitel ausblenden</string>
     <string name="theme_mode">Darstellung</string>
-    <string name="theme_system">Systemeinstellung</string>
-    <string name="theme_dark">Dunkel</string>
-    <string name="theme_light">Hell</string>
     <string name="keep_osmo_awake">Kamera wach halten</string>
     <string name="recording">Aufnahme</string>
     <string name="card_space">Speicherplatz</string>
@@ -182,7 +179,6 @@
     <string name="keep_camera_awake">Kamera wach halten</string>
     <string name="prevent_standby_summary">Verhindert, dass sich die Kamera automatisch ausschaltet.</string>
     <string name="recommended_camera_setup">Empfohlene Kameraeinstellungen</string>
-    <string name="appearance">Erscheinungsbild</string>
     <string name="captions_summary">Blendet den Widget-Namen aus und spart etwas Platz.</string>
     <string name="advanced_settings">Erweiterte Einstellungen</string>
     <string name="restart_onboarding">Einrichtung erneut starten</string>

@@ -2,7 +2,6 @@ package com.karoopoc
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.app.ActivityOptions
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -33,10 +32,6 @@ class SetupActivity : DetailActivity() {
     private lateinit var summary: TextView
     private var permissionGranted = false
     private var pendingSearch = false
-
-    override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(DjiTheme.activityContext(newBase))
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

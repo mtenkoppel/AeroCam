@@ -36,7 +36,7 @@ class WidgetGalleryActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         DjiTheme.applyActivityTheme(this)
         super.onCreate(savedInstanceState)
-        palette = DjiTheme.palette(this)
+        palette = DjiTheme.appPalette(this)
         setContentView(createGallery())
         renderPreviews()
     }

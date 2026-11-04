@@ -49,6 +49,7 @@ object DjiSettings {
     private const val KEY_RIDE_MARKER_DEFAULT_MIGRATED = "ride_marker_default_migrated_v1"
     const val KEY_LOW_BATTERY_ALERT = "alert_low_battery"
     const val KEY_LOW_STORAGE_ALERT = "alert_low_storage"
+    // Legacy preference retained for upgrade compatibility; appearance is now fixed by surface.
     const val KEY_THEME_MODE = "theme_mode"
     const val KEY_KEEP_AWAKE_ENABLED = "keep_awake_enabled"
     const val KEY_KEEP_AWAKE_INTERVAL_SECONDS = "keep_awake_interval_seconds"

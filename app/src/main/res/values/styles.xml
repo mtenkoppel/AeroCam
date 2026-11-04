@@ -1,21 +1,7 @@
 <resources>
-    <style name="AppTheme" parent="@style/AppTheme_System" />
-
-    <style name="AppTheme_System" parent="@android:style/Theme.Material.Light.NoActionBar">
+    <style name="AppTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
         <item name="android:forceDarkAllowed">false</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowBackground">@color/dji_bg_canvas_light</item>
-    </style>
-
-    <style name="AppTheme_Light" parent="@android:style/Theme.Material.Light.NoActionBar">
-        <item name="android:forceDarkAllowed">false</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowBackground">@color/dji_bg_canvas_light</item>
-    </style>
-
-    <style name="AppTheme_Dark" parent="@android:style/Theme.Material.NoActionBar">
-        <item name="android:forceDarkAllowed">false</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowBackground">@color/dji_bg_canvas_dark</item>
     </style>
 </resources>

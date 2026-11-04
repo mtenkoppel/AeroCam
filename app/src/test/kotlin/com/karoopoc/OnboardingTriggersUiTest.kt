@@ -129,7 +129,7 @@ class OnboardingTriggersUiTest {
         controller.pause().stop().destroy()
     }
     @Test @Config(qualifiers = "de-w256dp-h427dp-port-300dpi")
-    fun translatedGradientEditorUsesNativeDarkThemeAndSignedInputs() {
+    fun translatedGradientEditorStaysLightWithLegacyDarkPreferenceAndSignedInputs() {
         prefs.edit().putString(DjiSettings.KEY_THEME_MODE,"dark").commit()
         seed(); val controller=launch(); val a=controller.get()
         toggle(a,R.string.highlight_high_speed_descent).performClick()

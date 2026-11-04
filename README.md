@@ -51,8 +51,8 @@ mode.
 - **Camera monitoring:** View camera battery and remaining card space, with
   optional one-time alerts for low battery and low storage, plus highlight-added
   feedback.
-- **Light and dark themes:** Choose light, dark, or follow the Karoo system
-  appearance.
+- **Consistent appearance:** White app menus and black camera controls in ride
+  data fields, independent of the Karoo in-ride appearance.
 - **Six languages:** English, German, Spanish, French, Italian, and Portuguese
   are selected automatically from the Karoo language.
 
