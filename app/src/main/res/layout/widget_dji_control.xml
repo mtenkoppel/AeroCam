@@ -332,14 +332,15 @@
                     <TextView
                         android:id="@+id/widgetControlFullOfflineHint"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
                         android:gravity="center"
                         android:maxLines="1"
                         android:text="@string/widget_auto_reconnect_enabled"
                         android:textColor="@color/dji_text_secondary_dark"
                         android:textSize="12sp"
                         android:visibility="gone"
-                        android:paddingBottom="4dp" />
+                        android:ellipsize="end" />
                 </LinearLayout>
             </FrameLayout>
 
@@ -505,7 +506,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal|bottom"
-                        android:layout_marginBottom="18dp"
+                        android:layout_marginBottom="2dp"
                         android:maxLines="1"
                         android:text="★ HIGHLIGHT"
                         android:textColor="@color/dji_text_on_accent"

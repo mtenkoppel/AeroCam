@@ -556,7 +556,24 @@ object DjiWidgetRenderer {
                     context.resources.getDimensionPixelSize(R.dimen.widget_control_total_gaps)).coerceAtLeast(0) / 4
                 val headerText = minOf(18f * context.resources.displayMetrics.scaledDensity, rowHeight * .4f).coerceAtLeast(1f)
                 setTextViewTextSize(R.id.widgetControlFullBattery, TypedValue.COMPLEX_UNIT_PX, headerText)
-                setTextViewTextSize(R.id.widgetControlFullStorage, TypedValue.COMPLEX_UNIT_PX, headerText)
+                val density = context.resources.displayMetrics.density
+                val storageWidth = (config.viewSize.first - 20 - (156 + 28) * density).coerceAtLeast(1f)
+                val measuredStorage = android.graphics.Paint().apply { textSize = headerText }
+                    .measureText(formatStorage(context, state.remainingCapacityMb)).coerceAtLeast(1f)
+                setTextViewTextSize(R.id.widgetControlFullStorage, TypedValue.COMPLEX_UNIT_PX,
+                    minOf(headerText, headerText * storageWidth / measuredStorage * .95f))
+                if (state.recording && state.highlightFeedback != null) {
+                    // Keep the existing timer and highlight feedback legible in the shorter row.
+                    val caption = (rowHeight * .24f).coerceAtLeast(11f)
+                    setTextViewTextSize(R.id.widgetControlVideoFeedback, TypedValue.COMPLEX_UNIT_PX, caption)
+                    setTextViewTextSize(R.id.widgetControlVideoTimer, TypedValue.COMPLEX_UNIT_PX,
+                        minOf(28f * context.resources.displayMetrics.scaledDensity, rowHeight * .45f))
+                    setViewPadding(R.id.widgetControlVideoRecording, 0, 0, 0, (caption * 1.4f).toInt())
+                    val iconSize = context.resources.getDimensionPixelSize(R.dimen.widget_icon_primary_size)
+                    val normalPadding = context.resources.getDimensionPixelSize(R.dimen.widget_icon_primary_padding)
+                    val iconPadding = maxOf(normalPadding, ((iconSize - rowHeight * .7f) / 2).toInt())
+                    setViewPadding(R.id.widgetControlVideoRecordingIcon, iconPadding, iconPadding, iconPadding, iconPadding)
+                }
             }
             setTextViewTextSize(
                 R.id.widgetControlMessageText,
@@ -572,6 +589,14 @@ object DjiWidgetRenderer {
                 statusTextSize(config, size),
             )
             setTextColor(R.id.widgetControlTopConfirmText, palette.textPrimary)
+            if (size == DjiWidgetSize.FULL) {
+                val rowHeight = (config.viewSize.second - 20 -
+                    context.resources.getDimensionPixelSize(R.dimen.widget_control_total_gaps)).coerceAtLeast(0) / 4
+                setTextViewTextSize(R.id.widgetControlTopMessageText, TypedValue.COMPLEX_UNIT_PX,
+                    minOf(statusTextSize(config, size) * context.resources.displayMetrics.scaledDensity, rowHeight * .4f))
+                setTextViewTextSize(R.id.widgetControlFullOfflineHint, TypedValue.COMPLEX_UNIT_PX,
+                    minOf(12f * context.resources.displayMetrics.scaledDensity, rowHeight * .3f))
+            }
         }
     }
 

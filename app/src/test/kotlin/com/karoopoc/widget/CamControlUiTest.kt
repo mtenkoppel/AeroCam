@@ -67,6 +67,16 @@ class CamControlUiTest {
                 assertTrue(abs(4 * video.height + 2 * gap + photoGap - (height - view.paddingTop - view.paddingBottom)) <= 3)
                 assertEquals(DjiTheme.palette(context).textPrimary, view.findViewById<TextView>(R.id.widgetControlFullBattery).currentTextColor)
                 save(view, "$theme-xl-$height-ready")
+                if (height in listOf(320, 408, 600)) {
+                    save(render(height, DjiWidgetViewState(camera.copy(batteryPercent = 15))), "$theme-xl-$height-low-battery")
+                    save(render(height, DjiWidgetViewState(camera.copy(recording = true, highlightFeedback = "HIGHLIGHT"))), "$theme-xl-$height-recording")
+                    save(render(height, DjiWidgetViewState(camera.copy(connection = CameraConnectionState.DISCONNECTED))), "$theme-xl-$height-offline")
+                }
+            }
+            for (height in listOf(113, 154, 189)) {
+                save(render(height), "$theme-compact-$height-ready")
+                save(render(height, DjiWidgetViewState(camera.copy(batteryPercent = 15))), "$theme-compact-$height-low-battery")
+                save(render(height, DjiWidgetViewState(camera.copy(connection = CameraConnectionState.DISCONNECTED))), "$theme-compact-$height-offline")
             }
             val low = render(420, DjiWidgetViewState(camera.copy(batteryPercent = 15)))
             assertEquals(DjiTheme.palette(context).batteryLow, low.findViewById<TextView>(R.id.widgetControlFullBattery).currentTextColor)
