@@ -40,4 +40,5 @@
     <color name="dji_battery_low_dark">#FF0505</color>
     <color name="dji_battery_low_light">#C40000</color>
     <color name="karoo_back_background">#9FB6BF</color>
+    <color name="karoo_forward_background">#607F8C</color>
 </resources>

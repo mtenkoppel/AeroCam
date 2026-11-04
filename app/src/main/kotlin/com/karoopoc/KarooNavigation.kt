@@ -2,11 +2,13 @@ package com.karoopoc
 
 import android.app.Activity
 import android.content.res.ColorStateList
+import android.graphics.Typeface
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
 import android.view.Gravity
 import android.view.View
+import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -49,4 +51,31 @@ internal object KarooNavigation {
             }
         }
     }
+
+    /** Forward actions meet the physical right edge, mirroring the Back tab. */
+    fun forwardButton(activity: Activity, label: String, click: () -> Unit): Button {
+        fun dp(value: Int) = (value * activity.resources.displayMetrics.density + .5f).toInt()
+        val radius = dp(34).toFloat()
+        val shape = GradientDrawable().apply {
+            setColor(activity.getColor(R.color.karoo_forward_background))
+            cornerRadii = floatArrayOf(radius, radius, 0f, 0f, 0f, 0f, radius, radius)
+        }
+        return Button(activity).apply {
+            text = label
+            isAllCaps = true
+            textSize = 19f
+            typeface = Typeface.DEFAULT_BOLD
+            gravity = Gravity.CENTER
+            minHeight = dp(68)
+            minWidth = dp(125)
+            maxWidth = (activity.resources.displayMetrics.widthPixels - dp(76)).coerceAtLeast(dp(125))
+            setTextColor(ColorStateList(arrayOf(intArrayOf(-android.R.attr.state_enabled), intArrayOf()),
+                intArrayOf(0x99FFFFFF.toInt(), Color.WHITE)))
+            backgroundTintList = null
+            background = RippleDrawable(ColorStateList.valueOf(0x33FFFFFF), shape, shape.constantState!!.newDrawable())
+            setPadding(dp(16), 0, dp(12), 0)
+            setOnClickListener { click() }
+        }
+    }
+
 }

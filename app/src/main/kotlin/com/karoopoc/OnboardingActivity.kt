@@ -161,9 +161,9 @@ class OnboardingActivity : Activity() {
             gravity = Gravity.BOTTOM
         }
         navigation.addView(KarooNavigation.backButton(this), LinearLayout.LayoutParams(dp(68), dp(68)))
-        footer = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        footer = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.RIGHT }
         navigation.addView(footer, LinearLayout.LayoutParams(0, -2, 1f).apply {
-            leftMargin = dp(8); rightMargin = dp(16)
+            leftMargin = dp(8)
         })
         root.addView(navigation)
         setContentView(root)
@@ -393,9 +393,17 @@ class OnboardingActivity : Activity() {
         backgroundTintList = ColorStateList.valueOf(if (primary) palette.textPrimary else palette.appBackground)
         setOnClickListener { click() }
     }
-    private fun action(id: Int, primary: Boolean = true, click: () -> Unit): Button = button(getString(id), primary, click).also {
-        it.textSize = 19f; it.minHeight = dp(if (primary) 68 else 53)
-        footer.addView(it, LinearLayout.LayoutParams(-1, -2))
+    private fun action(id: Int, primary: Boolean = true, click: () -> Unit): Button {
+        if (primary) {
+            return KarooNavigation.forwardButton(this, getString(id), click).also {
+                footer.addView(it, LinearLayout.LayoutParams(-2, dp(68)))
+            }
+        }
+        // Skip belongs to the page, after its instructions, rather than to the fixed navigation bar.
+        return button(getString(id), false, click).also {
+            it.textSize = 19f; it.minHeight = dp(53)
+            content.addView(it, params(10))
+        }
     }
     private fun params(bottom: Int = 0) = LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(bottom) }
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()

@@ -243,6 +243,14 @@ class OnboardingTriggersUiTest {
             assertEquals((68 * a.resources.displayMetrics.density + .5f).toInt(), back.width)
             assertEquals(back.width, back.height)
             assertEquals(back.height, primary.height)
+            assertEquals(480, actionPosition[0] + primary.width)
+            val scroll = views(a).filterIsInstance<ScrollView>().single()
+            val skip = views(a).filterIsInstance<Button>().firstOrNull { it.text.toString() == a.getString(R.string.ob_skip) }
+            if (skip != null) {
+                assertTrue(descendants(scroll).contains(skip))
+                assertEquals(skip, (skip.parent as ViewGroup).getChildAt((skip.parent as ViewGroup).childCount - 1))
+            }
+            assertEquals(primary.text.toString().uppercase(), primary.transformationMethod.getTransformation(primary.text, primary).toString())
             back.performClick()
             assertEquals("WELCOME", JSONObject(prefs.getString(OnboardingActivity.DRAFT, "")!!).getString("page"))
             assertTrue(views(a).filterIsInstance<TextView>().any { it.text.toString() == a.getString(R.string.ob_welcome) })
