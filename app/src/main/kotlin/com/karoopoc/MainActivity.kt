@@ -2,6 +2,7 @@ package com.karoopoc
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.os.Build
@@ -42,15 +43,25 @@ class MainActivity : Activity() {
     private lateinit var forgetButton: Button
     private var hasBlePermission = false
 
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(DjiTheme.activityContext(newBase))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         DjiTheme.applyActivityTheme(this)
         window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
         super.onCreate(savedInstanceState)
         ui = SettingsViews(this)
         activeTab = savedInstanceState?.getString("tab")?.let { name -> AppTab.entries.find { it.name == name } } ?: AppTab.SETTINGS
-        setContentView(createDashboard())
+        setContentView(KarooNavigation.wrap(this, createDashboard()))
         selectTab(activeTab)
         if (requestBlePermissions()) observeCamera()
+    }
+
+    // Root tabs are peers, not Back destinations; singleTask prevents duplicate dashboard instances.
+    @Deprecated("Uses Activity back navigation")
+    override fun onBackPressed() {
+        finish()
     }
 
     override fun onResume() {
@@ -132,8 +143,10 @@ class MainActivity : Activity() {
         ui.alerts(content)
         ui.style(content)
         val advanced = ui.group(content, getString(R.string.advanced_settings))
+        ui.cooldown(advanced)
+        ui.standbyTime(advanced)
         connectButton = ui.action(getString(R.string.connect_known_dji)) {
-            if (requestBlePermissions()) { observeCamera(); DjiCameraController.connect(this) }
+            SetupActivity.open(this)
         }
         forgetButton = ui.action(getString(R.string.forget_dji_device)) {
             AlertDialog.Builder(this)
@@ -145,7 +158,7 @@ class MainActivity : Activity() {
         }
         advanced.addView(connectButton, ui.fullWidthParams())
         advanced.addView(forgetButton, ui.fullWidthParams())
-        advanced.addView(ui.action(getString(R.string.restart_onboarding)) { startActivity(android.content.Intent(this, OnboardingActivity::class.java).putExtra("replay", true)) }, ui.fullWidthParams())
+        advanced.addView(ui.action(getString(R.string.restart_onboarding)) { OnboardingActivity.open(this) }, ui.fullWidthParams())
         advanced.addView(ui.action(getString(R.string.reset_all_settings)) { showResetAllConfirmation() }, ui.fullWidthParams())
         return ui.scroll(content, R.id.settings_scroll)
     }
@@ -244,7 +257,9 @@ class MainActivity : Activity() {
         })
         // INVISIBLE keeps the connection card's footprint stable through reconnects.
         connectionHint.visibility = if (state.configured) View.INVISIBLE else View.VISIBLE
-        startSetup.visibility = if (state.configured) View.INVISIBLE else View.VISIBLE
+        startSetup.visibility = if (connected) View.INVISIBLE else View.VISIBLE
+        startSetup.isEnabled = !connecting && !state.diagnosticConnectionPaused
+        startSetup.text = getString(if (state.configured) R.string.connect_known_dji else R.string.start_setup)
         connectButton.isEnabled = !connecting && !connected && state.configured && !state.diagnosticConnectionPaused
         forgetButton.isEnabled = hasBlePermission && state.configured
         ui.refresh()

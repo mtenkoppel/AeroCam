@@ -9,9 +9,6 @@
     <string name="battery">Batterie</string>
     <string name="hide_field_captions">Masquer les titres des champs</string>
     <string name="theme_mode">Style</string>
-    <string name="theme_system">Utiliser le système</string>
-    <string name="theme_dark">Sombre</string>
-    <string name="theme_light">Clair</string>
     <string name="keep_osmo_awake">Maintenir la caméra active</string>
     <string name="recording">Enregistrement</string>
     <string name="card_space">Espace sur la carte</string>
@@ -182,7 +179,6 @@
     <string name="keep_camera_awake">Garder la caméra active</string>
     <string name="prevent_standby_summary">Empêche la caméra de s’éteindre automatiquement.</string>
     <string name="recommended_camera_setup">Réglages recommandés de la caméra</string>
-    <string name="appearance">Apparence</string>
     <string name="captions_summary">Masque le nom du widget et libère un peu d’espace.</string>
     <string name="advanced_settings">Réglages avancés</string>
     <string name="restart_onboarding">Relancer la configuration</string>
@@ -214,15 +210,21 @@
     <string name="help_number">%1$02d</string>
     <string name="setup_search_timeout">La recherche prend plus de temps que prévu. Vérifie la caméra et réessaie.</string>
     <string name="highlight_descent_grade_threshold">Pente en descente (%)</string>
-    <string name="highlight_descent_summary">Les deux seuils sont requis. Pente négative en descente.</string>
+    <string name="highlight_descent_summary">Se déclenche à la pente de descente choisie. Une vitesse minimale peut aussi être exigée.</string>
     <string name="highlight_uphill">Marqueur de montée</string>
     <string name="highlight_uphill_speed_threshold">Vitesse en montée (km/h)</string>
     <string name="highlight_uphill_grade_threshold">Pente en montée (%)</string>
-    <string name="highlight_uphill_summary">Les deux seuils sont requis. Pente positive en montée.</string>
+    <string name="highlight_uphill_summary">Se déclenche à la pente de montée choisie. Une vitesse minimale peut aussi être exigée.</string>
     <string name="highlight_uphill_feedback">Montée</string>
     <string name="diagnostic_connection_title">Débogage : connexion de la caméra</string>
     <string name="diagnostic_disconnect">Déconnecter la caméra</string>
     <string name="diagnostic_reconnect">Reconnecter la caméra</string>
     <string name="diagnostic_connection_hint">Test manuel uniquement. Le Bluetooth reste activé. La déconnexion est bloquée pendant un enregistrement ou une action de caméra en attente.</string>
     <string name="diagnostic_connection_paused">Connexion de la caméra en pause. Utilisez Reconnecter la caméra pour reprendre. Redémarrer le service de l’application met également fin à cette pause de débogage.</string>
+    <string name="highlight_require_speed">Exiger aussi une vitesse</string>
+    <string name="ob_restart_pairing_title">Associer à nouveau la caméra ?</string>
+    <string name="ob_restart_pairing_message">Une caméra est déjà enregistrée. Tu peux l’associer à nouveau ou la conserver et poursuivre la configuration.</string>
+    <string name="ob_pair_again">Associer à nouveau</string>
+    <string name="ob_skip_pairing">Passer l’association</string>
+    <string name="pairing_connect_camera">Connecter la caméra</string>
 </resources>

@@ -90,6 +90,25 @@ class SettingsUiTest {
         return view
     }
 
+    @Test fun rootTabsDoNotBecomeBackDestinationsAndContentExtendsBehindBackTab() {
+        val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
+        val activity = controller.get()
+        val root = render(activity,"qa2-navigation-overlay") as ViewGroup
+        val content = root.getChildAt(0)
+        assertEquals(root.height, content.height)
+        val back = activity.findViewById<ImageButton>(R.id.karoo_back)
+        assertEquals((54 * activity.resources.displayMetrics.density + .5f).toInt(), back.width)
+        // The initial BLE permission prompt is unrelated to switching tabs.
+        while (shadowOf(activity).nextStartedActivity != null) { }
+        for (label in listOf(R.string.status_tab,R.string.help_tab,R.string.settings)) {
+            views(activity).filterIsInstance<TextView>().first { it.text.toString() == activity.getString(label) }.performClick()
+        }
+        assertNull(shadowOf(activity).nextStartedActivity)
+        back.performClick()
+        assertTrue(activity.isFinishing)
+        controller.pause().stop().destroy()
+    }
+
     @Test fun `opening settings does not write defaults or change saved preferences`() {
         val context = RuntimeEnvironment.getApplication()
         val prefs = DjiSettings.preferences(context)
@@ -109,8 +128,9 @@ class SettingsUiTest {
         controller.pause().stop().destroy()
     }
 
-    @Test fun `new UI uses reviewed defaults and native controls in both appearances`() {
+    @Test fun `white menus preserve defaults and controls under either system appearance`() {
         for (mode in listOf("dark", "light")) {
+            RuntimeEnvironment.setQualifiers(if (mode == "dark") "+night" else "+notnight")
             val context = RuntimeEnvironment.getApplication()
             DjiSettings.preferences(context).edit().putString(DjiSettings.KEY_THEME_MODE, mode).commit()
             val before = DjiSettings.preferences(context).all.toMap()
@@ -124,10 +144,16 @@ class SettingsUiTest {
             assertEquals(false, switches["Hide data field captions"])
             assertFalse(switches.containsKey("Photo and recording alerts"))
             val spinners = views(activity).filterIsInstance<Spinner>()
-            assertEquals(2, spinners.size)
-            assertEquals("30 seconds", spinners.single {
-                it.contentDescription == activity.getString(R.string.highlight_cooldown)
-            }.selectedItem)
+            assertEquals(0, spinners.size)
+            button(activity, activity.getString(R.string.highlight_cooldown)).performClick()
+            val cooldownDialog = org.robolectric.shadows.ShadowAlertDialog.getLatestAlertDialog()
+            val editor = descendants(cooldownDialog.window!!.decorView).filterIsInstance<Spinner>().single()
+            assertEquals("30 seconds", editor.selectedItem)
+            assertTrue(descendants(cooldownDialog.window!!.decorView).filterIsInstance<TextView>().any {
+                it.text.toString() == activity.getString(R.string.highlight_cooldown_summary)
+            })
+            cooldownDialog.dismiss()
+
             render(activity, "settings-$mode")
             activity.findViewById<ScrollView>(R.id.settings_scroll).fullScroll(View.FOCUS_DOWN)
             render(activity, "settings-$mode-bottom")
@@ -205,7 +231,7 @@ class SettingsUiTest {
             val controller = Robolectric.buildActivity(HelpActivity::class.java, intent).setup()
             val activity = controller.get()
             render(activity, "article-${article.fileName.removeSuffix(".md")}")
-            assertTrue(views(activity).filterIsInstance<Toolbar>().isNotEmpty())
+            assertNotNull(activity.findViewById<android.widget.ImageButton>(R.id.karoo_back))
             assertFalse(views(activity).filterIsInstance<TextView>().any { it.text.toString() == "Settings" })
             activity.findViewById<ScrollView>(R.id.article_scroll).fullScroll(View.FOCUS_DOWN)
             render(activity, "article-${article.fileName.removeSuffix(".md")}-bottom")

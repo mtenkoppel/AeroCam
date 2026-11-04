@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
 import android.widget.RemoteViews
 import com.karoopoc.DjiPalette
@@ -53,6 +54,14 @@ object DjiWidgetLayout {
 }
 
 object DjiWidgetRenderer {
+    fun captionedField(context: Context, caption: Int, showCaption: Boolean, body: RemoteViews): RemoteViews =
+        RemoteViews(context.packageName, R.layout.widget_dji_field).apply {
+            setTextViewText(R.id.widgetFieldCaption, context.getString(caption).uppercase())
+            setViewVisibility(R.id.widgetFieldCaption, if (showCaption) View.VISIBLE else View.GONE)
+            removeAllViews(R.id.widgetFieldBody)
+            addView(R.id.widgetFieldBody, body)
+        }
+
     /** Compose the real controls; recording uses the standalone video view unchanged. */
     fun videoPhoto(
         context: Context,
@@ -67,7 +76,7 @@ object DjiWidgetRenderer {
             gridSize = Pair((config.gridSize.first / 2).coerceAtLeast(1), config.gridSize.second),
             viewSize = Pair(
                 ((config.viewSize.first - 20 - gap) / 2).coerceAtLeast(1),
-                (config.viewSize.second - 20).coerceAtLeast(1),
+                (config.viewSize.second - 11).coerceAtLeast(1),
             ),
         )
         fun RemoteViews.withoutOuterFrame(rootId: Int) = apply {
@@ -77,7 +86,7 @@ object DjiWidgetRenderer {
             setInt(rootId, "setBackgroundColor", Color.TRANSPARENT)
         }
         return RemoteViews(context.packageName, R.layout.widget_dji_video_photo).apply {
-            setInt(R.id.widgetVideoPhotoRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
+            setInt(R.id.widgetVideoPhotoRoot, "setBackgroundResource", R.drawable.widget_root_dark)
             applyWidgetFrame(R.id.widgetVideoPhotoRoot)
             removeAllViews(R.id.widgetCombinedVideo)
             removeAllViews(R.id.widgetCombinedPhoto)
@@ -93,7 +102,7 @@ object DjiWidgetRenderer {
         interactive: Boolean = true,
     ): RemoteViews {
         val state = viewState.camera
-        val palette = DjiTheme.palette(context)
+        val palette = DjiTheme.widgetPalette(context)
         val size = DjiWidgetLayout.sizeFor(config)
         val connected = state.connection == CameraConnectionState.CONNECTED
         val recording = state.recording
@@ -103,8 +112,9 @@ object DjiWidgetRenderer {
         val awaitingResponse = viewState.videoAwaitingResponse
 
         return RemoteViews(context.packageName, R.layout.widget_dji_video).apply {
-            setInt(R.id.widgetVideoRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
+            setInt(R.id.widgetVideoRoot, "setBackgroundResource", R.drawable.widget_root_dark)
             applyWidgetFrame(R.id.widgetVideoRoot)
+            applyTextAlignment(config, R.id.widgetVideoTimer, R.id.widgetVideoMeta, R.id.widgetVideoStatus)
             applyIconPadding(context, R.dimen.widget_icon_primary_padding, R.id.widgetVideoIcon)
             applyIconPadding(context, R.dimen.widget_icon_utility_padding, R.id.widgetVideoHighlightIcon)
             setTextViewTextSize(
@@ -249,7 +259,7 @@ object DjiWidgetRenderer {
         interactive: Boolean = true,
     ): RemoteViews {
         val state = viewState.camera
-        val palette = DjiTheme.palette(context)
+        val palette = DjiTheme.widgetPalette(context)
         val size = DjiWidgetLayout.sizeFor(config)
         val connected = state.connection == CameraConnectionState.CONNECTED
         val connectPrompt = ConnectPrompt.PHOTO in viewState.connectPrompts
@@ -257,8 +267,9 @@ object DjiWidgetRenderer {
         val photoBlocked = state.recording
 
         return RemoteViews(context.packageName, R.layout.widget_dji_photo).apply {
-            setInt(R.id.widgetPhotoRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
+            setInt(R.id.widgetPhotoRoot, "setBackgroundResource", R.drawable.widget_root_dark)
             applyWidgetFrame(R.id.widgetPhotoRoot)
+            applyTextAlignment(config, R.id.widgetPhotoStatus)
             applyIconPadding(context, R.dimen.widget_icon_primary_padding, R.id.widgetPhotoIcon)
             setTextViewTextSize(
                 R.id.widgetPhotoStatus,
@@ -334,19 +345,36 @@ object DjiWidgetRenderer {
         interactive: Boolean = true,
     ): RemoteViews {
         val state = viewState.camera
-        val palette = DjiTheme.palette(context)
-        val size = DjiWidgetLayout.sizeFor(config)
+        val palette = DjiTheme.widgetPalette(context)
+        // Cam Control uses a status-only view at half width, even in tall fields.
+        // Keep the shared video/photo size policy unchanged.
+        val narrow = config.gridSize.first <= 30 || config.viewSize.first < 360
+        val size = if (narrow) DjiWidgetSize.SMALL_HALF else DjiWidgetLayout.sizeFor(config)
         val connected = state.connection == CameraConnectionState.CONNECTED
         val connectPrompt = ConnectPrompt.CONTROL in viewState.connectPrompts
 
         return RemoteViews(context.packageName, R.layout.widget_dji_control).apply {
-            setInt(R.id.widgetControlRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
+            setInt(R.id.widgetControlRoot, "setBackgroundResource", R.drawable.widget_root_dark)
             applyWidgetFrame(R.id.widgetControlRoot)
+            applyTextAlignment(config.copy(alignment = ViewConfig.Alignment.CENTER), R.id.widgetControlBattery, R.id.widgetControlStorage)
+            applyTextAlignment(config,
+                R.id.widgetControlMessageText, R.id.widgetControlTopMessageText,
+                R.id.widgetControlTopConfirmText, R.id.widgetControlFullOfflineHint,
+                R.id.widgetControlVideoTimer, R.id.widgetControlVideoFeedback)
+            // Move each icon/value pair together inside its existing slot; action buttons stay fixed.
+            for (id in listOf(R.id.widgetControlFullBatteryGroup, R.id.widgetControlFullStorageGroup)) {
+                setInt(id, "setGravity", Gravity.CENTER)
+            }
+            setInt(R.id.widgetControlVideoRecording, "setGravity", dataGravity(config))
+            setInt(R.id.widgetControlTopConfirmText, "setGravity", Gravity.CENTER)
+            setViewVisibility(R.id.widgetControlFeedback, View.GONE)
+            setViewVisibility(R.id.widgetControlMore, View.VISIBLE)
             applyIconPadding(
                 context,
                 R.dimen.widget_icon_utility_padding,
                 R.id.widgetControlKeepAwakeIcon,
-                R.id.widgetControlSleepIcon,
+                R.id.widgetControlSettingsIcon,
+                R.id.widgetControlMessageSettingsIcon,
                 R.id.widgetControlConfirmYesIcon,
                 R.id.widgetControlConfirmNoIcon,
                 R.id.widgetControlFullKeepAwakeIcon,
@@ -371,7 +399,10 @@ object DjiWidgetRenderer {
                 R.id.widgetControlFullStorageIcon,
             )
             setViewVisibility(R.id.widgetControlMain, View.GONE)
-            setViewVisibility(R.id.widgetControlMessage, View.GONE)
+            setViewVisibility(R.id.widgetControlKeepAwake, View.VISIBLE)
+            setViewVisibility(R.id.widgetControlSettings, View.VISIBLE)
+            setViewVisibility(R.id.widgetControlMessageContainer, View.GONE)
+            setViewVisibility(R.id.widgetControlMessageSettings, View.VISIBLE)
             setViewVisibility(R.id.widgetControlConfirm, View.GONE)
             setViewVisibility(R.id.widgetControlFullShell, View.GONE)
             setViewVisibility(R.id.widgetControlFullUtility, View.GONE)
@@ -380,19 +411,28 @@ object DjiWidgetRenderer {
             setViewVisibility(R.id.widgetControlTopConfirmSpacer, View.GONE)
             setViewVisibility(R.id.widgetControlFullStatus, View.GONE)
             setViewVisibility(R.id.widgetControlFull, View.GONE)
+            setViewVisibility(R.id.widgetControlPhoto, View.GONE)
+            setViewVisibility(R.id.widgetControlFullSleep, View.GONE)
+            setOnClickPendingIntent(R.id.widgetControlFullSleep, null)
+            if (interactive) {
+                setOnClickPendingIntent(R.id.widgetControlSettings, openAppIntent(context, 314))
+                setOnClickPendingIntent(R.id.widgetControlMessageSettings, openAppIntent(context, 315))
+            }
 
             when {
                 size == DjiWidgetSize.SMALL_HALF -> {
-                    showControlMessage(context.getString(R.string.widget_full_width_only))
-                    if (interactive) {
-                        setOnClickPendingIntent(R.id.widgetControlMessage, openAppIntent(context, 301))
-                    }
+                    val status = if (connected) state else state.copy(batteryPercent = null, remainingCapacityMb = null)
+                    showCompactControls(context, status, palette)
+                    setViewVisibility(R.id.widgetControlKeepAwake, View.GONE)
+                    setViewVisibility(R.id.widgetControlSettings, View.GONE)
                 }
 
                 size == DjiWidgetSize.FULL && viewState.sleepConfirmation && connected -> {
-                    setViewVisibility(R.id.widgetControlFullShell, View.VISIBLE)
+                    showFullUtility(state)
+                    showFullStatus(context, state, true, palette, false)
+                    showFullControls(context, state, viewState, true, palette)
+                    setViewVisibility(R.id.widgetControlFullSleep, View.GONE)
                     setViewVisibility(R.id.widgetControlTopConfirm, View.VISIBLE)
-                    setViewVisibility(R.id.widgetControlTopConfirmSpacer, View.VISIBLE)
                     setInt(R.id.widgetControlTopConfirmYes, "setBackgroundResource", R.drawable.widget_surface_success)
                     setInt(R.id.widgetControlTopConfirmNo, "setBackgroundResource", R.drawable.widget_surface_danger)
                     if (interactive) {
@@ -424,7 +464,7 @@ object DjiWidgetRenderer {
                 }
 
                 size == DjiWidgetSize.FULL && viewState.controlFeedback != null -> {
-                    showFullTopMessage(viewState.controlFeedback)
+                    showFullUtility(state)
                     showFullStatus(
                         context,
                         state,
@@ -433,12 +473,17 @@ object DjiWidgetRenderer {
                         showReconnectHint = false,
                     )
                     showFullControls(context, state, viewState, connected = true, palette = palette)
-                    if (interactive) {
-                        setOnClickPendingIntent(R.id.widgetControlOfflineMore, openAppIntent(context, 311))
-                    }
+                    setViewVisibility(R.id.widgetControlFullStatus, View.GONE)
+                    setViewVisibility(R.id.widgetControlMore, View.GONE)
+                    setViewVisibility(R.id.widgetControlFeedback, View.VISIBLE)
+                    setTextViewText(R.id.widgetControlFeedback, viewState.controlFeedback)
                 }
 
-                viewState.controlFeedback != null -> showControlMessage(viewState.controlFeedback)
+                viewState.controlFeedback != null -> {
+                    showControlMessage(viewState.controlFeedback)
+                    setOnClickPendingIntent(R.id.widgetControlMessage, null)
+                    setViewVisibility(R.id.widgetControlMessageSettings, View.GONE)
+                }
 
                 size == DjiWidgetSize.FULL && !connected -> {
                     showFullTopMessage(
@@ -517,13 +562,10 @@ object DjiWidgetRenderer {
                         } else {
                             R.id.widgetControlKeepAwake
                         }
-                        val sleepId = if (size == DjiWidgetSize.FULL) {
-                            R.id.widgetControlFullSleep
-                        } else {
-                            R.id.widgetControlSleep
-                        }
                         setOnClickPendingIntent(keepAwakeId, actionIntent(context, DjiWidgetActionReceiver.ACTION_KEEP_AWAKE_TOGGLE, 306))
-                        setOnClickPendingIntent(sleepId, actionIntent(context, DjiWidgetActionReceiver.ACTION_SLEEP_REQUEST, 307))
+                        if (size == DjiWidgetSize.FULL) {
+                            setOnClickPendingIntent(R.id.widgetControlFullSleep, actionIntent(context, DjiWidgetActionReceiver.ACTION_SLEEP_REQUEST, 307))
+                        }
                         if (size == DjiWidgetSize.FULL) {
                             setOnClickPendingIntent(R.id.widgetControlMore, openAppIntent(context, 313))
                         }
@@ -545,11 +587,46 @@ object DjiWidgetRenderer {
                 }
             }
 
+            if (size == DjiWidgetSize.FULL) {
+                // Equal weights reserve the fixed gaps before sizing the four rows.
+                // Cap header text to half a row so shorter full-size fields still fit.
+                val rowHeight = (config.viewSize.second - 11 -
+                    context.resources.getDimensionPixelSize(R.dimen.widget_control_total_gaps)).coerceAtLeast(0) / 4
+                val headerText = minOf(20f * context.resources.displayMetrics.scaledDensity, rowHeight * .4f).coerceAtLeast(1f)
+                setTextViewTextSize(R.id.widgetControlFullBattery, TypedValue.COMPLEX_UNIT_PX, headerText)
+                val density = context.resources.displayMetrics.density
+                val storageWidth = (config.viewSize.first - 20 - (156 + 28) * density).coerceAtLeast(1f)
+                val measuredStorage = android.graphics.Paint().apply { textSize = headerText }
+                    .measureText(formatStorage(context, state.remainingCapacityMb)).coerceAtLeast(1f)
+                setTextViewTextSize(R.id.widgetControlFullStorage, TypedValue.COMPLEX_UNIT_PX,
+                    minOf(12f * context.resources.displayMetrics.scaledDensity, headerText * storageWidth / measuredStorage * .95f))
+                // RemoteViews can reapply to an existing tree after feedback expires.
+                setViewPadding(R.id.widgetControlVideoRecording, 0, 0, 0, 0)
+                setTextViewTextSize(R.id.widgetControlVideoTimer, TypedValue.COMPLEX_UNIT_SP, 28f)
+                setTextViewTextSize(R.id.widgetControlVideoFeedback, TypedValue.COMPLEX_UNIT_SP, 16f)
+                if (state.recording && state.highlightFeedback != null) {
+                    // Keep the existing timer and highlight feedback legible in the shorter row.
+                    val caption = (rowHeight * .24f).coerceAtLeast(11f)
+                    setTextViewTextSize(R.id.widgetControlVideoFeedback, TypedValue.COMPLEX_UNIT_PX, caption)
+                    setTextViewTextSize(R.id.widgetControlVideoTimer, TypedValue.COMPLEX_UNIT_PX,
+                        minOf(28f * context.resources.displayMetrics.scaledDensity, rowHeight * .45f))
+                    setViewPadding(R.id.widgetControlVideoRecording, 0, 0, 0, (caption * 1.4f).toInt())
+                    val iconSize = context.resources.getDimensionPixelSize(R.dimen.widget_icon_primary_size)
+                    val normalPadding = context.resources.getDimensionPixelSize(R.dimen.widget_icon_primary_padding)
+                    val iconPadding = maxOf(normalPadding, ((iconSize - rowHeight * .7f) / 2).toInt())
+                    setViewPadding(R.id.widgetControlVideoRecordingIcon, iconPadding, iconPadding, iconPadding, iconPadding)
+                }
+            }
             setTextViewTextSize(
                 R.id.widgetControlMessageText,
                 TypedValue.COMPLEX_UNIT_SP,
                 statusTextSize(config, size),
             )
+            setInt(R.id.widgetControlMessageText, "setGravity", if (viewState.controlFeedback != null) Gravity.CENTER else dataGravity(config))
+            if (viewState.controlFeedback != null) {
+                setTextViewTextSize(R.id.widgetControlMessageText, TypedValue.COMPLEX_UNIT_SP, 20f)
+                setInt(R.id.widgetControlMessage, "setBackgroundResource", R.drawable.widget_surface_dark)
+            }
             setTextColor(R.id.widgetControlMessageText, palette.textPrimary)
             setTextViewTextSize(R.id.widgetControlTopMessageText, TypedValue.COMPLEX_UNIT_SP, statusTextSize(config, size))
             setTextColor(R.id.widgetControlTopMessageText, palette.textPrimary)
@@ -559,11 +636,19 @@ object DjiWidgetRenderer {
                 statusTextSize(config, size),
             )
             setTextColor(R.id.widgetControlTopConfirmText, palette.textPrimary)
+            if (size == DjiWidgetSize.FULL) {
+                val rowHeight = (config.viewSize.second - 11 -
+                    context.resources.getDimensionPixelSize(R.dimen.widget_control_total_gaps)).coerceAtLeast(0) / 4
+                setTextViewTextSize(R.id.widgetControlTopMessageText, TypedValue.COMPLEX_UNIT_PX,
+                    minOf(statusTextSize(config, size) * context.resources.displayMetrics.scaledDensity, rowHeight * .4f))
+                setTextViewTextSize(R.id.widgetControlFullOfflineHint, TypedValue.COMPLEX_UNIT_PX,
+                    minOf(12f * context.resources.displayMetrics.scaledDensity, rowHeight * .3f))
+            }
         }
     }
 
     private fun RemoteViews.showControlMessage(message: String) {
-        setViewVisibility(R.id.widgetControlMessage, View.VISIBLE)
+        setViewVisibility(R.id.widgetControlMessageContainer, View.VISIBLE)
         setTextViewText(R.id.widgetControlMessageText, message)
     }
 
@@ -642,6 +727,10 @@ object DjiWidgetRenderer {
     ) {
         setViewVisibility(R.id.widgetControlFullShell, View.VISIBLE)
         setViewVisibility(R.id.widgetControlFull, View.VISIBLE)
+        setViewVisibility(R.id.widgetControlPhoto, View.VISIBLE)
+        setViewVisibility(R.id.widgetControlFullSleep, View.VISIBLE)
+        setInt(R.id.widgetControlFullSleep, "setBackgroundResource",
+            if (connected) R.drawable.widget_surface_selector else R.drawable.widget_surface_dark)
         setInt(
             R.id.widgetControlVideo,
             "setBackgroundResource",
@@ -720,7 +809,7 @@ object DjiWidgetRenderer {
     }
 
     private fun RemoteViews.applyWidgetFrame(rootId: Int) {
-        setViewPadding(rootId, 10, 10, 10, 10)
+        setViewPadding(rootId, 10, 4, 10, 7)
     }
 
     private fun RemoteViews.applyIconPadding(
@@ -870,4 +959,18 @@ private fun openAppIntent(context: Context, requestCode: Int): PendingIntent {
         Intent(context, MainActivity::class.java),
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
     )
+}
+
+/** Karoo alignment applies inside data slots, independently of the fixed camera controls. */
+private fun dataGravity(config: ViewConfig): Int = Gravity.CENTER_VERTICAL or when (config.alignment) {
+    ViewConfig.Alignment.LEFT -> Gravity.LEFT
+    ViewConfig.Alignment.CENTER -> Gravity.CENTER_HORIZONTAL
+    ViewConfig.Alignment.RIGHT -> Gravity.RIGHT
+}
+
+private fun RemoteViews.applyTextAlignment(config: ViewConfig, vararg ids: Int) {
+    for (id in ids) {
+        // The layouts use textAlignment=gravity; RemoteViews cannot change textAlignment itself.
+        setInt(id, "setGravity", dataGravity(config))
+    }
 }

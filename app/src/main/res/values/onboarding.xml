@@ -9,10 +9,10 @@
     <string name="ob_start">Start setup</string>
     <string name="ob_prevent_title">AeroCam can prevent your DJI cam from automatically going to standby.</string>
     <string name="ob_prevent_body">Your camera turns off when its standby timer runs out—typically after 5 minutes—even while connected.</string>
-    <string name="ob_prevent_recommend">AeroCam can prevent this. We recommend enabling Prevent standby.</string>
-    <string name="ob_battery">Keeping the camera awake uses battery. Our tests with a 1,770 mAh battery gave about 4 hours of standby. Actual battery life varies.</string>
-    <string name="ob_enable">Enable prevent standby</string>
-    <string name="ob_camera_title">Now let’s make some settings on your DJI cam together.</string>
+    <string name="ob_prevent_recommend">We highly recommend you enable this.</string>
+    <string name="ob_battery">Keeping the camera awake uses battery. In our tests, we got around four hours of standby time with this feature enabled.</string>
+    <string name="ob_enable">Enable</string>
+    <string name="ob_camera_title">Let’s set up your DJI cam.</string>
     <string name="ob_poweroff_title">1. Set auto power off to %1$d minutes</string>
     <string name="ob_poweroff_reason">Prevent standby prevents shutdown, but AeroCam needs to know the timer set on your camera.</string>
     <string name="ob_poweroff_path">Settings → Auto Power Off → %1$d minutes</string>
@@ -20,7 +20,7 @@
     <string name="ob_mute">2. Turn off sounds (optional)</string>
     <string name="ob_mute_reason">Otherwise you’ll hear repeated clicks during your ride.</string>
     <string name="ob_mute_path">Settings → Sounds → Mute</string>
-    <string name="ob_screen">3. Enable turning off the display when locked</string>
+    <string name="ob_screen">3. Turn off the display when locked (optional)</string>
     <string name="ob_screen_reason">Now, when you lock your camera, the display turns off and saves precious battery.</string>
     <string name="ob_screen_path">Settings → Single Screen Preview (Scrn Off when Locked) → On</string>
     <string name="ob_next">Next</string>
@@ -65,7 +65,9 @@
     <string name="ob_speed_fun3">On public roads, speed limits apply to you too 😉</string>
     <string name="ob_replay">Camera setup guide</string>
     <string name="ob_bookmarks" formatted="false">Marks the ride start and end only when the camera is already recording. Pauses and resumes add no markers. Never starts a recording.</string>
-    <string name="ob_gradient_threshold" formatted="false">Both thresholds must be met.</string>
+    <string name="ob_gradient_threshold" formatted="false">Choose a gradient. Speed is optional; enable it to require both conditions.</string>
     <string name="ob_uphill_range" formatted="false">Enter speed from 1 to 80 km/h and gradient from +1 to +30%.</string>
     <string name="ob_downhill_range" formatted="false">Enter speed from 40 to 80 km/h and gradient from −30 to −1%.</string>
+    <string name="ob_uphill_grade_range" formatted="false">Enter a gradient from +1 to +30%.</string>
+    <string name="ob_downhill_grade_range" formatted="false">Enter a gradient from −30 to −1%.</string>
 </resources>

@@ -3,6 +3,12 @@ on:
   push:
     branches: [master, 'codex/**']
   workflow_dispatch:
+    inputs:
+      release_signed_debug:
+        description: Build an in-place debuggable test APK with the established key
+        type: boolean
+        required: false
+        default: false
 permissions:
   contents: read
   packages: read
@@ -33,6 +39,7 @@ jobs:
           printf '%s' "$KEYSTORE" | base64 --decode > "$RUNNER_TEMP/aerocam-release.jks"
       - name: Test and build signed APK
         env:
+          ORG_GRADLE_PROJECT_releaseSignedDebug: ${{ github.event_name == 'workflow_dispatch' && inputs.release_signed_debug || false }}
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AEROCAM_KEYSTORE_PATH: ${{ runner.temp }}/aerocam-release.jks
@@ -67,6 +74,25 @@ jobs:
             build/trial/runtime.tsv
             app/build/test-results/testDebugUnitTest/*.xml
           if-no-files-found: warn
+          retention-days: 14
+      - name: Verify explicitly requested debug APK
+        if: github.event_name == 'workflow_dispatch' && inputs.release_signed_debug
+        run: |
+          certificate=$("$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --print-certs app/build/outputs/apk/debug/app-debug.apk | sed -n 's/^Signer #1 certificate SHA-256 digest: //p')
+          test "$certificate" = "cf5c62d207d7a6e7b03b056604c30873180390d11129f791231e19844ceab0ce"
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging app/build/outputs/apk/debug/app-debug.apk > app/build/outputs/apk/debug/app-debug.badging.txt
+          grep -q '^application-debuggable' app/build/outputs/apk/debug/app-debug.badging.txt
+          sha256sum app/build/outputs/apk/debug/app-debug.apk > app/build/outputs/apk/debug/app-debug.apk.sha256
+      - name: Save explicitly requested debug APK
+        if: github.event_name == 'workflow_dispatch' && inputs.release_signed_debug
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: aerocam-design-qa-debug-${{ github.sha }}
+          path: |
+            app/build/outputs/apk/debug/app-debug.apk
+            app/build/outputs/apk/debug/app-debug.apk.sha256
+            app/build/outputs/apk/debug/app-debug.badging.txt
+          if-no-files-found: error
           retention-days: 14
       - name: Remove temporary signing key
         if: always()

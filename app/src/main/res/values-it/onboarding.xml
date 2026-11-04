@@ -9,10 +9,10 @@
     <string name="ob_start">Inizia configurazione</string>
     <string name="ob_prevent_title">AeroCam può impedire alla DJI di entrare automaticamente in standby.</string>
     <string name="ob_prevent_body">La fotocamera si spegne allo scadere del timer, di solito dopo 5 minuti, anche se è connessa.</string>
-    <string name="ob_prevent_recommend">AeroCam può evitarlo. Consigliamo di attivare Impedisci standby.</string>
-    <string name="ob_battery">Tenere accesa la fotocamera consuma batteria. Nei nostri test, 1.770 mAh hanno garantito circa 4 ore di attesa. L’autonomia varia.</string>
-    <string name="ob_enable">Attiva impedisci standby</string>
-    <string name="ob_camera_title">Configuriamo insieme la tua DJI.</string>
+    <string name="ob_prevent_recommend">Consigliamo vivamente di attivare questa funzione.</string>
+    <string name="ob_battery">Mantenere attiva la fotocamera consuma batteria. Nei nostri test abbiamo ottenuto circa quattro ore di standby con questa funzione attiva.</string>
+    <string name="ob_enable">Attiva</string>
+    <string name="ob_camera_title">Configuriamo la tua fotocamera DJI.</string>
     <string name="ob_poweroff_title">1. Imposta lo spegnimento automatico su %1$d minuti</string>
     <string name="ob_poweroff_reason">AeroCam impedisce lo spegnimento, ma deve conoscere il timer della fotocamera.</string>
     <string name="ob_poweroff_path">Settings → Auto Power Off → %1$d minuti</string>
@@ -20,7 +20,7 @@
     <string name="ob_mute">2. Disattiva i suoni (facoltativo)</string>
     <string name="ob_mute_reason">Altrimenti sentirai clic ripetuti durante l’uscita.</string>
     <string name="ob_mute_path">Settings → Sounds → Mute</string>
-    <string name="ob_screen">3. Attiva lo spegnimento dello schermo al blocco</string>
+    <string name="ob_screen">3. Spegni il display quando è bloccata (facoltativo)</string>
     <string name="ob_screen_reason">Quando blocchi la fotocamera, lo schermo si spegne e risparmia batteria.</string>
     <string name="ob_screen_path">Settings → Single Screen Preview (Scrn Off when Locked) → On</string>
     <string name="ob_next">Avanti</string>
@@ -65,7 +65,9 @@
     <string name="ob_speed_fun3">Sulle strade pubbliche, i limiti valgono anche per te 😉</string>
     <string name="ob_replay">Guida alla configurazione</string>
     <string name="ob_bookmarks" formatted="false">Segna l’inizio e la fine dell’uscita solo se la videocamera sta già registrando. Pause e riprese non aggiungono marcatori. Non avvia mai una registrazione.</string>
-    <string name="ob_gradient_threshold" formatted="false">Entrambe le soglie devono essere raggiunte.</string>
+    <string name="ob_gradient_threshold" formatted="false">Scegli una pendenza. La velocità è facoltativa; attivala per richiedere entrambe le condizioni.</string>
     <string name="ob_uphill_range" formatted="false">Inserisci una velocità da 1 a 80 km/h e una pendenza da +1 a +30%.</string>
     <string name="ob_downhill_range" formatted="false">Inserisci una velocità da 40 a 80 km/h e una pendenza da −30 a −1%.</string>
+    <string name="ob_uphill_grade_range" formatted="false">Inserisci una pendenza da +1 a +30%.</string>
+    <string name="ob_downhill_grade_range" formatted="false">Inserisci una pendenza da −30 a −1%.</string>
 </resources>

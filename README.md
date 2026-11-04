@@ -51,8 +51,8 @@ mode.
 - **Camera monitoring:** View camera battery and remaining card space, with
   optional one-time alerts for low battery and low storage, plus highlight-added
   feedback.
-- **Light and dark themes:** Choose light, dark, or follow the Karoo system
-  appearance.
+- **Consistent appearance:** White app menus and black camera controls in ride
+  data fields, independent of the Karoo in-ride appearance.
 - **Six languages:** English, German, Spanish, French, Italian, and Portuguese
   are selected automatically from the Karoo language.
 
@@ -60,7 +60,7 @@ mode.
 
 Auto highlights use Karoo ride data to mark useful moments while a ride and
 camera recording are active. Each trigger can be enabled separately, and power,
-speed, heart-rate, and descent thresholds can be customized. Optional
+speed, heart-rate, ascent, and descent thresholds can be customized. Optional
 **Auto-start recording** starts recording when a trigger occurs while the camera
 is idle; that first event starts the recording rather than adding an immediate
 marker.
@@ -73,8 +73,8 @@ marker.
   of a climb in the active Karoo route.
 - **Peak heart rate:** Adds a highlight when heart rate crosses the configured
   bpm threshold.
-- **High-speed descent:** Adds a highlight when speed exceeds the configured
-  threshold while the grade indicates a descent.
+- **Ascent and descent:** Separate gradient thresholds for climbs and descents,
+  each with an optional minimum speed condition.
 - **Ride start/end markers:** Marks the actual ride boundaries only if the camera
   is already recording. No delayed start marker is added when recording begins
   mid-ride. Finishing from a paused ride can add an end marker; pauses and resumes
@@ -195,6 +195,26 @@ the installed version; otherwise Android requires the existing app to be
 uninstalled first, which also removes AeroCam settings and its saved camera.
 
 This project is currently in beta. Review the release notes before updating.
+
+## Which build should I install?
+
+For device testing, use the **release-signed APK from Signed test build**. It
+contains the selected branch's changes and updates the existing app in place.
+It does not require a public GitHub release.
+
+| Output | Purpose |
+| --- | --- |
+| CI debug APK | Automated checks and development; do not use it to replace a release-signed installation. |
+| Signed test build: `app-release.apk` | Normal device testing, using the established release key with debugging disabled. |
+| Explicitly requested signed debug APK | Troubleshooting only; the same key with debugging enabled. Not the normal test update. |
+| Public release APK | A versioned, published build after validation. The tag workflow first creates a draft. |
+| Recovery APK | Previous trusted application code rebuilt with a higher version code, for an in-place rollback. |
+
+Keep the current device-test APK and its verified higher-code recovery together.
+Older builds remain archived as evidence. Install with `adb install -r`; do not
+uninstall or clear app data to switch builds. Check the connected device's version
+before installation. The app's version code identifies update order; “signed”
+identifies its key, and “debug” identifies whether debugging is enabled.
 
 ## Build from source
 

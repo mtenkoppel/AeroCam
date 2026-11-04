@@ -9,10 +9,10 @@
     <string name="ob_start">Iniciar configuração</string>
     <string name="ob_prevent_title">O AeroCam pode impedir que a DJI entre automaticamente em espera.</string>
     <string name="ob_prevent_body">A câmara desliga-se quando o temporizador termina, normalmente após 5 minutos, mesmo estando ligada ao Karoo.</string>
-    <string name="ob_prevent_recommend">O AeroCam pode evitar isso. Recomendamos ativar Impedir espera.</string>
-    <string name="ob_battery">Manter a câmara ligada consome bateria. Nos nossos testes, 1.770 mAh deram cerca de 4 horas em espera. A autonomia real varia.</string>
-    <string name="ob_enable">Ativar impedir espera</string>
-    <string name="ob_camera_title">Vamos agora configurar a tua câmara DJI.</string>
+    <string name="ob_prevent_recommend">Recomendamos vivamente que atives esta função.</string>
+    <string name="ob_battery">Manter a câmara ativa consome bateria. Nos nossos testes, obtivemos cerca de quatro horas em espera com esta função ativada.</string>
+    <string name="ob_enable">Ativar</string>
+    <string name="ob_camera_title">Vamos configurar a tua câmara DJI.</string>
     <string name="ob_poweroff_title">1. Define o desligamento automático para %1$d minutos</string>
     <string name="ob_poweroff_reason">O AeroCam impede o desligamento, mas precisa de saber o tempo definido na câmara.</string>
     <string name="ob_poweroff_path">Settings → Auto Power Off → %1$d minutos</string>
@@ -20,7 +20,7 @@
     <string name="ob_mute">2. Desativa os sons (opcional)</string>
     <string name="ob_mute_reason">Caso contrário, ouvirás cliques repetidos durante a volta.</string>
     <string name="ob_mute_path">Settings → Sounds → Mute</string>
-    <string name="ob_screen">3. Ativa o desligamento do ecrã ao bloquear</string>
+    <string name="ob_screen">3. Desligar o ecrã ao bloquear (opcional)</string>
     <string name="ob_screen_reason">Agora, quando bloqueias a câmara, o ecrã desliga-se e poupa bateria.</string>
     <string name="ob_screen_path">Settings → Single Screen Preview (Scrn Off when Locked) → On</string>
     <string name="ob_next">Seguinte</string>
@@ -65,7 +65,9 @@
     <string name="ob_speed_fun3">Na via pública, os limites de velocidade também se aplicam a ti 😉</string>
     <string name="ob_replay">Guia de configuração</string>
     <string name="ob_bookmarks" formatted="false">Marca o início e o fim da volta apenas se a câmara já estiver a gravar. Pausar e retomar não adiciona marcadores. Nunca inicia uma gravação.</string>
-    <string name="ob_gradient_threshold" formatted="false">Ambos os limites têm de ser atingidos.</string>
+    <string name="ob_gradient_threshold" formatted="false">Escolhe uma inclinação. A velocidade é opcional; ativa-a para exigir ambas as condições.</string>
     <string name="ob_uphill_range" formatted="false">Introduza uma velocidade de 1 a 80 km/h e uma inclinação de +1 a +30%.</string>
     <string name="ob_downhill_range" formatted="false">Introduza uma velocidade de 40 a 80 km/h e uma inclinação de −30 a −1%.</string>
+    <string name="ob_uphill_grade_range" formatted="false">Introduz uma inclinação de +1 a +30%.</string>
+    <string name="ob_downhill_grade_range" formatted="false">Introduz uma inclinação de −30 a −1%.</string>
 </resources>

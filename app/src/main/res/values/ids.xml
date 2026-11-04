@@ -3,4 +3,5 @@
     <item name="status_scroll" type="id" />
     <item name="help_scroll" type="id" />
     <item name="article_scroll" type="id" />
+    <item name="karoo_back" type="id" />
 </resources>

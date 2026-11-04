@@ -23,6 +23,8 @@ data class DjiAutomationSettings(
     val rideBookmarks: Boolean,
     val lowBatteryAlert: Boolean,
     val lowStorageAlert: Boolean,
+    val uphillRequireSpeed: Boolean = true,
+    val descentRequireSpeed: Boolean = true,
 )
 
 object DjiSettings {
@@ -42,6 +44,8 @@ object DjiSettings {
     const val KEY_HIGH_SPEED_DESCENT_HIGHLIGHTS = "highlight_high_speed_descent"
     const val KEY_DESCENT_SPEED_KPH = "highlight_descent_speed_kph"
     const val KEY_DESCENT_GRADE_PERCENT = "highlight_descent_grade_percent"
+    const val KEY_UPHILL_REQUIRE_SPEED = "highlight_uphill_require_speed"
+    const val KEY_DESCENT_REQUIRE_SPEED = "highlight_descent_require_speed"
     const val KEY_UPHILL_HIGHLIGHTS = "highlight_uphill"
     const val KEY_UPHILL_SPEED_KPH = "highlight_uphill_speed_kph"
     const val KEY_UPHILL_GRADE_PERCENT = "highlight_uphill_grade_percent"
@@ -49,6 +53,7 @@ object DjiSettings {
     private const val KEY_RIDE_MARKER_DEFAULT_MIGRATED = "ride_marker_default_migrated_v1"
     const val KEY_LOW_BATTERY_ALERT = "alert_low_battery"
     const val KEY_LOW_STORAGE_ALERT = "alert_low_storage"
+    // Legacy preference retained for upgrade compatibility; appearance is now fixed by surface.
     const val KEY_THEME_MODE = "theme_mode"
     const val KEY_KEEP_AWAKE_ENABLED = "keep_awake_enabled"
     const val KEY_KEEP_AWAKE_INTERVAL_SECONDS = "keep_awake_interval_seconds"
@@ -98,6 +103,8 @@ object DjiSettings {
             rideBookmarks = prefs.getBoolean(KEY_RIDE_BOOKMARKS, false),
             lowBatteryAlert = prefs.getBoolean(KEY_LOW_BATTERY_ALERT, true),
             lowStorageAlert = prefs.getBoolean(KEY_LOW_STORAGE_ALERT, false),
+            uphillRequireSpeed = prefs.getBoolean(KEY_UPHILL_REQUIRE_SPEED, true),
+            descentRequireSpeed = prefs.getBoolean(KEY_DESCENT_REQUIRE_SPEED, true),
         )
     }
 

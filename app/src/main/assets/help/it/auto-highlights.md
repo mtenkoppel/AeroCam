@@ -6,16 +6,6 @@ Un highlight segna un momento interessante all’interno di una registrazione vi
 
 AeroCam può aggiungere un highlight quando accade qualcosa durante l’uscita. L’evento che lo provoca si chiama **attivatore**.
 
-## Marcatori di inizio/fine uscita
-
-Questa opzione è disattivata nelle nuove installazioni. Gli aggiornamenti conservano le scelte esistenti e il precedente valore predefinito delle installazioni meno recenti. Attiva **Highlight automatici** e **Marcatori di inizio/fine uscita** per utilizzarla.
-
-- Il marcatore iniziale viene aggiunto solo se la videocamera sta già registrando alla partenza. Avviare la registrazione più tardi non aggiunge un marcatore iniziale retroattivo.
-- Il marcatore finale viene aggiunto quando termina un’uscita attiva o in pausa, se la videocamera sta ancora registrando. Karoo segnala lo stesso stato finale quando si salva o si scarta un’uscita; entrambe le azioni possono quindi creare il marcatore.
-- Pause e riprese non aggiungono marcatori. I marcatori mancati non vengono recuperati in seguito, neppure dopo una riconnessione.
-- Questi marcatori non avviano mai una registrazione, anche se l’avvio automatico è attivo, e non sono soggetti all’intervallo minimo dei marcatori automatici a soglia.
-
-
 ## Attivatori disponibili
 
 - **Marcatore giro:** Inizia un nuovo giro.
@@ -23,19 +13,17 @@ Questa opzione è disattivata nelle nuove installazioni. Gli aggiornamenti conse
 - **Velocità massima:** La velocità supera la soglia impostata.
 - **Cima della salita:** Il Karoo segnala la fine di una salita.
 - **Picco di frequenza cardiaca:** La frequenza cardiaca supera la soglia impostata.
-- **Marcatore salita:** Vengono raggiunte sia la velocità in salita sia la pendenza positiva impostate.
-- **Marcatore discesa:** Vengono raggiunte sia la velocità in discesa sia la pendenza negativa impostate.
+- **Marcatore salita:** Si attiva alla pendenza di salita scelta, con velocità minima facoltativa.
+- **Marcatore discesa:** Si attiva alla pendenza di discesa scelta, con velocità minima facoltativa.
 - **Marcatori di inizio/fine uscita:** Segna l’inizio e la fine dell’uscita solo se la videocamera sta già registrando. Pause e riprese non aggiungono marcatori. Non avvia mai una registrazione.
 
 Vengono usati solo gli attivatori abilitati nelle impostazioni.
 
 ## Soglie per salita e discesa
 
-Abilita la salita, la discesa o entrambe in modo indipendente. Ogni direzione ha soglie proprie di velocità e pendenza, e **devono essere raggiunte entrambe le soglie**.
+Attiva salita, discesa o entrambe separatamente. Usa una pendenza positiva per le salite e negativa per le discese. Disattiva **Richiedi anche la velocità** per usare solo la pendenza. Se attivo, entrambi i limiti devono essere raggiunti.
 
-Usa una **pendenza positiva per la salita** e una **negativa per la discesa**. Ad esempio, in salita **20 km/h** e **+5%** significano almeno 20 km/h su una salita con pendenza del 5% o superiore. In discesa **60 km/h** e **−6%** significano almeno 60 km/h su una discesa con pendenza del 6% o superiore.
-
-I valori esistenti per la discesa rimangono **50 km/h** e **−3%**; l’attivatore rimane disabilitato finché non lo abiliti. Anche il nuovo attivatore di salita è inizialmente disabilitato, con **20 km/h** e **+3%** come valori iniziali. Piccole oscillazioni intorno a una soglia non generano highlight ripetuti.
+Per esempio, **+10%** senza condizione di velocità marca una salita ripida a qualsiasi ritmo. **+5%** e **30 km/h** marcano una salita veloce. Lo stesso vale per le discese con pendenza negativa. Le piccole oscillazioni non creano highlight ripetuti.
 
 ## Durante una registrazione
 

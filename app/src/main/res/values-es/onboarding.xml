@@ -9,10 +9,10 @@
     <string name="ob_start">Iniciar configuración</string>
     <string name="ob_prevent_title">AeroCam puede evitar que tu DJI entre automáticamente en reposo.</string>
     <string name="ob_prevent_body">La cámara se apaga al vencer el temporizador, normalmente tras 5 minutos, aunque siga conectada.</string>
-    <string name="ob_prevent_recommend">AeroCam puede evitarlo. Recomendamos activar Evitar reposo.</string>
-    <string name="ob_battery">Mantener la cámara encendida consume batería. Con 1.770 mAh obtuvimos unas 4 horas en espera. La autonomía real varía.</string>
-    <string name="ob_enable">Activar evitar reposo</string>
-    <string name="ob_camera_title">Ahora configuremos juntos tu cámara DJI.</string>
+    <string name="ob_prevent_recommend">Te recomendamos que actives esta función.</string>
+    <string name="ob_battery">Mantener la cámara activa consume batería. En nuestras pruebas, obtuvimos unas cuatro horas en espera con esta función activada.</string>
+    <string name="ob_enable">Activar</string>
+    <string name="ob_camera_title">Configuremos tu cámara DJI.</string>
     <string name="ob_poweroff_title">1. Ajusta el apagado automático a %1$d minutos</string>
     <string name="ob_poweroff_reason">AeroCam evita el apagado, pero necesita conocer el temporizador de tu cámara.</string>
     <string name="ob_poweroff_path">Settings → Auto Power Off → %1$d minutos</string>
@@ -20,7 +20,7 @@
     <string name="ob_mute">2. Desactiva los sonidos (opcional)</string>
     <string name="ob_mute_reason">De lo contrario, oirás clics repetidos durante la ruta.</string>
     <string name="ob_mute_path">Settings → Sounds → Mute</string>
-    <string name="ob_screen">3. Activa el apagado de pantalla al bloquear</string>
+    <string name="ob_screen">3. Apagar la pantalla al bloquear (opcional)</string>
     <string name="ob_screen_reason">Ahora, al bloquear la cámara, la pantalla se apaga y ahorra batería.</string>
     <string name="ob_screen_path">Settings → Single Screen Preview (Scrn Off when Locked) → On</string>
     <string name="ob_next">Siguiente</string>
@@ -65,7 +65,9 @@
     <string name="ob_speed_fun3">En vías públicas, los límites de velocidad también se aplican a ti 😉</string>
     <string name="ob_replay">Guía de configuración</string>
     <string name="ob_bookmarks" formatted="false">Marca el inicio y el final de la ruta solo si la cámara ya está grabando. Pausar y reanudar no añade marcadores. Nunca inicia una grabación.</string>
-    <string name="ob_gradient_threshold" formatted="false">Deben cumplirse ambos umbrales.</string>
+    <string name="ob_gradient_threshold" formatted="false">Elige una pendiente. La velocidad es opcional; actívala para exigir ambas condiciones.</string>
     <string name="ob_uphill_range" formatted="false">Introduce una velocidad de 1 a 80 km/h y una pendiente de +1 a +30%.</string>
     <string name="ob_downhill_range" formatted="false">Introduce una velocidad de 40 a 80 km/h y una pendiente de −30 a −1%.</string>
+    <string name="ob_uphill_grade_range" formatted="false">Introduce una pendiente de +1 a +30%.</string>
+    <string name="ob_downhill_grade_range" formatted="false">Introduce una pendiente de −30 a −1%.</string>
 </resources>

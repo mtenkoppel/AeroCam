@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widgetControlRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,6 +8,7 @@
     android:orientation="vertical">
 
     <!-- Compact control field. The full-screen field uses widgetControlFullShell. -->
+
     <LinearLayout
         android:id="@+id/widgetControlMain"
         android:layout_width="match_parent"
@@ -17,6 +19,7 @@
 
         <FrameLayout
             android:id="@+id/widgetControlKeepAwake"
+            android:layout_marginEnd="6dp"
             android:layout_width="72dp"
             android:layout_height="match_parent"
             android:background="@drawable/widget_surface_selector">
@@ -34,7 +37,6 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="6dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -62,43 +64,70 @@
         </LinearLayout>
 
         <FrameLayout
-            android:id="@+id/widgetControlSleep"
+            android:id="@+id/widgetControlSettings"
             android:layout_width="72dp"
             android:layout_height="match_parent"
             android:layout_marginStart="6dp"
             android:background="@drawable/widget_surface_selector">
 
             <ImageView
-                android:id="@+id/widgetControlSleepIcon"
+                android:id="@+id/widgetControlSettingsIcon"
                 android:layout_width="@dimen/widget_icon_utility_size"
                 android:layout_height="@dimen/widget_icon_utility_size"
                 android:layout_gravity="center"
-                android:contentDescription="@string/widget_deep_sleep"
+                android:contentDescription="@string/widget_open_settings"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_widget_sleep" />
+                android:src="@drawable/ic_widget_settings" />
         </FrameLayout>
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/widgetControlMessage"
+    <LinearLayout
+        android:id="@+id/widgetControlMessageContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/widget_surface_dark"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
         android:visibility="gone">
 
-        <TextView
-            android:id="@+id/widgetControlMessageText"
-            android:layout_width="match_parent"
+        <FrameLayout
+            android:id="@+id/widgetControlMessage"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:maxLines="2"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:text="@string/gallery_state_offline"
-            android:textAlignment="center"
-            android:textColor="@color/dji_text_primary_dark"
-            android:textSize="18sp" />
-    </FrameLayout>
+            android:background="@drawable/widget_surface_dark"
+            android:visibility="visible"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/widgetControlMessageText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:maxLines="2"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@string/gallery_state_offline"
+                android:textAlignment="gravity"
+                android:textColor="@color/dji_text_primary_dark"
+                android:textSize="18sp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/widgetControlMessageSettings"
+            android:layout_width="72dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/widget_surface_selector">
+
+            <ImageView
+                android:id="@+id/widgetControlMessageSettingsIcon"
+                android:layout_width="@dimen/widget_icon_utility_size"
+                android:layout_height="@dimen/widget_icon_utility_size"
+                android:layout_gravity="center"
+                android:contentDescription="@string/widget_open_settings"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_widget_settings" />
+        </FrameLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/widgetControlConfirm"
@@ -113,6 +142,7 @@
             android:layout_width="72dp"
             android:layout_height="match_parent"
             android:background="@drawable/widget_surface_active">
+
             <ImageView
                 android:id="@+id/widgetControlConfirmYesIcon"
                 android:layout_width="@dimen/widget_icon_utility_size"
@@ -140,6 +170,7 @@
             android:layout_width="72dp"
             android:layout_height="match_parent"
             android:background="@drawable/widget_surface_danger">
+
             <ImageView
                 android:id="@+id/widgetControlConfirmNoIcon"
                 android:layout_width="@dimen/widget_icon_utility_size"
@@ -158,20 +189,22 @@
         android:orientation="vertical"
         android:visibility="gone">
 
+        <!-- Four equal-weight rows share the available height after the two group gaps and photo margin. -->
+
         <LinearLayout
             android:id="@+id/widgetControlFullUtility"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="22"
+            android:layout_weight="1"
             android:baselineAligned="false"
             android:orientation="horizontal">
 
             <FrameLayout
                 android:id="@+id/widgetControlFullKeepAwake"
-                android:layout_width="0dp"
+                android:layout_width="72dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:background="@drawable/widget_surface_selector">
+
                 <ImageView
                     android:id="@+id/widgetControlFullKeepAwakeIcon"
                     android:layout_width="@dimen/widget_icon_toolbar_size"
@@ -182,13 +215,77 @@
                     android:src="@drawable/ic_widget_keep_awake_disabled" />
             </FrameLayout>
 
-            <FrameLayout
-                android:id="@+id/widgetControlMore"
+            <LinearLayout
+                android:id="@+id/widgetControlFullStatus"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="6dp"
                 android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_marginStart="6dp">
+
+                <LinearLayout
+                    android:id="@+id/widgetControlFullBatteryGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/widgetControlFullBatteryIcon"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:contentDescription="@string/battery"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_battery" />
+
+                    <TextView
+                        android:id="@+id/widgetControlFullBattery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:maxLines="1"
+                        android:text="90%"
+                        android:textColor="@color/dji_text_primary_dark"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/widgetControlFullStorageGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/widgetControlFullStorageIcon"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:contentDescription="@string/widget_storage"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_widget_storage" />
+
+                    <TextView
+                        android:id="@+id/widgetControlFullStorage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:maxLines="1"
+                        android:text="14.5 GB"
+                        android:textColor="@color/dji_text_primary_dark"
+                        android:textSize="18sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/widgetControlMore"
+                android:layout_width="72dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="6dp"
                 android:background="@drawable/widget_surface_selector">
+
                 <ImageView
                     android:id="@+id/widgetControlMoreIcon"
                     android:layout_width="@dimen/widget_icon_toolbar_size"
@@ -198,30 +295,18 @@
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_widget_settings" />
             </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/widgetControlFullSleep"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="6dp"
-                android:layout_weight="1"
-                android:background="@drawable/widget_surface_selector">
-                <ImageView
-                    android:id="@+id/widgetControlFullSleepIcon"
-                    android:layout_width="@dimen/widget_icon_toolbar_size"
-                    android:layout_height="@dimen/widget_icon_toolbar_size"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/widget_deep_sleep"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_widget_sleep" />
-            </FrameLayout>
+            <TextView android:id="@+id/widgetControlFeedback" android:layout_width="0dp"
+                android:layout_height="match_parent" android:layout_weight="1" android:layout_marginStart="6dp"
+                android:paddingStart="8dp" android:paddingEnd="8dp" android:gravity="center"
+                android:textSize="18sp" android:textColor="@color/dji_text_primary_dark"
+                android:background="@drawable/widget_surface_dark" android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/widgetControlFullOffline"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="22"
+            android:layout_weight="1"
             android:baselineAligned="false"
             android:orientation="horizontal"
             android:visibility="gone">
@@ -232,24 +317,45 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:background="@drawable/widget_surface_selector">
-                <TextView
-                    android:id="@+id/widgetControlTopMessageText"
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:maxLines="2"
-                    android:text="@string/widget_connect"
-                    android:textColor="@color/dji_text_primary_dark"
-                    android:textSize="18sp" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/widgetControlTopMessageText"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:gravity="center"
+                        android:maxLines="2"
+                        android:text="@string/widget_connect"
+                        android:textColor="@color/dji_text_primary_dark"
+                        android:textSize="18sp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/widgetControlFullOfflineHint"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:text="@string/widget_auto_reconnect_enabled"
+                        android:textColor="@color/dji_text_secondary_dark"
+                        android:textSize="12sp"
+                        android:visibility="gone"
+                        android:ellipsize="end" />
+                </LinearLayout>
             </FrameLayout>
 
             <FrameLayout
                 android:id="@+id/widgetControlOfflineMore"
-                android:layout_width="0dp"
+                android:layout_width="72dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="6dp"
-                android:layout_weight="1"
                 android:background="@drawable/widget_surface_selector">
+
                 <ImageView
                     android:id="@+id/widgetControlOfflineMoreIcon"
                     android:layout_width="@dimen/widget_icon_toolbar_size"
@@ -261,149 +367,27 @@
             </FrameLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/widgetControlTopConfirm"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="22"
-            android:baselineAligned="false"
-            android:orientation="horizontal"
-            android:visibility="gone">
-            <FrameLayout
-                android:id="@+id/widgetControlTopConfirmYes"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/widget_surface_active">
-                <ImageView
-                    android:id="@+id/widgetControlTopConfirmYesIcon"
-                    android:layout_width="@dimen/widget_icon_toolbar_size"
-                    android:layout_height="@dimen/widget_icon_toolbar_size"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/widget_confirm"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_widget_check" />
-            </FrameLayout>
-            <TextView
-                android:id="@+id/widgetControlTopConfirmText"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="6dp"
-                android:layout_marginEnd="6dp"
-                android:layout_weight="1"
-                android:background="@drawable/widget_surface_dark"
-                android:gravity="center"
-                android:text="@string/widget_turn_off"
-                android:textColor="@color/dji_text_primary_dark"
-                android:textSize="16sp" />
-            <FrameLayout
-                android:id="@+id/widgetControlTopConfirmNo"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/widget_surface_danger">
-                <ImageView
-                    android:id="@+id/widgetControlTopConfirmNoIcon"
-                    android:layout_width="@dimen/widget_icon_toolbar_size"
-                    android:layout_height="@dimen/widget_icon_toolbar_size"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/widget_cancel"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_widget_close" />
-            </FrameLayout>
-        </LinearLayout>
-
         <FrameLayout
             android:id="@+id/widgetControlTopConfirmSpacer"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="78"
+            android:layout_height="@dimen/widget_control_total_gaps"
+            android:layout_weight="3"
             android:visibility="gone" />
 
-        <LinearLayout
-            android:id="@+id/widgetControlFullStatus"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="18"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/widgetControlFullOfflineHint"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:maxLines="1"
-                android:text="@string/widget_auto_reconnect_enabled"
-                android:textColor="@color/dji_text_secondary_dark"
-                android:textSize="15sp"
-                android:visibility="gone" />
-
-            <LinearLayout
-                android:id="@+id/widgetControlFullBatteryGroup"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="horizontal">
-                <ImageView
-                    android:id="@+id/widgetControlFullBatteryIcon"
-                    android:layout_width="@dimen/widget_icon_status_size"
-                    android:layout_height="@dimen/widget_icon_status_size"
-                    android:contentDescription="@string/battery"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_battery" />
-                <TextView
-                    android:id="@+id/widgetControlFullBattery"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:maxLines="1"
-                    android:text="90%"
-                    android:textColor="@color/dji_text_primary_dark"
-                    android:textSize="18sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/widgetControlFullStorageGroup"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="horizontal">
-                <ImageView
-                    android:id="@+id/widgetControlFullStorageIcon"
-                    android:layout_width="@dimen/widget_icon_status_size"
-                    android:layout_height="@dimen/widget_icon_status_size"
-                    android:contentDescription="@string/widget_storage"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_widget_storage" />
-                <TextView
-                    android:id="@+id/widgetControlFullStorage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:maxLines="1"
-                    android:text="14.5 GB"
-                    android:textColor="@color/dji_text_primary_dark"
-                    android:textSize="18sp" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
+        <FrameLayout
             android:id="@+id/widgetControlFull"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="60"
-            android:orientation="vertical">
+            android:layout_weight="1"
+            android:layout_marginTop="@dimen/widget_control_group_gap">
 
             <LinearLayout
                 android:id="@+id/widgetControlVideoRow"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="match_parent"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
+
                 <FrameLayout
                     android:id="@+id/widgetControlVideo"
                     android:layout_width="0dp"
@@ -417,6 +401,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:orientation="vertical">
+
                         <ImageView
                             android:id="@+id/widgetControlVideoIdleIcon"
                             android:layout_width="@dimen/widget_icon_primary_size"
@@ -433,6 +418,7 @@
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:visibility="gone">
+
                         <ImageView
                             android:id="@+id/widgetControlVideoRecordingIcon"
                             android:layout_width="@dimen/widget_icon_primary_size"
@@ -440,6 +426,7 @@
                             android:contentDescription="@string/widget_video"
                             android:scaleType="fitCenter"
                             android:src="@drawable/ic_widget_video" />
+
                         <TextView
                             android:id="@+id/widgetControlVideoTimer"
                             android:layout_width="wrap_content"
@@ -464,16 +451,17 @@
 
                     <TextView
                         android:id="@+id/widgetControlVideoFeedback"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal|bottom"
-                        android:layout_marginBottom="18dp"
+                        android:layout_marginBottom="2dp"
                         android:maxLines="1"
                         android:text="★ HIGHLIGHT"
                         android:textColor="@color/dji_text_on_accent"
                         android:textSize="16sp"
                         android:visibility="gone" />
                 </FrameLayout>
+
                 <FrameLayout
                     android:id="@+id/widgetControlVideoHighlight"
                     android:layout_width="72dp"
@@ -481,6 +469,7 @@
                     android:layout_marginStart="6dp"
                     android:background="@drawable/widget_surface_selector"
                     android:visibility="gone">
+
                     <ImageView
                         android:id="@+id/widgetControlVideoHighlightIcon"
                         android:layout_width="@dimen/widget_icon_utility_size"
@@ -491,38 +480,120 @@
                         android:src="@drawable/ic_widget_highlight" />
                 </FrameLayout>
             </LinearLayout>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/widgetControlPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/widget_surface_selector"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/widgetControlPhotoIcon"
+                android:layout_width="@dimen/widget_icon_primary_size"
+                android:layout_height="@dimen/widget_icon_primary_size"
+                android:layout_gravity="center"
+                android:contentDescription="@string/widget_photo"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_widget_photo" />
+
+            <TextView
+                android:id="@+id/widgetControlPhotoStatus"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@color/dji_text_primary_dark"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/widgetControlPhotoSpinner"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/dji_icon_primary"
+                android:visibility="gone" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/widgetControlFullSleep"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/widget_surface_selector"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/widget_control_group_gap">
+
+            <ImageView
+                android:id="@+id/widgetControlFullSleepIcon"
+                android:layout_width="@dimen/widget_icon_toolbar_size"
+                android:layout_height="@dimen/widget_icon_toolbar_size"
+                android:layout_gravity="center"
+                android:contentDescription="@string/widget_deep_sleep"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_widget_sleep" />
+        </FrameLayout>
+        <LinearLayout
+            android:id="@+id/widgetControlTopConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="@dimen/widget_control_group_gap"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <FrameLayout
-                android:id="@+id/widgetControlPhoto"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="6dp"
+                android:id="@+id/widgetControlTopConfirmYes"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/widget_surface_selector">
+                android:background="@drawable/widget_surface_active">
+
                 <ImageView
-                    android:id="@+id/widgetControlPhotoIcon"
-                    android:layout_width="@dimen/widget_icon_primary_size"
-                    android:layout_height="@dimen/widget_icon_primary_size"
+                    android:id="@+id/widgetControlTopConfirmYesIcon"
+                    android:layout_width="@dimen/widget_icon_toolbar_size"
+                    android:layout_height="@dimen/widget_icon_toolbar_size"
                     android:layout_gravity="center"
-                    android:contentDescription="@string/widget_photo"
+                    android:contentDescription="@string/widget_confirm"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_widget_photo" />
-                <TextView
-                    android:id="@+id/widgetControlPhotoStatus"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:textColor="@color/dji_text_primary_dark"
-                    android:visibility="gone" />
-                <ProgressBar
-                    android:id="@+id/widgetControlPhotoSpinner"
-                    style="?android:attr/progressBarStyleSmall"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:src="@drawable/ic_widget_check" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/widgetControlTopConfirmText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/widget_surface_dark"
+                android:gravity="center"
+                android:text="@string/widget_turn_off"
+                android:textColor="@color/dji_text_primary_dark"
+                android:textSize="16sp" />
+
+            <FrameLayout
+                android:id="@+id/widgetControlTopConfirmNo"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/widget_surface_danger">
+
+                <ImageView
+                    android:id="@+id/widgetControlTopConfirmNoIcon"
+                    android:layout_width="@dimen/widget_icon_toolbar_size"
+                    android:layout_height="@dimen/widget_icon_toolbar_size"
                     android:layout_gravity="center"
-                    android:indeterminateTint="@color/dji_icon_primary"
-                    android:visibility="gone" />
+                    android:contentDescription="@string/widget_cancel"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_widget_close" />
             </FrameLayout>
         </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>

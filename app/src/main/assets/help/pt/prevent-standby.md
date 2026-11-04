@@ -18,9 +18,3 @@ A função **Evitar o desligamento automático** funciona melhor com estas defin
 4. Desativa os sons da câmara se preferires.
 
 Os nomes dos menus podem variar ligeiramente consoante a versão do firmware da câmara.
-
-## Durante uma volta
-
-No AeroCam, abre **Definições → Evitar o desligamento automático** e ativa **Manter a câmara ativa**.
-
-Se a ligação se perder, o AeroCam retoma a função quando a câmara voltar a ligar-se.

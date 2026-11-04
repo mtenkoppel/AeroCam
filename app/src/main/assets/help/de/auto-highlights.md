@@ -6,16 +6,6 @@ Ein Highlight markiert einen interessanten Moment innerhalb einer Videoaufnahme.
 
 AeroCam kann ein Highlight hinzufügen, wenn während deiner Fahrt etwas Bestimmtes passiert. Dieses Ereignis heißt **Auslöser**.
 
-## Markierungen für Fahrtstart/-ende
-
-Bei neuen Installationen ist diese Option aus. Updates erhalten vorhandene Einstellungen und den bisherigen Standard älterer Installationen. Aktiviere **Auto-Highlights** und **Markierungen für Fahrtstart/-ende**, um sie zu nutzen.
-
-- Eine Startmarkierung wird nur gesetzt, wenn die Kamera beim Fahrtstart bereits aufnimmt. Eine später gestartete Aufnahme erhält keine nachträgliche Fahrtstartmarkierung.
-- Eine Endmarkierung wird beim Beenden einer aktiven oder pausierten Fahrt gesetzt, sofern die Kamera noch aufnimmt. Der Karoo meldet für Speichern und Verwerfen denselben Endzustand; beides kann daher eine Endmarkierung erzeugen.
-- Pausieren und Fortsetzen setzen keine Markierungen. Verpasste Markierungen werden nicht nachgeholt, auch nicht nach einer erneuten Verbindung.
-- Diese Markierungen starten niemals eine Aufnahme, auch bei aktivem automatischem Aufnahmestart. Die Wartezeit für automatische Schwellen-Highlights gilt für sie nicht.
-
-
 ## Verfügbare Auslöser
 
 - **Rundenmarker:** Eine neue Runde beginnt.
@@ -23,19 +13,17 @@ Bei neuen Installationen ist diese Option aus. Updates erhalten vorhandene Einst
 - **Höchstgeschwindigkeit:** Deine Geschwindigkeit überschreitet die eingestellte Schwelle.
 - **Gipfelmarker:** Der Karoo meldet das Ende eines Anstiegs.
 - **Herzfrequenzspitze:** Deine Herzfrequenz überschreitet die eingestellte Schwelle.
-- **Anstiegsmarker:** Sowohl die eingestellte Geschwindigkeit bergauf als auch die positive Steigung werden erreicht.
-- **Abfahrtsmarker:** Sowohl die eingestellte Geschwindigkeit bergab als auch das negative Gefälle werden erreicht.
+- **Anstiegsmarker:** Löst bei der gewählten Steigung aus, optional mit Mindestgeschwindigkeit.
+- **Abfahrtsmarker:** Löst beim gewählten Gefälle aus, optional mit Mindestgeschwindigkeit.
 - **Markierungen für Fahrtstart/-ende:** Markiert Fahrtstart und Fahrtende nur, wenn die Kamera bereits aufnimmt. Pausen und Fortsetzen setzen keine Markierungen. Startet niemals eine Aufnahme.
 
 Es werden nur die Auslöser verwendet, die du in den Einstellungen aktivierst.
 
 ## Schwellen für Anstiege und Abfahrten
 
-Aktiviere Anstiege, Abfahrten oder beide unabhängig voneinander. Jede Richtung hat eigene Schwellen für Geschwindigkeit und Steigung beziehungsweise Gefälle. **Beide Schwellen müssen erreicht sein**.
+Aktiviere Anstiege, Abfahrten oder beide unabhängig voneinander. Nutze positive Prozentwerte für Anstiege und negative für Abfahrten. Schalte **Zusätzlich Geschwindigkeit prüfen** aus, um nur die Steigung zu verwenden. Ist die Option an, müssen beide Schwellen erreicht sein.
 
-Nutze eine **positive Prozentzahl für Anstiege** und eine **negative für Abfahrten**. Bergauf bedeuten beispielsweise **20 km/h** und **+5%** mindestens 20 km/h auf einem Anstieg mit mindestens 5% Steigung. Bergab bedeuten **60 km/h** und **−6%** mindestens 60 km/h bei einem Gefälle von mindestens 6%.
-
-Die bisherigen Abfahrtswerte bleiben **50 km/h** und **−3%**. Der Auslöser bleibt ausgeschaltet, solange du ihn nicht aktivierst. Auch der neue Anstiegsauslöser ist zunächst aus; seine Ausgangswerte sind **20 km/h** und **+3%**. Kleine Schwankungen um eine Schwelle erzeugen keine wiederholten Highlights.
+Zum Beispiel markiert **+10%** ohne Geschwindigkeitsbedingung einen steilen Anstieg bei jedem Tempo. Mit **+5%** und **30 km/h** markierst du einen schnellen Anstieg. Für Abfahrten gilt dasselbe mit negativem Gefälle. Kleine Schwankungen erzeugen keine wiederholten Highlights.
 
 ## Bei laufender Aufnahme
 

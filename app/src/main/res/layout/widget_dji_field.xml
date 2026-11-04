@@ -1,0 +1,10 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="@color/dji_bg_canvas_dark">
+    <TextView android:id="@+id/widgetFieldCaption" android:layout_width="match_parent"
+        android:layout_height="24dp" android:paddingStart="10px" android:paddingEnd="10px"
+        android:gravity="center_vertical|left" android:maxLines="1" android:ellipsize="end"
+        android:textSize="16sp" android:textColor="@color/dji_text_primary_dark" />
+    <FrameLayout android:id="@+id/widgetFieldBody" android:layout_width="match_parent"
+        android:layout_height="0dp" android:layout_weight="1" />
+</LinearLayout>

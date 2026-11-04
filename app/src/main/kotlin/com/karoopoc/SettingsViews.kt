@@ -18,15 +18,7 @@ import com.karoopoc.widget.DjiWidgetController
 
 /** Standard Android controls; only their surrounding layout belongs to AeroCam. */
 internal class SettingsViews(val activity: Activity) {
-    val palette = DjiTheme.palette(activity).let { base ->
-        val light = base.textPrimary != Color.WHITE
-        base.copy(
-            appBackground = if (light) Color.WHITE else Color.BLACK,
-            previewBackground = Color.rgb(if (light) 244 else 22, if (light) 244 else 22, if (light) 244 else 22),
-            textPrimary = if (light) Color.BLACK else Color.WHITE,
-            textSecondary = if (light) Color.DKGRAY else Color.LTGRAY,
-        )
-    }
+    val palette = DjiTheme.appPalette(activity)
     private data class ToggleBinding(val view: Switch, val key: String, val default: Boolean, val changed: ((Boolean) -> Unit)?)
     private data class NumericBinding(val view: EditText, val key: String, val default: Int)
     private val toggles = mutableListOf<ToggleBinding>()
@@ -67,7 +59,7 @@ internal class SettingsViews(val activity: Activity) {
     fun group(parent: LinearLayout, title: String, icon: Int? = null): LinearLayout {
         val card = column().apply {
             background = cardBackground()
-            setPadding(dp(10), dp(10), dp(10), dp(10))
+            setPadding(dp(8), dp(10), dp(8), dp(10))
         }
         card.addView(text(title, 18f, true).apply {
             if (icon != null) {
@@ -176,7 +168,6 @@ internal class SettingsViews(val activity: Activity) {
             summary = getString(R.string.highlight_auto_start_recording_summary),
         )
 
-        autoHighlightsContent.addView(cooldownRow(), fullWidthParams(bottomMargin = dp(12)))
         val triggerGroup = subgroup(autoHighlightsContent, getString(R.string.highlight_triggers))
         settingsSwitch(
             triggerGroup,
@@ -255,9 +246,13 @@ internal class SettingsViews(val activity: Activity) {
         uphillThresholdRows = column().apply {
             visibility = if (uphillSwitch.isChecked) View.VISIBLE else View.GONE
             addView(secondaryText(getString(R.string.highlight_uphill_summary)), fullWidthParams(bottomMargin = dp(8)))
-            addView(numberRow(getString(R.string.highlight_uphill_speed_threshold),
-                DjiSettings.KEY_UPHILL_SPEED_KPH, DjiSettings.DEFAULT_UPHILL_SPEED_KPH, 1, 80),
-                fullWidthParams(bottomMargin = dp(8)))
+            val speedRow = numberRow(getString(R.string.highlight_uphill_speed_threshold),
+                DjiSettings.KEY_UPHILL_SPEED_KPH, DjiSettings.DEFAULT_UPHILL_SPEED_KPH, 1, 80)
+            settingsSwitch(this, getString(R.string.highlight_require_speed), DjiSettings.KEY_UPHILL_REQUIRE_SPEED, true) { checked ->
+                speedRow.visibility = if (checked) View.VISIBLE else View.GONE
+            }
+            speedRow.visibility = if (DjiSettings.read(activity).uphillRequireSpeed) View.VISIBLE else View.GONE
+            addView(speedRow, fullWidthParams(bottomMargin = dp(8)))
             addView(numberRow(getString(R.string.highlight_uphill_grade_threshold),
                 DjiSettings.KEY_UPHILL_GRADE_PERCENT, DjiSettings.DEFAULT_UPHILL_GRADE_PERCENT, 1, 30),
                 fullWidthParams(bottomMargin = dp(14)))
@@ -274,13 +269,13 @@ internal class SettingsViews(val activity: Activity) {
         descentThresholdRows = column().apply {
             visibility = if (descentSwitch.isChecked) View.VISIBLE else View.GONE
             addView(secondaryText(getString(R.string.highlight_descent_summary)), fullWidthParams(bottomMargin = dp(8)))
-            addView(numberRow(
-                getString(R.string.highlight_descent_speed_threshold),
-                DjiSettings.KEY_DESCENT_SPEED_KPH,
-                DjiSettings.DEFAULT_DESCENT_SPEED_KPH,
-                40,
-                80,
-            ), fullWidthParams(bottomMargin = dp(8)))
+            val speedRow = numberRow(getString(R.string.highlight_descent_speed_threshold),
+                DjiSettings.KEY_DESCENT_SPEED_KPH, DjiSettings.DEFAULT_DESCENT_SPEED_KPH, 40, 80)
+            settingsSwitch(this, getString(R.string.highlight_require_speed), DjiSettings.KEY_DESCENT_REQUIRE_SPEED, true) { checked ->
+                speedRow.visibility = if (checked) View.VISIBLE else View.GONE
+            }
+            speedRow.visibility = if (DjiSettings.read(activity).descentRequireSpeed) View.VISIBLE else View.GONE
+            addView(speedRow, fullWidthParams(bottomMargin = dp(8)))
             addView(numberRow(
                 getString(R.string.highlight_descent_grade_threshold),
                 DjiSettings.KEY_DESCENT_GRADE_PERCENT,
@@ -308,27 +303,42 @@ internal class SettingsViews(val activity: Activity) {
         val card = group(parent, getString(R.string.theme_mode))
         settingsSwitch(card, getString(R.string.hide_field_captions), DjiSettings.KEY_HIDE_FIELD_CAPTIONS, false,
             getString(R.string.captions_summary)) { DjiWidgetController.refresh() }
-        card.addView(secondaryText(getString(R.string.appearance)), fullWidthParams(topMargin = dp(8)))
-        card.addView(Spinner(activity).apply {
-            adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_dropdown_item,
-                listOf(getString(R.string.theme_system), getString(R.string.theme_dark), getString(R.string.theme_light)))
-            setSelection(DjiTheme.readMode(activity).ordinal, false)
-            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onNothingSelected(parent: AdapterView<*>?) = Unit
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    val mode = DjiThemeMode.entries[position]
-                    if (mode == DjiTheme.readMode(activity)) return
-                    activity.currentFocus?.clearFocus()
-                    DjiTheme.writeMode(activity, mode)
-                    DjiWidgetController.refresh()
-                    activity.recreate()
-                }
+    }
+    fun standbyTime(parent: LinearLayout) {
+        parent.addView(action(getString(R.string.ob_timer_title)) {
+            val times = listOf(60, 120, 300)
+            val interval = DjiSettings.preferences(activity).getInt(DjiSettings.KEY_KEEP_AWAKE_INTERVAL_SECONDS, 270)
+            val selected = times.indexOf(interval + 30).coerceAtLeast(0)
+            val picker = Spinner(activity).apply {
+                contentDescription = getString(R.string.ob_timer_title)
+                adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_dropdown_item,
+                    times.map { activity.getString(R.string.ob_minutes, it / 60) })
+                setSelection(selected)
             }
+            val body = column().apply {
+                setPadding(dp(16), dp(8), dp(16), dp(8))
+                addView(picker)
+                addView(secondaryText(getString(R.string.ob_timer_body)), fullWidthParams(topMargin = dp(8)))
+            }
+            android.app.AlertDialog.Builder(activity).setTitle(R.string.ob_timer_title).setView(body)
+                .setPositiveButton(android.R.string.ok) { _, _ ->
+                    DjiCameraController.setKeepAwakeInterval(activity, OnboardingPolicy.intervalSeconds(times[picker.selectedItemPosition]))
+                }.setNegativeButton(android.R.string.cancel, null).show()
+        }, fullWidthParams())
+    }
+
+    fun cooldown(parent: LinearLayout) {
+        parent.addView(action(getString(R.string.highlight_cooldown)) {
+            val editor = cooldownRow().apply { setPadding(dp(20), dp(8), dp(20), dp(8)) }
+            android.app.AlertDialog.Builder(activity)
+                .setTitle(R.string.highlight_cooldown)
+                .setView(editor)
+                .setPositiveButton(android.R.string.ok, null)
+                .setOnDismissListener { cooldownSpinner = null }
+                .show()
         }, fullWidthParams())
     }
     private fun cooldownRow(): LinearLayout = column().apply {
-        addView(labelText(getString(R.string.highlight_cooldown)))
-        addView(secondaryText(getString(R.string.highlight_cooldown_summary)))
         val options = HighlightCooldown.OPTIONS_SECONDS
         val spinner = Spinner(activity).apply {
             contentDescription = getString(R.string.highlight_cooldown)
@@ -350,6 +360,7 @@ internal class SettingsViews(val activity: Activity) {
         }
         cooldownSpinner = spinner
         addView(spinner, fullWidthParams())
+        addView(secondaryText(getString(R.string.highlight_cooldown_summary)), fullWidthParams(topMargin = dp(8)))
     }
 
     private fun labelText(value: String) = text(value, 14f)

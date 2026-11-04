@@ -56,7 +56,7 @@ class OnboardingTriggersUiTest {
         }
         val bitmap = Bitmap.createBitmap(480, 755, Bitmap.Config.ARGB_8888)
         root.draw(Canvas(bitmap))
-        val folder = File("build/reports/onboarding-ui").apply { mkdirs() }
+        val folder = File("build/reports/settings-ui/onboarding").apply { mkdirs() }
         File(folder, "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
     }
 
@@ -129,7 +129,7 @@ class OnboardingTriggersUiTest {
         controller.pause().stop().destroy()
     }
     @Test @Config(qualifiers = "de-w256dp-h427dp-port-300dpi")
-    fun translatedGradientEditorUsesNativeDarkThemeAndSignedInputs() {
+    fun translatedGradientEditorStaysLightWithLegacyDarkPreferenceAndSignedInputs() {
         prefs.edit().putString(DjiSettings.KEY_THEME_MODE,"dark").commit()
         seed(); val controller=launch(); val a=controller.get()
         toggle(a,R.string.highlight_high_speed_descent).performClick()
@@ -167,5 +167,133 @@ class OnboardingTriggersUiTest {
         click(a, R.string.ob_next)
         assertFalse(DjiSettings.read(a).rideBookmarks)
         controller.pause().stop().destroy()
+    }
+    @Test fun optionalSpeedSavesSeparatelyAndSurvivesDraftRestore() {
+        seed(); var controller = launch(); var a = controller.get()
+        toggle(a, R.string.highlight_uphill).performClick()
+        input(a, R.string.highlight_uphill_speed_threshold).setText("")
+        input(a, R.string.highlight_uphill_grade_threshold).setText("10")
+        assertFalse(save(a).isEnabled)
+        toggle(a, R.string.highlight_require_speed).performClick()
+        assertTrue(save(a).isEnabled)
+        assertEquals(View.GONE, input(a, R.string.highlight_uphill_speed_threshold).visibility)
+        render(a, "uphill-grade-only")
+        controller.pause().stop().destroy(); controller = launch(); a = controller.get()
+        assertFalse(toggle(a, R.string.highlight_require_speed).isChecked)
+        assertTrue(save(a).isEnabled)
+        save(a).performClick(); click(a, R.string.ob_next)
+        val settings = DjiSettings.read(a)
+        assertEquals(10, settings.uphillGradePercent)
+        assertFalse(settings.uphillRequireSpeed)
+        assertTrue(settings.descentRequireSpeed)
+        controller.pause().stop().destroy()
+    }
+    @Test fun onboardingEntryRoutesUnpairedCameraToPairingAndKnownCameraThroughChoice() {
+        val host = Robolectric.buildActivity(Activity::class.java).setup()
+        val a = host.get()
+        com.karoopoc.dji.DjiCameraController.publish(com.karoopoc.dji.DjiCameraState())
+        seed(JSONObject().put("page", "CAMERA"))
+        OnboardingActivity.open(a)
+        assertEquals(SetupActivity::class.java.name, shadowOf(a).nextStartedActivity.component!!.className)
+        assertFalse(prefs.contains(OnboardingActivity.DRAFT))
+        com.karoopoc.dji.DjiCameraController.publish(com.karoopoc.dji.DjiCameraState(configured = true))
+        OnboardingActivity.open(a)
+        var dialog = org.robolectric.shadows.ShadowAlertDialog.getLatestAlertDialog()
+        assertTrue(dialog.isShowing)
+        assertEquals(a.getString(R.string.ob_pair_again), dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).text.toString())
+        assertEquals(a.getString(R.string.ob_skip_pairing), dialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).text.toString())
+        assertEquals(a.getString(android.R.string.cancel), dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).text.toString())
+        seed(JSONObject().put("page", "CAMERA"))
+        val beforeCancel = prefs.all.toMap()
+        dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).performClick()
+        shadowOf(Looper.getMainLooper()).idle()
+        assertNull(shadowOf(a).nextStartedActivity)
+        assertEquals(beforeCancel, prefs.all)
+        assertTrue(com.karoopoc.dji.DjiCameraController.state().configured)
+        OnboardingActivity.open(a)
+        dialog = org.robolectric.shadows.ShadowAlertDialog.getLatestAlertDialog()
+        dialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).performClick()
+        shadowOf(Looper.getMainLooper()).idle()
+        val skipPairing = shadowOf(a).nextStartedActivity
+        assertEquals(OnboardingActivity::class.java.name, skipPairing.component!!.className)
+        assertTrue(skipPairing.getBooleanExtra("replay", false))
+        assertTrue(com.karoopoc.dji.DjiCameraController.state().configured)
+        OnboardingActivity.open(a)
+        dialog = org.robolectric.shadows.ShadowAlertDialog.getLatestAlertDialog()
+        dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).performClick()
+        shadowOf(Looper.getMainLooper()).idle()
+        assertEquals(SetupActivity::class.java.name, shadowOf(a).nextStartedActivity.component!!.className)
+        com.karoopoc.dji.DjiCameraController.publish(com.karoopoc.dji.DjiCameraState())
+        host.pause().stop().destroy()
+    }
+    @Test fun sharedKarooBackSitsBesideActionsAndReturnsThroughOnboardingHistory() {
+        for (page in listOf("CAMERA", "TRIGGERS", "THRESHOLD", "WIDGETS")) {
+            seed(JSONObject().put("page", page).put("history", JSONArray().put("WELCOME")))
+            val controller = launch()
+            val a = controller.get()
+            render(a, "karoo-footer-$page")
+            val back = a.findViewById<ImageButton>(R.id.karoo_back)
+            assertEquals(1, views(a).count { it.id == R.id.karoo_back })
+            val primary = views(a).filterIsInstance<Button>().last()
+            val backPosition = IntArray(2); back.getLocationInWindow(backPosition)
+            val actionPosition = IntArray(2); primary.getLocationInWindow(actionPosition)
+            assertEquals(0, backPosition[0])
+            assertEquals(backPosition[1] + back.height, actionPosition[1] + primary.height)
+            assertTrue(actionPosition[0] >= backPosition[0] + back.width)
+            assertEquals((54 * a.resources.displayMetrics.density + .5f).toInt(), back.width)
+            assertEquals(back.width, back.height)
+            assertEquals(back.height, primary.height)
+            assertEquals(480, actionPosition[0] + primary.width)
+            val root = a.findViewById<ViewGroup>(android.R.id.content).getChildAt(0)
+            val rootPosition = IntArray(2); root.getLocationInWindow(rootPosition)
+            assertEquals((10 * a.resources.displayMetrics.density + .5f).toInt(),
+                rootPosition[1] + root.height - backPosition[1] - back.height)
+            val scroll = views(a).filterIsInstance<ScrollView>().single()
+            val skip = views(a).filterIsInstance<Button>().firstOrNull { it.text.toString() == a.getString(R.string.ob_skip) }
+            if (skip != null) {
+                assertTrue(descendants(scroll).contains(skip))
+                assertEquals(skip, (skip.parent as ViewGroup).getChildAt((skip.parent as ViewGroup).childCount - 1))
+            }
+            assertEquals(primary.text.toString().uppercase(), primary.transformationMethod.getTransformation(primary.text, primary).toString())
+            back.performClick()
+            assertEquals("WELCOME", JSONObject(prefs.getString(OnboardingActivity.DRAFT, "")!!).getString("page"))
+            assertTrue(views(a).filterIsInstance<TextView>().any { it.text.toString() == a.getString(R.string.ob_welcome) })
+            controller.pause().stop().destroy()
+        }
+    }
+
+    @Test fun compactCameraStepsUseDialogsAndAwesomeCompletesWithoutExtraPage() {
+        seed(JSONObject().put("page", "CAMERA"))
+        val camera = launch(); val a = camera.get()
+        assertFalse(views(a).filterIsInstance<Button>().any { it.text.toString() == a.getString(R.string.ob_skip) || it.text.toString() == a.getString(R.string.ob_other_timer) })
+        val info = views(a).filterIsInstance<ImageButton>().first { it.contentDescription == a.getString(R.string.ob_screen) }
+        assertEquals(ImageView.ScaleType.FIT_CENTER, info.scaleType)
+        info.performClick()
+        val dialog = org.robolectric.shadows.ShadowAlertDialog.getLatestAlertDialog()
+        assertEquals(a.getString(R.string.ob_screen_reason), dialog.findViewById<TextView>(android.R.id.message).text.toString())
+        dialog.dismiss()
+        camera.pause().stop().destroy()
+        for (page in listOf("WIDGETS", "FINAL")) {
+            seed(JSONObject().put("page", page))
+            val c = launch(); val activity = c.get()
+            assertTrue(views(activity).filterIsInstance<TextView>().any { it.text.toString() == activity.getString(R.string.ob_awesome) })
+            click(activity, R.string.ob_done)
+            assertTrue(activity.isFinishing)
+            assertTrue(prefs.getBoolean(OnboardingActivity.DONE, false))
+            assertFalse(prefs.contains(OnboardingActivity.DRAFT))
+            c.pause().stop().destroy()
+        }
+    }
+
+    @Test fun renderPolishedOnboardingPagesInBothThemes() {
+        for (theme in listOf("light", "dark")) {
+            prefs.edit().putString(DjiSettings.KEY_THEME_MODE, theme).commit()
+            for (page in listOf("WELCOME", "STANDBY", "CAMERA", "RIDE", "WIDGETS")) {
+                seed(JSONObject().put("page", page))
+                val controller = launch()
+                render(controller.get(), "$page-$theme")
+                controller.pause().stop().destroy()
+            }
+        }
     }
 }
