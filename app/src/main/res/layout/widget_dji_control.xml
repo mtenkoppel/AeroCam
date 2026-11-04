@@ -19,6 +19,7 @@
 
         <FrameLayout
             android:id="@+id/widgetControlKeepAwake"
+            android:layout_marginEnd="6dp"
             android:layout_width="72dp"
             android:layout_height="match_parent"
             android:background="@drawable/widget_surface_selector">
@@ -36,7 +37,6 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="6dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">

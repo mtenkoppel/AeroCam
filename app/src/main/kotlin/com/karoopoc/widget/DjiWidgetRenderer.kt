@@ -335,7 +335,10 @@ object DjiWidgetRenderer {
     ): RemoteViews {
         val state = viewState.camera
         val palette = DjiTheme.palette(context)
-        val size = DjiWidgetLayout.sizeFor(config)
+        // Cam Control uses a status-only view at half width, even in tall fields.
+        // Keep the shared video/photo size policy unchanged.
+        val narrow = config.gridSize.first <= 30 || config.viewSize.first < 360
+        val size = if (narrow) DjiWidgetSize.SMALL_HALF else DjiWidgetLayout.sizeFor(config)
         val connected = state.connection == CameraConnectionState.CONNECTED
         val connectPrompt = ConnectPrompt.CONTROL in viewState.connectPrompts
 
@@ -372,6 +375,8 @@ object DjiWidgetRenderer {
                 R.id.widgetControlFullStorageIcon,
             )
             setViewVisibility(R.id.widgetControlMain, View.GONE)
+            setViewVisibility(R.id.widgetControlKeepAwake, View.VISIBLE)
+            setViewVisibility(R.id.widgetControlSettings, View.VISIBLE)
             setViewVisibility(R.id.widgetControlMessageContainer, View.GONE)
             setViewVisibility(R.id.widgetControlConfirm, View.GONE)
             setViewVisibility(R.id.widgetControlFullShell, View.GONE)
@@ -391,10 +396,10 @@ object DjiWidgetRenderer {
 
             when {
                 size == DjiWidgetSize.SMALL_HALF -> {
-                    showControlMessage(context.getString(R.string.widget_full_width_only))
-                    if (interactive) {
-                        setOnClickPendingIntent(R.id.widgetControlMessage, openAppIntent(context, 301))
-                    }
+                    val status = if (connected) state else state.copy(batteryPercent = null, remainingCapacityMb = null)
+                    showCompactControls(context, status, palette)
+                    setViewVisibility(R.id.widgetControlKeepAwake, View.GONE)
+                    setViewVisibility(R.id.widgetControlSettings, View.GONE)
                 }
 
                 size == DjiWidgetSize.FULL && viewState.sleepConfirmation && connected -> {

@@ -125,4 +125,34 @@ class CamControlUiTest {
             DjiWidgetViewState(camera.copy(connection = CameraConnectionState.DISCONNECTED))).reapply(context, view)
         assertFalse(view.findViewById<View>(R.id.widgetControlFullSleep).hasOnClickListeners())
     }
+    @Test fun halfWidthShowsOnlyStatusAtShortAndTallHeightsAndRestoresFullWidthControls() {
+        for (theme in listOf("light", "dark")) {
+            DjiSettings.preferences(context).edit().putString(DjiSettings.KEY_THEME_MODE,theme).commit()
+            for (height in listOf(113,189,420)) {
+                val config = ViewConfig(Pair(30,if (height>=280) 60 else 15),Pair(238,height),26)
+                val state = DjiWidgetViewState(camera.copy(batteryPercent=15))
+                val remote = DjiWidgetRenderer.cameraControl(context,config,state)
+                val view = remote.apply(context,FrameLayout(context))
+                view.measure(View.MeasureSpec.makeMeasureSpec(238,View.MeasureSpec.EXACTLY),View.MeasureSpec.makeMeasureSpec(height,View.MeasureSpec.EXACTLY))
+                view.layout(0,0,238,height)
+                assertEquals(View.VISIBLE,view.findViewById<View>(R.id.widgetControlMain).visibility)
+                for (id in listOf(R.id.widgetControlKeepAwake,R.id.widgetControlSettings,R.id.widgetControlMessageContainer,R.id.widgetControlFullShell)) {
+                    assertEquals(View.GONE,view.findViewById<View>(id).visibility)
+                }
+                val battery=view.findViewById<TextView>(R.id.widgetControlBattery)
+                assertEquals("15%",battery.text.toString())
+                assertEquals(DjiTheme.palette(context).batteryLow,battery.currentTextColor)
+                assertTrue(view.findViewById<TextView>(R.id.widgetControlStorage).text.toString().contains("14.5"))
+                save(view,"$theme-half-$height-status")
+                DjiWidgetRenderer.cameraControl(context,config,
+                    state.copy(camera=camera.copy(connection=CameraConnectionState.DISCONNECTED))).reapply(context,view)
+                assertEquals("--%",battery.text.toString())
+                assertEquals(View.GONE,view.findViewById<View>(R.id.widgetControlMessageContainer).visibility)
+                val fullConfig=ViewConfig(Pair(60,15),Pair(480,113),26)
+                DjiWidgetRenderer.cameraControl(context,fullConfig,state).reapply(context,view)
+                assertEquals(View.VISIBLE,view.findViewById<View>(R.id.widgetControlKeepAwake).visibility)
+                assertEquals(View.VISIBLE,view.findViewById<View>(R.id.widgetControlSettings).visibility)
+            }
+        }
+    }
 }
