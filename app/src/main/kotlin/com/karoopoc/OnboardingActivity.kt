@@ -188,7 +188,8 @@ class OnboardingActivity : Activity() {
                 paragraph(R.string.ob_poweroff_reason, true)
                 heading(getString(R.string.ob_poweroff_path, standby / 60), 16f)
                 content.addView(button(getString(R.string.ob_other_timer), false) { go(Page.TIMER) }.apply {
-                    setTextColor(getColor(R.color.dji_surface_success))
+                    setTextColor(getColor(if (palette.textPrimary == android.graphics.Color.WHITE)
+                        R.color.dji_surface_success else R.color.dji_confirm))
                 })
                 heading(getString(R.string.ob_mute)); paragraph(R.string.ob_mute_reason, true)
                 heading(getString(R.string.ob_mute_path), 16f)

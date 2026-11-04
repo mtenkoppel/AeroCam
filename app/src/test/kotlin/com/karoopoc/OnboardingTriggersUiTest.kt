@@ -56,7 +56,7 @@ class OnboardingTriggersUiTest {
         }
         val bitmap = Bitmap.createBitmap(480, 755, Bitmap.Config.ARGB_8888)
         root.draw(Canvas(bitmap))
-        val folder = File("build/reports/onboarding-ui").apply { mkdirs() }
+        val folder = File("build/reports/settings-ui/onboarding").apply { mkdirs() }
         File(folder, "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
     }
 
@@ -211,5 +211,16 @@ class OnboardingTriggersUiTest {
         assertEquals(SetupActivity::class.java.name, shadowOf(a).nextStartedActivity.component!!.className)
         com.karoopoc.dji.DjiCameraController.publish(com.karoopoc.dji.DjiCameraState())
         host.pause().stop().destroy()
+    }
+    @Test fun renderPolishedOnboardingPagesInBothThemes() {
+        for (theme in listOf("light", "dark")) {
+            prefs.edit().putString(DjiSettings.KEY_THEME_MODE, theme).commit()
+            for (page in listOf("WELCOME", "CAMERA", "RIDE", "WIDGETS")) {
+                seed(JSONObject().put("page", page))
+                val controller = launch()
+                render(controller.get(), "$page-$theme")
+                controller.pause().stop().destroy()
+            }
+        }
     }
 }
