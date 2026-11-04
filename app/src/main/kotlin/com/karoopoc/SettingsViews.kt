@@ -19,7 +19,7 @@ import com.karoopoc.widget.DjiWidgetController
 /** Standard Android controls; only their surrounding layout belongs to AeroCam. */
 internal class SettingsViews(val activity: Activity) {
     val palette = DjiTheme.palette(activity).let { base ->
-        val light = base.textPrimary != Color.WHITE
+        val light = DjiTheme.isLight(activity)
         base.copy(
             appBackground = if (light) Color.WHITE else Color.BLACK,
             previewBackground = Color.rgb(if (light) 244 else 22, if (light) 244 else 22, if (light) 244 else 22),
