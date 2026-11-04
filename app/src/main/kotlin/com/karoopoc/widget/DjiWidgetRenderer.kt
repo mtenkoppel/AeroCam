@@ -945,8 +945,7 @@ private fun dataGravity(config: ViewConfig): Int = Gravity.CENTER_VERTICAL or wh
 
 private fun RemoteViews.applyTextAlignment(config: ViewConfig, vararg ids: Int) {
     for (id in ids) {
-        // Some status views specify textAlignment=center in XML, which otherwise overrides gravity.
-        setInt(id, "setTextAlignment", View.TEXT_ALIGNMENT_GRAVITY)
+        // The layouts use textAlignment=gravity; RemoteViews cannot change textAlignment itself.
         setInt(id, "setGravity", dataGravity(config))
     }
 }
