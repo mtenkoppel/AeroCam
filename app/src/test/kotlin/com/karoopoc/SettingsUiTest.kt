@@ -98,6 +98,8 @@ class SettingsUiTest {
         assertEquals(root.height, content.height)
         val back = activity.findViewById<ImageButton>(R.id.karoo_back)
         assertEquals((54 * activity.resources.displayMetrics.density + .5f).toInt(), back.width)
+        // The initial BLE permission prompt is unrelated to switching tabs.
+        while (shadowOf(activity).nextStartedActivity != null) { }
         for (label in listOf(R.string.status_tab,R.string.help_tab,R.string.settings)) {
             views(activity).filterIsInstance<TextView>().first { it.text.toString() == activity.getString(label) }.performClick()
         }

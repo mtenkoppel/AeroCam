@@ -75,7 +75,7 @@ object DjiWidgetRenderer {
         val slotConfig = config.copy(
             gridSize = Pair((config.gridSize.first / 2).coerceAtLeast(1), config.gridSize.second),
             viewSize = Pair(
-                ((config.viewSize.first - 16 - gap) / 2).coerceAtLeast(1),
+                ((config.viewSize.first - 20 - gap) / 2).coerceAtLeast(1),
                 (config.viewSize.second - 11).coerceAtLeast(1),
             ),
         )
@@ -368,6 +368,7 @@ object DjiWidgetRenderer {
             setInt(R.id.widgetControlVideoRecording, "setGravity", dataGravity(config))
             setInt(R.id.widgetControlTopConfirmText, "setGravity", Gravity.CENTER)
             setViewVisibility(R.id.widgetControlFeedback, View.GONE)
+            setViewVisibility(R.id.widgetControlMore, View.VISIBLE)
             applyIconPadding(
                 context,
                 R.dimen.widget_icon_utility_padding,
@@ -808,7 +809,7 @@ object DjiWidgetRenderer {
     }
 
     private fun RemoteViews.applyWidgetFrame(rootId: Int) {
-        setViewPadding(rootId, 8, 4, 8, 7)
+        setViewPadding(rootId, 10, 4, 10, 7)
     }
 
     private fun RemoteViews.applyIconPadding(

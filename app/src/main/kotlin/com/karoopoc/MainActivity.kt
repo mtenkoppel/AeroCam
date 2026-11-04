@@ -58,10 +58,10 @@ class MainActivity : Activity() {
         if (requestBlePermissions()) observeCamera()
     }
 
-    // Root tabs are peers, not Back destinations. Clear older AeroCam instances as well.
+    // Root tabs are peers, not Back destinations; singleTask prevents duplicate dashboard instances.
     @Deprecated("Uses Activity back navigation")
     override fun onBackPressed() {
-        finishAffinity()
+        finish()
     }
 
     override fun onResume() {
