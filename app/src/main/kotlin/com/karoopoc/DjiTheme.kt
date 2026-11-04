@@ -45,17 +45,16 @@ object DjiTheme {
             .apply()
     }
 
+    /** Keep native control resources consistent with an explicit app appearance. */
+    fun activityContext(base: Context): Context {
+        if (readMode(base) == DjiThemeMode.SYSTEM) return base
+        return base.createConfigurationContext(Configuration().apply {
+            uiMode = if (isLight(base)) Configuration.UI_MODE_NIGHT_NO else Configuration.UI_MODE_NIGHT_YES
+        })
+    }
+
     fun applyActivityTheme(activity: Activity) {
-        // Read from the base context before accessing the activity's resources: Android
-        // only permits a configuration override before those resources are created.
-        val context = activity.baseContext
-        val light = isLight(context)
-        if (readMode(context) != DjiThemeMode.SYSTEM) {
-            activity.applyOverrideConfiguration(Configuration().apply {
-                uiMode = if (light) Configuration.UI_MODE_NIGHT_NO else Configuration.UI_MODE_NIGHT_YES
-            })
-        }
-        activity.setTheme(if (light) R.style.AppTheme_Light else R.style.AppTheme_Dark)
+        activity.setTheme(if (isLight(activity)) R.style.AppTheme_Light else R.style.AppTheme_Dark)
     }
 
     fun palette(context: Context): DjiPalette {

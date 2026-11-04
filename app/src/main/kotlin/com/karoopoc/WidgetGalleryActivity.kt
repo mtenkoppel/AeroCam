@@ -1,6 +1,7 @@
 package com.karoopoc
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -27,6 +28,10 @@ class WidgetGalleryActivity : Activity() {
     private lateinit var palette: DjiPalette
     private var selectedSize = PreviewSize.LARGE
     private var selectedScenario = PreviewScenario.READY
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(DjiTheme.activityContext(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         DjiTheme.applyActivityTheme(this)

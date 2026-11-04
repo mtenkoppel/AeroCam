@@ -47,6 +47,10 @@ class OnboardingActivity : Activity() {
     private val valueKeys = mapOf(1 to DjiSettings.KEY_PEAK_POWER_WATTS, 2 to DjiSettings.KEY_MAX_SPEED_KPH, 4 to DjiSettings.KEY_PEAK_HEART_RATE_BPM,
         5 to DjiSettings.KEY_UPHILL_SPEED_KPH, 6 to DjiSettings.KEY_DESCENT_SPEED_KPH)
 
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(DjiTheme.activityContext(newBase))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         DjiTheme.applyActivityTheme(this)
         super.onCreate(savedInstanceState)
