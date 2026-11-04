@@ -6,6 +6,16 @@ Un highlight segna un momento interessante all’interno di una registrazione vi
 
 AeroCam può aggiungere un highlight quando accade qualcosa durante l’uscita. L’evento che lo provoca si chiama **attivatore**.
 
+## Marcatori di inizio/fine uscita
+
+Questa opzione è disattivata nelle nuove installazioni. Gli aggiornamenti conservano le scelte esistenti e il precedente valore predefinito delle installazioni meno recenti. Attiva **Highlight automatici** e **Marcatori di inizio/fine uscita** per utilizzarla.
+
+- Il marcatore iniziale viene aggiunto solo se la videocamera sta già registrando alla partenza. Avviare la registrazione più tardi non aggiunge un marcatore iniziale retroattivo.
+- Il marcatore finale viene aggiunto quando termina un’uscita attiva o in pausa, se la videocamera sta ancora registrando. Karoo segnala lo stesso stato finale quando si salva o si scarta un’uscita; entrambe le azioni possono quindi creare il marcatore.
+- Pause e riprese non aggiungono marcatori. I marcatori mancati non vengono recuperati in seguito, neppure dopo una riconnessione.
+- Questi marcatori non avviano mai una registrazione, anche se l’avvio automatico è attivo, e non sono soggetti all’intervallo minimo dei marcatori automatici a soglia.
+
+
 ## Attivatori disponibili
 
 - **Marcatore giro:** Inizia un nuovo giro.
@@ -15,7 +25,7 @@ AeroCam può aggiungere un highlight quando accade qualcosa durante l’uscita. 
 - **Picco di frequenza cardiaca:** La frequenza cardiaca supera la soglia impostata.
 - **Marcatore salita:** Vengono raggiunte sia la velocità in salita sia la pendenza positiva impostate.
 - **Marcatore discesa:** Vengono raggiunte sia la velocità in discesa sia la pendenza negativa impostate.
-- **Marcatori di inizio e fine:** L’uscita inizia o termina.
+- **Marcatori di inizio/fine uscita:** Segna l’inizio e la fine dell’uscita solo se la videocamera sta già registrando. Pause e riprese non aggiungono marcatori. Non avvia mai una registrazione.
 
 Vengono usati solo gli attivatori abilitati nelle impostazioni.
 

@@ -75,14 +75,18 @@ marker.
   bpm threshold.
 - **High-speed descent:** Adds a highlight when speed exceeds the configured
   threshold while the grade indicates a descent.
-- **Ride bookmarks:** Adds markers at the start and end of a ride when recording
-  is active.
+- **Ride start/end markers:** Marks the actual ride boundaries only if the camera
+  is already recording. No delayed start marker is added when recording begins
+  mid-ride. Finishing from a paused ride can add an end marker; pauses and resumes
+  themselves do not. Both Auto highlights and this option must be enabled, and
+  these markers never start recording. Off for new installations; existing
+  choices and the previous default for older installations are preserved.
 
 ### Prevent standby
 Automatic threshold highlights share a **30-second cooldown** by default. In
 Auto Highlights settings, choose **Off, 15, 30, or 60 seconds**. Speed, power,
 heart rate, and gradient triggers share this interval. Manual highlights, laps,
-climb summits, and ride bookmarks always bypass it. Every successfully sent
+climb summits, and ride start/end markers always bypass it. Every successfully sent
 highlight starts the interval for subsequent threshold highlights. Suppressed
 triggers are discarded, never deferred; the existing threshold reset margins
 still apply. Starting a recording alone does not start the cooldown.

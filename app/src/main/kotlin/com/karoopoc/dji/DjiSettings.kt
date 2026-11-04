@@ -46,6 +46,7 @@ object DjiSettings {
     const val KEY_UPHILL_SPEED_KPH = "highlight_uphill_speed_kph"
     const val KEY_UPHILL_GRADE_PERCENT = "highlight_uphill_grade_percent"
     const val KEY_RIDE_BOOKMARKS = "highlight_ride_bookmarks"
+    private const val KEY_RIDE_MARKER_DEFAULT_MIGRATED = "ride_marker_default_migrated_v1"
     const val KEY_LOW_BATTERY_ALERT = "alert_low_battery"
     const val KEY_LOW_STORAGE_ALERT = "alert_low_storage"
     const val KEY_THEME_MODE = "theme_mode"
@@ -94,7 +95,7 @@ object DjiSettings {
             uphillHighlights = prefs.getBoolean(KEY_UPHILL_HIGHLIGHTS, false),
             uphillSpeedKph = prefs.getInt(KEY_UPHILL_SPEED_KPH, DEFAULT_UPHILL_SPEED_KPH).coerceIn(1, 80),
             uphillGradePercent = prefs.getInt(KEY_UPHILL_GRADE_PERCENT, DEFAULT_UPHILL_GRADE_PERCENT).coerceIn(1, 30),
-            rideBookmarks = prefs.getBoolean(KEY_RIDE_BOOKMARKS, true),
+            rideBookmarks = prefs.getBoolean(KEY_RIDE_BOOKMARKS, false),
             lowBatteryAlert = prefs.getBoolean(KEY_LOW_BATTERY_ALERT, true),
             lowStorageAlert = prefs.getBoolean(KEY_LOW_STORAGE_ALERT, false),
         )
@@ -116,11 +117,31 @@ object DjiSettings {
         preferences(context).getBoolean(KEY_HIDE_FIELD_CAPTIONS, false)
 
     fun resetAll(context: Context) {
-        preferences(context).edit().clear().apply()
+        preferences(context).edit().clear()
+            .putBoolean(KEY_RIDE_BOOKMARKS, false)
+            .putBoolean(KEY_RIDE_MARKER_DEFAULT_MIGRATED, true)
+            .apply()
     }
 
-    fun preferences(context: Context) = context.applicationContext.getSharedPreferences(
-        PREFERENCES_NAME,
-        Context.MODE_PRIVATE,
-    )
+    @Synchronized
+    fun preferences(context: Context): android.content.SharedPreferences {
+        val appContext = context.applicationContext
+        val prefs = appContext.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
+        if (!prefs.getBoolean(KEY_RIDE_MARKER_DEFAULT_MIGRATED, false)) {
+            val editor = prefs.edit()
+            if (!prefs.contains(KEY_RIDE_BOOKMARKS)) {
+                // Existing installs used ON when the key was absent. Android's install record
+                // also identifies upgrades with otherwise empty preferences. Onboarding and
+                // confirmed-pairing evidence covers restored older app data.
+                @Suppress("DEPRECATION")
+                val install = appContext.packageManager.getPackageInfo(appContext.packageName, 0)
+                val existingInstall = install.lastUpdateTime > install.firstInstallTime ||
+                    prefs.contains("onboarding_completed_v1") || prefs.contains("onboarding_draft_v1") ||
+                    prefs.getBoolean("protocol_connected_once", false)
+                editor.putBoolean(KEY_RIDE_BOOKMARKS, existingInstall)
+            }
+            editor.putBoolean(KEY_RIDE_MARKER_DEFAULT_MIGRATED, true).apply()
+        }
+        return prefs
+    }
 }

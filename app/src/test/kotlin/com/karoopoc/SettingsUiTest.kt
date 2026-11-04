@@ -109,7 +109,7 @@ class SettingsUiTest {
         controller.pause().stop().destroy()
     }
 
-    @Test fun `new UI retains original defaults and native controls in both appearances`() {
+    @Test fun `new UI uses reviewed defaults and native controls in both appearances`() {
         for (mode in listOf("dark", "light")) {
             val context = RuntimeEnvironment.getApplication()
             DjiSettings.preferences(context).edit().putString(DjiSettings.KEY_THEME_MODE, mode).commit()
@@ -119,7 +119,7 @@ class SettingsUiTest {
             val switches = views(activity).filterIsInstance<Switch>().associate { it.text.toString() to it.isChecked }
             assertEquals(false, switches["Keep camera awake"])
             assertEquals(true, switches["Auto-highlights"])
-            assertEquals(true, switches["Ride start/end bookmarks"])
+            assertEquals(false, switches[activity.getString(R.string.highlight_ride_bookmarks)])
             assertEquals(true, switches["Low camera battery at 20%"])
             assertEquals(false, switches["Hide data field captions"])
             assertFalse(switches.containsKey("Photo and recording alerts"))

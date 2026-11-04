@@ -57,6 +57,7 @@ class OnboardingActivity : Activity() {
 
     private fun restore() {
         val prefs = DjiSettings.preferences(this)
+        triggers[7] = prefs.getBoolean(DjiSettings.KEY_RIDE_BOOKMARKS, false)
         val raw = prefs.getString(DRAFT, null)
         if (raw != null) runCatching {
             val json = JSONObject(raw)
@@ -70,7 +71,8 @@ class OnboardingActivity : Activity() {
             downhillGrade = json.optInt("downhillGrade", DjiSettings.DEFAULT_DESCENT_GRADE_PERCENT)
             gradeDraft = json.optString("gradeInput", if (edit == 6) downhillGrade.toString() else uphillGrade.toString())
             for (i in triggers.indices) {
-                triggers[i] = json.optJSONArray("triggers")?.optBoolean(i) ?: false
+                val savedTriggers = json.optJSONArray("triggers")
+                if (savedTriggers != null && i < savedTriggers.length()) triggers[i] = savedTriggers.optBoolean(i)
                 values[i] = json.optJSONArray("values")?.optInt(i, values[i]) ?: values[i]
             }
             val stack = json.optJSONArray("history")
@@ -374,7 +376,6 @@ class OnboardingActivity : Activity() {
             if (!prefs.getBoolean(DONE, false) && !prefs.contains(DRAFT)) {
                 prefs.edit().putString(DRAFT, JSONObject().put("page", Page.PAIRED.name).toString())
                     .putBoolean(DjiSettings.KEY_AUTO_HIGHLIGHTS_ENABLED, false)
-                    .putBoolean(DjiSettings.KEY_RIDE_BOOKMARKS, false)
                     .putBoolean(DjiSettings.KEY_AUTO_START_RECORDING, false).apply()
             }
         }

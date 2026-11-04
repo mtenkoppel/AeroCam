@@ -55,11 +55,10 @@ class DjiKarooIntegration(
     private var hrWasInZoneFive = false
     private val downhillTrigger = GradientSpeedTrigger()
     private val uphillTrigger = GradientSpeedTrigger()
-    private var startBookmarkSent = false
+    private val rideMarkers = RideBoundaryMarkers()
     private var batteryAlertArmed = true
     private var storageAlertArmed = true
     private var autoStartRecordingPending = false
-    private var previousRecording = false
     private var previousHighlightCount = 0
 
     fun start() {
@@ -115,12 +114,21 @@ class DjiKarooIntegration(
     private fun onRideState(next: RideState) {
         val wasRiding = rideState is RideState.Recording || rideState is RideState.Paused
         val isRiding = next is RideState.Recording || next is RideState.Paused
-        val wasActivelyRecording = rideState is RideState.Recording
-        if (wasActivelyRecording && next is RideState.Idle && latestCameraState.recording &&
-            DjiSettings.read(appContext).rideBookmarks
-        ) {
-            Log.i(TAG, "Automatic highlight requested reason=Ride end")
-            DjiCameraController.addHighlight(appContext, appContext.getString(R.string.highlight_ride_end_feedback))
+        val settings = DjiSettings.read(appContext)
+        val marker = rideMarkers.onRideState(
+            next,
+            cameraRecording = latestCameraState.recording && latestCameraState.connection == CameraConnectionState.CONNECTED,
+            enabled = settings.autoHighlightsEnabled && settings.rideBookmarks,
+        )
+        if (marker != null) {
+            val reason = appContext.getString(if (marker == RideBoundaryMarkers.Marker.START) {
+                R.string.highlight_ride_start_feedback
+            } else {
+                R.string.highlight_ride_end_feedback
+            })
+            Log.i(TAG, "Automatic highlight requested reason=$reason")
+            // Boundary markers never auto-start a recording and always bypass threshold cooldown.
+            DjiCameraController.addHighlight(appContext, reason, cooldownLimited = false)
         }
         rideState = next
         if (next !is RideState.Recording) {
@@ -129,16 +137,13 @@ class DjiKarooIntegration(
         DjiCameraController.setRideActive(appContext, isRiding)
 
         if (!wasRiding && next is RideState.Recording) {
-            startBookmarkSent = false
             batteryAlertArmed = true
             storageAlertArmed = true
             completedClimbs.clear()
             resetThresholdEdges()
-            maybeSendStartBookmark()
         }
 
         if (!isRiding) {
-            startBookmarkSent = false
             completedClimbs.clear()
             autoStartRecordingPending = false
             resetThresholdEdges()
@@ -157,8 +162,6 @@ class DjiKarooIntegration(
         }
         val settings = DjiSettings.read(appContext)
         if (state.recording) autoStartRecordingPending = false
-        if (!previousRecording && state.recording) maybeSendStartBookmark()
-        previousRecording = state.recording
 
         if (state.highlightCount > previousHighlightCount) {
             showAlert("dji-highlight-${state.highlightCount}", appContext.getString(R.string.alert_highlight_added), null, R.color.dji_confirm)
@@ -166,14 +169,6 @@ class DjiKarooIntegration(
         previousHighlightCount = state.highlightCount
 
         checkThresholdAlerts(state)
-    }
-
-    private fun maybeSendStartBookmark() {
-        if (startBookmarkSent || rideState !is RideState.Recording || !latestCameraState.recording) return
-        val settings = DjiSettings.read(appContext)
-        if (!settings.autoHighlightsEnabled || !settings.rideBookmarks) return
-        startBookmarkSent = true
-        requestHighlight(appContext.getString(R.string.highlight_ride_start_feedback), cooldownExempt = true)
     }
 
     private fun onPower(watts: Double) {

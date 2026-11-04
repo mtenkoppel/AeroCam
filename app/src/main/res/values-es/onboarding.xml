@@ -64,7 +64,7 @@
     <string name="ob_speed_fun2">Eres el rey de la aerodinámica.</string>
     <string name="ob_speed_fun3">En vías públicas, los límites de velocidad también se aplican a ti 😉</string>
     <string name="ob_replay">Guía de configuración</string>
-    <string name="ob_bookmarks" formatted="false">Añade marcadores de inicio y fin mientras la cámara graba. Los marcadores no inician una grabación.</string>
+    <string name="ob_bookmarks" formatted="false">Marca el inicio y el final de la ruta solo si la cámara ya está grabando. Pausar y reanudar no añade marcadores. Nunca inicia una grabación.</string>
     <string name="ob_gradient_threshold" formatted="false">Deben cumplirse ambos umbrales.</string>
     <string name="ob_uphill_range" formatted="false">Introduce una velocidad de 1 a 80 km/h y una pendiente de +1 a +30%.</string>
     <string name="ob_downhill_range" formatted="false">Introduce una velocidad de 40 a 80 km/h y una pendiente de −30 a −1%.</string>

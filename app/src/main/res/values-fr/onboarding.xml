@@ -64,7 +64,7 @@
     <string name="ob_speed_fun2">Le roi de l’aéro !</string>
     <string name="ob_speed_fun3">Sur route ouverte, les limites de vitesse s’appliquent aussi à toi 😉</string>
     <string name="ob_replay">Guide de configuration</string>
-    <string name="ob_bookmarks" formatted="false">Ajoute des repères de début et de fin pendant que la caméra enregistre. Ces repères ne démarrent pas un enregistrement.</string>
+    <string name="ob_bookmarks" formatted="false">Marque le début et la fin de la sortie uniquement si la caméra enregistre déjà. Les pauses et reprises n’ajoutent aucun repère. Ne démarre jamais un enregistrement.</string>
     <string name="ob_gradient_threshold" formatted="false">Les deux seuils doivent être atteints.</string>
     <string name="ob_uphill_range" formatted="false">Saisissez une vitesse de 1 à 80 km/h et une pente de +1 à +30%.</string>
     <string name="ob_downhill_range" formatted="false">Saisissez une vitesse de 40 à 80 km/h et une pente de −30 à −1%.</string>

@@ -92,7 +92,7 @@
     <string name="highlight_climb_summit">Marcatore cima salita</string>
     <string name="highlight_peak_heart_rate">Marcatore frequenza cardiaca massima</string>
     <string name="highlight_peak_heart_rate_threshold">Soglia frequenza cardiaca (bpm)</string>
-    <string name="highlight_ride_bookmarks">Segnalibri inizio/fine uscita</string>
+    <string name="highlight_ride_bookmarks">Marcatori di inizio/fine uscita</string>
     <string name="alert_settings">Avvisi durante l’uscita</string>
     <string name="alert_low_battery_setting">Batteria fotocamera bassa al 20%</string>
     <string name="alert_low_storage_setting">Scheda SD sotto 5 GB</string>

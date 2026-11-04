@@ -6,6 +6,16 @@ Um destaque marca um momento interessante numa gravação de vídeo. Ajuda-te a 
 
 O AeroCam pode adicionar um destaque quando acontece algo durante a tua volta. O evento que o provoca chama-se **acionador**.
 
+## Marcadores de início/fim da volta
+
+Esta opção está desativada em novas instalações. As atualizações preservam as escolhas existentes e o valor predefinido anterior das instalações antigas. Ative **Destaques automáticos** e **Marcadores de início/fim da volta** para a utilizar.
+
+- Só é adicionado um marcador de início se a câmara já estiver a gravar no início da volta. Começar a gravar mais tarde não adiciona um marcador de início retroativo.
+- É adicionado um marcador de fim ao terminar uma volta ativa ou em pausa, se a câmara ainda estiver a gravar. O Karoo comunica o mesmo estado final ao guardar ou descartar a volta; ambas as ações podem gerar esse marcador.
+- Pausar e retomar não adiciona marcadores. Os marcadores perdidos não são recuperados mais tarde, nem após uma nova ligação.
+- Estes marcadores nunca iniciam uma gravação, mesmo com o início automático ativo, e não estão sujeitos ao intervalo mínimo dos marcadores automáticos por limiar.
+
+
 ## Acionadores disponíveis
 
 - **Marcador de volta:** Começa uma nova volta.
@@ -15,7 +25,7 @@ O AeroCam pode adicionar um destaque quando acontece algo durante a tua volta. O
 - **Pico de frequência cardíaca:** A tua frequência cardíaca ultrapassa o limite definido.
 - **Marcador de subida:** São atingidos os limites definidos de velocidade de subida e de inclinação positiva.
 - **Marcador de descida:** São atingidos os limites definidos de velocidade de descida e de inclinação negativa.
-- **Marcadores de início e fim:** A tua atividade começa ou termina.
+- **Marcadores de início/fim da volta:** Marca o início e o fim da volta apenas se a câmara já estiver a gravar. Pausar e retomar não adiciona marcadores. Nunca inicia uma gravação.
 
 Só são utilizados os acionadores que ativares nas definições.
 

@@ -294,7 +294,8 @@ internal class SettingsViews(val activity: Activity) {
             triggerGroup,
             getString(R.string.highlight_ride_bookmarks),
             DjiSettings.KEY_RIDE_BOOKMARKS,
-            true,
+            false,
+            summary = getString(R.string.ob_bookmarks),
         )
 
     }
