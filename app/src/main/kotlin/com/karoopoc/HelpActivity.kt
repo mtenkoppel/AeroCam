@@ -1,6 +1,7 @@
 package com.karoopoc
 
 import android.app.Activity
+import android.content.Context
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
@@ -15,6 +16,10 @@ import android.widget.Toolbar
 open class DetailActivity : Activity() {
     internal lateinit var ui: SettingsViews
     internal lateinit var body: LinearLayout
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(DjiTheme.activityContext(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         DjiTheme.applyActivityTheme(this)

@@ -2,6 +2,7 @@ package com.karoopoc
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.os.Build
@@ -41,6 +42,10 @@ class MainActivity : Activity() {
     private lateinit var connectButton: Button
     private lateinit var forgetButton: Button
     private var hasBlePermission = false
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(DjiTheme.activityContext(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         DjiTheme.applyActivityTheme(this)

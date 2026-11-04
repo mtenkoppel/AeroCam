@@ -18,15 +18,7 @@ import com.karoopoc.widget.DjiWidgetController
 
 /** Standard Android controls; only their surrounding layout belongs to AeroCam. */
 internal class SettingsViews(val activity: Activity) {
-    val palette = DjiTheme.palette(activity).let { base ->
-        val light = base.textPrimary != Color.WHITE
-        base.copy(
-            appBackground = if (light) Color.WHITE else Color.BLACK,
-            previewBackground = Color.rgb(if (light) 244 else 22, if (light) 244 else 22, if (light) 244 else 22),
-            textPrimary = if (light) Color.BLACK else Color.WHITE,
-            textSecondary = if (light) Color.DKGRAY else Color.LTGRAY,
-        )
-    }
+    val palette = DjiTheme.appPalette(activity)
     private data class ToggleBinding(val view: Switch, val key: String, val default: Boolean, val changed: ((Boolean) -> Unit)?)
     private data class NumericBinding(val view: EditText, val key: String, val default: Int)
     private val toggles = mutableListOf<ToggleBinding>()
@@ -311,23 +303,6 @@ internal class SettingsViews(val activity: Activity) {
         val card = group(parent, getString(R.string.theme_mode))
         settingsSwitch(card, getString(R.string.hide_field_captions), DjiSettings.KEY_HIDE_FIELD_CAPTIONS, false,
             getString(R.string.captions_summary)) { DjiWidgetController.refresh() }
-        card.addView(secondaryText(getString(R.string.appearance)), fullWidthParams(topMargin = dp(8)))
-        card.addView(Spinner(activity).apply {
-            adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_dropdown_item,
-                listOf(getString(R.string.theme_system), getString(R.string.theme_dark), getString(R.string.theme_light)))
-            setSelection(DjiTheme.readMode(activity).ordinal, false)
-            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onNothingSelected(parent: AdapterView<*>?) = Unit
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    val mode = DjiThemeMode.entries[position]
-                    if (mode == DjiTheme.readMode(activity)) return
-                    activity.currentFocus?.clearFocus()
-                    DjiTheme.writeMode(activity, mode)
-                    DjiWidgetController.refresh()
-                    activity.recreate()
-                }
-            }
-        }, fullWidthParams())
     }
     fun cooldown(parent: LinearLayout) {
         parent.addView(action(getString(R.string.highlight_cooldown)) {

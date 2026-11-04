@@ -88,7 +88,7 @@ class WidgetAlignmentUiTest {
                     assertEquals(horizontal(alignment), full!!.findViewById<LinearLayout>(id).gravity and Gravity.HORIZONTAL_GRAVITY_MASK)
                 }
                 checkText(full!!, R.id.widgetControlVideoFeedback, alignment)
-                assertEquals(DjiTheme.palette(context).batteryLow,
+                assertEquals(DjiTheme.widgetPalette(context).batteryLow,
                     full!!.findViewById<TextView>(R.id.widgetControlFullBattery).currentTextColor)
                 save(full!!, 408, "$theme-full-$alignment")
                 val positions = listOf(R.id.widgetControlFullKeepAwake, R.id.widgetControlMore,

@@ -3,6 +3,7 @@ package com.karoopoc.widget
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
@@ -10,8 +11,6 @@ import android.view.ContextThemeWrapper
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.RemoteViews
-import com.karoopoc.DjiTheme
-import com.karoopoc.DjiThemeMode
 import com.karoopoc.R
 import com.karoopoc.dji.CameraConnectionState
 import com.karoopoc.dji.DjiCameraState
@@ -54,9 +53,12 @@ class WidgetRenderingInstrumentation : Instrumentation() {
                 "stop-pending" to ready.copy(camera = camera.copy(recording = true), videoAwaitingResponse = "."),
             )
             runOnMainSync {
-                for (theme in listOf(DjiThemeMode.DARK, DjiThemeMode.LIGHT)) {
-                    DjiTheme.writeMode(targetContext, theme)
-                    val context = ContextThemeWrapper(targetContext, if (theme == DjiThemeMode.DARK) R.style.AppTheme_Dark else R.style.AppTheme_Light)
+                for (theme in listOf("dark", "light")) {
+                    val context = ContextThemeWrapper(targetContext, R.style.AppTheme).apply {
+                        applyOverrideConfiguration(Configuration().apply {
+                            uiMode = if (theme == "dark") Configuration.UI_MODE_NIGHT_YES else Configuration.UI_MODE_NIGHT_NO
+                        })
+                    }
                     for (captionsHidden in listOf(false, true)) {
                         DjiSettings.preferences(context).edit().putBoolean(DjiSettings.KEY_HIDE_FIELD_CAPTIONS, captionsHidden).commit()
                         for ((size, config) in sizes) for ((scenario, state) in cases) {

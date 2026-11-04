@@ -9,9 +9,6 @@
     <string name="battery">Bateria</string>
     <string name="hide_field_captions">Ocultar títulos dos campos</string>
     <string name="theme_mode">Estilo</string>
-    <string name="theme_system">Usar sistema</string>
-    <string name="theme_dark">Escuro</string>
-    <string name="theme_light">Claro</string>
     <string name="keep_osmo_awake">Manter câmara ativa</string>
     <string name="recording">Gravação</string>
     <string name="card_space">Espaço no cartão</string>
@@ -182,7 +179,6 @@
     <string name="keep_camera_awake">Manter a câmara ativa</string>
     <string name="prevent_standby_summary">Impede que a câmara se desligue automaticamente.</string>
     <string name="recommended_camera_setup">Definições recomendadas da câmara</string>
-    <string name="appearance">Aparência</string>
     <string name="captions_summary">Oculta o nome do widget e poupa algum espaço.</string>
     <string name="advanced_settings">Definições avançadas</string>
     <string name="restart_onboarding">Reiniciar a configuração</string>

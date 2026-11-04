@@ -78,7 +78,7 @@ object DjiWidgetRenderer {
             setInt(rootId, "setBackgroundColor", Color.TRANSPARENT)
         }
         return RemoteViews(context.packageName, R.layout.widget_dji_video_photo).apply {
-            setInt(R.id.widgetVideoPhotoRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
+            setInt(R.id.widgetVideoPhotoRoot, "setBackgroundResource", R.drawable.widget_root_dark)
             applyWidgetFrame(R.id.widgetVideoPhotoRoot)
             removeAllViews(R.id.widgetCombinedVideo)
             removeAllViews(R.id.widgetCombinedPhoto)
@@ -94,7 +94,7 @@ object DjiWidgetRenderer {
         interactive: Boolean = true,
     ): RemoteViews {
         val state = viewState.camera
-        val palette = DjiTheme.palette(context)
+        val palette = DjiTheme.widgetPalette(context)
         val size = DjiWidgetLayout.sizeFor(config)
         val connected = state.connection == CameraConnectionState.CONNECTED
         val recording = state.recording
@@ -104,7 +104,7 @@ object DjiWidgetRenderer {
         val awaitingResponse = viewState.videoAwaitingResponse
 
         return RemoteViews(context.packageName, R.layout.widget_dji_video).apply {
-            setInt(R.id.widgetVideoRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
+            setInt(R.id.widgetVideoRoot, "setBackgroundResource", R.drawable.widget_root_dark)
             applyWidgetFrame(R.id.widgetVideoRoot)
             applyTextAlignment(config, R.id.widgetVideoTimer, R.id.widgetVideoMeta, R.id.widgetVideoStatus)
             applyIconPadding(context, R.dimen.widget_icon_primary_padding, R.id.widgetVideoIcon)
@@ -251,7 +251,7 @@ object DjiWidgetRenderer {
         interactive: Boolean = true,
     ): RemoteViews {
         val state = viewState.camera
-        val palette = DjiTheme.palette(context)
+        val palette = DjiTheme.widgetPalette(context)
         val size = DjiWidgetLayout.sizeFor(config)
         val connected = state.connection == CameraConnectionState.CONNECTED
         val connectPrompt = ConnectPrompt.PHOTO in viewState.connectPrompts
@@ -259,7 +259,7 @@ object DjiWidgetRenderer {
         val photoBlocked = state.recording
 
         return RemoteViews(context.packageName, R.layout.widget_dji_photo).apply {
-            setInt(R.id.widgetPhotoRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
+            setInt(R.id.widgetPhotoRoot, "setBackgroundResource", R.drawable.widget_root_dark)
             applyWidgetFrame(R.id.widgetPhotoRoot)
             applyTextAlignment(config, R.id.widgetPhotoStatus)
             applyIconPadding(context, R.dimen.widget_icon_primary_padding, R.id.widgetPhotoIcon)
@@ -337,7 +337,7 @@ object DjiWidgetRenderer {
         interactive: Boolean = true,
     ): RemoteViews {
         val state = viewState.camera
-        val palette = DjiTheme.palette(context)
+        val palette = DjiTheme.widgetPalette(context)
         // Cam Control uses a status-only view at half width, even in tall fields.
         // Keep the shared video/photo size policy unchanged.
         val narrow = config.gridSize.first <= 30 || config.viewSize.first < 360
@@ -346,7 +346,7 @@ object DjiWidgetRenderer {
         val connectPrompt = ConnectPrompt.CONTROL in viewState.connectPrompts
 
         return RemoteViews(context.packageName, R.layout.widget_dji_control).apply {
-            setInt(R.id.widgetControlRoot, "setBackgroundResource", DjiTheme.widgetBackgroundResource(context))
+            setInt(R.id.widgetControlRoot, "setBackgroundResource", R.drawable.widget_root_dark)
             applyWidgetFrame(R.id.widgetControlRoot)
             applyTextAlignment(config, R.id.widgetControlBattery, R.id.widgetControlStorage,
                 R.id.widgetControlMessageText, R.id.widgetControlTopMessageText,

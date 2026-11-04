@@ -65,7 +65,7 @@ class CamControlUiTest {
                 assertEquals(gap, power.top - photo.bottom)
                 assertEquals(photoGap, photo.top - video.bottom)
                 assertTrue(abs(4 * video.height + 2 * gap + photoGap - (height - view.paddingTop - view.paddingBottom)) <= 3)
-                assertEquals(DjiTheme.palette(context).textPrimary, view.findViewById<TextView>(R.id.widgetControlFullBattery).currentTextColor)
+                assertEquals(DjiTheme.widgetPalette(context).textPrimary, view.findViewById<TextView>(R.id.widgetControlFullBattery).currentTextColor)
                 save(view, "$theme-xl-$height-ready")
                 if (height in listOf(320, 408, 600)) {
                     save(render(height, DjiWidgetViewState(camera.copy(batteryPercent = 15))), "$theme-xl-$height-low-battery")
@@ -79,7 +79,7 @@ class CamControlUiTest {
                 save(render(height, DjiWidgetViewState(camera.copy(connection = CameraConnectionState.DISCONNECTED))), "$theme-compact-$height-offline")
             }
             val low = render(420, DjiWidgetViewState(camera.copy(batteryPercent = 15)))
-            assertEquals(DjiTheme.palette(context).batteryLow, low.findViewById<TextView>(R.id.widgetControlFullBattery).currentTextColor)
+            assertEquals(DjiTheme.widgetPalette(context).batteryLow, low.findViewById<TextView>(R.id.widgetControlFullBattery).currentTextColor)
             save(low, "$theme-xl-low-battery")
             val recording = render(420, DjiWidgetViewState(camera.copy(recording = true, highlightFeedback = "HIGHLIGHT")))
             assertEquals(View.VISIBLE, recording.findViewById<View>(R.id.widgetControlVideoHighlight).visibility)
@@ -95,7 +95,7 @@ class CamControlUiTest {
         val host = Robolectric.buildActivity(Activity::class.java).setup()
         for (height in listOf(113, 154, 189)) {
             val view = render(height, DjiWidgetViewState(camera.copy(batteryPercent = 15)))
-            assertEquals(DjiTheme.palette(context).batteryLow, view.findViewById<TextView>(R.id.widgetControlBattery).currentTextColor)
+            assertEquals(DjiTheme.widgetPalette(context).batteryLow, view.findViewById<TextView>(R.id.widgetControlBattery).currentTextColor)
             val settings = view.findViewById<View>(R.id.widgetControlSettings)
             assertEquals(View.VISIBLE, settings.visibility)
             assertTrue(settings.performClick())
@@ -141,7 +141,7 @@ class CamControlUiTest {
                 }
                 val battery=view.findViewById<TextView>(R.id.widgetControlBattery)
                 assertEquals("15%",battery.text.toString())
-                assertEquals(DjiTheme.palette(context).batteryLow,battery.currentTextColor)
+                assertEquals(DjiTheme.widgetPalette(context).batteryLow,battery.currentTextColor)
                 assertTrue(view.findViewById<TextView>(R.id.widgetControlStorage).text.toString().contains("14.5"))
                 save(view,"$theme-half-$height-status")
                 DjiWidgetRenderer.cameraControl(context,config,

@@ -109,8 +109,9 @@ class SettingsUiTest {
         controller.pause().stop().destroy()
     }
 
-    @Test fun `new UI uses reviewed defaults and native controls in both appearances`() {
+    @Test fun `white menus preserve defaults and controls under either system appearance`() {
         for (mode in listOf("dark", "light")) {
+            RuntimeEnvironment.setQualifiers(if (mode == "dark") "+night" else "+notnight")
             val context = RuntimeEnvironment.getApplication()
             DjiSettings.preferences(context).edit().putString(DjiSettings.KEY_THEME_MODE, mode).commit()
             val before = DjiSettings.preferences(context).all.toMap()
@@ -124,7 +125,7 @@ class SettingsUiTest {
             assertEquals(false, switches["Hide data field captions"])
             assertFalse(switches.containsKey("Photo and recording alerts"))
             val spinners = views(activity).filterIsInstance<Spinner>()
-            assertEquals(1, spinners.size)
+            assertEquals(0, spinners.size)
             button(activity, activity.getString(R.string.highlight_cooldown)).performClick()
             val cooldownDialog = org.robolectric.shadows.ShadowAlertDialog.getLatestAlertDialog()
             val editor = descendants(cooldownDialog.window!!.decorView).filterIsInstance<Spinner>().single()
@@ -133,6 +134,7 @@ class SettingsUiTest {
                 it.text.toString() == activity.getString(R.string.highlight_cooldown_summary)
             })
             cooldownDialog.dismiss()
+
             render(activity, "settings-$mode")
             activity.findViewById<ScrollView>(R.id.settings_scroll).fullScroll(View.FOCUS_DOWN)
             render(activity, "settings-$mode-bottom")
