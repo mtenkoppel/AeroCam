@@ -18,6 +18,8 @@ import android.widget.LinearLayout
 internal object KarooNavigation {
     fun buttonSize(activity: Activity): Int = (68 * activity.resources.displayMetrics.density + .5f).toInt()
 
+    fun bottomInset(activity: Activity): Int = (10 * activity.resources.displayMetrics.density + .5f).toInt()
+
     fun wrap(activity: Activity, content: View): View {
         fun dp(value: Int) = (value * activity.resources.displayMetrics.density + .5f).toInt()
         val root = LinearLayout(activity).apply {
@@ -25,9 +27,9 @@ internal object KarooNavigation {
             setBackgroundColor(DjiTheme.appPalette(activity).appBackground)
         }
         root.addView(content, LinearLayout.LayoutParams(-1, 0, 1f))
-        val footer = FrameLayout(activity)
+        val footer = FrameLayout(activity).apply { setPadding(0, 0, 0, bottomInset(activity)) }
         footer.addView(backButton(activity), FrameLayout.LayoutParams(dp(68), dp(68), Gravity.LEFT or Gravity.BOTTOM))
-        root.addView(footer, LinearLayout.LayoutParams(-1, dp(68)))
+        root.addView(footer, LinearLayout.LayoutParams(-1, dp(68) + bottomInset(activity)))
         return root
     }
 

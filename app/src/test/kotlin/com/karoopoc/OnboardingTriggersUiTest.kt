@@ -244,6 +244,10 @@ class OnboardingTriggersUiTest {
             assertEquals(back.width, back.height)
             assertEquals(back.height, primary.height)
             assertEquals(480, actionPosition[0] + primary.width)
+            val root = a.findViewById<ViewGroup>(android.R.id.content).getChildAt(0)
+            val rootPosition = IntArray(2); root.getLocationInWindow(rootPosition)
+            assertEquals((10 * a.resources.displayMetrics.density + .5f).toInt(),
+                rootPosition[1] + root.height - backPosition[1] - back.height)
             val scroll = views(a).filterIsInstance<ScrollView>().single()
             val skip = views(a).filterIsInstance<Button>().firstOrNull { it.text.toString() == a.getString(R.string.ob_skip) }
             if (skip != null) {

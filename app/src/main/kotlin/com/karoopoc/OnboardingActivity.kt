@@ -159,6 +159,7 @@ class OnboardingActivity : Activity() {
         val navigation = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.BOTTOM
+            setPadding(0, 0, 0, KarooNavigation.bottomInset(this@OnboardingActivity))
         }
         navigation.addView(KarooNavigation.backButton(this), LinearLayout.LayoutParams(KarooNavigation.buttonSize(this), KarooNavigation.buttonSize(this)))
         footer = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.RIGHT }
