@@ -22,12 +22,20 @@ internal object KarooNavigation {
         }
         root.addView(content, LinearLayout.LayoutParams(-1, 0, 1f))
         val footer = FrameLayout(activity)
+        footer.addView(backButton(activity), FrameLayout.LayoutParams(dp(68), dp(68), Gravity.LEFT or Gravity.BOTTOM))
+        root.addView(footer, LinearLayout.LayoutParams(-1, dp(68)))
+        return root
+    }
+
+    /** Reuse the same artwork, shape, hit area and back dispatch in custom footers. */
+    fun backButton(activity: Activity): ImageButton {
+        fun dp(value: Int) = (value * activity.resources.displayMetrics.density + .5f).toInt()
         val shape = GradientDrawable().apply {
             setColor(activity.getColor(R.color.karoo_back_background))
             cornerRadii = floatArrayOf(0f, 0f, dp(34).toFloat(), dp(34).toFloat(),
                 dp(34).toFloat(), dp(34).toFloat(), 0f, 0f)
         }
-        footer.addView(ImageButton(activity).apply {
+        return ImageButton(activity).apply {
             id = R.id.karoo_back
             setImageResource(R.drawable.ob_arrow_back)
             imageTintList = ColorStateList.valueOf(Color.BLACK)
@@ -39,8 +47,6 @@ internal object KarooNavigation {
                 activity.currentFocus?.clearFocus()
                 activity.onBackPressed()
             }
-        }, FrameLayout.LayoutParams(dp(68), dp(68), Gravity.LEFT or Gravity.BOTTOM))
-        root.addView(footer, LinearLayout.LayoutParams(-1, dp(68)))
-        return root
+        }
     }
 }

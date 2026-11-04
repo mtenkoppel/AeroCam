@@ -148,13 +148,25 @@ class OnboardingActivity : Activity() {
     private fun render() {
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL; setBackgroundColor(palette.appBackground)
-            setPadding(dp(16), dp(4), dp(16), dp(10))
+            setPadding(0, dp(4), 0, 0)
         }
         content = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        root.addView(ScrollView(this).apply { isFillViewport = false; addView(content) }, LinearLayout.LayoutParams(-1, 0, 1f))
+        root.addView(ScrollView(this).apply {
+            isFillViewport = false
+            setPadding(dp(16), 0, dp(16), 0)
+            addView(content)
+        }, LinearLayout.LayoutParams(-1, 0, 1f))
+        val navigation = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.BOTTOM
+        }
+        navigation.addView(KarooNavigation.backButton(this), LinearLayout.LayoutParams(dp(68), dp(68)))
         footer = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        root.addView(footer)
-        setContentView(KarooNavigation.wrap(this, root))
+        navigation.addView(footer, LinearLayout.LayoutParams(0, -2, 1f).apply {
+            leftMargin = dp(8); rightMargin = dp(16)
+        })
+        root.addView(navigation)
+        setContentView(root)
         when (page) {
             Page.PAIRED -> {
                 art(R.drawable.ic_widget_check, 108, true)
@@ -382,7 +394,7 @@ class OnboardingActivity : Activity() {
         setOnClickListener { click() }
     }
     private fun action(id: Int, primary: Boolean = true, click: () -> Unit): Button = button(getString(id), primary, click).also {
-        it.textSize = 19f; it.minHeight = dp(53)
+        it.textSize = 19f; it.minHeight = dp(if (primary) 68 else 53)
         footer.addView(it, LinearLayout.LayoutParams(-1, -2))
     }
     private fun params(bottom: Int = 0) = LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(bottom) }

@@ -226,6 +226,30 @@ class OnboardingTriggersUiTest {
         com.karoopoc.dji.DjiCameraController.publish(com.karoopoc.dji.DjiCameraState())
         host.pause().stop().destroy()
     }
+    @Test fun sharedKarooBackSitsBesideActionsAndReturnsThroughOnboardingHistory() {
+        for (page in listOf("CAMERA", "TRIGGERS", "THRESHOLD", "WIDGETS")) {
+            seed(JSONObject().put("page", page).put("history", JSONArray().put("WELCOME")))
+            val controller = launch()
+            val a = controller.get()
+            render(a, "karoo-footer-$page")
+            val back = a.findViewById<ImageButton>(R.id.karoo_back)
+            assertEquals(1, views(a).count { it.id == R.id.karoo_back })
+            val primary = views(a).filterIsInstance<Button>().last()
+            val backPosition = IntArray(2); back.getLocationInWindow(backPosition)
+            val actionPosition = IntArray(2); primary.getLocationInWindow(actionPosition)
+            assertEquals(0, backPosition[0])
+            assertEquals(backPosition[1] + back.height, actionPosition[1] + primary.height)
+            assertTrue(actionPosition[0] >= backPosition[0] + back.width)
+            assertEquals((68 * a.resources.displayMetrics.density + .5f).toInt(), back.width)
+            assertEquals(back.width, back.height)
+            assertEquals(back.height, primary.height)
+            back.performClick()
+            assertEquals("WELCOME", JSONObject(prefs.getString(OnboardingActivity.DRAFT, "")!!).getString("page"))
+            assertTrue(views(a).filterIsInstance<TextView>().any { it.text.toString() == a.getString(R.string.ob_welcome) })
+            controller.pause().stop().destroy()
+        }
+    }
+
     @Test fun renderPolishedOnboardingPagesInBothThemes() {
         for (theme in listOf("light", "dark")) {
             prefs.edit().putString(DjiSettings.KEY_THEME_MODE, theme).commit()
