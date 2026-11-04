@@ -372,18 +372,18 @@ class OnboardingActivity : Activity() {
         val row = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
         val copy = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         copy.addView(text(name, 17f).apply { typeface = Typeface.DEFAULT_BOLD }, params(4))
-        copy.addView(text(path, 15f))
         row.addView(copy, LinearLayout.LayoutParams(0, -2, 1f))
         row.addView(ImageButton(this).apply {
             setImageResource(android.R.drawable.ic_dialog_info)
             imageTintList = ColorStateList.valueOf(getColor(R.color.karoo_forward_background))
             setBackgroundColor(android.graphics.Color.TRANSPARENT)
             contentDescription = name
-            setPadding(dp(8), dp(8), dp(8), dp(8))
+            setPadding(dp(15), dp(15), dp(15), dp(15))
             setOnClickListener { AlertDialog.Builder(this@OnboardingActivity)
                 .setTitle(name).setMessage(explanation).setPositiveButton(android.R.string.ok, null).show() }
         }, LinearLayout.LayoutParams(dp(44), dp(44)))
-        content.addView(row, params(16))
+        content.addView(row, params(4))
+        content.addView(text(path, 15f), params(12))
     }
     private fun heading(value: String, size: Float = 17f) {
         content.addView(text(value, size).apply { typeface = Typeface.DEFAULT_BOLD }, params(4))
