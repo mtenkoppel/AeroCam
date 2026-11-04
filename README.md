@@ -33,6 +33,45 @@ mode.
 > while allowing its screens to remain off. A fully powered-off camera must
 > still be turned on manually.
 
+## Screenshots
+
+Fit camera controls beside your map or give Cam Control a page of its own.
+The ride previews below show small full-width, half-width, and full-screen
+layouts, including the recording state.
+
+<table>
+  <tr>
+    <th>Video + Photo · small full width</th>
+    <th>Video · half width</th>
+    <th>Video · recording</th>
+    <th>Cam Control · full screen</th>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshots/video-photo-small.jpg" alt="Small full-width Video + Photo widget below the map and speed field" width="180"></td>
+    <td><img src="assets/screenshots/video-half-idle.png" alt="Half-width Video widget beside the Bell field on a map ride page" width="180"></td>
+    <td><img src="assets/screenshots/video-half.jpg" alt="Half-width Video widget with a red recording timer beside Bell" width="180"></td>
+    <td><img src="assets/screenshots/cam-control-full.jpg" alt="Full-screen Cam Control with battery, storage, prevent standby, video, photo, settings and power controls" width="180"></td>
+  </tr>
+</table>
+
+Pair your camera, follow the setup guide, and configure Prevent standby before
+heading out. Built-in help stays available on the Karoo.
+
+<table>
+  <tr>
+    <th>Connect camera</th>
+    <th>Camera setup</th>
+    <th>Prevent standby</th>
+    <th>Help</th>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshots/connect-camera.png" alt="Connect camera screen with the Search button" width="180"></td>
+    <td><img src="assets/screenshots/setup.png" alt="Camera setup guide welcome screen" width="180"></td>
+    <td><img src="assets/screenshots/prevent-standby.png" alt="Settings with Keep camera awake enabled and the recommended camera setup link" width="180"></td>
+    <td><img src="assets/screenshots/help.png" alt="Built-in help articles for ride preparation, prevent standby and auto highlights" width="180"></td>
+  </tr>
+</table>
+
 ## Features
 
 ### Basics
