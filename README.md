@@ -230,18 +230,16 @@ in Settings or Help.
 
 Keep awake works best when the camera is configured for low-distraction use:
 
-1. Configure the camera's **QS button** to use the Screen Switch/Photo action
-   rather than a voice-prompt action. Menu wording can vary by DJI firmware.
-2. Turn off camera sounds or lower their volume so periodic QS commands do not
+1. Turn off camera sounds or lower their volume so periodic QS commands do not
    produce distracting tones.
-3. Configure Single Screen Preview so the front display remains off when the
+2. Configure Single Screen Preview so the front display remains off when the
    camera is locked.
-4. Set Auto Power Off to **five minutes**. The new default QS interval is
+3. Set Auto Power Off to **five minutes**. The new default QS interval is
    **four minutes thirty seconds**, leaving time for acknowledgement retries.
    Previously saved custom intervals remain unchanged. Shorter camera timers
    require a correspondingly shorter app interval; choose the matching timer in the
    advanced settings.
-5. After AeroCam connects, lock the camera screen. The displays turn off while
+4. After AeroCam connects, lock the camera screen. The displays turn off while
    AeroCam periodically prevents the camera from fully powering down.
 
 Keep awake is a practical standby workaround, not a true DJI standby mode. It
