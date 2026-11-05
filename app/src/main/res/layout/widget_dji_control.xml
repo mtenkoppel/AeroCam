@@ -206,111 +206,16 @@
         android:visibility="gone">
 
         <LinearLayout
-            android:id="@+id/widgetControlFullStatus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:visibility="gone"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/widgetControlFullStatusValues"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="start|center_vertical"
-                android:orientation="horizontal">
-                <LinearLayout
-                    android:id="@+id/widgetControlFullBatteryGroup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-                    <ImageView
-                        android:id="@+id/widgetControlFullBatteryIcon"
-                        android:layout_width="@dimen/widget_control_status_icon"
-                        android:layout_height="@dimen/widget_control_status_icon"
-                        android:contentDescription="@string/battery"
-                        android:src="@drawable/ic_battery" />
-                    <TextView
-                        android:id="@+id/widgetControlFullBattery"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="3dp"
-                        android:gravity="center"
-                        android:includeFontPadding="false"
-                        android:maxLines="1"
-                        android:textSize="@dimen/widget_control_status_text"
-                        android:textColor="@color/dji_text_primary_dark" />
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/widgetControlFullStorageGroup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-                    <ImageView
-                        android:id="@+id/widgetControlFullStorageIcon"
-                        android:layout_width="@dimen/widget_control_status_icon"
-                        android:layout_height="@dimen/widget_control_status_icon"
-                        android:contentDescription="@string/widget_storage"
-                        android:src="@drawable/ic_widget_storage" />
-                    <TextView
-                        android:id="@+id/widgetControlFullStorage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="3dp"
-                        android:gravity="center"
-                        android:includeFontPadding="false"
-                        android:maxLines="1"
-                        android:textSize="@dimen/widget_control_status_text"
-                        android:textColor="@color/dji_text_primary_dark" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/widgetControlFullResolutionRow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/widget_control_status_gap"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-                <ImageView
-                    android:id="@+id/widgetControlFullResolutionIcon"
-                    android:layout_width="@dimen/widget_control_status_icon"
-                    android:layout_height="@dimen/widget_control_status_icon"
-                    android:contentDescription="@string/widget_video"
-                    android:src="@drawable/ic_widget_film" />
-                <TextView
-                    android:id="@+id/widgetControlFullResolution"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="3dp"
-                    android:ellipsize="end"
-                    android:includeFontPadding="false"
-                    android:maxLines="1"
-                    android:textSize="@dimen/widget_control_status_text"
-                    android:textColor="@color/dji_text_primary_dark" />
-                <ImageView
-                    android:id="@+id/widgetControlFullRefreshChevron"
-                    android:layout_width="10dp"
-                    android:layout_height="@dimen/widget_control_status_icon"
-                    android:src="@drawable/ic_chevron_right"
-                    android:tint="@color/dji_icon_primary"
-                    android:visibility="gone" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/widgetControlFullUtility"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:baselineAligned="false"
             android:orientation="horizontal">
 
             <FrameLayout
                 android:id="@+id/widgetControlFullKeepAwake"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="72dp"
+                android:layout_marginEnd="@dimen/widget_combined_gap"
                 android:layout_height="match_parent"
                 android:background="@drawable/widget_surface_selector">
 
@@ -324,10 +229,105 @@
                     android:src="@drawable/ic_widget_keep_awake_disabled" />
             </FrameLayout>
 
+            <LinearLayout
+                android:id="@+id/widgetControlFullStatus"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="start|center_vertical"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/widgetControlFullStatusValues"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:id="@+id/widgetControlFullBatteryGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:id="@+id/widgetControlFullBatteryIcon"
+                            android:layout_width="@dimen/widget_control_status_icon"
+                            android:layout_height="@dimen/widget_control_status_icon"
+                            android:contentDescription="@string/battery"
+                            android:src="@drawable/ic_battery" />
+                        <TextView
+                            android:id="@+id/widgetControlFullBattery"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="3dp"
+                            android:gravity="center"
+                            android:includeFontPadding="false"
+                            android:maxLines="1"
+                            android:textSize="@dimen/widget_control_status_text"
+                            android:textColor="@color/dji_text_primary_dark" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/widgetControlFullStorageGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:id="@+id/widgetControlFullStorageIcon"
+                            android:layout_width="@dimen/widget_control_status_icon"
+                            android:layout_height="@dimen/widget_control_status_icon"
+                            android:contentDescription="@string/widget_storage"
+                            android:src="@drawable/ic_widget_storage" />
+                        <TextView
+                            android:id="@+id/widgetControlFullStorage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="3dp"
+                            android:gravity="center"
+                            android:includeFontPadding="false"
+                            android:maxLines="1"
+                            android:textSize="@dimen/widget_control_status_text"
+                            android:textColor="@color/dji_text_primary_dark" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/widgetControlFullResolutionRow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/widget_control_status_gap"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/widgetControlFullResolutionIcon"
+                        android:layout_width="@dimen/widget_control_status_icon"
+                        android:layout_height="@dimen/widget_control_status_icon"
+                        android:contentDescription="@string/widget_video"
+                        android:src="@drawable/ic_widget_film" />
+                    <TextView
+                        android:id="@+id/widgetControlFullResolution"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
+                        android:ellipsize="end"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:textSize="@dimen/widget_control_status_text"
+                        android:textColor="@color/dji_text_primary_dark" />
+                    <ImageView
+                        android:id="@+id/widgetControlFullRefreshChevron"
+                        android:layout_width="10dp"
+                        android:layout_height="@dimen/widget_control_status_icon"
+                        android:src="@drawable/ic_chevron_right"
+                        android:tint="@color/dji_icon_primary"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </LinearLayout>
+
             <FrameLayout
                 android:id="@+id/widgetControlMore"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="72dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="6dp"
                 android:background="@drawable/widget_surface_selector">
@@ -342,7 +342,7 @@
                     android:src="@drawable/ic_widget_settings" />
             </FrameLayout>
             <TextView android:id="@+id/widgetControlFeedback" android:layout_width="0dp"
-                android:layout_height="match_parent" android:layout_weight="1" android:layout_marginStart="6dp"
+                android:layout_height="match_parent" android:layout_weight="1"
                 android:paddingStart="8dp" android:paddingEnd="8dp" android:gravity="center"
                 android:textSize="18sp" android:textColor="@color/dji_text_primary_dark"
                 android:background="@drawable/widget_surface_dark" android:visibility="gone" />

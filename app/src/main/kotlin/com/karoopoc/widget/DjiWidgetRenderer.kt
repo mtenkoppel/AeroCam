@@ -417,6 +417,26 @@ object DjiWidgetRenderer {
                 for (id in listOf(R.id.widgetControlKeepAwake, R.id.widgetControlSettings)) {
                     setViewLayoutWidth(id, buttonWidth, TypedValue.COMPLEX_UNIT_DIP)
                 }
+                if (size == DjiWidgetSize.FULL) {
+                    val resources = context.resources
+                    val sideWidth = fullControlUtilityWidth(config, resources.displayMetrics.density)
+                    for (id in listOf(R.id.widgetControlFullKeepAwake, R.id.widgetControlMore)) {
+                        setViewLayoutWidth(id, sideWidth, TypedValue.COMPLEX_UNIT_DIP)
+                    }
+                    val gap = resources.getDimensionPixelSize(R.dimen.widget_combined_gap)
+                    val rowHeight = (config.viewSize.second - 12 - 3 * gap) / 4
+                    val statusGap = resources.getDimensionPixelSize(R.dimen.widget_control_status_gap)
+                    val iconSize = resources.getDimensionPixelSize(R.dimen.widget_control_status_icon)
+                    val textMetrics = Paint().apply {
+                        textSize = resources.getDimension(R.dimen.widget_control_status_text)
+                    }.fontMetricsInt
+                    val statusHeight = 3 * maxOf(iconSize, textMetrics.descent - textMetrics.ascent) + 2 * statusGap
+                    // At short heights, let the status determine the toolbar's minimum height.
+                    val utilityHeight = if (rowHeight >= statusHeight || viewState.controlFeedback != null) {
+                        rowHeight.coerceAtLeast(0)
+                    } else android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+                    setViewLayoutHeight(R.id.widgetControlFullUtility, utilityHeight.toFloat(), TypedValue.COMPLEX_UNIT_PX)
+                }
             }
             if (interactive) {
                 setOnClickPendingIntent(R.id.widgetControlSettings, openAppIntent(context, 314))
@@ -663,7 +683,7 @@ object DjiWidgetRenderer {
     ) {
         val full = size == DjiWidgetSize.FULL
         val state = viewState.camera
-        val stacked = size == DjiWidgetSize.LARGE || size == DjiWidgetSize.MEDIUM
+        val stacked = full || size == DjiWidgetSize.LARGE || size == DjiWidgetSize.MEDIUM
         val panel = if (full) R.id.widgetControlFullStatus else R.id.widgetControlStatus
         val battery = if (full) R.id.widgetControlFullBattery else R.id.widgetControlBattery
         val batteryIcon = if (full) R.id.widgetControlFullBatteryIcon else R.id.widgetControlBatteryIcon
@@ -677,7 +697,8 @@ object DjiWidgetRenderer {
         val iconSize = resources.getDimensionPixelSize(R.dimen.widget_control_status_icon)
         val density = resources.displayMetrics.density
         val sideWidth = when (size) {
-            DjiWidgetSize.FULL, DjiWidgetSize.SMALL_HALF -> 0f
+            DjiWidgetSize.FULL -> fullControlUtilityWidth(config, density) + 6f
+            DjiWidgetSize.SMALL_HALF -> 0f
             DjiWidgetSize.SMALL -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) 65f else 78f
             else -> 78f
         }
@@ -728,6 +749,11 @@ object DjiWidgetRenderer {
             setOnClickPendingIntent(panel, actionIntent(context, DjiWidgetActionReceiver.ACTION_REFRESH_VIDEO_SETTINGS, 316))
         }
     }
+
+    private fun fullControlUtilityWidth(config: ViewConfig, density: Float): Float =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            minOf(72f, (config.viewSize.first - 20) / density * .30f)
+        } else 72f
 
     private fun camControlBatteryIcon(size: Int, percent: Int?, color: Int): Bitmap {
         val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)

@@ -3,12 +3,11 @@
 [Issue #53](https://github.com/mtenkoppel/AeroCam/issues/53) · Source baseline: `7bf90c5`.
 
 Keep status icons, type and row spacing consistent across sizes. Put battery
-and storage side by side above the video readout on Full screen, Small and
+and storage side by side above the video readout on Small and
 Small + half. Stack battery, storage and video in three aligned rows on
-Large and Medium. Give the video readout a filmstrip icon.
-On full screen, span the field with the status block
-above the Keep Awake and Settings buttons. Use an even gap between the four
-button rows and remove the dedicated spacer rows.
+Full screen, Large and Medium. Put the status between the Keep Awake and
+Settings buttons. Give the video readout a filmstrip icon. On Full screen,
+use an even gap between the four button rows.
 
 | Gallery preset | Field (px) | Grid | Existing connected layout |
 | --- | ---: | ---: | --- |

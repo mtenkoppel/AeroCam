@@ -107,7 +107,7 @@ class CamControlUiTest {
             }
         }
     }
-    @Test fun fourRowsShareRemainingHeightAndPreserveBatteryColorAndRecordingState() {
+    @Test fun fullStatusSitsBetweenUtilityButtonsAndPreservesRecordingState() {
         for (theme in listOf("dark", "light")) {
             DjiSettings.preferences(context).edit().putString(DjiSettings.KEY_THEME_MODE, theme).commit()
             for (height in listOf(280, 320, 408, 420, 600)) {
@@ -117,14 +117,26 @@ class CamControlUiTest {
                 val video = view.findViewById<View>(R.id.widgetControlFull)
                 val photo = view.findViewById<View>(R.id.widgetControlPhoto)
                 val power = view.findViewById<View>(R.id.widgetControlFullSleep)
-                val rows = listOf(awake.height, settings.height, video.height, photo.height, power.height)
-                assertTrue("$theme/$height equal rows: $rows", rows.max() - rows.min() <= 1)
+                val toolbar = view.findViewById<View>(R.id.widgetControlFullUtility)
+                val status = view.findViewById<View>(R.id.widgetControlFullStatus)
+                val battery = view.findViewById<View>(R.id.widgetControlFullBatteryGroup)
+                val storage = view.findViewById<View>(R.id.widgetControlFullStorageGroup)
+                val readout = view.findViewById<View>(R.id.widgetControlFullResolutionRow)
+                assertEquals(toolbar.height, awake.height)
+                assertEquals(toolbar.height, settings.height)
+                assertEquals(toolbar.height, status.height)
+                assertTrue(awake.right <= status.left && status.right <= settings.left)
+                assertTrue(battery.bottom <= storage.top && storage.bottom <= readout.top)
+                assertTrue(readout.bottom <= status.height)
+                val rows = listOf(video.height, photo.height, power.height)
+                assertTrue("$theme/$height equal control rows: $rows", rows.max() - rows.min() <= 1)
+                if (height >= 408) assertTrue(abs(toolbar.height - video.height) <= 1)
                 val gap = context.resources.getDimensionPixelSize(R.dimen.widget_combined_gap)
                 val photoGap = (photo.layoutParams as android.widget.LinearLayout.LayoutParams).topMargin
-                assertEquals(gap, video.top - view.findViewById<View>(R.id.widgetControlFullUtility).bottom)
+                assertEquals(gap, video.top - toolbar.bottom)
                 assertEquals(gap, power.top - photo.bottom)
                 assertEquals(photoGap, photo.top - video.bottom)
-                assertTrue(abs(4 * video.height + 2 * gap + photoGap + view.findViewById<View>(R.id.widgetControlFullStatus).height - (height - view.paddingTop - view.paddingBottom)) <= 3)
+                assertEquals(height - view.paddingTop - view.paddingBottom, toolbar.height + rows.sum() + 2 * gap + photoGap)
                 assertEquals(DjiTheme.widgetPalette(context).textPrimary, view.findViewById<TextView>(R.id.widgetControlFullBattery).currentTextColor)
                 save(view, "$theme-xl-$height-ready")
                 if (height in listOf(320, 408, 600)) {
