@@ -78,7 +78,7 @@ class LoggingPrivacyTest {
             for ((label, cmd, payload) in listOf(Triple("real GPS data push", 0x17, gps), Triple("connection request", 0x19, pairing))) {
                 field("writeInProgress").setBoolean(client, false)
                 invoke("queueFrame", label, 0, cmd, 0, payload,
-                    BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT, 9, null, { _: Boolean -> })
+                    BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT, 9, null, null, { _: Boolean -> })
                 shadowOf(Looper.getMainLooper()).idle()
                 assertTrue(logs().contains("DJI TX $label"))
                 assertAbsent(DjiProtocol.hex(payload), DjiProtocol.hex(DjiProtocol.createFrame(0, cmd, 0, payload, 9)))
