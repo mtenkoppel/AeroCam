@@ -230,4 +230,5 @@
     <string name="widget_refresh_video">Atualizar</string>
     <string name="widget_refreshing_video">A atualizar…</string>
     <string name="widget_switching_to_video">A mudar para vídeo…</string>
+    <string name="widget_switching_to_video_short">A mudar…</string>
 </resources>

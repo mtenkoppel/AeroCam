@@ -696,7 +696,12 @@ object DjiWidgetRenderer {
         val canRefresh = label == null && !state.recording && !refreshing
         val text = when {
             label != null -> label
-            refreshing && state.cameraMode != DjiCameraMode.VIDEO -> context.getString(R.string.widget_switching_to_video)
+            refreshing && state.cameraMode != DjiCameraMode.VIDEO -> {
+                val message = context.getString(R.string.widget_switching_to_video)
+                val paint = Paint().apply { textSize = resources.getDimension(R.dimen.widget_control_status_text) }
+                if (paint.measureText(message) <= available - 4 * density) message
+                else context.getString(R.string.widget_switching_to_video_short)
+            }
             refreshing -> context.getString(R.string.widget_refreshing_video)
             canRefresh -> context.getString(R.string.widget_refresh_video)
             else -> "—"
@@ -708,6 +713,7 @@ object DjiWidgetRenderer {
             removeAllViews(R.id.widgetControlStatusValues)
             addView(R.id.widgetControlStatusValues, RemoteViews(context.packageName, layout))
             applyTextAlignment(config.copy(alignment = ViewConfig.Alignment.CENTER), battery, storage)
+            setInt(panel, "setGravity", if (stacked) Gravity.START or Gravity.CENTER_VERTICAL else Gravity.CENTER)
         }
         setViewPadding(storageGroup, if (stacked) 0 else 3 * gap, if (stacked) gap else 0, 0, 0)
         setTextViewText(battery, state.batteryPercent?.let { "$it%" } ?: "--%")
@@ -811,8 +817,10 @@ object DjiWidgetRenderer {
         )
         setImageViewResource(
             R.id.widgetControlPhotoIcon,
-            if (!connected || state.recording) {
+            if (!connected) {
                 R.drawable.ic_widget_photo_disabled
+            } else if (state.recording) {
+                R.drawable.ic_widget_photo_muted
             } else if (state.photoState == PhotoCaptureState.COMPLETE) {
                 R.drawable.ic_widget_photo_success
             } else {
