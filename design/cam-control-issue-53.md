@@ -23,8 +23,10 @@ There is no separate X-Large preset. The shared classifier enters Full at
 22 dp before the renderer receives its available height.
 
 Keep the existing 72 dp utility targets in compact fields. Use 6 dp gaps between
-the full-screen controls. Align the status glyphs on a shared box and use a
-consistent gap between each glyph and value. Tint status icons with the same
+the full-screen controls. Use a static battery outline, an SD card, and a
+filmstrip. Give the three icons the same box and stroke weight, and use the
+same text size and weight for every value. Grey out the Photo button while
+recording and use the regular camera glyph. Tint status icons with the same
 foreground as their values; the caption setting should not change status icons.
 The current ride widgets use a fixed dark palette. The proposal previews a
 light palette for review as well; scope any implementation change to Cam Control.
@@ -46,14 +48,32 @@ is reserved. AeroCam decodes EIS but does not expose it in widget state.
 See the [DJI status protocol](https://github.com/dji-sdk/Osmo-GPS-Controller-Demo/blob/main/docs/protocol_data_segment.md#camera-status-push-1d02)
 and [Osmo Action 4 specs](https://www.dji.com/osmo-action-4/specs).
 
-Hide video settings in Photo mode and until the camera reports a known video
-resolution and a valid video FPS index for the current session. The live Photo
-payload reported `16/0/0` for resolution, FPS and EIS. The first Video-mode
+Show a dash until the camera reports a known video resolution and a valid
+video FPS index in Video mode in the current session. Tap the dash to request
+Video mode explicitly and leave the camera there. Wait for a fresh Video
+status with valid parameters before replacing the dash. If already in Video,
+wait for or request a status update without switching modes. Keep the dash
+after a failure, timeout, or disconnect and allow a new attempt once connected.
+Starting a recording already requests Video mode, so use its incoming status
+to update the same label. Never queue a refresh mode change during recording.
+
+The dedicated BLE command `0x1D/0x04` was tested against the connected camera
+through AeroCam's existing command queue. The camera moved Photo → Video
+(`0x01`) → Photo (`0x05`) and reported live view with a zero recording timer
+throughout. The refresh action should send the explicit Video target instead
+of the generic toggle. See [DJI Mode Switch](https://github.com/dji-sdk/Osmo-GPS-Controller-Demo/blob/main/docs/protocol_data_segment.md#mode-switch-1d04).
+
+The first live Photo payload reported `16/0/0` for resolution, FPS and EIS.
+The first Video-mode
 payloads still carried the same tuple before the valid video profile arrived.
 After the camera returned to Photo mode, its packets continued to carry
 `10/3/1`, matching the last verified video profile. These fields can carry
 previous-mode values in either direction, so a Photo packet alone cannot
 verify the current video profile.
+Photo mode reported 8,115 estimated shots remaining. DJI also documents
+photo size, aspect ratio, burst count and countdown fields. The installed
+app does not expose the live photo aspect-ratio byte or the countdown
+fields. Its shared size and burst bytes retained video settings in this test.
 Recompute on each state update and explicitly clear or hide the group when
 reapplying RemoteViews. Verify the fresh-status path before deciding whether a
 scoped freshness flag is needed. Keep existing offline messages and half-width
