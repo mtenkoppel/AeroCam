@@ -11,7 +11,6 @@ import android.os.Build
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.RemoteViews
 import com.karoopoc.DjiPalette
 import com.karoopoc.DjiTheme
@@ -363,7 +362,6 @@ object DjiWidgetRenderer {
         return RemoteViews(context.packageName, R.layout.widget_dji_control).apply {
             setInt(R.id.widgetControlRoot, "setBackgroundResource", R.drawable.widget_root_dark)
             applyWidgetFrame(R.id.widgetControlRoot)
-            applyTextAlignment(config.copy(alignment = ViewConfig.Alignment.CENTER), R.id.widgetControlBattery, R.id.widgetControlStorage)
             applyTextAlignment(config,
                 R.id.widgetControlMessageText, R.id.widgetControlTopMessageText,
                 R.id.widgetControlTopConfirmText, R.id.widgetControlFullOfflineHint,
@@ -667,7 +665,6 @@ object DjiWidgetRenderer {
         val state = viewState.camera
         val stacked = size == DjiWidgetSize.LARGE || size == DjiWidgetSize.MEDIUM
         val panel = if (full) R.id.widgetControlFullStatus else R.id.widgetControlStatus
-        val values = if (full) R.id.widgetControlFullStatusValues else R.id.widgetControlStatusValues
         val battery = if (full) R.id.widgetControlFullBattery else R.id.widgetControlBattery
         val batteryIcon = if (full) R.id.widgetControlFullBatteryIcon else R.id.widgetControlBatteryIcon
         val storage = if (full) R.id.widgetControlFullStorage else R.id.widgetControlStorage
@@ -706,7 +703,12 @@ object DjiWidgetRenderer {
         }
 
         setViewVisibility(panel, View.VISIBLE)
-        setInt(values, "setOrientation", if (stacked) LinearLayout.VERTICAL else LinearLayout.HORIZONTAL)
+        if (!full) {
+            val layout = if (stacked) R.layout.widget_control_values_vertical else R.layout.widget_control_values_horizontal
+            removeAllViews(R.id.widgetControlStatusValues)
+            addView(R.id.widgetControlStatusValues, RemoteViews(context.packageName, layout))
+            applyTextAlignment(config.copy(alignment = ViewConfig.Alignment.CENTER), battery, storage)
+        }
         setViewPadding(storageGroup, if (stacked) 0 else 3 * gap, if (stacked) gap else 0, 0, 0)
         setTextViewText(battery, state.batteryPercent?.let { "$it%" } ?: "--%")
         val batteryTint = if ((state.batteryPercent ?: 100) < 20) palette.batteryLow else palette.textPrimary
