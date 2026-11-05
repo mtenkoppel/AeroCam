@@ -114,7 +114,7 @@ class WidgetRenderingInstrumentation : Instrumentation() {
                             if (!state.camera.recording && (state.photoAwaitingResponse != null || state.camera.photoState == PhotoCaptureState.CAPTURING)) {
                                 check(combined.findViewById<View>(R.id.widgetPhotoSpinner).visibility == View.VISIBLE)
                             }
-                            if (!captionsHidden) save(combined, "${theme.preferenceValue}-$size-$scenario")
+                            if (!captionsHidden) save(combined, "$theme-$size-$scenario")
                         }
                     }
                 }

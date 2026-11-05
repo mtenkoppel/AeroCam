@@ -90,6 +90,20 @@ class CamControlUiTest {
                     assertTrue(panel.height > 0)
                 }
                 save(view, "review-$name-$scenario")
+                val captionHeight = context.resources.getDimensionPixelSize(R.dimen.widget_field_caption_height)
+                val fieldConfig = config.copy(viewSize = width to height - captionHeight)
+                val field = DjiWidgetRenderer.captionedField(
+                    context, R.string.dji_power, true,
+                    DjiWidgetRenderer.cameraControl(context, fieldConfig, state, interactive = false),
+                ).apply(context, FrameLayout(context))
+                field.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY))
+                field.layout(0, 0, width, height)
+                if (scenario !in setOf("offline", "searching")) {
+                    val panel = field.findViewById<ViewGroup>(panelId)
+                    val videoLine = panel.getChildAt(panel.childCount - 1)
+                    assertTrue("$name/$scenario readout fits below the native caption", videoLine.top >= 0 && videoLine.bottom <= panel.height)
+                }
+                save(field, "field-$name-$scenario")
             }
         }
     }
