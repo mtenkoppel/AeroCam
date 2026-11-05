@@ -127,7 +127,7 @@ class WidgetRenderingInstrumentation : Instrumentation() {
 
     private fun captureCamControl(sizes: List<Pair<String, ViewConfig>>, camera: DjiCameraState) {
         val video = camera.copy(cameraMode = DjiCameraMode.VIDEO, videoResolution = 16, videoFps = 6, keepAwakeEnabled = true)
-        val photo = video.copy(cameraMode = DjiCameraMode.PHOTO)
+        val photo = video.copy(cameraMode = DjiCameraMode.PHOTO, videoResolution = null, videoFps = null)
         val offline = video.copy(connection = CameraConnectionState.DISCONNECTED)
         val cases = linkedMapOf(
             "ready" to DjiWidgetViewState(video),
