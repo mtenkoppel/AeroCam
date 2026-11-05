@@ -26,4 +26,12 @@
     <string name="automation_auto_stop">AUTO-STOPP</string>
     <string name="automation_rec_started">AUFNAHME GESTARTET</string>
     <string name="automation_rec_stopped">AUFNAHME GESTOPPT</string>
+    <string name="automation_lap_help">Halte einen Moment fest, wenn Karoo eine neue Runde erfasst.</string>
+    <string name="automation_power_help">Halte harte Antritte fest, wenn deine Leistung den gewählten Wattwert überschreitet.</string>
+    <string name="automation_speed_help">Halte schnelle Abschnitte fest, wenn deine Geschwindigkeit den Schwellenwert überschreitet.</string>
+    <string name="automation_summit_help">Halte den Gipfel eines Anstiegs auf deiner aktiven Route fest.</string>
+    <string name="automation_hr_help">Halte intensive Belastungen fest, wenn deine Herzfrequenz den Schwellenwert überschreitet.</string>
+    <string name="automation_trigger_detail_help">Dieser Auslöser verwendet während einer aktiven Fahrt den gewählten Automatisierungsmodus. Schwellen lösen beim Überschreiten einmal aus und werden nach Unterschreiten der Rücksetzgrenze erneut bereit. Fehlende Sensordaten lösen keine Aufnahme aus.</string>
+    <string name="automation_boundary_help">Fahrtgrenzen fügen nur einer laufenden Videoaufnahme Highlights hinzu. Sie starten keine Videos und nehmen keine Fotos auf. Pausen und Fortsetzungen setzen keine Fahrtmarker.</string>
+    <string name="automation_help">Wähle einen Modus und füge Auslöser hinzu. Bei automatischen Highlights steuerst du Start und Stopp selbst. Automatische Aufnahmen starten durch einen Auslöser und stoppen standardmäßig, wenn alle aktiven Schwellen eine volle Minute unterschritten bleiben. Ein neuer Antritt oder ein Ereignis setzt die Wartezeit zurück. In den Aufnahmeeinstellungen kannst du die Dauer ändern oder automatisches Stoppen ausschalten. Automatische Highlights sind standardmäßig an. Automatische Fotos werden höchstens alle 30 Sekunden aufgenommen; beschäftigte, aufnehmende oder nicht verbundene Kameras werden übersprungen. Ereignisse werden nicht nachgeholt. Manuell gestartete Videos werden nie automatisch gestoppt. Pause, Fahrtende, geänderte Automatisierungseinstellungen oder Verbindungsverlust geben die laufende Aufnahme in deine Kontrolle zurück. Fehlende Sensordaten unterbrechen die Stopp-Wartezeit, bis neue Daten vorliegen. Die Kamera muss eingeschaltet und verbunden sein.</string>
 </resources>

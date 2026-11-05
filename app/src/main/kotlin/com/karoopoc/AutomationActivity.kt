@@ -90,7 +90,7 @@ class AutomationActivity : Activity() {
                     val icon = getDrawable(android.R.drawable.ic_menu_delete)!!.mutate()
                     icon.setTint(ui.palette.textSecondary); icon.setBounds(0, 0, ui.dp(20), ui.dp(20))
                     setCompoundDrawablesRelative(icon, null, null, null)
-                }, ui.fullWidthParams(ui.dp(24)))
+                }, LinearLayout.LayoutParams(-2, -2).apply { gravity = Gravity.CENTER_HORIZONTAL; topMargin = ui.dp(24) })
                 actionLabel = getString(if (existing) R.string.automation_save else R.string.automation_add)
                 save = {
                     var valid = true

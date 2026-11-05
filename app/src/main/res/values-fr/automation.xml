@@ -26,4 +26,12 @@
     <string name="automation_auto_stop">ARRÊT AUTO</string>
     <string name="automation_rec_started">ENREG. DÉMARRÉ</string>
     <string name="automation_rec_stopped">ENREG. ARRÊTÉ</string>
+    <string name="automation_lap_help">Capturez un moment lorsque Karoo enregistre un nouveau tour.</string>
+    <string name="automation_power_help">Capturez vos efforts lorsque la puissance dépasse le seuil choisi.</string>
+    <string name="automation_speed_help">Capturez les passages rapides lorsque la vitesse dépasse le seuil choisi.</string>
+    <string name="automation_summit_help">Capturez le sommet d’une montée sur votre itinéraire actif.</string>
+    <string name="automation_hr_help">Capturez les efforts intenses lorsque la fréquence cardiaque dépasse le seuil choisi.</string>
+    <string name="automation_trigger_detail_help">Ce déclencheur utilise le mode choisi pendant une sortie en cours. Il se déclenche une fois au franchissement du seuil et se réarme après le passage sous la limite de réinitialisation. Les données manquantes ne déclenchent aucune capture.</string>
+    <string name="automation_boundary_help">Les limites de sortie ajoutent uniquement des moments forts à une vidéo en cours. Elles ne démarrent pas de vidéo et ne prennent pas de photo. Les pauses et reprises n’ajoutent pas ces marqueurs.</string>
+    <string name="automation_help">Choisissez un mode et ajoutez des déclencheurs. Avec les moments forts automatiques, vous contrôlez le début et la fin de la vidéo. L’enregistrement automatique démarre sur un déclencheur et s’arrête après une minute entière sans seuil actif. Un nouvel effort ou événement relance ce délai. Modifiez la durée ou désactivez l’arrêt dans les réglages. Les moments forts automatiques sont activés par défaut. Les photos automatiques sont espacées d’au moins 30 secondes ; les caméras occupées, déconnectées ou enregistrant une vidéo sont ignorées. Aucun événement n’est différé. Les vidéos manuelles ne sont jamais arrêtées automatiquement. Une pause, la fin de la sortie, un changement de réglage ou une déconnexion rend la vidéo au contrôle manuel. Sans données de capteur, le délai attend des données fraîches. La caméra doit être allumée et connectée.</string>
 </resources>

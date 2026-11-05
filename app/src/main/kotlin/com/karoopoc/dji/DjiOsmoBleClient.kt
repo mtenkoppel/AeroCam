@@ -1331,13 +1331,14 @@ class DjiOsmoBleClient(
         writeType: Int,
         seq: Int = nextSeq(),
         keepAwakeToken: Long? = null,
+        automaticValid: (() -> Boolean)? = null,
         onComplete: (Boolean) -> Unit = {},
     ) {
         val frame = DjiProtocol.createFrame(cmdSet, cmdId, cmdType, payload, seq)
         mainHandler.post {
             if (diagnosticConnectionPaused) return@post
             if (keepAwakeToken != null && !validKeepAwakeToken(keepAwakeToken)) return@post
-            writeQueue.addLast(PendingWrite(label, frame, writeType, onComplete, keepAwakeToken))
+            writeQueue.addLast(PendingWrite(label, frame, writeType, onComplete, keepAwakeToken, automaticValid))
             drainWriteQueue()
         }
     }
@@ -1405,7 +1406,7 @@ class DjiOsmoBleClient(
         if (active.operation.automationToken != null) {
             val settings = DjiSettings.read(appContext)
             val expectedMode = if (active.operation.label == "take photo") AutomationMode.PHOTOS else AutomationMode.RECORDING
-            if (active.operation.automationToken != automationGeneration || !automationRideActive || !isProtocolLinkFresh() ||
+            if (active.operation.automationToken != automationGeneration || SystemClock.elapsedRealtime() > active.operation.automationDeadline || !automationRideActive || !isProtocolLinkFresh() ||
                 !settings.autoHighlightsEnabled || settings.mode != expectedMode ||
                 (active.operation.label == "stop recording" && (!settings.autoStop || recordingOrigin.clip == 0L || !latestRecording)) ||
                 (active.operation.label != "stop recording" && latestRecording && active.stepIndex < active.operation.steps.size)) {
@@ -1445,6 +1446,10 @@ class DjiOsmoBleClient(
             payload = step.payload,
             writeType = step.writeType,
             keepAwakeToken = active.operation.keepAwakeToken,
+            automaticValid = active.operation.automationToken?.let { token -> {
+                token == automationGeneration && automationRideActive &&
+                    SystemClock.elapsedRealtime() <= active.operation.automationDeadline && isProtocolLinkFresh()
+            } },
             onComplete = { success ->
                 if (activeOperation !== active) return@queueFrame
                 if (!success) {
@@ -1468,6 +1473,11 @@ class DjiOsmoBleClient(
     private fun drainWriteQueue() {
         if (writeInProgress) return
         val pending = writeQueue.removeFirstOrNull() ?: return
+        if (pending.automaticValid?.invoke() == false) {
+            pending.onComplete(false)
+            drainWriteQueue()
+            return
+        }
         if (pending.keepAwakeToken != null && !validKeepAwakeToken(pending.keepAwakeToken)) {
             pending.onComplete(false)
             drainWriteQueue()
@@ -1889,6 +1899,7 @@ class DjiOsmoBleClient(
         val writeType: Int,
         val onComplete: (Boolean) -> Unit,
         val keepAwakeToken: Long? = null,
+        val automaticValid: (() -> Boolean)? = null,
     )
 
     private data class CommandStep(
@@ -1903,6 +1914,7 @@ class DjiOsmoBleClient(
 
     private data class CameraOperation(
         val automationToken: Long? = null,
+        val automationDeadline: Long = SystemClock.elapsedRealtime() + 2000,
         val label: String,
         val priority: CommandPriority,
         val steps: List<CommandStep>,

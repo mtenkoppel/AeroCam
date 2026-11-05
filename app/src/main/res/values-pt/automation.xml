@@ -26,4 +26,12 @@
     <string name="automation_auto_stop">PARAGEM AUTO</string>
     <string name="automation_rec_started">GRAV. INICIADA</string>
     <string name="automation_rec_stopped">GRAV. PARADA</string>
+    <string name="automation_lap_help">Capte um momento quando o Karoo regista uma nova volta.</string>
+    <string name="automation_power_help">Capte esforços quando a potência ultrapassa o limiar escolhido.</string>
+    <string name="automation_speed_help">Capte trechos rápidos quando a velocidade ultrapassa o limiar escolhido.</string>
+    <string name="automation_summit_help">Capte o topo de uma subida na rota ativa.</string>
+    <string name="automation_hr_help">Capte esforços intensos quando a frequência cardíaca ultrapassa o limiar escolhido.</string>
+    <string name="automation_trigger_detail_help">Este evento usa o modo escolhido durante uma atividade em curso. Dispara uma vez ao ultrapassar o limiar e fica pronto novamente após descer abaixo do limite de reposição. Dados em falta não provocam capturas.</string>
+    <string name="automation_boundary_help">Os limites da atividade só adicionam destaques a um vídeo em curso. Nunca iniciam vídeos nem tiram fotos. Pausas e retomas não adicionam estes marcadores.</string>
+    <string name="automation_help">Escolha um modo e adicione eventos. Com destaques automáticos, controla o início e a paragem. A gravação automática inicia um vídeo num evento e para após um minuto completo sem limiares ativos. Um novo esforço ou evento reinicia a espera. Pode alterar a duração ou desativar a paragem nas definições. Os destaques automáticos estão ativos por predefinição. As fotos automáticas respeitam pelo menos 30 segundos entre capturas e ignoram câmaras ocupadas, a gravar ou desligadas. Os eventos não são adiados. Os vídeos manuais nunca param automaticamente. Pausar, terminar, alterar definições ou perder a ligação devolve o vídeo ao controlo manual. Sem dados dos sensores, o temporizador espera dados novos. A câmara deve estar ligada e conectada.</string>
 </resources>
