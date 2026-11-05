@@ -40,11 +40,13 @@ class HighlightCooldownSettingsTest {
         val activity = Robolectric.buildActivity(Activity::class.java).setup().get()
         val settings = SettingsViews(activity)
         val content = settings.column()
-        settings.automation(content)
+        settings.cooldown(content)
         activity.setContentView(content)
         fun descendants(view: View): List<View> = listOf(view) + if (view is ViewGroup)
             (0 until view.childCount).flatMap { descendants(view.getChildAt(it)) } else emptyList()
-        val spinner = descendants(content).filterIsInstance<Spinner>().single {
+        descendants(content).filterIsInstance<android.widget.Button>().single().performClick()
+        val dialog = org.robolectric.shadows.ShadowAlertDialog.getLatestAlertDialog()
+        val spinner = descendants(dialog.window!!.decorView).filterIsInstance<Spinner>().single {
             it.contentDescription == activity.getString(R.string.highlight_cooldown)
         }
         shadowOf(Looper.getMainLooper()).idle()
@@ -59,6 +61,7 @@ class HighlightCooldownSettingsTest {
         shadowOf(Looper.getMainLooper()).idle()
         assertEquals(2, spinner.selectedItemPosition)
         assertEquals(30, DjiSettings.highlightCooldownSeconds(activity))
+        dialog.dismiss()
     }
 
     @Test fun manualAndEventRequestsAreExemptByDefault() {

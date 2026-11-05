@@ -10,9 +10,6 @@
     <string name="battery">Battery</string>
     <string name="hide_field_captions">Hide data field captions</string>
     <string name="theme_mode">Style</string>
-    <string name="theme_system">Use system</string>
-    <string name="theme_dark">Dark</string>
-    <string name="theme_light">Light</string>
     <string name="keep_osmo_awake">Prevent standby</string>
     <string name="recording">Recording</string>
     <string name="card_space">Card space</string>
@@ -183,7 +180,6 @@
     <string name="keep_camera_awake">Keep camera awake</string>
     <string name="prevent_standby_summary">Prevents the camera from automatically turning off.</string>
     <string name="recommended_camera_setup">Recommended camera setup</string>
-    <string name="appearance">Appearance</string>
     <string name="captions_summary">Hides the widget name and saves you some space.</string>
     <string name="advanced_settings">Advanced settings</string>
     <string name="restart_onboarding">Restart onboarding</string>
@@ -215,11 +211,11 @@
     <string name="help_number">%1$02d</string>
     <string name="setup_search_timeout">Search is taking longer than expected. Check the camera and try again.</string>
     <string name="highlight_descent_grade_threshold">Downhill gradient (%)</string>
-    <string name="highlight_descent_summary">Both thresholds required. Use a negative downhill gradient.</string>
+    <string name="highlight_descent_summary">Triggers at your selected downhill gradient. Optionally require a minimum speed too.</string>
     <string name="highlight_uphill">Uphill marker</string>
     <string name="highlight_uphill_speed_threshold">Uphill speed (km/h)</string>
     <string name="highlight_uphill_grade_threshold">Uphill gradient (%)</string>
-    <string name="highlight_uphill_summary">Both thresholds required. Use a positive uphill gradient.</string>
+    <string name="highlight_uphill_summary">Triggers at your selected uphill gradient. Optionally require a minimum speed too.</string>
     <string name="highlight_uphill_feedback">Uphill</string>
     <string name="diagnostic_connection_title">Debug: camera connection</string>
     <string name="diagnostic_disconnect">Disconnect camera</string>
@@ -233,4 +229,10 @@
 
 
 
+    <string name="highlight_require_speed">Also require speed</string>
+    <string name="ob_restart_pairing_title">Pair the camera again?</string>
+    <string name="ob_restart_pairing_message">A camera is already saved. You can pair again or keep it and continue setup.</string>
+    <string name="ob_pair_again">Pair again</string>
+    <string name="ob_skip_pairing">Skip pairing</string>
+    <string name="pairing_connect_camera">Connect camera</string>
 </resources>

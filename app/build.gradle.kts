@@ -16,8 +16,8 @@ android {
         applicationId = "com.karoopoc"
         minSdk = 23
         targetSdk = 34
-        versionCode = 30
-        versionName = "0.9.0-beta.6"
+        versionCode = 44
+        versionName = "1.0.1"
         testInstrumentationRunner = "com.karoopoc.widget.WidgetRenderingInstrumentation"
     }
 
@@ -39,6 +39,10 @@ android {
 
     buildTypes {
         debug {
+            // Explicit opt-in for release-signed, debuggable device test APKs.
+            if (providers.gradleProperty("releaseSignedDebug").orNull == "true") {
+                signingConfig = signingConfigs.getByName("release")
+            }
             // Isolated native rendering checks must not replace the rider's app.
             if (providers.gradleProperty("widgetCapture").orNull == "true") {
                 applicationIdSuffix = ".capture"

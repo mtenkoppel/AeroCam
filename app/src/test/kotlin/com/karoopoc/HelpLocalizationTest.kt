@@ -35,7 +35,7 @@ class HelpLocalizationTest {
                 assertEquals("$language/$file must not silently fall back to English", expected, actual)
                 assertFalse(actual.contains("{{"))
                 if (lang != "en") assertNotEquals(HelpContent.load(app, file), actual)
-                val view = HelpContent.render(context, actual, DjiTheme.palette(context)) { it * 2 }
+                val view = HelpContent.render(context, actual, DjiTheme.appPalette(context)) { it * 2 }
                 assertTrue(view.childCount > 0)
                 if (file == "get-ready-for-a-ride.md") {
                     val images = (0 until view.childCount).map { view.getChildAt(it) }.filterIsInstance<ImageView>()

@@ -9,9 +9,6 @@
     <string name="battery">Bateria</string>
     <string name="hide_field_captions">Ocultar títulos dos campos</string>
     <string name="theme_mode">Estilo</string>
-    <string name="theme_system">Usar sistema</string>
-    <string name="theme_dark">Escuro</string>
-    <string name="theme_light">Claro</string>
     <string name="keep_osmo_awake">Manter câmara ativa</string>
     <string name="recording">Gravação</string>
     <string name="card_space">Espaço no cartão</string>
@@ -182,7 +179,6 @@
     <string name="keep_camera_awake">Manter a câmara ativa</string>
     <string name="prevent_standby_summary">Impede que a câmara se desligue automaticamente.</string>
     <string name="recommended_camera_setup">Definições recomendadas da câmara</string>
-    <string name="appearance">Aparência</string>
     <string name="captions_summary">Oculta o nome do widget e poupa algum espaço.</string>
     <string name="advanced_settings">Definições avançadas</string>
     <string name="restart_onboarding">Reiniciar a configuração</string>
@@ -214,15 +210,21 @@
     <string name="help_number">%1$02d</string>
     <string name="setup_search_timeout">A pesquisa está a demorar mais do que o esperado. Verifica a câmara e tenta novamente.</string>
     <string name="highlight_descent_grade_threshold">Inclinação da descida (%)</string>
-    <string name="highlight_descent_summary">Ambos os limites são necessários. Inclinação negativa na descida.</string>
+    <string name="highlight_descent_summary">Ativa-se na inclinação de descida escolhida. Também podes exigir uma velocidade mínima.</string>
     <string name="highlight_uphill">Marcador de subida</string>
     <string name="highlight_uphill_speed_threshold">Velocidade na subida (km/h)</string>
     <string name="highlight_uphill_grade_threshold">Inclinação da subida (%)</string>
-    <string name="highlight_uphill_summary">Ambos os limites são necessários. Inclinação positiva na subida.</string>
+    <string name="highlight_uphill_summary">Ativa-se na inclinação de subida escolhida. Também podes exigir uma velocidade mínima.</string>
     <string name="highlight_uphill_feedback">Subida</string>
     <string name="diagnostic_connection_title">Depuração: ligação da câmara</string>
     <string name="diagnostic_disconnect">Desligar câmara</string>
     <string name="diagnostic_reconnect">Voltar a ligar a câmara</string>
     <string name="diagnostic_connection_hint">Apenas para testes manuais. O Bluetooth permanece ativo. A desconexão é bloqueada durante uma gravação ou uma ação pendente da câmara.</string>
     <string name="diagnostic_connection_paused">Ligação da câmara em pausa. Use Voltar a ligar a câmara para continuar. Reiniciar o serviço da aplicação também termina esta pausa de depuração.</string>
+    <string name="highlight_require_speed">Exigir também velocidade</string>
+    <string name="ob_restart_pairing_title">Emparelhar a câmara novamente?</string>
+    <string name="ob_restart_pairing_message">Já existe uma câmara guardada. Podes emparelhá-la de novo ou mantê-la e continuar a configuração.</string>
+    <string name="ob_pair_again">Emparelhar de novo</string>
+    <string name="ob_skip_pairing">Saltar emparelhamento</string>
+    <string name="pairing_connect_camera">Ligar a câmara</string>
 </resources>

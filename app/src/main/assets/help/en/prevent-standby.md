@@ -18,9 +18,3 @@ The prevent standby feature works best if you configure the camera in a particul
 4. Turn off camera sounds if you prefer.
 
 Menu names may differ slightly between camera firmware versions.
-
-## During a ride
-
-In AeroCam, open **Settings → Prevent standby** and turn on **Keep camera awake**.
-
-If the connection is lost, AeroCam resumes Prevent standby after the camera reconnects.

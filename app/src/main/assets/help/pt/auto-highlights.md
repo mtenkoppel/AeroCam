@@ -6,16 +6,6 @@ Um destaque marca um momento interessante numa gravação de vídeo. Ajuda-te a 
 
 O AeroCam pode adicionar um destaque quando acontece algo durante a tua volta. O evento que o provoca chama-se **acionador**.
 
-## Marcadores de início/fim da volta
-
-Esta opção está desativada em novas instalações. As atualizações preservam as escolhas existentes e o valor predefinido anterior das instalações antigas. Ative **Destaques automáticos** e **Marcadores de início/fim da volta** para a utilizar.
-
-- Só é adicionado um marcador de início se a câmara já estiver a gravar no início da volta. Começar a gravar mais tarde não adiciona um marcador de início retroativo.
-- É adicionado um marcador de fim ao terminar uma volta ativa ou em pausa, se a câmara ainda estiver a gravar. O Karoo comunica o mesmo estado final ao guardar ou descartar a volta; ambas as ações podem gerar esse marcador.
-- Pausar e retomar não adiciona marcadores. Os marcadores perdidos não são recuperados mais tarde, nem após uma nova ligação.
-- Estes marcadores nunca iniciam uma gravação, mesmo com o início automático ativo, e não estão sujeitos ao intervalo mínimo dos marcadores automáticos por limiar.
-
-
 ## Acionadores disponíveis
 
 - **Marcador de volta:** Começa uma nova volta.
@@ -23,19 +13,17 @@ Esta opção está desativada em novas instalações. As atualizações preserva
 - **Velocidade máxima:** A tua velocidade ultrapassa o limite definido.
 - **Topo de subida:** O Karoo indica o fim de uma subida.
 - **Pico de frequência cardíaca:** A tua frequência cardíaca ultrapassa o limite definido.
-- **Marcador de subida:** São atingidos os limites definidos de velocidade de subida e de inclinação positiva.
-- **Marcador de descida:** São atingidos os limites definidos de velocidade de descida e de inclinação negativa.
+- **Marcador de subida:** Ativa-se na inclinação de subida escolhida, com velocidade mínima opcional.
+- **Marcador de descida:** Ativa-se na inclinação de descida escolhida, com velocidade mínima opcional.
 - **Marcadores de início/fim da volta:** Marca o início e o fim da volta apenas se a câmara já estiver a gravar. Pausar e retomar não adiciona marcadores. Nunca inicia uma gravação.
 
 Só são utilizados os acionadores que ativares nas definições.
 
 ## Limites para subidas e descidas
 
-Ativa a subida, a descida ou ambas de forma independente. Cada direção tem os seus próprios limites de velocidade e inclinação, e **ambos os limites têm de ser atingidos**.
+Ativa subida, descida ou ambas separadamente. Usa inclinação positiva nas subidas e negativa nas descidas. Desativa **Exigir também velocidade** para usar apenas a inclinação. Com a opção ativa, ambos os limites têm de ser atingidos.
 
-Usa uma **inclinação positiva para subidas** e uma **negativa para descidas**. Por exemplo, numa subida, **20 km/h** e **+5%** significam pelo menos 20 km/h numa inclinação ascendente de 5% ou superior. Numa descida, **60 km/h** e **−6%** significam pelo menos 60 km/h numa inclinação descendente de 6% ou superior.
-
-Os valores de descida existentes continuam a ser **50 km/h** e **−3%**; o acionador permanece desativado até o ativares. O novo acionador de subida também começa desativado, com **20 km/h** e **+3%** como valores iniciais. Pequenas oscilações em torno de um limite não criam destaques repetidos.
+Por exemplo, **+10%** sem condição de velocidade marca uma subida íngreme a qualquer ritmo. **+5%** e **30 km/h** marcam uma subida rápida. O mesmo vale para descidas com inclinação negativa. Pequenas oscilações não criam destaques repetidos.
 
 ## Durante uma gravação
 

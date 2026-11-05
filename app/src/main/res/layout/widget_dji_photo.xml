@@ -29,7 +29,7 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:text="@string/widget_searching"
-            android:textAlignment="center"
+            android:textAlignment="gravity"
             android:textColor="@color/dji_text_primary_dark"
             android:textSize="16sp" />
 

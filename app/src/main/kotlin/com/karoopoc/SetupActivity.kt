@@ -28,15 +28,18 @@ class SetupActivity : DetailActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var searchingUntil = 0L
     private lateinit var search: Button
-    private lateinit var continueButton: Button
     private lateinit var summary: TextView
     private var permissionGranted = false
     private var pendingSearch = false
+    private var connectionRequested = false
+    private var permissionDenied = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         page = savedInstanceState?.getString("page")?.let { name -> Page.entries.find { it.name == name } } ?: Page.CONNECT
         searchingUntil = savedInstanceState?.getLong("searchingUntil") ?: 0L
+        connectionRequested = savedInstanceState?.getBoolean("connectionRequested") ?: false
+        permissionDenied = savedInstanceState?.getBoolean("permissionDenied") ?: false
         showPage()
         if (hasPermissions()) observeCamera()
     }
@@ -51,6 +54,8 @@ class SetupActivity : DetailActivity() {
         currentFocus?.clearFocus()
         outState.putString("page", page.name)
         outState.putLong("searchingUntil", searchingUntil)
+        outState.putBoolean("connectionRequested", connectionRequested)
+        outState.putBoolean("permissionDenied", permissionDenied)
         super.onSaveInstanceState(outState)
     }
 
@@ -74,6 +79,8 @@ class SetupActivity : DetailActivity() {
     private fun button(label: Int, action: () -> Unit) = Button(this).apply {
         text = getString(label)
         isAllCaps = false
+        textSize = 19f
+        minHeight = ui.dp(53)
         setOnClickListener { action() }
     }
 
@@ -85,19 +92,33 @@ class SetupActivity : DetailActivity() {
         findViewById<android.widget.ScrollView>(R.id.article_scroll)?.scrollTo(0, 0)
         when (page) {
             Page.CONNECT -> {
-                body.addView(ui.text(getString(R.string.setup_connect_first), 24f, true), ui.fullWidthParams(bottomMargin = ui.dp(12)))
-                summary = ui.secondaryText(getString(R.string.pairing_subtitle)).apply { minLines = 3 }
+                body.addView(android.widget.ImageView(this).apply {
+                    setImageResource(R.drawable.aerocam_pairing)
+                    imageTintList = android.content.res.ColorStateList.valueOf(ui.palette.textPrimary)
+                    scaleType = android.widget.ImageView.ScaleType.FIT_CENTER
+                    importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+                }, android.widget.LinearLayout.LayoutParams(ui.dp(100), ui.dp(80)).apply {
+                    gravity = Gravity.CENTER_HORIZONTAL
+                    bottomMargin = ui.dp(12)
+                })
+                body.addView(ui.text(getString(R.string.app_name), 24f, true).apply {
+                    gravity = Gravity.CENTER
+                }, ui.fullWidthParams(bottomMargin = ui.dp(12)))
+                body.addView(ui.secondaryText(getString(R.string.pairing_subtitle)).apply {
+                    textSize = 17f
+                    gravity = Gravity.CENTER
+                }, ui.fullWidthParams(bottomMargin = ui.dp(20)))
+                search = button(R.string.pairing_search) { requestSearch() }.apply {
+                    setTextColor(getColor(R.color.white))
+                    backgroundTintList = android.content.res.ColorStateList.valueOf(getColor(R.color.dji_surface_selector))
+                }
+                body.addView(search, ui.fullWidthParams(bottomMargin = ui.dp(12)))
+                summary = ui.secondaryText("").apply { visibility = View.GONE }
                 body.addView(summary, ui.fullWidthParams(bottomMargin = ui.dp(12)))
+                val instructions = ui.group(body, getString(R.string.pairing_connect_camera))
                 listOf(R.string.pairing_step_1, R.string.pairing_step_2, R.string.pairing_step_3, R.string.pairing_step_4).forEach {
-                    body.addView(ui.text(getString(it)), ui.fullWidthParams(bottomMargin = ui.dp(10)))
+                    instructions.addView(ui.secondaryText(getString(it)), ui.fullWidthParams(bottomMargin = ui.dp(10)))
                 }
-                search = button(R.string.pairing_search) { requestSearch() }
-                continueButton = button(R.string.continue_setup) {
-                    startActivity(Intent(this, OnboardingActivity::class.java).putExtra("replay", true))
-                    finish()
-                }
-                body.addView(search, ui.fullWidthParams())
-                body.addView(continueButton, ui.fullWidthParams())
                 body.addView(ui.secondaryText(getString(R.string.dji_independence_notice)).apply { textSize = 11f }, ui.fullWidthParams(topMargin = ui.dp(12)))
                 renderConnection(DjiCameraController.state())
             }
@@ -135,6 +156,8 @@ class SetupActivity : DetailActivity() {
             return
         }
         observeCamera()
+        connectionRequested = true
+        permissionDenied = false
         searchingUntil = SystemClock.elapsedRealtime() + 10_000L
         search.text = getString(R.string.pairing_searching)
         search.isEnabled = false
@@ -150,10 +173,14 @@ class SetupActivity : DetailActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode != PERMISSION_REQUEST) return
         permissionGranted = grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }
+        permissionDenied = !permissionGranted
         if (permissionGranted) {
             observeCamera()
             if (pendingSearch) requestSearch()
-        } else if (::summary.isInitialized) summary.text = getString(R.string.ble_permissions_denied)
+        } else if (::summary.isInitialized) {
+            summary.text = getString(R.string.ble_permissions_denied)
+            summary.visibility = View.VISIBLE
+        }
         pendingSearch = false
     }
 
@@ -164,6 +191,13 @@ class SetupActivity : DetailActivity() {
         val latched = SystemClock.elapsedRealtime() < searchingUntil && !state.configured
         val connected = state.connection == CameraConnectionState.CONNECTED
         if (connecting || connected) searchingUntil = 0L
+        // A stale connected snapshot during Forget must not bypass the Search screen.
+        if (connected && connectionRequested && !isFinishing) {
+            startActivity(Intent(this, OnboardingActivity::class.java)
+                .putExtra("replay", true).putExtra("paired", true))
+            finish()
+            return
+        }
         search.text = getString(when {
             connecting -> R.string.pairing_accept
             searching && state.lastMessage.contains("found", ignoreCase = true) -> R.string.pairing_found
@@ -171,16 +205,15 @@ class SetupActivity : DetailActivity() {
             state.configured -> R.string.connect_known_dji
             else -> R.string.pairing_search
         })
-        search.isEnabled = !connecting && !searching && !latched && !connected
-        summary.text = getString(when {
-            !permissionGranted -> R.string.ble_permissions_denied
-            connected -> R.string.pairing_connected
-            state.configured -> R.string.setup_already_paired
+        search.isEnabled = !connecting && !searching && !latched && !connected && !state.diagnosticConnectionPaused
+        val message = when {
+            permissionDenied -> R.string.ble_permissions_denied
+            connecting -> R.string.pairing_accept
             searching && state.lastMessage.contains("found", ignoreCase = true) -> R.string.pairing_accept
-            else -> R.string.pairing_subtitle
-        })
-        continueButton.visibility = if (state.configured) View.VISIBLE else View.INVISIBLE
-        continueButton.isEnabled = state.configured && !connecting && !searching
+            else -> 0
+        }
+        summary.text = if (message == 0) "" else getString(message)
+        summary.visibility = if (message == 0) View.GONE else View.VISIBLE
     }
 
     private fun requiredPermissions() = if (Build.VERSION.SDK_INT >= 31) arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT)

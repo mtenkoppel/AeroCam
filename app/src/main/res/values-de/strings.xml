@@ -9,9 +9,6 @@
     <string name="battery">Akku</string>
     <string name="hide_field_captions">Datenfeldtitel ausblenden</string>
     <string name="theme_mode">Darstellung</string>
-    <string name="theme_system">Systemeinstellung</string>
-    <string name="theme_dark">Dunkel</string>
-    <string name="theme_light">Hell</string>
     <string name="keep_osmo_awake">Kamera wach halten</string>
     <string name="recording">Aufnahme</string>
     <string name="card_space">Speicherplatz</string>
@@ -182,7 +179,6 @@
     <string name="keep_camera_awake">Kamera wach halten</string>
     <string name="prevent_standby_summary">Verhindert, dass sich die Kamera automatisch ausschaltet.</string>
     <string name="recommended_camera_setup">Empfohlene Kameraeinstellungen</string>
-    <string name="appearance">Erscheinungsbild</string>
     <string name="captions_summary">Blendet den Widget-Namen aus und spart etwas Platz.</string>
     <string name="advanced_settings">Erweiterte Einstellungen</string>
     <string name="restart_onboarding">Einrichtung erneut starten</string>
@@ -214,15 +210,21 @@
     <string name="help_number">%1$02d</string>
     <string name="setup_search_timeout">Die Suche dauert länger als erwartet. Prüfe die Kamera und versuche es erneut.</string>
     <string name="highlight_descent_grade_threshold">Gefälle (%)</string>
-    <string name="highlight_descent_summary">Beide Schwellen müssen erreicht sein. Negatives Gefälle.</string>
+    <string name="highlight_descent_summary">Löst beim gewählten Gefälle aus. Optional muss auch eine Mindestgeschwindigkeit erreicht werden.</string>
     <string name="highlight_uphill">Anstiegsmarker</string>
     <string name="highlight_uphill_speed_threshold">Tempo bergauf (km/h)</string>
     <string name="highlight_uphill_grade_threshold">Steigung (%)</string>
-    <string name="highlight_uphill_summary">Beide Schwellen müssen erreicht sein. Positive Steigung.</string>
+    <string name="highlight_uphill_summary">Löst bei der gewählten Steigung aus. Optional muss auch eine Mindestgeschwindigkeit erreicht werden.</string>
     <string name="highlight_uphill_feedback">Anstieg</string>
     <string name="diagnostic_connection_title">Debug: Kameraverbindung</string>
     <string name="diagnostic_disconnect">Kamera trennen</string>
     <string name="diagnostic_reconnect">Kamera erneut verbinden</string>
     <string name="diagnostic_connection_hint">Nur für manuelle Tests. Bluetooth bleibt eingeschaltet. Trennen ist während einer Aufnahme oder eines ausstehenden Kamerabefehls gesperrt.</string>
     <string name="diagnostic_connection_paused">Kameraverbindung pausiert. Mit „Kamera erneut verbinden“ fortsetzen. Ein Neustart des App-Dienstes beendet diese Debug-Pause ebenfalls.</string>
+    <string name="highlight_require_speed">Zusätzlich Geschwindigkeit prüfen</string>
+    <string name="ob_restart_pairing_title">Kamera erneut koppeln?</string>
+    <string name="ob_restart_pairing_message">Eine Kamera ist bereits gespeichert. Du kannst sie erneut koppeln oder behalten und die Einrichtung fortsetzen.</string>
+    <string name="ob_pair_again">Erneut koppeln</string>
+    <string name="ob_skip_pairing">Kopplung überspringen</string>
+    <string name="pairing_connect_camera">Kamera verbinden</string>
 </resources>

@@ -18,9 +18,3 @@ La funzione **Impedisci lo spegnimento automatico** funziona al meglio con quest
 4. Disattiva i suoni della fotocamera se preferisci.
 
 I nomi dei menu possono variare leggermente in base alla versione del firmware della fotocamera.
-
-## Durante un’uscita
-
-In AeroCam, apri **Impostazioni → Impedisci lo spegnimento automatico** e attiva **Mantieni attiva la fotocamera**.
-
-Se il collegamento si interrompe, AeroCam riprende la funzione quando la fotocamera si ricollega.

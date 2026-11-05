@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AeroCam — DJI Osmo Action control for Hammerhead Karoo</title>
   <meta name="description" content="AeroCam is an open-source Karoo extension that controls your DJI Osmo Action over Bluetooth. Record, shoot, and highlight the best moments of your ride — without reaching for the camera." />
-  <link rel="stylesheet" href="styles.css?v=3ed043774a8e" />
+  <link rel="stylesheet" href="styles.css?v=595420ade244" />
 </head>
 <body>
 
@@ -47,7 +47,7 @@
     <div class="container hero-inner">
       <div class="hero-copy reveal">
         <div class="pill">
-          Public beta &middot; v0.9.0-beta.3 &middot; free &amp; open source
+          Free &amp; open source
         </div>
         <h1>Control your DJI Osmo action cam from your <span class="accent">Karoo.</span></h1>
         <p class="lede">
@@ -124,7 +124,7 @@
         <article class="card reveal">
           <div class="card-icon">★</div>
           <h3>Automatic highlights</h3>
-          <p>Peak power, max speed, summit, zone-5 heart rate: AeroCam adds a highlight to the
+          <p>Peak power, max speed, summit, heart rate, ascent and descent: AeroCam adds a highlight to the
           recording the moment it happens. That way, when you watch the footage back, you can immediately find the highlights.</p>
         </article>
         <article class="card reveal">
@@ -143,6 +143,37 @@
     </div>
   </section>
 
+  <!-- ======================= WIDGETS ======================= -->
+  <section class="section widget-showcase" id="widgets" aria-labelledby="widgets-title">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="kicker">// On your Karoo</span>
+        <h2 id="widgets-title">Your controls. Your ride screen.</h2>
+        <p>Keep video and photo controls beside your map, fit a recording button into a small field,
+          or give Cam Control a screen of its own.</p>
+        <p class="widget-choice-note"><strong>Three examples. Many more widgets and sizes.</strong>
+          Choose from Video, Photo, Video + Photo, and Cam Control in a range of sizes to suit your ride screen.</p>
+      </div>
+      <div class="widget-gallery">
+        <figure class="widget-example reveal">
+          <img src="images/widgets/map-video-photo.jpg" width="486" height="811" loading="lazy" decoding="async"
+            alt="Karoo map and speed with the Video + Photo widget recording at 00:12 and a highlight button below." />
+          <figcaption><h3>Video + Photo</h3><p>Two controls, right below your map.</p></figcaption>
+        </figure>
+        <figure class="widget-example reveal">
+          <img src="images/widgets/map-video-half.png" width="486" height="811" loading="lazy" decoding="async"
+            alt="Karoo map and speed with a compact Video field recording at 00:12 beside the bell, with its title label shown." />
+          <figcaption><h3>Small field. Same control.</h3><p>A recording button that fits beside your bell. You can turn off field labels in settings.</p></figcaption>
+        </figure>
+        <figure class="widget-example reveal">
+          <img src="images/widgets/cam-control-full.png" width="486" height="811" loading="lazy" decoding="async"
+            alt="Full-size Cam Control with a green photo button confirming a successfully captured picture." />
+          <figcaption><h3>Full-size Cam Control</h3><p>Camera status and controls, all in one place.</p></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
   <!-- ======================= AUTO HIGHLIGHTS ======================= -->
   <section class="section" id="highlights">
     <div class="container split">
@@ -157,7 +188,7 @@
         </p>
         <p>
           AeroCam sets those markers for you. It watches your ride data — power, speed,
-          heart rate, laps, climbs — and adds a highlight the moment a threshold you
+          heart rate, laps, climbs, ascents and descents — and adds a highlight the moment a threshold you
           defined is crossed.
         </p>
         <p>AeroCam can even automatically start recording when a trigger occurs. Combined with
@@ -170,7 +201,8 @@
         <details class="trigger-detail"><summary>Max speed</summary><p>Adds a highlight when your speed crosses the configured threshold.</p></details>
         <details class="trigger-detail"><summary>Climb summit</summary><p>Adds a highlight when you reach the summit of a climb in your active route.</p></details>
         <details class="trigger-detail"><summary>Peak heart rate</summary><p>Adds a highlight when your heart rate crosses the configured threshold.</p></details>
-        <details class="trigger-detail"><summary>High-speed descent</summary><p>Adds a highlight when you exceed the configured speed while descending.</p></details>
+        <details class="trigger-detail"><summary>Ascent</summary><p>Mark a climb at your chosen positive gradient. Optionally require a minimum speed too.</p></details>
+        <details class="trigger-detail"><summary>Descent</summary><p>Mark a descent at your chosen negative gradient. Optionally require a minimum speed too.</p></details>
         <details class="trigger-detail"><summary>Ride start / end</summary><p>Adds a highlight at the start and end of a ride when the camera is recording.</p></details>
       </div>
     </div>
@@ -207,7 +239,7 @@
         <li class="step reveal">
           <span class="step-num">01</span>
           <h3>Install on your Karoo</h3>
-          <p>On your phone, open <a href="https://github.com/mtenkoppel/AeroCam/releases" target="_blank" rel="noopener">AeroCam releases</a>,
+          <p>On your phone, open <a href="https://github.com/mtenkoppel/AeroCam/releases/latest" target="_blank" rel="noopener">AeroCam releases</a>,
           long-press the APK download link, and share it with the Hammerhead Companion App.
           Tap Install on your Karoo. This method requires the latest-generation Karoo connected to Wi-Fi.
           See <a href="https://support.hammerhead.io/hc/en-us/articles/31576497036827-Companion-App-Sideloading" target="_blank" rel="noopener">Hammerhead’s guide and requirements</a>.</p>
@@ -264,7 +296,7 @@
       </div>
       <div class="footer-links">
         <a href="https://github.com/mtenkoppel/AeroCam" target="_blank" rel="noopener">Source code</a>
-        <a href="https://github.com/mtenkoppel/AeroCam/releases" target="_blank" rel="noopener">Releases</a>
+        <a href="https://github.com/mtenkoppel/AeroCam/releases/latest" target="_blank" rel="noopener">Releases</a>
         <a href="https://github.com/mtenkoppel/AeroCam/issues" target="_blank" rel="noopener">Report an issue</a>
         <a href="https://github.com/mtenkoppel/AeroCam#ai-transparency" target="_blank" rel="noopener">AI transparency</a>
       </div>

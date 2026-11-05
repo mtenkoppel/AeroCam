@@ -4,10 +4,8 @@
 
 # AeroCam
 
-[![CI](https://github.com/mtenkoppel/AeroCam/actions/workflows/ci.yml/badge.svg)](https://github.com/mtenkoppel/AeroCam/actions/workflows/ci.yml)
-[![Release: v0.9.0-beta.6](https://img.shields.io/badge/release-v0.9.0--beta.6-2563EB)](https://github.com/mtenkoppel/AeroCam/releases)
+[![Latest release](https://img.shields.io/github/v/release/mtenkoppel/AeroCam)](https://github.com/mtenkoppel/AeroCam/releases/latest)
 [![License: GPLv3](https://img.shields.io/badge/license-GPLv3-2563EB)](LICENSE)
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.1.21-7F52FF)](https://kotlinlang.org/)
 
 **Website:** [mtenkoppel.github.io/AeroCam](https://mtenkoppel.github.io/AeroCam/)
 
@@ -15,6 +13,44 @@ AeroCam is an independent Karoo extension for controlling a DJI Osmo Action
 camera over Bluetooth Low Energy. It provides in-ride camera controls, automatic
 reconnection, GPS telemetry, video highlights, and a configurable keep-awake
 mode.
+
+**[Download the latest release](https://github.com/mtenkoppel/AeroCam/releases/latest)** ·
+[Installation steps](#install-on-your-karoo) · [Screenshots](#screenshots) ·
+[Compatibility](#compatibility)
+
+## Install on your Karoo
+
+**Start here: [open the latest AeroCam release](https://github.com/mtenkoppel/AeroCam/releases/latest).**
+You do not need to build anything or use developer tools.
+
+### Install with your phone
+
+You need a **Karoo 3**, connected to Wi-Fi, and the **Hammerhead Companion App**
+set up with your Karoo on a phone with an internet connection. Update the Karoo
+and Companion App before starting.
+
+1. On your **phone**, open the [latest release](https://github.com/mtenkoppel/AeroCam/releases/latest)
+   and expand **Assets** if the downloads are hidden.
+2. Find the file ending in **`.apk`**, such as **`AeroCam-v1.0.apk`**. This is the
+   app to install. You can ignore the `.sha256` and **Source code** downloads.
+3. **Press and hold the APK link**, choose **Share**, then select the
+   **Hammerhead Companion App**.
+4. Wait for the transfer, then tap **Install on your Karoo** to finish.
+5. Open AeroCam from the Karoo's **Extensions** library and follow the camera
+   pairing and setup guide. Then add AeroCam data fields to your ride pages.
+
+For illustrated steps and requirements, see
+[Hammerhead's official installation guide](https://support.hammerhead.io/hc/en-us/articles/31576497036827-Companion-App-Sideloading).
+If the Companion App is missing from the share menu, try downloading the APK to
+your phone first, then share the downloaded file with the Companion App.
+
+### Update AeroCam
+
+Check the release notes, then install the new release APK using the same steps.
+You can also check for updates on the app's details page on Karoo when it was
+installed from a GitHub URL. **Keep the existing app installed** so your settings
+and paired camera are preserved. If an update fails, ask for help through
+[GitHub Issues](https://github.com/mtenkoppel/AeroCam/issues) before uninstalling.
 
 > [!TIP]
 > **Built with AI. Shaped and proven by a human.** AeroCam combines AI-driven
@@ -32,6 +68,45 @@ mode.
 > limitation with **Prevent standby**, which keeps a connected camera responsive
 > while allowing its screens to remain off. A fully powered-off camera must
 > still be turned on manually.
+
+## Screenshots
+
+Fit camera controls beside your map or give Cam Control a page of its own.
+The ride previews below show small full-width, half-width, and full-screen
+layouts, including the recording state.
+
+<table>
+  <tr>
+    <th>Video + Photo · small full width</th>
+    <th>Video · half width</th>
+    <th>Video · recording</th>
+    <th>Cam Control · full screen</th>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshots/video-photo-small.jpg" alt="Small full-width Video + Photo widget below the map and speed field" width="180"></td>
+    <td><img src="assets/screenshots/video-half-idle.png" alt="Half-width Video widget beside the Bell field on a map ride page" width="180"></td>
+    <td><img src="assets/screenshots/video-half-recording.png" alt="Half-width Video widget with a red recording timer beside Bell" width="180"></td>
+    <td><img src="assets/screenshots/cam-control-full.jpg" alt="Full-screen Cam Control with battery, storage, prevent standby, video, photo, settings and power controls" width="180"></td>
+  </tr>
+</table>
+
+Pair your camera, follow the setup guide, and configure Prevent standby before
+heading out. Built-in help stays available on the Karoo.
+
+<table>
+  <tr>
+    <th>Connect camera</th>
+    <th>Camera setup</th>
+    <th>Prevent standby</th>
+    <th>Help</th>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshots/connect-camera.png" alt="Connect camera screen with the Search button" width="180"></td>
+    <td><img src="assets/screenshots/setup.png" alt="Camera setup guide welcome screen" width="180"></td>
+    <td><img src="assets/screenshots/prevent-standby.png" alt="Settings with Keep camera awake enabled and the recommended camera setup link" width="180"></td>
+    <td><img src="assets/screenshots/help.png" alt="Built-in help articles for ride preparation, prevent standby and auto highlights" width="180"></td>
+  </tr>
+</table>
 
 ## Features
 
@@ -51,8 +126,8 @@ mode.
 - **Camera monitoring:** View camera battery and remaining card space, with
   optional one-time alerts for low battery and low storage, plus highlight-added
   feedback.
-- **Light and dark themes:** Choose light, dark, or follow the Karoo system
-  appearance.
+- **Consistent appearance:** White app menus and black camera controls in ride
+  data fields, independent of the Karoo in-ride appearance.
 - **Six languages:** English, German, Spanish, French, Italian, and Portuguese
   are selected automatically from the Karoo language.
 
@@ -60,7 +135,7 @@ mode.
 
 Auto highlights use Karoo ride data to mark useful moments while a ride and
 camera recording are active. Each trigger can be enabled separately, and power,
-speed, heart-rate, and descent thresholds can be customized. Optional
+speed, heart-rate, ascent, and descent thresholds can be customized. Optional
 **Auto-start recording** starts recording when a trigger occurs while the camera
 is idle; that first event starts the recording rather than adding an immediate
 marker.
@@ -73,8 +148,8 @@ marker.
   of a climb in the active Karoo route.
 - **Peak heart rate:** Adds a highlight when heart rate crosses the configured
   bpm threshold.
-- **High-speed descent:** Adds a highlight when speed exceeds the configured
-  threshold while the grade indicates a descent.
+- **Ascent and descent:** Separate gradient thresholds for climbs and descents,
+  each with an optional minimum speed condition.
 - **Ride start/end markers:** Marks the actual ride boundaries only if the camera
   is already recording. No delayed start marker is added when recording begins
   mid-ride. Finishing from a paused ride can add an end marker; pauses and resumes
@@ -82,15 +157,15 @@ marker.
   these markers never start recording. Off for new installations; existing
   choices and the previous default for older installations are preserved.
 
-### Prevent standby
 Automatic threshold highlights share a **30-second cooldown** by default. In
-Auto Highlights settings, choose **Off, 15, 30, or 60 seconds**. Speed, power,
+Advanced settings, choose **Off, 15, 30, or 60 seconds**. Speed, power,
 heart rate, and gradient triggers share this interval. Manual highlights, laps,
 climb summits, and ride start/end markers always bypass it. Every successfully sent
 highlight starts the interval for subsequent threshold highlights. Suppressed
 triggers are discarded, never deferred; the existing threshold reset margins
 still apply. Starting a recording alone does not start the cooldown.
 
+### Prevent standby
 
 Keep awake periodically sends a lightweight camera-control command so the Osmo
 does not reach its automatic power-off timeout. This lets the camera remain
@@ -110,7 +185,8 @@ to power off, but testing showed it remains practical for up to 3 hour rides.
   and feedback. Stopping restores both controls.
 - **Cam Control:** Best used as a full-screen data field. It combines connection,
   battery, storage, Keep awake, video, photo, camera power-off, and app access in
-  one riding dashboard.
+  one riding dashboard. Settings remains available in compact full-width fields;
+  half-width fields show battery and storage.
 
 ### Bonus Actions
 
@@ -154,18 +230,16 @@ in Settings or Help.
 
 Keep awake works best when the camera is configured for low-distraction use:
 
-1. Configure the camera's **QS button** to use the Screen Switch/Photo action
-   rather than a voice-prompt action. Menu wording can vary by DJI firmware.
-2. Turn off camera sounds or lower their volume so periodic QS commands do not
+1. Turn off camera sounds or lower their volume so periodic QS commands do not
    produce distracting tones.
-3. Configure Single Screen Preview so the front display remains off when the
+2. Configure Single Screen Preview so the front display remains off when the
    camera is locked.
-4. Set Auto Power Off to **five minutes**. The new default QS interval is
+3. Set Auto Power Off to **five minutes**. The new default QS interval is
    **four minutes thirty seconds**, leaving time for acknowledgement retries.
    Previously saved custom intervals remain unchanged. Shorter camera timers
    require a correspondingly shorter app interval; choose the matching timer in the
-   camera setup guide.
-5. After AeroCam connects, lock the camera screen. The displays turn off while
+   advanced settings.
+4. After AeroCam connects, lock the camera screen. The displays turn off while
    AeroCam periodically prevents the camera from fully powering down.
 
 Keep awake is a practical standby workaround, not a true DJI standby mode. It
@@ -174,122 +248,28 @@ power-off.
 
 ### Prepare for a Ride
 
-Once the camera has been paired and configured, a reliable pre-ride workflow is:
+Once your camera is paired and configured, getting ready takes just three steps:
 
-1. Check the camera's video settings, including resolution, frame rate, field of
-   view, and stabilization.
-2. Mount the camera and confirm that you are happy with its point of view.
-3. Turn on the Karoo and camera, then confirm that AeroCam reconnects.
-4. If you use Keep awake, enable it and lock the camera display before starting
-   the ride.
+1. Turn on your Karoo and DJI camera.
+2. Wait for AeroCam to connect automatically. Check the AeroCam data field on
+   your Karoo to confirm the connection.
+3. Make sure **Prevent standby** is turned on, then lock the DJI camera screen:
+   swipe down on the camera display and tap the lock icon. With the recommended
+   camera settings, the display turns off while the camera stays connected and
+   ready to use.
 
-You can then leave the AeroCam app itself in the background and use its data
-fields or bonus actions during the ride.
+You can leave AeroCam in the background and use its data fields or bonus actions
+to control the camera during your ride.
 
-## Install
+## Contributing
 
-Download the newest APK from [GitHub Releases](https://github.com/mtenkoppel/AeroCam/releases).
-On the Karoo, allow installation from the source you use to transfer the APK,
-then open the file and install it. Updates must be signed with the same key as
-the installed version; otherwise Android requires the existing app to be
-uninstalled first, which also removes AeroCam settings and its saved camera.
+For building AeroCam from source or contributing changes, see
+[CONTRIBUTING.md](CONTRIBUTING.md). Maintainer instructions are in
+[Signing and releases](developer/SIGNING_AND_RELEASES.md).
 
-This project is currently in beta. Review the release notes before updating.
-
-## Build from source
-
-The validated build combination is Kotlin 2.1.21, Android Gradle Plugin 8.6.1,
-Gradle 8.7, and Java 17, with compile SDK 35 / target SDK 34. Karoo Extensions
-remains at 1.1.9. These versions were selected for compatibility and tested on
-hardware; they are not a claim that every dependency is the newest available.
-### Cooldown validation
-
-The cooldown uses the existing karoo-ext 1.1.9 integration; no SDK or KOS
-requirement changes. Official 1.1.9 release notes specify KOS 1.634.2440 or later:
-https://github.com/hammerheadnav/karoo-ext/releases/tag/1.1.9
-No Karoo or camera firmware has been physically tested for this change.
-
-### Requirements
-
-- JDK 17 and Android SDK command-line tools (Android Studio is optional)
-- Android SDK 35
-- A GitHub account and token with `read:packages`
-- A Karoo in developer mode for USB deployment
-
-The Gradle wrapper is included, so a separate Gradle installation is not
-required.
-
-1. Clone the repository:
-
-   ```sh
-   git clone https://github.com/mtenkoppel/AeroCam.git
-   cd AeroCam
-   ```
-
-2. Copy `local.properties.example` to `local.properties` and provide access to
-   Hammerhead's GitHub Package:
-
-   ```properties
-   sdk.dir=/Users/you/Library/Android/sdk
-   gpr.user=your-github-username
-   gpr.key=your-github-token
-   ```
-
-   `local.properties` is ignored by Git. CI can instead use `GITHUB_ACTOR` and
-   `GITHUB_TOKEN`.
-
-3. Build and test:
-
-   ```sh
-   ./gradlew testDebugUnitTest assembleDebug
-   ```
-
-   The APK is created at `app/build/outputs/apk/debug/app-debug.apk`.
-
-4. Connect the Karoo over USB-C, approve USB debugging, and install without
-   clearing existing app data:
-
-   ```sh
-   adb devices
-   ./scripts/install-debug.sh
-   ```
-
-To open an installed build, run `./scripts/launch-app.sh`. To follow AeroCam's
-logs, run `./scripts/logcat.sh` or use Android Studio's Logcat window.
-
-### Signing
-
-Android accepts an update only when it is signed by the same key as the
-installed app. Local debug builds normally use `~/.android/debug.keystore`.
-Public releases must use one dedicated release key that is backed up securely;
-losing it prevents future in-place updates.
-
-The release workflow expects these GitHub Actions secrets:
-`RELEASE_KEYSTORE_BASE64`, `RELEASE_KEYSTORE_PASSWORD`, `RELEASE_KEY_ALIAS`,
-and `RELEASE_KEY_PASSWORD`. Never commit a keystore or its passwords.
-
-## Releases
-
-Source code is versioned with Git tags such as `v0.9.0-beta.1`. Installable APKs
-belong on the corresponding GitHub Release rather than in Git history. Each
-release should contain release notes, the APK, and its SHA-256 checksum.
-
-## Dependencies and acknowledgements
-
-- [Hammerhead Karoo Extension SDK](https://github.com/hammerheadnav/karoo-ext)
-  (`io.hammerhead:karoo-ext`), Apache License 2.0
-- Kotlin and the Android Gradle Plugin, used by the build toolchain
-- JUnit 4, used only for tests
-
-See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for attribution details.
-
-The following projects were studied while implementing and validating the BLE
-behavior. They are references, not bundled dependencies:
-
-- [DJI Osmo GPS Controller Demo](https://github.com/dji-sdk/Osmo-GPS-Controller-Demo)
-- [ClipRide GoPro extension for Karoo](https://github.com/yrkan/clipride)
-- [DJI Remote](https://github.com/rhoenschrat/DJI-Remote)
-- [M5StickC Plus 2 Remote for DJI Osmo](https://github.com/theserialhobbyist/M5StickCPlus2_Remote_For_DJI_Osmo)
+Third-party licenses and acknowledgements are listed in
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the
+[contributor guide](CONTRIBUTING.md#dependencies-and-acknowledgements).
 
 ## AI transparency
 

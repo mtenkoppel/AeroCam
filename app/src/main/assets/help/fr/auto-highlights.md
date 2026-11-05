@@ -6,16 +6,6 @@ Un temps fort marque un moment intéressant dans un enregistrement vidéo. Il pe
 
 AeroCam peut ajouter un temps fort lorsqu’un événement se produit pendant ta sortie. Cet événement est appelé **déclencheur**.
 
-## Repères de début/fin de sortie
-
-Cette option est désactivée pour les nouvelles installations. Les mises à jour conservent les choix existants et la valeur par défaut des anciennes installations. Activez **Temps forts automatiques** et **Repères de début/fin de sortie** pour l’utiliser.
-
-- Un repère de début est ajouté uniquement si la caméra enregistre déjà au départ. Commencer à filmer plus tard n’ajoute pas de repère de départ rétroactif.
-- Un repère de fin est ajouté lorsque la sortie active ou en pause se termine, si la caméra enregistre encore. Karoo signale le même état final pour enregistrer ou abandonner une sortie ; les deux peuvent donc créer ce repère.
-- Les pauses et reprises n’ajoutent aucun repère. Les repères manqués ne sont pas ajoutés plus tard, même après une reconnexion.
-- Ces repères ne démarrent jamais un enregistrement, même avec le démarrage automatique activé, et ignorent le délai minimal des repères automatiques à seuil.
-
-
 ## Déclencheurs disponibles
 
 - **Marqueur de tour :** Un nouveau tour commence.
@@ -23,19 +13,17 @@ Cette option est désactivée pour les nouvelles installations. Les mises à jou
 - **Vitesse maximale :** Ta vitesse dépasse le seuil choisi.
 - **Sommet de montée :** Le Karoo signale la fin d’une montée.
 - **Pic de fréquence cardiaque :** Ta fréquence cardiaque dépasse le seuil choisi.
-- **Marqueur de montée :** Les seuils choisis de vitesse en montée et de pente positive sont tous les deux atteints.
-- **Marqueur de descente :** Les seuils choisis de vitesse en descente et de pente négative sont tous les deux atteints.
+- **Marqueur de montée:** Se déclenche à la pente de montée choisie, avec une vitesse minimale facultative.
+- **Marqueur de descente:** Se déclenche à la pente de descente choisie, avec une vitesse minimale facultative.
 - **Repères de début/fin de sortie:** Marque le début et la fin de la sortie uniquement si la caméra enregistre déjà. Les pauses et reprises n’ajoutent aucun repère. Ne démarre jamais un enregistrement.
 
 Seuls les déclencheurs activés dans les réglages sont utilisés.
 
 ## Seuils de montée et de descente
 
-Active la montée, la descente ou les deux indépendamment. Chaque direction possède ses propres seuils de vitesse et de pente, et **les deux seuils doivent être atteints**.
+Active la montée, la descente ou les deux séparément. Utilise une pente positive en montée et négative en descente. Désactive **Exiger aussi une vitesse** pour utiliser uniquement la pente. Sinon, les deux seuils doivent être atteints.
 
-Utilise une **pente positive en montée** et une **pente négative en descente**. Par exemple, en montée, **20 km/h** et **+5%** signifient au moins 20 km/h sur une pente montante de 5% ou plus. En descente, **60 km/h** et **−6%** signifient au moins 60 km/h sur une pente descendante de 6% ou plus.
-
-Les valeurs de descente existantes restent **50 km/h** et **−3%** ; le déclencheur reste désactivé tant que tu ne l’actives pas. Le nouveau déclencheur de montée est lui aussi désactivé au départ, avec **20 km/h** et **+3%** comme valeurs initiales. De petites fluctuations autour d’un seuil ne créent pas de temps forts répétés.
+Par exemple, **+10%** sans condition de vitesse marque une montée raide à toute allure. **+5%** et **30 km/h** marquent une montée rapide. Le même choix existe en descente avec une pente négative. Les petites fluctuations ne créent pas de marqueurs répétés.
 
 ## Lorsqu’un enregistrement est en cours
 
