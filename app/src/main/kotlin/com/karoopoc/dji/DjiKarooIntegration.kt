@@ -252,13 +252,16 @@ class DjiKarooIntegration(
 
     private fun checkGradientTriggers() {
         val settings = DjiSettings.read(appContext)
-        val speedKph = latestSpeedMetersPerSecond?.times(3.6)
-        if (downhillTrigger.update(speedKph, latestGradePercent,
+        val now = SystemClock.elapsedRealtime()
+        fun fresh(type: String) = telemetryAt[type]?.let { now - it <= 10000 } == true
+        val speedKph = latestSpeedMetersPerSecond?.takeIf { fresh(DataType.Type.SPEED) }?.times(3.6)
+        val grade = latestGradePercent?.takeIf { fresh(DataType.Type.ELEVATION_GRADE) }
+        if (downhillTrigger.update(speedKph, grade,
                 settings.autoHighlightsEnabled && settings.highSpeedDescentHighlights,
                 settings.descentSpeedKph, settings.descentGradePercent, settings.descentRequireSpeed)) {
             requestHighlight(appContext.getString(R.string.highlight_descent_feedback))
         }
-        if (uphillTrigger.update(speedKph, latestGradePercent,
+        if (uphillTrigger.update(speedKph, grade,
                 settings.autoHighlightsEnabled && settings.uphillHighlights,
                 settings.uphillSpeedKph, settings.uphillGradePercent, settings.uphillRequireSpeed)) {
             requestHighlight(appContext.getString(R.string.highlight_uphill_feedback))
