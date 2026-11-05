@@ -23,11 +23,13 @@ There is no separate X-Large preset. The shared classifier enters Full at
 22 dp before the renderer receives its available height.
 
 Keep the existing 72 dp utility targets in compact fields. Use 6 dp gaps between
-the full-screen controls. Use a static battery outline, an SD card, and a
-filmstrip. Give the three icons the same box and stroke weight, and use the
+the full-screen controls. Use a battery fill beside its percentage, an SD card,
+and a filmstrip. Keep the battery icon neutral at 20% or above and red below
+20%. Give the icons the same box and stroke weight, and use the
 same text size and weight for every value. Grey out the Photo button while
-recording and use the regular camera glyph. Tint status icons with the same
-foreground as their values; the caption setting should not change status icons.
+recording and use the regular camera glyph. Keep the active Prevent standby
+button on a neutral background and use its glyph to indicate state.
+The caption setting should not change status icons.
 The current ride widgets use a fixed dark palette. The proposal previews a
 light palette for review as well; scope any implementation change to Cam Control.
 
@@ -48,12 +50,15 @@ is reserved. AeroCam decodes EIS but does not expose it in widget state.
 See the [DJI status protocol](https://github.com/dji-sdk/Osmo-GPS-Controller-Demo/blob/main/docs/protocol_data_segment.md#camera-status-push-1d02)
 and [Osmo Action 4 specs](https://www.dji.com/osmo-action-4/specs).
 
-Show a dash until the camera reports a known video resolution and a valid
-video FPS index in Video mode in the current session. Tap the dash to request
-Video mode explicitly and leave the camera there. Wait for a fresh Video
-status with valid parameters before replacing the dash. If already in Video,
-wait for or request a status update without switching modes. Keep the dash
-after a failure, timeout, or disconnect and allow a new attempt once connected.
+Show **Click to refresh** when the camera is connected and no valid video
+profile is available. Use the same text on the small half field. Only switch
+from Photo to Video after the user presses the refresh control. Leave the
+camera in Video and wait for a fresh status with valid parameters before
+replacing the button with the readout. If already in Video, wait for or
+request a status update without switching modes. Restore the refresh button
+after failure or timeout. Offer it again after reconnecting if needed.
+DJI documents the resolution and photo aspect ratio as status fields, with no
+setter in the public remote protocol. The readout has no edit control.
 Starting a recording already requests Video mode, so use its incoming status
 to update the same label. Never queue a refresh mode change during recording.
 
