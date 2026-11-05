@@ -5,7 +5,9 @@ the matching version heading when preparing a release.
 
 ## [Unreleased]
 
-- Trimmed diagnostic logs to omit pairing details, device identifiers, and raw Bluetooth and GPS data.
+## [1.0.2] - 2026-11-05
+
+- Trimmed diagnostic logs to omit pairing details, device identifiers, and raw Bluetooth and GPS data. Connection events and error codes are still available for troubleshooting.
 
 ## [1.0.1] - 2026-11-05
 
