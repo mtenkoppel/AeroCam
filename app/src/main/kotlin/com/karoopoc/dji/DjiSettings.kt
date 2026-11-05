@@ -2,6 +2,8 @@ package com.karoopoc.dji
 
 import android.content.Context
 
+enum class AutomationMode { HIGHLIGHTS, RECORDING, PHOTOS }
+
 data class DjiAutomationSettings(
     val autoHighlightsEnabled: Boolean,
     val autoStartRecording: Boolean,
@@ -25,9 +27,22 @@ data class DjiAutomationSettings(
     val lowStorageAlert: Boolean,
     val uphillRequireSpeed: Boolean = true,
     val descentRequireSpeed: Boolean = true,
+    val mode: AutomationMode = AutomationMode.HIGHLIGHTS,
+    val autoStop: Boolean = true,
+    val stopAfterSeconds: Int = 60,
+    val addAutomaticHighlights: Boolean = true,
 )
 
 object DjiSettings {
+    const val KEY_AUTOMATION_MODE = "automation_mode"
+    const val KEY_AUTO_STOP = "automation_auto_stop"
+    const val KEY_STOP_SECONDS = "automation_stop_seconds"
+    const val KEY_ADD_HIGHLIGHTS = "automation_add_highlights"
+    fun mode(context: Context): AutomationMode {
+        val prefs = preferences(context)
+        return runCatching { AutomationMode.valueOf(prefs.getString(KEY_AUTOMATION_MODE, null) ?: "") }
+            .getOrElse { if (prefs.getBoolean(KEY_AUTO_START_RECORDING, false)) AutomationMode.RECORDING else AutomationMode.HIGHLIGHTS }
+    }
     const val PREFERENCES_NAME = "dji_osmo_poc"
 
     const val KEY_AUTO_HIGHLIGHTS_ENABLED = "auto_highlights_enabled"
@@ -79,7 +94,11 @@ object DjiSettings {
         }
         return DjiAutomationSettings(
             autoHighlightsEnabled = prefs.getBoolean(KEY_AUTO_HIGHLIGHTS_ENABLED, true),
-            autoStartRecording = prefs.getBoolean(KEY_AUTO_START_RECORDING, false),
+            autoStartRecording = mode(context) == AutomationMode.RECORDING,
+            mode = mode(context),
+            autoStop = prefs.getBoolean(KEY_AUTO_STOP, true),
+            stopAfterSeconds = prefs.getInt(KEY_STOP_SECONDS, 60).coerceIn(10, 3600),
+            addAutomaticHighlights = prefs.getBoolean(KEY_ADD_HIGHLIGHTS, true),
             highlightCooldownSeconds = highlightCooldownSeconds(context),
             lapHighlights = prefs.getBoolean(KEY_LAP_HIGHLIGHTS, false),
             peakPowerHighlights = prefs.getBoolean(KEY_PEAK_POWER_HIGHLIGHTS, false),

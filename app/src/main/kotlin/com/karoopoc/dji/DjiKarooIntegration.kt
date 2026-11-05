@@ -58,13 +58,25 @@ class DjiKarooIntegration(
     private val rideMarkers = RideBoundaryMarkers()
     private var batteryAlertArmed = true
     private var storageAlertArmed = true
-    private var autoStartRecordingPending = false
+    private val autoStop = AutoStopPolicy()
+    private val telemetryAt = mutableMapOf<String, Long>()
+    private val automationHandler = Handler(Looper.getMainLooper())
+    private var automationRunning = false
+    private val automationTick = object : Runnable {
+        override fun run() {
+            if (!automationRunning) return
+            evaluateAutoStop()
+            automationHandler.postDelayed(this, 1000)
+        }
+    }
     private var previousHighlightCount = 0
 
     fun start() {
+        automationRunning = true
+        automationHandler.post(automationTick)
         cancelCameraObservation = DjiCameraController.observe(appContext, ::onCameraState)
 
-        karooSystem.addConsumer<RideState>(onEvent = ::onRideState)
+        karooSystem.addConsumer<RideState>(onEvent = { next -> automationHandler.post { onRideState(next) } })
         karooSystem.addConsumer<Lap> { lap ->
             val settings = DjiSettings.read(appContext)
             if (settings.autoHighlightsEnabled && settings.lapHighlights) {
@@ -98,6 +110,9 @@ class DjiKarooIntegration(
     }
 
     fun stop() {
+        automationRunning = false
+        automationHandler.removeCallbacksAndMessages(null)
+        DjiCameraController.cancelAutomation(appContext)
         cancelCameraObservation?.invoke()
         cancelCameraObservation = null
         notificationHandler.post { notificationQueue.clear() }
@@ -105,9 +120,18 @@ class DjiKarooIntegration(
 
     private fun consumeStream(typeId: String, fieldId: String, onValue: (Double) -> Unit) {
         karooSystem.addConsumer<OnStreamState>(OnStreamState.StartStreaming(typeId)) { event ->
-            val streaming = event.state as? StreamState.Streaming ?: return@addConsumer
+            val streaming = event.state as? StreamState.Streaming
+            if (streaming == null) {
+                automationHandler.post { telemetryAt.remove(typeId) }
+                return@addConsumer
+            }
             val value = streaming.dataPoint.values[fieldId] ?: streaming.dataPoint.singleValue ?: return@addConsumer
-            onValue(value)
+            automationHandler.post {
+                if (value.isFinite()) {
+                    telemetryAt[typeId] = SystemClock.elapsedRealtime()
+                    onValue(value)
+                } else telemetryAt.remove(typeId)
+            }
         }
     }
 
@@ -118,7 +142,8 @@ class DjiKarooIntegration(
         val marker = rideMarkers.onRideState(
             next,
             cameraRecording = latestCameraState.recording && latestCameraState.connection == CameraConnectionState.CONNECTED,
-            enabled = settings.autoHighlightsEnabled && settings.rideBookmarks,
+            enabled = settings.autoHighlightsEnabled && settings.rideBookmarks &&
+                (settings.mode == AutomationMode.HIGHLIGHTS || settings.mode == AutomationMode.RECORDING && settings.addAutomaticHighlights),
         )
         if (marker != null) {
             val reason = appContext.getString(if (marker == RideBoundaryMarkers.Marker.START) {
@@ -132,6 +157,8 @@ class DjiKarooIntegration(
         }
         rideState = next
         if (next !is RideState.Recording) {
+            DjiCameraController.cancelAutomation(appContext)
+            autoStop.event()
             notificationHandler.post { notificationQueue.clearPending() }
         }
         DjiCameraController.setRideActive(appContext, isRiding)
@@ -145,7 +172,6 @@ class DjiKarooIntegration(
 
         if (!isRiding) {
             completedClimbs.clear()
-            autoStartRecordingPending = false
             resetThresholdEdges()
         }
     }
@@ -161,7 +187,6 @@ class DjiKarooIntegration(
             )
         }
         val settings = DjiSettings.read(appContext)
-        if (state.recording) autoStartRecordingPending = false
 
         if (state.highlightCount > previousHighlightCount) {
             showAlert("dji-highlight-${state.highlightCount}", appContext.getString(R.string.alert_highlight_added), null, R.color.dji_confirm)
@@ -292,32 +317,50 @@ class DjiKarooIntegration(
     }
 
     private fun requestHighlight(reason: String, cooldownExempt: Boolean = false) {
-        if (!DjiSettings.read(appContext).autoHighlightsEnabled) {
-            Log.i(TAG, "Automatic highlight skipped reason=$reason autoHighlights=false")
-            return
-        }
-        if (rideState !is RideState.Recording) {
-            Log.i(TAG, "Automatic highlight skipped reason=$reason ride=$rideState cameraRecording=${latestCameraState.recording}")
-            return
-        }
-        if (!latestCameraState.recording) {
+        // Event callbacks and telemetry share the same serialized decision path.
+        automationHandler.post {
             val settings = DjiSettings.read(appContext)
-            if (settings.autoStartRecording && !autoStartRecordingPending) {
-                autoStartRecordingPending = true
-                Log.i(TAG, "Automatic recording start requested reason=$reason")
-                DjiCameraController.startRecording(appContext)
-            } else {
-                Log.i(
-                    TAG,
-                    "Automatic highlight skipped reason=$reason ride=$rideState " +
-                        "cameraRecording=${latestCameraState.recording} autoStart=${settings.autoStartRecording} " +
-                        "startPending=$autoStartRecordingPending",
-                )
+            val state = DjiCameraController.state()
+            if (!settings.autoHighlightsEnabled || rideState !is RideState.Recording ||
+                state.connection != CameraConnectionState.CONNECTED) return@post
+            autoStop.event() // Marker cooldown never suppresses the recording extension.
+            if (settings.mode == AutomationMode.PHOTOS) {
+                if (!state.recording) DjiCameraController.automaticPhoto(appContext)
+                return@post
             }
-            return
+            if (!state.recording) {
+                if (settings.mode == AutomationMode.RECORDING) DjiCameraController.automaticStart(appContext)
+            } else if (settings.mode == AutomationMode.HIGHLIGHTS || settings.addAutomaticHighlights) {
+                DjiCameraController.addHighlight(appContext, reason, cooldownLimited = !cooldownExempt)
+            }
         }
-        Log.i(TAG, "Automatic highlight requested reason=$reason")
-        DjiCameraController.addHighlight(appContext, reason, cooldownLimited = !cooldownExempt)
+    }
+
+    private fun evaluateAutoStop() {
+        val settings = DjiSettings.read(appContext)
+        val state = DjiCameraController.state()
+        val enabled = settings.autoHighlightsEnabled && settings.mode == AutomationMode.RECORDING &&
+            settings.autoStop && rideState is RideState.Recording && state.recording &&
+            state.connection == CameraConnectionState.CONNECTED
+        val now = SystemClock.elapsedRealtime()
+        if (autoStop.update(now, state.automaticRecordingId, enabled, activeThresholds(settings, now), settings.stopAfterSeconds)) {
+            DjiCameraController.automaticStop(appContext, state.automaticRecordingId)
+        }
+    }
+
+    private fun activeThresholds(s: DjiAutomationSettings, now: Long): Boolean? {
+        fun fresh(type: String) = telemetryAt[type]?.let { now - it <= 10000 } == true
+        val states = mutableListOf<Boolean?>()
+        if (s.peakPowerHighlights) states += powerWasAbove.takeIf { fresh(DataType.Type.POWER) }
+        if (s.maxSpeedHighlights) states += speedWasAbove.takeIf { fresh(DataType.Type.SPEED) }
+        if (s.peakHeartRateHighlights) states += hrWasInZoneFive.takeIf { fresh(DataType.Type.HEART_RATE) }
+        if (s.highSpeedDescentHighlights) states += downhillTrigger.active.takeIf {
+            fresh(DataType.Type.ELEVATION_GRADE) && (!s.descentRequireSpeed || fresh(DataType.Type.SPEED))
+        }
+        if (s.uphillHighlights) states += uphillTrigger.active.takeIf {
+            fresh(DataType.Type.ELEVATION_GRADE) && (!s.uphillRequireSpeed || fresh(DataType.Type.SPEED))
+        }
+        return when { states.any { it == true } -> true; states.any { it == null } -> null; else -> false }
     }
 
     private fun checkThresholdAlerts(state: DjiCameraState) {
@@ -369,6 +412,7 @@ class DjiKarooIntegration(
     }
 
     private fun resetThresholdEdges() {
+        telemetryAt.clear()
         powerWasAbove = false
         speedWasAbove = false
         hrWasInZoneFive = false

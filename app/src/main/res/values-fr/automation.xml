@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="automation_title">Automatisation</string>
+    <string name="automation_more_information">Plus d’informations</string>
+    <string name="automation_enable">Activer l’automatisation</string>
+    <string name="automation_highlights">Ajouter uniquement des moments forts automatiques</string>
+    <string name="automation_highlights_summary">Vous contrôlez le début et la fin de l’enregistrement.</string>
+    <string name="automation_recording">Les enregistrements démarrent et s’arrêtent automatiquement</string>
+    <string name="automation_recording_start_only">Les enregistrements démarrent automatiquement</string>
+    <string name="automation_recording_summary">Concentrez-vous sur votre sortie.</string>
+    <string name="automation_photos">Prendre uniquement des photos automatiquement</string>
+    <string name="automation_photos_summary">Prend une photo lors d’un déclenchement. La vidéo reste manuelle.</string>
+    <string name="automation_recording_settings">Réglages d’enregistrement automatique</string>
+    <string name="automation_empty">Ajoutez votre premier déclencheur : une descente à 5 % au-delà de 50 km/h ou votre prochain effort à plus de 500 W.</string>
+    <string name="automation_add_trigger">+ Ajouter un déclencheur</string>
+    <string name="automation_save">Enregistrer</string>
+    <string name="automation_add">Ajouter</string>
+    <string name="automation_about">À propos de l’automatisation</string>
+    <string name="automation_catalog_help">Choisissez un événement ou un seuil pour capturer automatiquement des moments. Vous pouvez ajouter plusieurs déclencheurs.</string>
+    <string name="automation_stop_automatically">Arrêter automatiquement</string>
+    <string name="automation_stop_seconds">Arrêter après (secondes)</string>
+    <string name="automation_add_highlights">Ajouter des moments forts automatiques</string>
+    <string name="automation_remove_trigger">Supprimer le déclencheur</string>
+    <string name="automation_invalid_number">Saisissez une valeur entre %1$d et %2$d.</string>
+    <string name="automation_auto_start">DÉBUT AUTO</string>
+    <string name="automation_auto_stop">ARRÊT AUTO</string>
+    <string name="automation_rec_started">ENREG. DÉMARRÉ</string>
+    <string name="automation_rec_stopped">ENREG. ARRÊTÉ</string>
+</resources>

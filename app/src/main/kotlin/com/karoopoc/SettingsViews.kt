@@ -100,6 +100,7 @@ internal class SettingsViews(val activity: Activity) {
         return switch
     }
     fun refresh() {
+        automationCard?.refresh()
         refreshing = true
         try {
             cooldownSpinner?.setSelection(
@@ -140,159 +141,9 @@ internal class SettingsViews(val activity: Activity) {
             HelpActivity.open(activity, "recommended-camera-setup.md")
         }, fullWidthParams())
     }
+    private var automationCard: AutomationSettingsUi? = null
     fun automation(content: LinearLayout) {
-        val automationGroup = group(content, getString(R.string.automatic_highlights), R.drawable.ic_widget_highlight)
-        val autoHighlightsSwitch = settingsSwitch(
-            automationGroup,
-            getString(R.string.automatic_highlights_enabled),
-            DjiSettings.KEY_AUTO_HIGHLIGHTS_ENABLED,
-            true,
-            summary = getString(R.string.automatic_highlights_summary),
-        ) { checked ->
-            autoHighlightsContent.visibility = if (checked) View.VISIBLE else View.GONE
-        }
-        autoHighlightsContent = LinearLayout(activity).apply {
-            orientation = LinearLayout.VERTICAL
-            visibility = if (autoHighlightsSwitch.isChecked) View.VISIBLE else View.GONE
-        }
-        automationGroup.addView(
-            autoHighlightsContent,
-            fullWidthParams(),
-        )
-
-        settingsSwitch(
-            autoHighlightsContent,
-            getString(R.string.highlight_auto_start_recording),
-            DjiSettings.KEY_AUTO_START_RECORDING,
-            false,
-            summary = getString(R.string.highlight_auto_start_recording_summary),
-        )
-
-        val triggerGroup = subgroup(autoHighlightsContent, getString(R.string.highlight_triggers))
-        settingsSwitch(
-            triggerGroup,
-            getString(R.string.highlight_lap),
-            DjiSettings.KEY_LAP_HIGHLIGHTS,
-            false,
-        )
-
-        val peakPowerSwitch = settingsSwitch(
-            triggerGroup,
-            getString(R.string.highlight_peak_power),
-            DjiSettings.KEY_PEAK_POWER_HIGHLIGHTS,
-            false,
-        ) { checked ->
-            peakPowerThresholdRow.visibility = if (checked) View.VISIBLE else View.GONE
-        }
-        peakPowerThresholdRow = numberRow(
-            getString(R.string.highlight_peak_power_threshold),
-            DjiSettings.KEY_PEAK_POWER_WATTS,
-            DjiSettings.DEFAULT_PEAK_POWER_WATTS,
-            300,
-            1_000,
-        )
-        peakPowerThresholdRow.visibility = if (peakPowerSwitch.isChecked) View.VISIBLE else View.GONE
-        triggerGroup.addView(peakPowerThresholdRow, fullWidthParams(bottomMargin = dp(14)))
-
-        val maxSpeedSwitch = settingsSwitch(
-            triggerGroup,
-            getString(R.string.highlight_max_speed),
-            DjiSettings.KEY_MAX_SPEED_HIGHLIGHTS,
-            false,
-        ) { checked ->
-            maxSpeedThresholdRow.visibility = if (checked) View.VISIBLE else View.GONE
-        }
-        maxSpeedThresholdRow = numberRow(
-            getString(R.string.highlight_max_speed_threshold),
-            DjiSettings.KEY_MAX_SPEED_KPH,
-            DjiSettings.DEFAULT_MAX_SPEED_KPH,
-            30,
-            80,
-        )
-        maxSpeedThresholdRow.visibility = if (maxSpeedSwitch.isChecked) View.VISIBLE else View.GONE
-        triggerGroup.addView(maxSpeedThresholdRow, fullWidthParams(bottomMargin = dp(14)))
-
-        settingsSwitch(
-            triggerGroup,
-            getString(R.string.highlight_climb_summit),
-            DjiSettings.KEY_CLIMB_SUMMIT_HIGHLIGHTS,
-            false,
-        )
-        val peakHeartRateSwitch = settingsSwitch(
-            triggerGroup,
-            getString(R.string.highlight_peak_heart_rate),
-            DjiSettings.KEY_PEAK_HEART_RATE_HIGHLIGHTS,
-            false,
-        ) { checked ->
-            peakHeartRateThresholdRow.visibility = if (checked) View.VISIBLE else View.GONE
-        }
-        peakHeartRateThresholdRow = numberRow(
-            getString(R.string.highlight_peak_heart_rate_threshold),
-            DjiSettings.KEY_PEAK_HEART_RATE_BPM,
-            DjiSettings.DEFAULT_PEAK_HEART_RATE_BPM,
-            120,
-            220,
-        )
-        peakHeartRateThresholdRow.visibility = if (peakHeartRateSwitch.isChecked) View.VISIBLE else View.GONE
-        triggerGroup.addView(peakHeartRateThresholdRow, fullWidthParams(bottomMargin = dp(14)))
-        val uphillSwitch = settingsSwitch(
-            triggerGroup,
-            getString(R.string.highlight_uphill),
-            DjiSettings.KEY_UPHILL_HIGHLIGHTS,
-            false,
-        ) { checked ->
-            uphillThresholdRows.visibility = if (checked) View.VISIBLE else View.GONE
-        }
-        uphillThresholdRows = column().apply {
-            visibility = if (uphillSwitch.isChecked) View.VISIBLE else View.GONE
-            addView(secondaryText(getString(R.string.highlight_uphill_summary)), fullWidthParams(bottomMargin = dp(8)))
-            val speedRow = numberRow(getString(R.string.highlight_uphill_speed_threshold),
-                DjiSettings.KEY_UPHILL_SPEED_KPH, DjiSettings.DEFAULT_UPHILL_SPEED_KPH, 1, 80)
-            settingsSwitch(this, getString(R.string.highlight_require_speed), DjiSettings.KEY_UPHILL_REQUIRE_SPEED, true) { checked ->
-                speedRow.visibility = if (checked) View.VISIBLE else View.GONE
-            }
-            speedRow.visibility = if (DjiSettings.read(activity).uphillRequireSpeed) View.VISIBLE else View.GONE
-            addView(speedRow, fullWidthParams(bottomMargin = dp(8)))
-            addView(numberRow(getString(R.string.highlight_uphill_grade_threshold),
-                DjiSettings.KEY_UPHILL_GRADE_PERCENT, DjiSettings.DEFAULT_UPHILL_GRADE_PERCENT, 1, 30),
-                fullWidthParams(bottomMargin = dp(14)))
-        }
-        triggerGroup.addView(uphillThresholdRows, fullWidthParams())
-        val descentSwitch = settingsSwitch(
-            triggerGroup,
-            getString(R.string.highlight_high_speed_descent),
-            DjiSettings.KEY_HIGH_SPEED_DESCENT_HIGHLIGHTS,
-            false,
-        ) { checked ->
-            descentThresholdRows.visibility = if (checked) View.VISIBLE else View.GONE
-        }
-        descentThresholdRows = column().apply {
-            visibility = if (descentSwitch.isChecked) View.VISIBLE else View.GONE
-            addView(secondaryText(getString(R.string.highlight_descent_summary)), fullWidthParams(bottomMargin = dp(8)))
-            val speedRow = numberRow(getString(R.string.highlight_descent_speed_threshold),
-                DjiSettings.KEY_DESCENT_SPEED_KPH, DjiSettings.DEFAULT_DESCENT_SPEED_KPH, 40, 80)
-            settingsSwitch(this, getString(R.string.highlight_require_speed), DjiSettings.KEY_DESCENT_REQUIRE_SPEED, true) { checked ->
-                speedRow.visibility = if (checked) View.VISIBLE else View.GONE
-            }
-            speedRow.visibility = if (DjiSettings.read(activity).descentRequireSpeed) View.VISIBLE else View.GONE
-            addView(speedRow, fullWidthParams(bottomMargin = dp(8)))
-            addView(numberRow(
-                getString(R.string.highlight_descent_grade_threshold),
-                DjiSettings.KEY_DESCENT_GRADE_PERCENT,
-                DjiSettings.DEFAULT_DESCENT_GRADE_PERCENT,
-                DjiSettings.MIN_DESCENT_GRADE_PERCENT,
-                DjiSettings.MAX_DESCENT_GRADE_PERCENT,
-            ), fullWidthParams(bottomMargin = dp(14)))
-        }
-        triggerGroup.addView(descentThresholdRows, fullWidthParams())
-        settingsSwitch(
-            triggerGroup,
-            getString(R.string.highlight_ride_bookmarks),
-            DjiSettings.KEY_RIDE_BOOKMARKS,
-            false,
-            summary = getString(R.string.ob_bookmarks),
-        )
-
+        automationCard = AutomationSettingsUi(activity, this).also { it.attach(content) }
     }
     fun alerts(parent: LinearLayout) {
         val card = group(parent, getString(R.string.alert_settings))

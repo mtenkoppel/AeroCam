@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="automation_title">Automatización</string>
+    <string name="automation_more_information">Más información</string>
+    <string name="automation_enable">Activar automatización</string>
+    <string name="automation_highlights">Solo añadir destacados automáticos</string>
+    <string name="automation_highlights_summary">Tú controlas el inicio y la parada de la grabación.</string>
+    <string name="automation_recording">Las grabaciones se inician y detienen automáticamente</string>
+    <string name="automation_recording_start_only">Las grabaciones se inician automáticamente</string>
+    <string name="automation_recording_summary">Concéntrate en pedalear.</string>
+    <string name="automation_photos">Solo tomar fotos automáticamente</string>
+    <string name="automation_photos_summary">Toma una foto al activarse un disparador. El vídeo sigue siendo manual.</string>
+    <string name="automation_recording_settings">Ajustes de grabación automática</string>
+    <string name="automation_empty">Añade tu primer disparador: un descenso del 5 % a más de 50 km/h o tu próximo esfuerzo de más de 500 W.</string>
+    <string name="automation_add_trigger">+ Añadir disparador</string>
+    <string name="automation_save">Guardar</string>
+    <string name="automation_add">Añadir</string>
+    <string name="automation_about">Acerca de la automatización</string>
+    <string name="automation_catalog_help">Elige un evento o umbral para capturar momentos automáticamente. Puedes añadir varios disparadores.</string>
+    <string name="automation_stop_automatically">Detener automáticamente</string>
+    <string name="automation_stop_seconds">Detener tras (segundos)</string>
+    <string name="automation_add_highlights">Añadir destacados automáticos</string>
+    <string name="automation_remove_trigger">Eliminar disparador</string>
+    <string name="automation_invalid_number">Introduce un valor entre %1$d y %2$d.</string>
+    <string name="automation_auto_start">INICIO AUTO</string>
+    <string name="automation_auto_stop">PARADA AUTO</string>
+    <string name="automation_rec_started">GRABACIÓN INICIADA</string>
+    <string name="automation_rec_stopped">GRABACIÓN DETENIDA</string>
+</resources>

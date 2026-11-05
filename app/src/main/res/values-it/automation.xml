@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="automation_title">Automazione</string>
+    <string name="automation_more_information">Ulteriori informazioni</string>
+    <string name="automation_enable">Attiva automazione</string>
+    <string name="automation_highlights">Aggiungi solo momenti salienti automatici</string>
+    <string name="automation_highlights_summary">Controlli tu quando avviare e fermare la registrazione.</string>
+    <string name="automation_recording">Le registrazioni si avviano e si fermano automaticamente</string>
+    <string name="automation_recording_start_only">Le registrazioni si avviano automaticamente</string>
+    <string name="automation_recording_summary">Concentrati sulla pedalata.</string>
+    <string name="automation_photos">Scatta solo foto automaticamente</string>
+    <string name="automation_photos_summary">Scatta una foto quando si attiva un evento. Il video resta manuale.</string>
+    <string name="automation_recording_settings">Impostazioni registrazione automatica</string>
+    <string name="automation_empty">Aggiungi il primo evento: una discesa al 5 % oltre i 50 km/h o il prossimo sforzo oltre i 500 W.</string>
+    <string name="automation_add_trigger">+ Aggiungi evento</string>
+    <string name="automation_save">Salva</string>
+    <string name="automation_add">Aggiungi</string>
+    <string name="automation_about">Informazioni sull’automazione</string>
+    <string name="automation_catalog_help">Scegli un evento o una soglia per catturare automaticamente i momenti. Puoi aggiungere più eventi.</string>
+    <string name="automation_stop_automatically">Ferma automaticamente</string>
+    <string name="automation_stop_seconds">Ferma dopo (secondi)</string>
+    <string name="automation_add_highlights">Aggiungi momenti salienti automatici</string>
+    <string name="automation_remove_trigger">Rimuovi evento</string>
+    <string name="automation_invalid_number">Inserisci un valore da %1$d a %2$d.</string>
+    <string name="automation_auto_start">AVVIO AUTO</string>
+    <string name="automation_auto_stop">STOP AUTO</string>
+    <string name="automation_rec_started">REG. AVVIATA</string>
+    <string name="automation_rec_stopped">REG. FERMATA</string>
+</resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="automation_title">Automação</string>
+    <string name="automation_more_information">Mais informações</string>
+    <string name="automation_enable">Ativar automação</string>
+    <string name="automation_highlights">Adicionar apenas destaques automáticos</string>
+    <string name="automation_highlights_summary">Controla o início e a paragem da gravação.</string>
+    <string name="automation_recording">As gravações iniciam e param automaticamente</string>
+    <string name="automation_recording_start_only">As gravações iniciam automaticamente</string>
+    <string name="automation_recording_summary">Concentre-se em pedalar.</string>
+    <string name="automation_photos">Tirar apenas fotos automaticamente</string>
+    <string name="automation_photos_summary">Tira uma foto quando ocorre um evento. O vídeo continua manual.</string>
+    <string name="automation_recording_settings">Definições de gravação automática</string>
+    <string name="automation_empty">Adicione o primeiro evento: uma descida de 5 % acima de 50 km/h ou o próximo esforço acima de 500 W.</string>
+    <string name="automation_add_trigger">+ Adicionar evento</string>
+    <string name="automation_save">Guardar</string>
+    <string name="automation_add">Adicionar</string>
+    <string name="automation_about">Sobre a automação</string>
+    <string name="automation_catalog_help">Escolha um evento ou limiar para captar momentos automaticamente. Pode adicionar vários eventos.</string>
+    <string name="automation_stop_automatically">Parar automaticamente</string>
+    <string name="automation_stop_seconds">Parar após (segundos)</string>
+    <string name="automation_add_highlights">Adicionar destaques automáticos</string>
+    <string name="automation_remove_trigger">Remover evento</string>
+    <string name="automation_invalid_number">Introduza um valor entre %1$d e %2$d.</string>
+    <string name="automation_auto_start">INÍCIO AUTO</string>
+    <string name="automation_auto_stop">PARAGEM AUTO</string>
+    <string name="automation_rec_started">GRAV. INICIADA</string>
+    <string name="automation_rec_stopped">GRAV. PARADA</string>
+</resources>

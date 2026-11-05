@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="automation_title">Automatisierung</string>
+    <string name="automation_more_information">Weitere Informationen</string>
+    <string name="automation_enable">Automatisierung aktivieren</string>
+    <string name="automation_highlights">Nur automatische Highlights hinzufügen</string>
+    <string name="automation_highlights_summary">Du steuerst Start und Stopp der Aufnahme.</string>
+    <string name="automation_recording">Aufnahmen werden automatisch gestartet und gestoppt</string>
+    <string name="automation_recording_start_only">Aufnahmen werden automatisch gestartet</string>
+    <string name="automation_recording_summary">Konzentriere dich aufs Fahren.</string>
+    <string name="automation_photos">Nur automatisch Fotos aufnehmen</string>
+    <string name="automation_photos_summary">Bei einem Auslöser ein Foto aufnehmen. Videoaufnahmen bleiben manuell.</string>
+    <string name="automation_recording_settings">Einstellungen für automatische Aufnahmen</string>
+    <string name="automation_empty">Füge deinen ersten Auslöser hinzu: eine Abfahrt mit 5 % Gefälle über 50 km/h oder dein nächster Kraftakt mit mehr als 500 W.</string>
+    <string name="automation_add_trigger">+ Auslöser hinzufügen</string>
+    <string name="automation_save">Speichern</string>
+    <string name="automation_add">Hinzufügen</string>
+    <string name="automation_about">Über die Automatisierung</string>
+    <string name="automation_catalog_help">Wähle ein Fahrereignis oder einen Schwellenwert, um Momente automatisch festzuhalten. Du kannst mehrere Auslöser hinzufügen.</string>
+    <string name="automation_stop_automatically">Automatisch stoppen</string>
+    <string name="automation_stop_seconds">Stoppen nach (Sekunden)</string>
+    <string name="automation_add_highlights">Automatische Highlights hinzufügen</string>
+    <string name="automation_remove_trigger">Auslöser entfernen</string>
+    <string name="automation_invalid_number">Gib einen Wert zwischen %1$d und %2$d ein.</string>
+    <string name="automation_auto_start">AUTO-START</string>
+    <string name="automation_auto_stop">AUTO-STOPP</string>
+    <string name="automation_rec_started">AUFNAHME GESTARTET</string>
+    <string name="automation_rec_stopped">AUFNAHME GESTOPPT</string>
+</resources>

@@ -39,7 +39,7 @@ internal object RecordingButtonLayout {
         val height = (heightPx - 2 * resources.getDimensionPixelSize(R.dimen.widget_recording_vertical_padding))
             .coerceAtLeast(1)
         val bold = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = Typeface.DEFAULT_BOLD }
-        val regular = Paint(Paint.ANTI_ALIAS_FLAG)
+        val regular = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = Typeface.DEFAULT_BOLD }
         val preferred = sp(resources, preferredTimerSp.coerceIn(18, 38))
         val secondary = (feedback ?: metadata)?.let { line(regular, it, sp(resources, 11)) }
             ?.takeIf { regular.measureText(it.text) <= width }
@@ -47,7 +47,7 @@ internal object RecordingButtonLayout {
             fitTimer(bold, timer, preferred, width, height, it)
         }
         // Allow feedback to reduce the timer slightly. Metadata uses spare room only.
-        val minimumWithSecondary = if (feedback != null) sp(resources, 18) else preferred
+        val minimumWithSecondary = sp(resources, 14)
         val showSecondary = reservedTimer != null && reservedTimer.size >= minimumWithSecondary
         val timerLine = if (showSecondary) checkNotNull(reservedTimer)
         else checkNotNull(fitTimer(bold, timer, preferred, width, height.coerceAtLeast(4)))

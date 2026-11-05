@@ -52,6 +52,14 @@ object DjiCameraController {
 
     fun diagnosticReconnect(context: Context) = dispatch(context, DjiCameraService.ACTION_DIAGNOSTIC_RECONNECT)
 
+    fun automaticStart(context: Context) = dispatch(context, DjiCameraService.ACTION_AUTO_START)
+    fun automaticPhoto(context: Context) = dispatch(context, DjiCameraService.ACTION_AUTO_PHOTO)
+    fun cancelAutomation(context: Context) = dispatch(context, DjiCameraService.ACTION_AUTO_CANCEL)
+    fun automaticStop(context: Context, clip: Long) = dispatch(context, DjiCameraService.ACTION_AUTO_STOP) {
+        putExtra("clip", clip)
+        putExtra("requestedAt", SystemClock.elapsedRealtime())
+    }
+
     fun takePhoto(context: Context) = dispatch(context, DjiCameraService.ACTION_PHOTO)
 
     fun startRecording(context: Context) = dispatch(context, DjiCameraService.ACTION_RECORD_START)
@@ -231,6 +239,12 @@ class DjiCameraService : Service() {
             ACTION_CONNECT -> client.autoConnectKnownDevice()
             ACTION_DIAGNOSTIC_DISCONNECT -> client.diagnosticDisconnect()
             ACTION_DIAGNOSTIC_RECONNECT -> client.diagnosticReconnect()
+            ACTION_AUTO_START -> client.automaticStart()
+            ACTION_AUTO_PHOTO -> client.automaticPhoto()
+            ACTION_AUTO_CANCEL -> client.cancelAutomation()
+            ACTION_AUTO_STOP -> if (SystemClock.elapsedRealtime() - (intent?.getLongExtra("requestedAt", 0) ?: 0) < 2000) {
+                client.automaticStop(intent?.getLongExtra("clip", 0) ?: 0)
+            }
             ACTION_PHOTO -> client.triggerPhoto()
             ACTION_RECORD_START -> {
                 if (!client.state().recording) client.startVideoRecording()
@@ -371,6 +385,10 @@ class DjiCameraService : Service() {
         private const val BLUETOOTH_RESOURCE = "dji-camera"
         private const val BLUETOOTH_REQUEST_DEBOUNCE_MS = 2_000L
 
+        const val ACTION_AUTO_START = "com.karoopoc.dji.AUTO_START"
+        const val ACTION_AUTO_STOP = "com.karoopoc.dji.AUTO_STOP"
+        const val ACTION_AUTO_PHOTO = "com.karoopoc.dji.AUTO_PHOTO"
+        const val ACTION_AUTO_CANCEL = "com.karoopoc.dji.AUTO_CANCEL"
         const val ACTION_START = "com.karoopoc.dji.START"
         const val ACTION_DISCOVER = "com.karoopoc.dji.DISCOVER"
         const val ACTION_DIAGNOSTIC_DISCONNECT = "com.karoopoc.dji.DIAGNOSTIC_DISCONNECT"

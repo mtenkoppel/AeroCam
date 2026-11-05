@@ -1,0 +1,89 @@
+package com.karoopoc.dji
+
+import org.junit.Assert.*
+import org.junit.Test
+
+class AutomationPolicyTest {
+    @Test fun fullQuietMinuteAndOneStopOnly() {
+        val p = AutoStopPolicy()
+        assertFalse(p.update(0, 1, true, false, 60))
+        assertFalse(p.update(59999, 1, true, false, 60))
+        assertTrue(p.update(60000, 1, true, false, 60))
+        assertFalse(p.update(61000, 1, true, false, 60))
+    }
+    @Test fun reboundOrOverlappingTriggerRequiresFreshMinute() {
+        val p = AutoStopPolicy()
+        p.update(0, 1, true, false, 60)
+        p.update(20000, 1, true, true, 60)
+        p.update(50000, 1, true, false, 60)
+        assertFalse(p.update(109999, 1, true, false, 60))
+        assertTrue(p.update(110000, 1, true, false, 60))
+    }
+    @Test fun eventRestartsQuietPeriodEvenWhenMarkerSuppressed() {
+        val p = AutoStopPolicy()
+        p.update(0, 1, true, false, 60)
+        p.event()
+        p.update(45000, 1, true, false, 60)
+        assertFalse(p.update(60000, 1, true, false, 60))
+        assertTrue(p.update(105000, 1, true, false, 60))
+    }
+    @Test fun unknownTelemetryPausesAndRequiresFullFreshPeriod() {
+        val p = AutoStopPolicy()
+        p.update(0, 1, true, false, 60)
+        assertFalse(p.update(65000, 1, true, null, 60))
+        p.update(70000, 1, true, false, 60)
+        assertFalse(p.update(129999, 1, true, false, 60))
+        assertTrue(p.update(130000, 1, true, false, 60))
+    }
+    @Test fun manualClipDisconnectPauseAndNewClipCannotInheritTimer() {
+        val p = AutoStopPolicy()
+        p.update(0, 1, true, false, 60)
+        assertFalse(p.update(60000, 0, true, false, 60))
+        assertFalse(p.update(70000, 2, false, false, 60))
+        assertFalse(p.update(80000, 2, true, false, 60))
+        assertFalse(p.update(139999, 2, true, false, 60))
+        assertTrue(p.update(140000, 2, true, false, 60))
+    }
+    @Test fun customDelayAndChangingSettingsResetTimer() {
+        val p = AutoStopPolicy()
+        p.update(0, 1, true, false, 60)
+        assertFalse(p.update(20000, 1, true, false, 10))
+        assertTrue(p.update(30000, 1, true, false, 10))
+    }
+    @Test fun originNeedsConfirmedStartAndExpiresOrCancels() {
+        val p = RecordingOrigin()
+        p.requestStart(0)
+        assertEquals(0L, p.clip)
+        p.cancel()
+        p.status(true, 1000)
+        assertEquals(0L, p.clip)
+        p.status(false, 2000)
+        p.requestStart(3000)
+        p.status(true, 19000)
+        assertEquals(0L, p.clip)
+    }
+    @Test fun confirmedClipHasUniqueIdentityAndManualOverrideRevokesIt() {
+        val p = RecordingOrigin()
+        p.requestStart(0)
+        assertEquals(RecordingOrigin.Feedback.STARTED, p.status(true, 1000))
+        val first = p.clip
+        assertTrue(first > 0)
+        p.cancel()
+        assertEquals(0L, p.clip)
+        p.status(false, 2000)
+        p.requestStart(3000)
+        p.status(true, 4000)
+        assertTrue(p.clip > first)
+        p.requestStop()
+        assertEquals(RecordingOrigin.Feedback.STOPPED, p.status(false, 5000))
+        assertEquals(0L, p.clip)
+    }
+    @Test fun photosNeverBurstOrReplaySkippedEvents() {
+        val p = AutomaticPhotoPolicy()
+        assertFalse(p.request(0, false))
+        assertTrue(p.request(1, true))
+        assertFalse(p.request(1, true))
+        assertFalse(p.request(29999, true))
+        assertTrue(p.request(30001, true))
+    }
+}

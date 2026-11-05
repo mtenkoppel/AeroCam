@@ -151,6 +151,14 @@ object DjiWidgetRenderer {
         setViewVisibility(R.id.widgetVideoSpinner, if (pending) View.VISIBLE else View.GONE)
         setViewVisibility(R.id.widgetVideoHighlight, if (showHighlight) View.VISIBLE else View.GONE)
 
+        val automation = com.karoopoc.dji.DjiSettings.read(context)
+        val idleLine = when {
+            state.automationFeedback == "STOPPED" -> context.getString(R.string.automation_rec_stopped)
+            automation.autoHighlightsEnabled && automation.autoStartRecording -> context.getString(R.string.automation_auto_start)
+            else -> null
+        }
+        setTextViewText(R.id.widgetVideoIdleMeta, idleLine ?: "")
+        setViewVisibility(R.id.widgetVideoIdleMeta, if (idleLine != null) View.VISIBLE else View.GONE)
         var markHighlight = false
         if (recording && !pending) {
             val resources = context.resources
@@ -158,13 +166,18 @@ object DjiWidgetRenderer {
                 resources.getDimensionPixelSize(R.dimen.widget_highlight_button_width) +
                     resources.getDimensionPixelSize(R.dimen.widget_combined_gap)
             } else 0
-            val feedback = state.highlightFeedback?.let { "★ ${compactFeedback(context, it)}" }
+            val feedback = when {
+                state.automationFeedback == "STARTED" -> context.getString(R.string.automation_rec_started)
+                state.highlightFeedback != null -> "★ ${compactFeedback(context, state.highlightFeedback)}"
+                else -> null
+            }
+            val autoStopLine = if (state.automaticRecordingId != 0L && automation.autoHighlightsEnabled &&
+                automation.autoStartRecording && automation.autoStop) context.getString(R.string.automation_auto_stop) else null
             markHighlight = RecordingButtonLayout.render(
                 this, resources, config.viewSize.first - FIELD_HORIZONTAL_INSET - highlightWidth, buttonHeight,
                 formatDuration(state.recordingDurationSeconds), config.textSize, feedback,
                 // Cam Control already shows available storage in its status area.
-                metadata = if (hasConnectionButton || state.remainingCapacityMb == null) null
-                else formatStorage(context, state.remainingCapacityMb),
+                metadata = autoStopLine,
             )
         }
         setInt(R.id.widgetVideoHighlight, "setBackgroundResource",

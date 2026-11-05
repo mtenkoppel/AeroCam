@@ -2,7 +2,7 @@ package com.karoopoc.dji
 
 /** One direction’s gradient trigger with an optional speed condition, with hysteresis to avoid repeated markers. */
 internal class GradientSpeedTrigger {
-    private var active = false
+    var active = false; private set
 
     fun update(speedKph: Double?, gradePercent: Double?, enabled: Boolean,
         speedThresholdKph: Int, gradientThresholdPercent: Int, requireSpeed: Boolean = true): Boolean {
