@@ -32,7 +32,9 @@ not redesigned here.
 - Highlight feedback retains the existing implementation: compact fields can
   temporarily replace the timer, while larger fields add a feedback line.
 - Pending commands retain the current spinner presentation and hide the status
-  line temporarily. No pending-command policy was changed.
+  line temporarily. No pending-command policy was changed. The offscreen static
+  renderer does not show the indeterminate spinner, so the blank pending column
+  is a capture limitation: use physical-device QA for that animation.
 - No camera icon or storage metadata inside the recording button; Cam Control's
   independent status area retains storage.
 
