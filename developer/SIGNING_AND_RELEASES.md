@@ -14,7 +14,7 @@ A local Android debug key cannot update a published release installation.
 Never commit a keystore, its passwords, tokens, or populated local configuration.
 The names below are configuration references, not credential values.
 
-The [Release workflow](../.github/workflows/release.yml) reads these GitHub Actions
+The [Publish release workflow](../.github/workflows/release.yml) reads these GitHub Actions
 secrets:
 
 | Secret | Purpose |
@@ -40,28 +40,42 @@ The output is `app/build/outputs/apk/release/app-release.apk`. Keep credentials
 out of shell history, logs, and build artifacts. Do not change the release key to
 resolve an update problem; that would break in-place updates for existing users.
 
-## Prepare a release
+## Build for Karoo
 
-1. Review the changes and update `versionName` and `versionCode` in
-   `app/build.gradle.kts`. Use a new version code higher than previous distributed
-   builds so existing users can update in place.
-2. Run the contribution checks and verify the release-signed APK on hardware,
-   including an update over the existing installation that preserves settings
-   and the paired camera.
-3. Prepare clear release notes covering user-visible changes, compatibility,
-   and any known limitations.
-4. After the owner approves publication, tag the intended commit using a
-   matching version such as `v1.1.0`, and push that tag. Pushing a `v*` tag starts
-   the Release workflow and creates a **draft** GitHub release.
-5. Review the draft, release notes, APK signing identity, and attached checksum.
-   Publish the draft only when the release is approved.
+1. Open **Actions → Signed test build → Run workflow** and choose the trusted
+   branch to test. Enable **release_signed_debug** if you need a debuggable APK.
+   The workflow verifies the APK and uploads it with its checksum.
+2. Download and verify the artifact. Install the APK with
+   `./scripts/install-release.sh /path/to/app.apk`. Check the saved camera,
+   settings and the behavior under test. Installation restarts the app, which
+   can then reconnect to the saved camera.
 
-## Published files
+Automatic CI runs on PR updates and master pushes. It runs unit tests and builds
+a debug APK. A signed build is requested separately for device testing.
 
-The workflow attaches `AeroCam-<tag>.apk` and its `.sha256` checksum. The APK is
-what riders install; GitHub's automatically generated source archives are for
-developers. Keep APKs on GitHub Releases rather than committing them to Git.
+## Version numbers
 
-Tags containing a hyphen are marked as prereleases by the workflow. The README
-links to `/releases/latest` so riders reach the current stable release without
-needing to choose among development builds.
+Use `MAJOR.MINOR.PATCH` for new stable releases. PATCH is for compatible fixes,
+MINOR for compatible features, and MAJOR for breaking changes. Keep the
+historical `v1.0` tag. The first patch uses `versionName = "1.0.1"` and tag
+`v1.0.1`. Android's integer `versionCode` is independent of that label. Build
+43 is reserved, so the next normal build starts at 44 or higher.
+
+## Publish an approved release
+
+1. Choose `MAJOR.MINOR.PATCH` and set `versionName` and `versionCode` in
+   `app/build.gradle.kts`. Use a higher version code than any previously
+   distributed build, including device test and reserved recovery builds.
+2. Move the rider-visible entries from Unreleased to the new version heading in
+   [CHANGELOG.md](../CHANGELOG.md). Verify that release blockers are fixed in
+   the candidate. Complete CI and the relevant checks on Karoo.
+3. Merge the approved changes. Check that the intended master commit matches
+   the tested changes and has passed CI.
+4. With the owner's approval for that commit, open **Actions → Publish release →
+   Run workflow**, select **master**, and enter its full approved SHA. The
+   workflow tests, builds and verifies the release APK, then creates the matching
+   tag and publishes the APK, checksum and changelog notes to GitHub.
+
+The README and landing page use `/releases/latest`. GitHub points that URL to
+the current stable release. Published tags and APKs stay immutable. For a fix or
+revert, publish a new patch with a higher Android version code.
