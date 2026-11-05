@@ -24,7 +24,11 @@ data class DjiWidgetViewState(
     val connectPrompts: Set<ConnectPrompt> = emptySet(),
     val photoAwaitingResponse: String? = null,
     val videoAwaitingResponse: String? = null,
+    // Presentation only: supplied by the future confirmed-clip policy, never inferred from settings.
+    val recordingAutomation: RecordingAutomation = RecordingAutomation.NONE,
 )
+
+enum class RecordingAutomation { NONE, AUTO_START, AUTO_START_STOP }
 
 enum class DjiWidgetSize {
     SMALL_HALF,
@@ -114,7 +118,7 @@ object DjiWidgetRenderer {
         return RemoteViews(context.packageName, R.layout.widget_dji_video).apply {
             setInt(R.id.widgetVideoRoot, "setBackgroundResource", R.drawable.widget_root_dark)
             applyWidgetFrame(R.id.widgetVideoRoot)
-            applyTextAlignment(config, R.id.widgetVideoTimer, R.id.widgetVideoMeta, R.id.widgetVideoStatus)
+            applyTextAlignment(config, R.id.widgetVideoTimer, R.id.widgetVideoMeta, R.id.widgetVideoStatus, R.id.widgetVideoAutomation)
             applyIconPadding(context, R.dimen.widget_icon_primary_padding, R.id.widgetVideoIcon)
             applyIconPadding(context, R.dimen.widget_icon_utility_padding, R.id.widgetVideoHighlightIcon)
             setTextViewTextSize(
@@ -135,6 +139,8 @@ object DjiWidgetRenderer {
             setTextColor(R.id.widgetVideoStatus, palette.textPrimary)
             setTextColor(R.id.widgetVideoTimer, palette.textOnAccent)
             setTextColor(R.id.widgetVideoMeta, palette.textOnAccent)
+            setTextColor(R.id.widgetVideoAutomation, palette.textOnAccent)
+            setViewVisibility(R.id.widgetVideoAutomation, View.GONE)
 
             setViewVisibility(R.id.widgetVideoIdle, View.GONE)
             setViewVisibility(R.id.widgetVideoStatus, View.GONE)
@@ -183,10 +189,10 @@ object DjiWidgetRenderer {
                     when (effectiveLayout) {
                         VideoRecordingLayout.DETAILED -> {
                             setTextViewText(R.id.widgetVideoTimer, formatDuration(state.recordingDurationSeconds))
-                            setViewVisibility(R.id.widgetVideoMeta, View.VISIBLE)
+                            setViewVisibility(R.id.widgetVideoMeta, if (feedback != null) View.VISIBLE else View.GONE)
                             setTextViewText(
                                 R.id.widgetVideoMeta,
-                                feedback?.let { "★ ${compactFeedback(context, it)}" } ?: recordingMeta(context, state, size),
+                                feedback?.let { "★ ${compactFeedback(context, it)}" } ?: "",
                             )
                         }
 
@@ -204,6 +210,23 @@ object DjiWidgetRenderer {
                             setTextViewText(R.id.widgetVideoTimer, "★")
                             setViewVisibility(R.id.widgetVideoMeta, View.GONE)
                         }
+                    }
+                    val automation = automationLabel(context, viewState)
+                    if (automation != null) {
+                        setViewVisibility(R.id.widgetVideoAutomation, View.VISIBLE)
+                        setTextViewText(R.id.widgetVideoAutomation, automation)
+                        val timerText = when (effectiveLayout) {
+                            VideoRecordingLayout.FEEDBACK_COMPACT -> "★ ${compactFeedback(context, feedback)}"
+                            VideoRecordingLayout.ICON_ONLY -> "★"
+                            else -> formatDuration(state.recordingDurationSeconds)
+                        }
+                        val highlightWidth = if (size == DjiWidgetSize.SMALL_HALF) 0 else
+                            (78 * context.resources.displayMetrics.density).toInt()
+                        fitAutomationText(context, config.viewSize.first - 32 - highlightWidth,
+                            config.viewSize.second - 16,
+                            timerText, automation, recordingPrimaryTextSize(config, effectiveLayout),
+                            if (effectiveLayout == VideoRecordingLayout.DETAILED && feedback != null) 11f else 0f,
+                            R.id.widgetVideoTimer, R.id.widgetVideoAutomation)
                     }
                     if (size != DjiWidgetSize.SMALL_HALF) {
                         setViewVisibility(R.id.widgetVideoHighlight, View.VISIBLE)
@@ -390,7 +413,6 @@ object DjiWidgetRenderer {
                 context,
                 R.dimen.widget_icon_primary_padding,
                 R.id.widgetControlVideoIdleIcon,
-                R.id.widgetControlVideoRecordingIcon,
                 R.id.widgetControlPhotoIcon,
             )
             applyIconPadding(
@@ -608,10 +630,16 @@ object DjiWidgetRenderer {
                     setTextViewTextSize(R.id.widgetControlVideoTimer, TypedValue.COMPLEX_UNIT_PX,
                         minOf(28f * context.resources.displayMetrics.scaledDensity, rowHeight * .45f))
                     setViewPadding(R.id.widgetControlVideoRecording, 0, 0, 0, (caption * 1.4f).toInt())
-                    val iconSize = context.resources.getDimensionPixelSize(R.dimen.widget_icon_primary_size)
-                    val normalPadding = context.resources.getDimensionPixelSize(R.dimen.widget_icon_primary_padding)
-                    val iconPadding = maxOf(normalPadding, ((iconSize - rowHeight * .7f) / 2).toInt())
-                    setViewPadding(R.id.widgetControlVideoRecordingIcon, iconPadding, iconPadding, iconPadding, iconPadding)
+                }
+                automationLabel(context, viewState)?.let { label ->
+                    if (viewState.videoAwaitingResponse == null) {
+                        val feedbackPx = if (state.highlightFeedback != null) (rowHeight * .24f).coerceAtLeast(11f) else 0f
+                        fitAutomationText(context,
+                            config.viewSize.first - 32 - (78 * density).toInt(),
+                            rowHeight - (feedbackPx * 1.4f).toInt(),
+                            formatDuration(state.recordingDurationSeconds), label, 28f, 0f,
+                            R.id.widgetControlVideoTimer, R.id.widgetControlVideoAutomation)
+                    }
                 }
             }
             setTextViewTextSize(
@@ -749,7 +777,8 @@ object DjiWidgetRenderer {
             R.id.widgetControlVideoIdleIcon,
             if (connected) R.drawable.ic_widget_video else R.drawable.ic_widget_video_disabled,
         )
-        setImageViewResource(R.id.widgetControlVideoRecordingIcon, R.drawable.ic_widget_video)
+        setViewVisibility(R.id.widgetControlVideoAutomation, View.GONE)
+        setTextColor(R.id.widgetControlVideoAutomation, palette.textOnAccent)
         if (connected && viewState.videoAwaitingResponse != null) {
             setViewVisibility(R.id.widgetControlVideoIdle, View.GONE)
             setViewVisibility(R.id.widgetControlVideoRecording, View.GONE)
@@ -759,6 +788,10 @@ object DjiWidgetRenderer {
             setViewVisibility(R.id.widgetControlVideoIdle, View.GONE)
             setViewVisibility(R.id.widgetControlVideoRecording, View.VISIBLE)
             setTextViewText(R.id.widgetControlVideoTimer, formatDuration(state.recordingDurationSeconds))
+            automationLabel(context, viewState)?.let { label ->
+                setViewVisibility(R.id.widgetControlVideoAutomation, View.VISIBLE)
+                setTextViewText(R.id.widgetControlVideoAutomation, label)
+            }
             state.highlightFeedback?.let {
                 setViewVisibility(R.id.widgetControlVideoFeedback, View.VISIBLE)
                 setTextViewText(R.id.widgetControlVideoFeedback, "★ ${compactFeedback(context, it.uppercase())}")
@@ -805,6 +838,26 @@ object DjiWidgetRenderer {
         if (connected && !state.recording && viewState.photoAwaitingResponse != null) {
             setViewVisibility(R.id.widgetControlPhotoSpinner, View.VISIBLE)
         }
+    }
+
+    private fun RemoteViews.fitAutomationText(
+        context: Context, width: Int, height: Int, timer: String, label: String,
+        timerSp: Float, feedbackSp: Float, timerId: Int, labelId: Int,
+    ) {
+        val scale = context.resources.displayMetrics.scaledDensity
+        val availableWidth = width.coerceAtLeast(1).toFloat()
+        val paint = android.graphics.Paint().apply {
+            typeface = android.graphics.Typeface.DEFAULT_BOLD
+            textSize = 10f * scale
+        }
+        val labelPx = minOf(paint.textSize,
+            paint.textSize * availableWidth / paint.measureText(label).coerceAtLeast(1f))
+        paint.textSize = timerSp * scale
+        val timerPx = minOf(paint.textSize,
+            paint.textSize * availableWidth / paint.measureText(timer).coerceAtLeast(1f),
+            (height - labelPx * 1.25f - feedbackSp * scale * 1.25f) / 1.25f).coerceAtLeast(1f)
+        setTextViewTextSize(timerId, TypedValue.COMPLEX_UNIT_PX, timerPx)
+        setTextViewTextSize(labelId, TypedValue.COMPLEX_UNIT_PX, labelPx)
     }
 
     private fun RemoteViews.applyWidgetFrame(rootId: Int) {
@@ -922,10 +975,6 @@ private fun statusTextSize(config: ViewConfig, size: DjiWidgetSize): Float {
     return (config.textSize / 2).coerceIn(12, maximum).toFloat()
 }
 
-private fun recordingMeta(context: Context, state: DjiCameraState, size: DjiWidgetSize): String {
-    return formatStorage(context, state.remainingCapacityMb)
-}
-
 private fun formatStorage(context: Context, megabytes: Long?): String {
     return when {
         megabytes == null -> context.getString(R.string.storage_unknown)
@@ -971,5 +1020,15 @@ private fun RemoteViews.applyTextAlignment(config: ViewConfig, vararg ids: Int) 
     for (id in ids) {
         // The layouts use textAlignment=gravity; RemoteViews cannot change textAlignment itself.
         setInt(id, "setGravity", dataGravity(config))
+    }
+}
+
+/** No camera ownership or auto-stop policy is implemented here. */
+private fun automationLabel(context: Context, viewState: DjiWidgetViewState): String? {
+    if (!viewState.camera.recording || viewState.camera.connection != CameraConnectionState.CONNECTED) return null
+    return when (viewState.recordingAutomation) {
+        RecordingAutomation.NONE -> null
+        RecordingAutomation.AUTO_START -> context.getString(R.string.widget_auto_start)
+        RecordingAutomation.AUTO_START_STOP -> context.getString(R.string.widget_auto_start_stop)
     }
 }

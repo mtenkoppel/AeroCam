@@ -416,28 +416,29 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:orientation="horizontal"
+                        android:orientation="vertical"
                         android:visibility="gone">
-
-                        <ImageView
-                            android:id="@+id/widgetControlVideoRecordingIcon"
-                            android:layout_width="@dimen/widget_icon_primary_size"
-                            android:layout_height="@dimen/widget_icon_primary_size"
-                            android:contentDescription="@string/widget_video"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/ic_widget_video" />
 
                         <TextView
                             android:id="@+id/widgetControlVideoTimer"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="2dp"
                             android:maxLines="1"
                             android:text="14:45"
                             android:textColor="@color/dji_text_on_accent"
                             android:textSize="28sp"
                             android:textStyle="bold"
-                            android:translationY="-2dp" />
+                            android:gravity="center" />
+                        <TextView
+                            android:id="@+id/widgetControlVideoAutomation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:includeFontPadding="false"
+                            android:textColor="@color/dji_text_on_accent"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
                     </LinearLayout>
 
                     <ProgressBar

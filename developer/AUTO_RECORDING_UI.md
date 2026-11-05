@@ -1,0 +1,75 @@
+# Recording button: agreed UI, rules deferred
+
+Decision: Maurice, 2026-11-05. Related issues: #50 and #51. This is UI preparation,
+not completion of either issue. Base: master 11f22ff.
+
+## Approved essence
+
+- Keep the elapsed recording time dominant.
+- Directly below it, show a smaller bold uppercase status:
+  - `AUTO START`: this clip was automatically started, without automatic stopping.
+  - `AUTO START + STOP`: this clip was automatically started and is eligible for automatic stopping.
+  - No automation label for manual or unknown-origin clips.
+- Use a plus, not a slash. Keep these compact status strings consistent across the six app languages.
+- No recording dot, camera icon, SD-card capacity, resolution, or FPS inside the recording button.
+- Keep the existing red recording surface, tap-to-stop action, highlight button,
+  highlight feedback, alignment, and surrounding Cam Control layout.
+- Video + Photo inherits the same recording presentation from Video.
+- Keep camera battery and storage in Cam Control's separate status area.
+- No animation, countdown, new toast, or new touch target for this label.
+
+The chat visualization illustrated only this recording-button principle. Its
+highlight artwork and surrounding layouts were not approved as replacements.
+Actual app layouts and icons remain the reference. Do not rebuild the widgets
+from the visualization.
+
+## Prepared implementation
+
+`DjiWidgetViewState.recordingAutomation` is a presentation-only enum with a safe
+`NONE` default. The renderer accepts `AUTO_START` and `AUTO_START_STOP` only while
+the camera is connected and recording. All production callers retain `NONE`.
+Only the existing widget gallery and rendering tests supply illustrative auto
+states. The two extra gallery scenarios allow review without sending camera commands.
+
+The existing pending-command spinner behavior remains unchanged. Automation text
+is hidden with the recording content during pending commands; deciding whether to
+retain it during a stop request is deferred to the confirmed-clip integration.
+
+Feedback retains its existing slot and behavior. The automation label has its own
+line, so it is not overwritten when an existing highlight message is shown.
+Text sizing accounts for the extra line and the available recording-button width.
+
+## Next step: behavior and integration
+
+Still unresolved: confirmed clip ownership, timer cancellation/rearming,
+overlapping threshold conditions, lap/summit events, manual overrides, pauses,
+ride finish and bookmark ordering, stale telemetry, disconnection, restart,
+and changes to settings during a clip. Earlier chat proposals for these rules
+were exploratory, not accepted decisions.
+
+The future policy must provide the per-clip presentation state. Do not infer it
+from a global Auto-start/Auto-stop setting or from a pending start command.
+`AUTO START + STOP` must reflect actual eligibility for that clip, not merely a
+configured delay. UI preparation adds no stop commands, timers, settings, or
+changes to BLE, ride integration, capture actions, or notifications.
+
+## Review and evidence
+
+Rendering checks exercise the real Android RemoteViews at all five sizes,
+including the smallest caption-reduced body, both themes, long durations,
+highlight feedback, and reapplication to manual/idle/disconnected states.
+Native render output is written to
+`app/build/reports/settings-ui/recording-automation/` and collected by CI.
+These are software-rendered previews, not physical Karoo screenshots.
+
+SDK documentation and releases checked 2026-11-05:
+- https://hammerheadnav.github.io/karoo-ext/
+- https://github.com/hammerheadnav/karoo-ext/releases
+
+Dependency remains karoo-ext 1.1.9 (published minimum KOS 1.634.2440).
+No dependency or KOS requirement changes. Android compile SDK 35 / target 34 are
+separate from KOS. No physical device or camera firmware was tested for this change.
+
+Before enabling the feature: validate both label states, longest durations,
+highlight feedback, captions and alignments on Karoo, then validate the separately
+implemented ownership/stop policy with a supported camera.

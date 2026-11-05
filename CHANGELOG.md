@@ -5,6 +5,8 @@ the matching version heading when preparing a release.
 
 ## [Unreleased]
 
+- Simplified recording buttons by removing storage details and the recording camera icon. Prepared automatic-recording labels in the widget gallery; live automation behavior is unchanged.
+
 ## [1.0.2] - 2026-11-05
 
 - Trimmed diagnostic logs to omit pairing details, device identifiers, and raw Bluetooth and GPS data. Connection events and error codes are still available for troubleshooting.

@@ -16,6 +16,7 @@ import android.widget.TextView
 import com.karoopoc.dji.CameraConnectionState
 import com.karoopoc.dji.DjiCameraState
 import com.karoopoc.dji.PhotoCaptureState
+import com.karoopoc.widget.RecordingAutomation
 import com.karoopoc.widget.DjiWidgetRenderer
 import com.karoopoc.widget.DjiWidgetViewState
 import io.hammerhead.karooext.models.ViewConfig
@@ -178,6 +179,14 @@ class WidgetGalleryActivity : Activity() {
         RECORDING(
             R.string.gallery_state_recording,
             viewState(recording = true),
+        ),
+        AUTO_START(
+            R.string.widget_auto_start,
+            viewState(recording = true).copy(recordingAutomation = RecordingAutomation.AUTO_START),
+        ),
+        AUTO_START_STOP(
+            R.string.widget_auto_start_stop,
+            viewState(recording = true).copy(recordingAutomation = RecordingAutomation.AUTO_START_STOP),
         ),
         BRIEF_FEEDBACK(
             R.string.gallery_state_feedback,
