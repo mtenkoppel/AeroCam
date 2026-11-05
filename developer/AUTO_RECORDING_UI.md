@@ -119,3 +119,11 @@ Validation completed on 2026-11-05. Code commit:
 ![Full Video](design/recording-automation/dark-video-4-AUTO_START_STOP.png)
 ![Cam Control](design/recording-automation/control-AUTO_START_STOP.png)
 ![Cam Control highlight feedback](design/recording-automation/control-feedback-AUTO_START_STOP.png)
+
+## Design QA follow-up
+
+[Centered QA boards and alignment evidence](design/recording-design-qa/README.md)
+include actual titles, all sizes, both themes, recording states, and explicit
+left/center/right configurations. The original 34 snapshots above use the SDK's
+right-alignment default and should not be treated as the intended centered design.
+The released alignment mismatch is deferred to a separate normal-release fix.
