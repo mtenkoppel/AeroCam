@@ -104,4 +104,74 @@ class RecordingAutomationUiTest {
             }
         }
     }
+    @Test fun captureDesignQaWithExplicitAlignmentAndActualFieldTitles() {
+        val sizes = listOf(
+            "half" to ViewConfig(Pair(30,15),Pair(238,113),24,ViewConfig.Alignment.CENTER),
+            "small" to ViewConfig(Pair(60,15),Pair(480,113),26,ViewConfig.Alignment.CENTER),
+            "medium" to ViewConfig(Pair(60,20),Pair(480,154),32,ViewConfig.Alignment.CENTER),
+            "large" to ViewConfig(Pair(60,30),Pair(480,189),40,ViewConfig.Alignment.CENTER),
+            "full" to ViewConfig(Pair(60,60),Pair(480,420),40,ViewConfig.Alignment.CENTER),
+        )
+        val dir = File("build/reports/settings-ui/recording-design-qa").apply { mkdirs() }
+        fun capture(name: String, c: ViewConfig, state: DjiWidgetViewState, control: Boolean = false): Bitmap {
+            val captionHeight=context.resources.getDimensionPixelSize(R.dimen.widget_field_caption_height)
+            val bodyConfig=c.copy(viewSize=Pair(c.viewSize.first,c.viewSize.second-captionHeight))
+            val body=if(control) DjiWidgetRenderer.cameraControl(context,bodyConfig,state,false)
+                else DjiWidgetRenderer.video(context,bodyConfig,state,false)
+            val caption=if(control) R.string.gallery_cam_control else R.string.widget_video
+            val view=DjiWidgetRenderer.captionedField(context,caption,true,body).apply(context,FrameLayout(context))
+            layout(view,c)
+            val bitmap=Bitmap.createBitmap(view.width,view.height,Bitmap.Config.ARGB_8888)
+            view.draw(Canvas(bitmap))
+            File(dir,"$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG,100,it) }
+            return bitmap
+        }
+        fun board(name: String, headings: List<String>, rows: List<Pair<String,List<Bitmap>>>) {
+            val width=40+headings.size*500
+            val height=80+rows.sumOf { it.second.maxOf { image -> image.height }+44 }
+            val bitmap=Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888)
+            val canvas=Canvas(bitmap);canvas.drawColor(android.graphics.Color.rgb(232,236,240))
+            val paint=android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply {
+                color=android.graphics.Color.rgb(25,30,35);textSize=21f
+            }
+            headings.forEachIndexed { i,h -> canvas.drawText(h,20f+i*500,32f,paint) }
+            var y=60
+            rows.forEach { (label,images) ->
+                canvas.drawText(label,20f,y.toFloat(),paint)
+                images.forEachIndexed { i,image -> canvas.drawBitmap(image,20f+i*500,(y+10).toFloat(),null) }
+                y+=images.maxOf { it.height }+44
+            }
+            File(dir,"$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG,100,it) }
+            bitmap.recycle()
+            rows.flatMap { it.second }.forEach { it.recycle() }
+        }
+        for(theme in listOf("dark","light")) {
+            DjiSettings.preferences(context).edit().putString(DjiSettings.KEY_THEME_MODE,theme).commit()
+            val scenarios=listOf(RecordingAutomation.NONE,RecordingAutomation.AUTO_START,RecordingAutomation.AUTO_START_STOP)
+            val normal=recording.copy(camera=recording.camera.copy(recordingDurationSeconds=84,batteryPercent=95))
+            val rows=sizes.map { (name,c) -> name to scenarios.map { mode ->
+                capture("$theme-center-$name-$mode",c,normal.copy(recordingAutomation=mode))
+            }}
+            board("$theme-centered-sizes",listOf("Manual · centered","AUTO START · centered","AUTO START + STOP · centered"),rows)
+            val both=normal.copy(recordingAutomation=RecordingAutomation.AUTO_START_STOP)
+            val checks=listOf(
+                "Long clip · 62:34" to both.copy(camera=both.camera.copy(recordingDurationSeconds=3754)),
+                "Highlight feedback" to both.copy(camera=both.camera.copy(highlightFeedback="HIGHLIGHT")),
+                "Stop awaiting response" to both.copy(videoAwaitingResponse="pending"),
+            )
+            val checkRows=sizes.map { (name,c) -> name to checks.mapIndexed { i,(_,state) ->
+                capture("$theme-center-$name-check-$i",c,state)
+            }}
+            board("$theme-recording-states",checks.map { it.first },checkRows)
+            val full=sizes.last().second
+            board("$theme-cam-control",listOf("Manual · centered","AUTO START · centered","AUTO START + STOP · centered"),
+                listOf("Full Cam Control" to scenarios.map { mode -> capture("$theme-center-control-$mode",full,normal.copy(recordingAutomation=mode),true) }))
+            val alignments=listOf(ViewConfig.Alignment.LEFT,ViewConfig.Alignment.CENTER,ViewConfig.Alignment.RIGHT)
+            val alignRows=listOf("small" to sizes[1].second,"large" to sizes[3].second,"control" to full).map { (name,c) ->
+                name to alignments.map { alignment -> capture("$theme-alignment-$name-$alignment",c.copy(alignment=alignment),both,name=="control") }
+            }
+            board("$theme-alignment-bug",listOf("LEFT requested","CENTER requested","RIGHT requested"),alignRows)
+        }
+    }
+
 }
