@@ -852,10 +852,23 @@ object DjiWidgetRenderer {
         }
         val labelPx = minOf(paint.textSize,
             paint.textSize * availableWidth / paint.measureText(label).coerceAtLeast(1f))
+        // Android measures the timer with font padding, but the label without it.
+        // Use those actual font metrics rather than a line-height approximation.
+        paint.textSize = labelPx
+        val labelMetrics = paint.fontMetricsInt
+        val labelHeight = labelMetrics.descent - labelMetrics.ascent
+        paint.textSize = feedbackSp * scale
+        val feedbackMetrics = paint.fontMetricsInt
+        val feedbackHeight = if (feedbackSp > 0f) feedbackMetrics.bottom - feedbackMetrics.top else 0
         paint.textSize = timerSp * scale
-        val timerPx = minOf(paint.textSize,
-            paint.textSize * availableWidth / paint.measureText(timer).coerceAtLeast(1f),
-            (height - labelPx * 1.25f - feedbackSp * scale * 1.25f) / 1.25f).coerceAtLeast(1f)
+        var timerPx = minOf(paint.textSize,
+            paint.textSize * availableWidth / paint.measureText(timer).coerceAtLeast(1f))
+        val timerHeight = (height - labelHeight - feedbackHeight - 4).coerceAtLeast(1)
+        paint.textSize = timerPx
+        while (timerPx > 1f && paint.fontMetricsInt.bottom - paint.fontMetricsInt.top > timerHeight) {
+            timerPx = (timerPx - .5f).coerceAtLeast(1f)
+            paint.textSize = timerPx
+        }
         setTextViewTextSize(timerId, TypedValue.COMPLEX_UNIT_PX, timerPx)
         setTextViewTextSize(labelId, TypedValue.COMPLEX_UNIT_PX, labelPx)
     }

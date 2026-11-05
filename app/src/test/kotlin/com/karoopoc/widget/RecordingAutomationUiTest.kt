@@ -43,7 +43,7 @@ class RecordingAutomationUiTest {
         val text = view.findViewById<TextView>(id)
         assertEquals(View.VISIBLE, text.visibility)
         assertTrue("Text exceeds width: ${text.text}", text.paint.measureText(text.text.toString()) <= text.width - text.paddingLeft - text.paddingRight + 1)
-        assertTrue("Text exceeds height: ${text.text}", text.layout.getLineBottom(0) <= text.height - text.compoundPaddingTop - text.compoundPaddingBottom + 1)
+        assertTrue("Text exceeds height: ${text.text}, line=${text.layout.getLineBottom(0)}, height=${text.height}, padding=${text.compoundPaddingTop + text.compoundPaddingBottom}", text.layout.getLineBottom(0) <= text.height - text.compoundPaddingTop - text.compoundPaddingBottom + 1)
         val parent = text.parent as View
         assertTrue("Text outside parent: ${text.text}", text.top >= 0 && text.bottom <= parent.height)
     }
@@ -63,6 +63,7 @@ class RecordingAutomationUiTest {
                 val view = remote.apply(context,FrameLayout(context)); layout(view,c)
                 assertEquals(View.GONE,view.findViewById<View>(R.id.widgetVideoMeta).visibility)
                 assertEquals(if(index==0) View.GONE else View.VISIBLE,view.findViewById<View>(R.id.widgetVideoHighlight).visibility)
+                save(view,"$theme-video-$index-$mode")
                 if(mode!=RecordingAutomation.NONE) {
                     fits(view,R.id.widgetVideoTimer); fits(view,R.id.widgetVideoAutomation)
                     assertEquals(if(mode==RecordingAutomation.AUTO_START) "AUTO START" else "AUTO START + STOP",
