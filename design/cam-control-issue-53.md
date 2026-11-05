@@ -50,10 +50,13 @@ is reserved. AeroCam decodes EIS but does not expose it in widget state.
 See the [DJI status protocol](https://github.com/dji-sdk/Osmo-GPS-Controller-Demo/blob/main/docs/protocol_data_segment.md#camera-status-push-1d02)
 and [Osmo Action 4 specs](https://www.dji.com/osmo-action-4/specs).
 
-Show **Click to refresh** when the camera is connected and no valid video
-profile is available. Use the same text on the small half field. Only switch
+Show the filmstrip and **Refresh** when the camera is connected and no valid
+video profile is available. On the small half field, move the battery and
+storage row up, leave more space between the two rows, and draw a smaller
+SD-card glyph within its existing slot. Only switch
 from Photo to Video after the user presses the refresh control. Leave the
-camera in Video and wait for a fresh status with valid parameters before
+camera in Video and show **Switching to Video…** while waiting for a fresh
+status with valid parameters before
 replacing the button with the readout. If already in Video, wait for or
 request a status update without switching modes. Restore the refresh button
 after failure or timeout. Offer it again after reconnecting if needed.
