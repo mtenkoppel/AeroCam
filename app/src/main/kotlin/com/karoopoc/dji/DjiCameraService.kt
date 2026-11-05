@@ -52,8 +52,8 @@ object DjiCameraController {
 
     fun diagnosticReconnect(context: Context) = dispatch(context, DjiCameraService.ACTION_DIAGNOSTIC_RECONNECT)
 
-    fun automaticStart(context: Context) = dispatch(context, DjiCameraService.ACTION_AUTO_START)
-    fun automaticPhoto(context: Context) = dispatch(context, DjiCameraService.ACTION_AUTO_PHOTO)
+    fun automaticStart(context: Context) = dispatch(context, DjiCameraService.ACTION_AUTO_START) { putExtra("requestedAt", SystemClock.elapsedRealtime()) }
+    fun automaticPhoto(context: Context) = dispatch(context, DjiCameraService.ACTION_AUTO_PHOTO) { putExtra("requestedAt", SystemClock.elapsedRealtime()) }
     fun cancelAutomation(context: Context) = dispatch(context, DjiCameraService.ACTION_AUTO_CANCEL)
     fun automaticStop(context: Context, clip: Long) = dispatch(context, DjiCameraService.ACTION_AUTO_STOP) {
         putExtra("clip", clip)
@@ -106,11 +106,11 @@ object DjiCameraController {
         dispatch(context, DjiCameraService.ACTION_KEEP_AWAKE_CHANGED)
     }
 
-    fun setRideActive(context: Context, active: Boolean) {
+    fun setRideActive(context: Context, active: Boolean, automationActive: Boolean = active) {
         dispatch(
             context,
             DjiCameraService.ACTION_RIDE_STATE_CHANGED,
-            extras = { putExtra(DjiCameraService.EXTRA_RIDE_ACTIVE, active) },
+            extras = { putExtra(DjiCameraService.EXTRA_RIDE_ACTIVE, active); putExtra("automationRideActive", automationActive) },
         )
     }
 
@@ -239,10 +239,10 @@ class DjiCameraService : Service() {
             ACTION_CONNECT -> client.autoConnectKnownDevice()
             ACTION_DIAGNOSTIC_DISCONNECT -> client.diagnosticDisconnect()
             ACTION_DIAGNOSTIC_RECONNECT -> client.diagnosticReconnect()
-            ACTION_AUTO_START -> client.automaticStart()
-            ACTION_AUTO_PHOTO -> client.automaticPhoto()
+            ACTION_AUTO_START -> if (freshAutomaticRequest(intent)) client.automaticStart()
+            ACTION_AUTO_PHOTO -> if (freshAutomaticRequest(intent)) client.automaticPhoto()
             ACTION_AUTO_CANCEL -> client.cancelAutomation()
-            ACTION_AUTO_STOP -> if (SystemClock.elapsedRealtime() - (intent?.getLongExtra("requestedAt", 0) ?: 0) < 2000) {
+            ACTION_AUTO_STOP -> if (freshAutomaticRequest(intent)) {
                 client.automaticStop(intent?.getLongExtra("clip", 0) ?: 0)
             }
             ACTION_PHOTO -> client.triggerPhoto()
@@ -264,9 +264,10 @@ class DjiCameraService : Service() {
             }
             ACTION_FORGET -> client.forgetKnownDevice()
             ACTION_KEEP_AWAKE_CHANGED -> applyKeepAwakeSettings()
-            ACTION_RIDE_STATE_CHANGED -> client.setRideActive(
-                intent?.getBooleanExtra(EXTRA_RIDE_ACTIVE, false) ?: false,
-            )
+            ACTION_RIDE_STATE_CHANGED -> {
+                client.setAutomationRideActive(intent?.getBooleanExtra("automationRideActive", false) ?: false)
+                client.setRideActive(intent?.getBooleanExtra(EXTRA_RIDE_ACTIVE, false) ?: false)
+            }
             ACTION_GPS_UPDATED -> client.updateGpsTelemetry(
                 DjiGpsTelemetry(
                     latitude = intent?.getDoubleExtra(EXTRA_GPS_LATITUDE, 0.0) ?: 0.0,
@@ -284,6 +285,9 @@ class DjiCameraService : Service() {
         }
         return START_STICKY
     }
+
+    private fun freshAutomaticRequest(intent: Intent?): Boolean =
+        SystemClock.elapsedRealtime() - (intent?.getLongExtra("requestedAt", -10000) ?: -10000) in 0..1999
 
     override fun onDestroy() {
         client.disconnect()

@@ -138,8 +138,8 @@ class SettingsUiTest {
             val activity = controller.get()
             val switches = views(activity).filterIsInstance<Switch>().associate { it.text.toString() to it.isChecked }
             assertEquals(false, switches["Keep camera awake"])
-            assertEquals(true, switches["Auto-highlights"])
-            assertEquals(false, switches[activity.getString(R.string.highlight_ride_bookmarks)])
+            assertEquals(true, switches[activity.getString(R.string.automation_enable)])
+            assertFalse(DjiSettings.read(activity).rideBookmarks)
             assertEquals(true, switches["Low camera battery at 20%"])
             assertEquals(false, switches["Hide data field captions"])
             assertFalse(switches.containsKey("Photo and recording alerts"))
@@ -244,81 +244,62 @@ class SettingsUiTest {
         assertTrue(standby.contains("4 hours"))
     }
 
-    @Test fun `numeric limits and disabled child preferences survive the UI refactor`() {
+    @Test fun automationDraftValidatesAndBackDiscards() {
+        val context = RuntimeEnvironment.getApplication()
+        val intent = Intent(context, AutomationActivity::class.java).putExtra("page", DjiSettings.KEY_PEAK_POWER_HIGHLIGHTS)
+        val controller = Robolectric.buildActivity(AutomationActivity::class.java, intent).setup()
+        val activity = controller.get()
+        val input = views(activity).filterIsInstance<EditText>().single()
+        input.setText("0")
+        button(activity, activity.getString(R.string.automation_add)).performClick()
+        assertNotNull(input.error)
+        assertFalse(DjiSettings.read(activity).peakPowerHighlights)
+        input.setText("500")
+        render(activity, "automation-power-add")
+        button(activity, activity.getString(R.string.automation_add)).performClick()
+        assertTrue(DjiSettings.read(activity).peakPowerHighlights)
+        assertEquals(500, DjiSettings.read(activity).peakPowerWatts)
+        val edit = Robolectric.buildActivity(AutomationActivity::class.java, intent).setup()
+        views(edit.get()).filterIsInstance<EditText>().single().setText("900")
+        edit.get().findViewById<View>(R.id.karoo_back).performClick()
+        assertEquals(500, DjiSettings.read(activity).peakPowerWatts)
+        edit.pause().stop().destroy(); controller.pause().stop().destroy()
+    }
+
+    @Test fun selectedTriggerCanBeDisabledWithoutRemovingConfiguration() {
+        val context = RuntimeEnvironment.getApplication()
+        val prefs = DjiSettings.preferences(context)
+        prefs.edit().putBoolean(DjiSettings.KEY_PEAK_POWER_HIGHLIGHTS, true).putInt(DjiSettings.KEY_PEAK_POWER_WATTS, 620).commit()
         val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
         val activity = controller.get()
-        val power = views(activity).filterIsInstance<Switch>().first { it.text.toString() == "Peak power marker" }
-        power.isChecked = true
-        val input = views(activity).filterIsInstance<EditText>().first()
-        input.setText("100")
-        input.onEditorAction(android.view.inputmethod.EditorInfo.IME_ACTION_DONE)
-        val prefs = DjiSettings.preferences(activity)
-        assertEquals(300, prefs.getInt(DjiSettings.KEY_PEAK_POWER_WATTS, 500))
-        input.setText("invalid")
-        input.onEditorAction(android.view.inputmethod.EditorInfo.IME_ACTION_DONE)
-        assertEquals(DjiSettings.DEFAULT_PEAK_POWER_WATTS, prefs.getInt(DjiSettings.KEY_PEAK_POWER_WATTS, 0))
-        val master = views(activity).filterIsInstance<Switch>().first { it.text.toString() == "Auto-highlights" }
+        val trigger = views(activity).filterIsInstance<Switch>().first { it.contentDescription == activity.getString(R.string.highlight_peak_power) }
+        trigger.isChecked = false
+        val master = views(activity).filterIsInstance<Switch>().first { it.text == activity.getString(R.string.automation_enable) }
         master.isChecked = false
-        assertTrue(prefs.getBoolean(DjiSettings.KEY_PEAK_POWER_HIGHLIGHTS, false))
         master.isChecked = true
-        assertTrue(power.isChecked)
+        assertTrue(AutomationTriggers.all.first { it.key == DjiSettings.KEY_PEAK_POWER_HIGHLIGHTS }.selected(activity))
+        assertFalse(DjiSettings.read(activity).peakPowerHighlights)
+        assertEquals(620, DjiSettings.read(activity).peakPowerWatts)
+        render(activity, "automation-selected-disabled")
         controller.pause().stop().destroy()
     }
 
-    @Test fun `separate direction controls save values consumed by their triggers`() {
-        val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
-        var activity = controller.get()
-        fun toggle(id: Int) = views(activity).filterIsInstance<Switch>().first { it.text.toString() == activity.getString(id) }
-        fun input(id: Int) = views(activity).filterIsInstance<EditText>().first { field ->
-            descendants(field.parent as View).filterIsInstance<TextView>().any { it.text.toString() == activity.getString(id) }
-        }
-        fun save(id: Int, value: String) { input(id).setText(value); input(id).onEditorAction(android.view.inputmethod.EditorInfo.IME_ACTION_DONE) }
-        assertFalse(toggle(R.string.highlight_uphill).isChecked)
-        assertFalse(toggle(R.string.highlight_high_speed_descent).isChecked)
-        assertEquals(50, DjiSettings.read(activity).descentSpeedKph)
-        assertEquals(-3, DjiSettings.read(activity).descentGradePercent)
-        toggle(R.string.highlight_uphill).isChecked = true
-        toggle(R.string.highlight_high_speed_descent).isChecked = true
-        save(R.string.highlight_uphill_speed_threshold, "18")
-        save(R.string.highlight_uphill_grade_threshold, "+5")
-        save(R.string.highlight_descent_speed_threshold, "65")
-        save(R.string.highlight_descent_grade_threshold, "-8")
-        val settings = DjiSettings.read(activity)
-        assertEquals(18, settings.uphillSpeedKph)
-        assertEquals(5, settings.uphillGradePercent)
-        assertEquals(65, settings.descentSpeedKph)
-        assertEquals(-8, settings.descentGradePercent)
-        assertTrue(input(R.string.highlight_descent_grade_threshold).inputType and android.text.InputType.TYPE_NUMBER_FLAG_SIGNED != 0)
-        assertTrue(GradientSpeedTrigger().update(18.0, 5.0, settings.uphillHighlights, settings.uphillSpeedKph, settings.uphillGradePercent))
-        assertFalse(GradientSpeedTrigger().update(64.0, -8.0, settings.highSpeedDescentHighlights, settings.descentSpeedKph, settings.descentGradePercent))
-        assertTrue(GradientSpeedTrigger().update(65.0, -8.0, settings.highSpeedDescentHighlights, settings.descentSpeedKph, settings.descentGradePercent))
-        render(activity, "settings-gradients-light")
-        render(activity, "settings-gradients-downhill-light")
-        controller.recreate()
-        activity = controller.get()
-        assertEquals(-8, input(R.string.highlight_descent_grade_threshold).text.toString().toInt())
-        toggle(R.string.highlight_uphill).isChecked = false
-        assertTrue(toggle(R.string.highlight_high_speed_descent).isChecked)
-        controller.pause().stop().destroy()
-    }
-
-    @Test @Config(qualifiers = "de-w256dp-h427dp-port-300dpi")
-    fun `translated direction controls and help render with German resources`() {
+    @Test fun automationPagesRenderAndRecordingDefaultsAreExplicit() {
         val context = RuntimeEnvironment.getApplication()
-        DjiSettings.preferences(context).edit().putString(DjiSettings.KEY_THEME_MODE, "dark")
-            .putBoolean(DjiSettings.KEY_UPHILL_HIGHLIGHTS, true)
-            .putBoolean(DjiSettings.KEY_HIGH_SPEED_DESCENT_HIGHLIGHTS, true).commit()
-        val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
-        render(controller.get(), "settings-gradients-de-dark")
-        render(controller.get(), "settings-gradients-downhill-de-dark")
-        val label = button(controller.get(), controller.get().getString(R.string.settings))
-        assertTrue("German tab label must fit", label.paint.measureText(label.text.toString()) <= label.width - label.paddingLeft - label.paddingRight)
-        assertTrue(views(controller.get()).filterIsInstance<Switch>().any { it.text.toString() == "Anstiegsmarker" })
-        controller.pause().stop().destroy()
-        val article = Robolectric.buildActivity(HelpActivity::class.java,
-            Intent(context, HelpActivity::class.java).putExtra("help_file", "get-ready-for-a-ride.md")).setup()
-        render(article.get(), "article-ride-de")
-        article.pause().stop().destroy()
+        val settings = DjiSettings.read(context)
+        assertEquals(60, settings.stopAfterSeconds)
+        assertTrue(settings.autoStop)
+        assertTrue(settings.addAutomaticHighlights)
+        for (page in listOf("help", "catalog", "recording", DjiSettings.KEY_UPHILL_HIGHLIGHTS, DjiSettings.KEY_HIGH_SPEED_DESCENT_HIGHLIGHTS, DjiSettings.KEY_PEAK_HEART_RATE_HIGHLIGHTS)) {
+            val controller = Robolectric.buildActivity(AutomationActivity::class.java, Intent(context, AutomationActivity::class.java).putExtra("page", page)).setup()
+            render(controller.get(), "automation-$page")
+            assertNotNull(controller.get().findViewById<View>(R.id.karoo_back))
+            if (page == "recording") {
+                assertTrue(views(controller.get()).filterIsInstance<CheckBox>().single().isChecked)
+                assertEquals("60", views(controller.get()).filterIsInstance<EditText>().single().text.toString())
+            }
+            controller.pause().stop().destroy()
+        }
     }
 
     @Test fun `restarting onboarding preserves every saved setting`() {

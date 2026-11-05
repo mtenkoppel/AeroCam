@@ -86,6 +86,7 @@ class DjiOsmoBleClient(
     private var sleepOfflineAssumed = false
     private var sleepShutdownRunnable: Runnable? = null
     private var reconnectAttempt = 0
+    private var automationRideActive = false
     private var rideActive = false
     private var photoState = PhotoCaptureState.IDLE
     private var photoCompletedRunnable: Runnable? = null
@@ -348,6 +349,11 @@ class DjiOsmoBleClient(
         }, SCAN_DURATION_MS)
     }
 
+    fun setAutomationRideActive(active: Boolean) {
+        automationRideActive = active
+        if (!active) cancelAutomation()
+    }
+
     fun cancelAutomation() {
         automationGeneration++
         recordingOrigin.cancel()
@@ -357,13 +363,13 @@ class DjiOsmoBleClient(
 
     private fun automationReady(mode: AutomationMode): Boolean {
         val settings = DjiSettings.read(appContext)
-        return rideActive && settings.autoHighlightsEnabled && settings.mode == mode &&
+        return automationRideActive && settings.autoHighlightsEnabled && settings.mode == mode &&
             isProtocolLinkFresh() && !latestRecording && activeOperation == null && operationQueue.isEmpty() &&
             photoState !in listOf(PhotoCaptureState.REQUESTED, PhotoCaptureState.CAPTURING)
     }
 
     fun automaticStart() {
-        if (!automationReady(AutomationMode.RECORDING)) return
+        if (recordingOrigin.startPending(SystemClock.elapsedRealtime()) || !automationReady(AutomationMode.RECORDING)) return
         recordingOrigin.requestStart(SystemClock.elapsedRealtime())
         startVideoRecordingNow(automationGeneration)
     }
@@ -371,7 +377,7 @@ class DjiOsmoBleClient(
     fun automaticStop(clip: Long) {
         val settings = DjiSettings.read(appContext)
         if (clip == 0L || clip != recordingOrigin.clip || !latestRecording || !isProtocolLinkFresh() ||
-            !rideActive || !settings.autoHighlightsEnabled || settings.mode != AutomationMode.RECORDING || !settings.autoStop) return
+            !automationRideActive || !settings.autoHighlightsEnabled || settings.mode != AutomationMode.RECORDING || !settings.autoStop) return
         recordingOrigin.requestStop()
         stopVideoRecordingNow(automationGeneration)
     }
@@ -1399,7 +1405,7 @@ class DjiOsmoBleClient(
         if (active.operation.automationToken != null) {
             val settings = DjiSettings.read(appContext)
             val expectedMode = if (active.operation.label == "take photo") AutomationMode.PHOTOS else AutomationMode.RECORDING
-            if (active.operation.automationToken != automationGeneration || !rideActive || !isProtocolLinkFresh() ||
+            if (active.operation.automationToken != automationGeneration || !automationRideActive || !isProtocolLinkFresh() ||
                 !settings.autoHighlightsEnabled || settings.mode != expectedMode ||
                 (active.operation.label == "stop recording" && (!settings.autoStop || recordingOrigin.clip == 0L || !latestRecording)) ||
                 (active.operation.label != "stop recording" && latestRecording && active.stepIndex < active.operation.steps.size)) {

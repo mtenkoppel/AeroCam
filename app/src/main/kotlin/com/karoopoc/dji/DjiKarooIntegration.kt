@@ -161,7 +161,7 @@ class DjiKarooIntegration(
             autoStop.event()
             notificationHandler.post { notificationQueue.clearPending() }
         }
-        DjiCameraController.setRideActive(appContext, isRiding)
+        DjiCameraController.setRideActive(appContext, isRiding, next is RideState.Recording)
 
         if (!wasRiding && next is RideState.Recording) {
             batteryAlertArmed = true

@@ -31,6 +31,7 @@ internal class RecordingOrigin {
     private var startUntil: Long? = null
     private var stopping = false
     private var recording = false
+    fun startPending(now: Long): Boolean = startUntil?.let { now <= it } == true
     fun requestStart(now: Long) { startUntil = now + 15000 }
     fun requestStop() { stopping = clip != 0L }
     fun cancel() { clip = 0; startUntil = null; stopping = false }
