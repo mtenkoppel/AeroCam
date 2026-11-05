@@ -420,105 +420,7 @@
             android:layout_weight="1"
             android:layout_marginTop="@dimen/widget_combined_gap">
 
-            <LinearLayout
-                android:id="@+id/widgetControlVideoRow"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
-
-                <FrameLayout
-                    android:id="@+id/widgetControlVideo"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/widget_surface_selector">
-
-                    <LinearLayout
-                        android:id="@+id/widgetControlVideoIdle"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:id="@+id/widgetControlVideoIdleIcon"
-                            android:layout_width="@dimen/widget_icon_primary_size"
-                            android:layout_height="@dimen/widget_icon_primary_size"
-                            android:contentDescription="@string/widget_video"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/ic_widget_video" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/widgetControlVideoRecording"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:visibility="gone">
-
-                        <ImageView
-                            android:id="@+id/widgetControlVideoRecordingIcon"
-                            android:layout_width="@dimen/widget_icon_primary_size"
-                            android:layout_height="@dimen/widget_icon_primary_size"
-                            android:contentDescription="@string/widget_video"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/ic_widget_video" />
-
-                        <TextView
-                            android:id="@+id/widgetControlVideoTimer"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="2dp"
-                            android:maxLines="1"
-                            android:text="14:45"
-                            android:textColor="@color/dji_text_on_accent"
-                            android:textSize="28sp"
-                            android:textStyle="bold"
-                            android:translationY="-2dp" />
-                    </LinearLayout>
-
-                    <ProgressBar
-                        android:id="@+id/widgetControlVideoSpinner"
-                        style="?android:attr/progressBarStyleSmall"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:layout_gravity="center"
-                        android:indeterminateTint="@color/dji_icon_primary"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/widgetControlVideoFeedback"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal|bottom"
-                        android:layout_marginBottom="2dp"
-                        android:maxLines="1"
-                        android:text="★ HIGHLIGHT"
-                        android:textColor="@color/dji_text_on_accent"
-                        android:textSize="16sp"
-                        android:visibility="gone" />
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/widgetControlVideoHighlight"
-                    android:layout_width="72dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="6dp"
-                    android:background="@drawable/widget_surface_selector"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:id="@+id/widgetControlVideoHighlightIcon"
-                        android:layout_width="@dimen/widget_icon_utility_size"
-                        android:layout_height="@dimen/widget_icon_utility_size"
-                        android:layout_gravity="center"
-                        android:contentDescription="@string/widget_add_highlight"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/ic_widget_highlight" />
-                </FrameLayout>
-            </LinearLayout>
+            <include layout="@layout/widget_video_buttons" />
         </FrameLayout>
 
         <FrameLayout
@@ -530,31 +432,7 @@
             android:background="@drawable/widget_surface_selector"
             android:visibility="gone">
 
-            <ImageView
-                android:id="@+id/widgetControlPhotoIcon"
-                android:layout_width="@dimen/widget_icon_primary_size"
-                android:layout_height="@dimen/widget_icon_primary_size"
-                android:layout_gravity="center"
-                android:contentDescription="@string/widget_photo"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_widget_photo" />
-
-            <TextView
-                android:id="@+id/widgetControlPhotoStatus"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textColor="@color/dji_text_primary_dark"
-                android:visibility="gone" />
-
-            <ProgressBar
-                android:id="@+id/widgetControlPhotoSpinner"
-                style="?android:attr/progressBarStyleSmall"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_gravity="center"
-                android:indeterminateTint="@color/dji_icon_primary"
-                android:visibility="gone" />
+            <include layout="@layout/widget_photo_button" />
         </FrameLayout>
 
         <FrameLayout

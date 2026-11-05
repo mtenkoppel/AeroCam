@@ -59,7 +59,7 @@ class WidgetAppearanceTest {
                     val widgets = mapOf(
                         "video" to (R.id.widgetVideoRoot to DjiWidgetRenderer.video(context, config, state, false)),
                         "photo" to (R.id.widgetPhotoRoot to DjiWidgetRenderer.photo(context, config, state, false)),
-                        "combined" to ((if (state.camera.recording) R.id.widgetVideoRoot else R.id.widgetVideoPhotoRoot) to
+                        "combined" to ((if (scenario != "ready") R.id.widgetVideoRoot else R.id.widgetVideoPhotoRoot) to
                             DjiWidgetRenderer.videoPhoto(context, config, state, false)),
                         "control" to (R.id.widgetControlRoot to DjiWidgetRenderer.cameraControl(context, config, state, false)),
                     )

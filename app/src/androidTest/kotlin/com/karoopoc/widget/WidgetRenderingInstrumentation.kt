@@ -76,7 +76,7 @@ class WidgetRenderingInstrumentation : Instrumentation() {
                         for ((size, config) in sizes) for ((scenario, state) in cases) {
                             val combinedRemote = DjiWidgetRenderer.videoPhoto(context, config, state)
                             val combined = inflate(context, combinedRemote, config.viewSize.first, config.viewSize.second)
-                            if (state.camera.recording) {
+                            if (state.camera.recording || state.camera.connection != CameraConnectionState.CONNECTED) {
                                 val reference = inflate(context, DjiWidgetRenderer.video(context, config, state), config.viewSize.first, config.viewSize.second)
                                 assertPixels(combined, reference, "$theme/$size/$scenario recording")
                                 check(combined.findViewById<View>(R.id.widgetPhotoPrimary) == null)

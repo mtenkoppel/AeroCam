@@ -84,15 +84,15 @@ class WidgetAlignmentUiTest {
                 val remote = DjiWidgetRenderer.cameraControl(context, config(alignment, true), state)
                 if (full == null) full = remote.apply(context, FrameLayout(context)) else remote.reapply(context, full)
                 for (id in listOf(R.id.widgetControlFullBatteryGroup, R.id.widgetControlFullStorageGroup,
-                    R.id.widgetControlVideoRecording)) {
+                    R.id.widgetVideoRecording)) {
                     assertEquals(Gravity.CENTER_HORIZONTAL, full!!.findViewById<LinearLayout>(id).gravity and Gravity.HORIZONTAL_GRAVITY_MASK)
                 }
-                checkCenteredText(full!!, R.id.widgetControlVideoFeedback)
+                checkCenteredText(full!!, R.id.widgetVideoMeta)
                 assertEquals(DjiTheme.widgetPalette(context).textPrimary,
                     full!!.findViewById<TextView>(R.id.widgetControlFullBattery).currentTextColor)
                 save(full!!, 408, "$theme-full-$alignment")
                 val positions = listOf(R.id.widgetControlFullKeepAwake, R.id.widgetControlMore,
-                    R.id.widgetControlVideo, R.id.widgetControlPhoto, R.id.widgetControlFullSleep)
+                    R.id.widgetVideoPrimary, R.id.widgetControlPhoto, R.id.widgetControlFullSleep)
                     .flatMap { id -> full!!.findViewById<View>(id).let { listOf(it.left, it.top, it.width, it.height) } }
                 if (buttonPositions == null) buttonPositions = positions else assertEquals(buttonPositions, positions)
             }
