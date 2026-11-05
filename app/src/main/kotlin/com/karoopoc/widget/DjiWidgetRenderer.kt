@@ -120,7 +120,7 @@ object DjiWidgetRenderer {
         return RemoteViews(context.packageName, R.layout.widget_dji_video).apply {
             setInt(R.id.widgetVideoRoot, "setBackgroundResource", R.drawable.widget_root_dark)
             applyWidgetFrame(R.id.widgetVideoRoot)
-            applyTextAlignment(config, R.id.widgetVideoTimer, R.id.widgetVideoMeta, R.id.widgetVideoStatus)
+            centerWidgetText(R.id.widgetVideoTimer, R.id.widgetVideoMeta, R.id.widgetVideoStatus)
             applyIconPadding(context, R.dimen.widget_icon_primary_padding, R.id.widgetVideoIcon)
             applyIconPadding(context, R.dimen.widget_icon_utility_padding, R.id.widgetVideoHighlightIcon)
             setTextViewTextSize(
@@ -275,7 +275,7 @@ object DjiWidgetRenderer {
         return RemoteViews(context.packageName, R.layout.widget_dji_photo).apply {
             setInt(R.id.widgetPhotoRoot, "setBackgroundResource", R.drawable.widget_root_dark)
             applyWidgetFrame(R.id.widgetPhotoRoot)
-            applyTextAlignment(config, R.id.widgetPhotoStatus)
+            centerWidgetText(R.id.widgetPhotoStatus)
             applyIconPadding(context, R.dimen.widget_icon_primary_padding, R.id.widgetPhotoIcon)
             setTextViewTextSize(
                 R.id.widgetPhotoStatus,
@@ -362,13 +362,11 @@ object DjiWidgetRenderer {
         return RemoteViews(context.packageName, R.layout.widget_dji_control).apply {
             setInt(R.id.widgetControlRoot, "setBackgroundResource", R.drawable.widget_root_dark)
             applyWidgetFrame(R.id.widgetControlRoot)
-            applyTextAlignment(config,
+            centerWidgetText(
                 R.id.widgetControlMessageText, R.id.widgetControlTopMessageText,
                 R.id.widgetControlTopConfirmText, R.id.widgetControlFullOfflineHint,
                 R.id.widgetControlVideoTimer, R.id.widgetControlVideoFeedback)
-            setInt(R.id.widgetControlVideoRecording, "setGravity", dataGravity(config))
-            setInt(R.id.widgetControlTopConfirmText, "setGravity", Gravity.CENTER)
-            setInt(R.id.widgetControlTopMessageText, "setGravity", Gravity.CENTER)
+            setInt(R.id.widgetControlVideoRecording, "setGravity", Gravity.CENTER)
             setViewVisibility(R.id.widgetControlFeedback, View.GONE)
             setViewVisibility(R.id.widgetControlMore, View.VISIBLE)
             applyIconPadding(
@@ -619,7 +617,6 @@ object DjiWidgetRenderer {
                 TypedValue.COMPLEX_UNIT_SP,
                 statusTextSize(config, size),
             )
-            setInt(R.id.widgetControlMessageText, "setGravity", if (viewState.controlFeedback != null) Gravity.CENTER else dataGravity(config))
             if (viewState.controlFeedback != null) {
                 setTextViewTextSize(R.id.widgetControlMessageText, TypedValue.COMPLEX_UNIT_SP, 20f)
                 setInt(R.id.widgetControlMessage, "setBackgroundResource", R.drawable.widget_surface_dark)
@@ -733,7 +730,7 @@ object DjiWidgetRenderer {
             val layout = if (stacked) R.layout.widget_control_values_vertical else R.layout.widget_control_values_horizontal
             removeAllViews(R.id.widgetControlStatusValues)
             addView(R.id.widgetControlStatusValues, RemoteViews(context.packageName, layout))
-            applyTextAlignment(config.copy(alignment = ViewConfig.Alignment.CENTER), battery, storage)
+            centerWidgetText(battery, storage)
             setInt(panel, "setGravity", if (stacked) Gravity.START or Gravity.CENTER_VERTICAL else Gravity.CENTER)
         }
         setViewPadding(storageGroup, if (stacked) 0 else 3 * gap, if (stacked) gap else 0, 0, 0)
@@ -1019,16 +1016,9 @@ private fun openAppIntent(context: Context, requestCode: Int): PendingIntent {
     )
 }
 
-/** Karoo alignment applies inside data slots, independently of the fixed camera controls. */
-private fun dataGravity(config: ViewConfig): Int = Gravity.CENTER_VERTICAL or when (config.alignment) {
-    ViewConfig.Alignment.LEFT -> Gravity.LEFT
-    ViewConfig.Alignment.CENTER -> Gravity.CENTER_HORIZONTAL
-    ViewConfig.Alignment.RIGHT -> Gravity.RIGHT
-}
-
-private fun RemoteViews.applyTextAlignment(config: ViewConfig, vararg ids: Int) {
+private fun RemoteViews.centerWidgetText(vararg ids: Int) {
     for (id in ids) {
         // The layouts use textAlignment=gravity; RemoteViews cannot change textAlignment itself.
-        setInt(id, "setGravity", dataGravity(config))
+        setInt(id, "setGravity", Gravity.CENTER)
     }
 }
