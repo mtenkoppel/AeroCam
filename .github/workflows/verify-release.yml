@@ -1,7 +1,5 @@
 name: Signed test build
 on:
-  push:
-    branches: [master, 'codex/**']
   workflow_dispatch:
     inputs:
       release_signed_debug:
@@ -37,61 +35,57 @@ jobs:
           test -n "$KEYSTORE"
           umask 077
           printf '%s' "$KEYSTORE" | base64 --decode > "$RUNNER_TEMP/aerocam-release.jks"
-      - name: Test and build signed APK
+      - name: Build signed APK
         env:
-          ORG_GRADLE_PROJECT_releaseSignedDebug: ${{ github.event_name == 'workflow_dispatch' && inputs.release_signed_debug || false }}
+          ORG_GRADLE_PROJECT_releaseSignedDebug: ${{ inputs.release_signed_debug }}
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AEROCAM_KEYSTORE_PATH: ${{ runner.temp }}/aerocam-release.jks
           AEROCAM_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
           AEROCAM_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
           AEROCAM_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+          BUILD_DEBUG: ${{ inputs.release_signed_debug }}
         run: |
           test -n "$AEROCAM_KEYSTORE_PASSWORD"
           test -n "$AEROCAM_KEY_ALIAS"
           test -n "$AEROCAM_KEY_PASSWORD"
-          ./gradlew -I .github/trial/runtime-report.gradle testDebugUnitTest assembleDebug assembleRelease :app:trialRuntimeReport
-      - name: Verify signature
+          task=assembleRelease
+          if [ "$BUILD_DEBUG" = true ]; then task=assembleDebug; fi
+          ./gradlew "$task"
+      - name: Verify APK and prepare artifact
+        id: apk
+        env:
+          BUILD_DEBUG: ${{ inputs.release_signed_debug }}
         run: |
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --print-certs app/build/outputs/apk/release/app-release.apk
-          certificate=$("$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --print-certs app/build/outputs/apk/release/app-release.apk | sed -n 's/^Signer #1 certificate SHA-256 digest: //p')
+          variant=release
+          artifact="aerocam-signed-$GITHUB_SHA"
+          if [ "$BUILD_DEBUG" = true ]; then
+            variant=debug
+            artifact="aerocam-design-qa-debug-$GITHUB_SHA"
+          fi
+          apk="app/build/outputs/apk/$variant/app-$variant.apk"
+          tools="$ANDROID_HOME/build-tools/35.0.0"
+          signing_report=$("$tools/apksigner" verify --print-certs "$apk")
+          certificate=$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' <<< "$signing_report")
           test "$certificate" = "cf5c62d207d7a6e7b03b056604c30873180390d11129f791231e19844ceab0ce"
-          sha256sum app/build/outputs/apk/release/app-release.apk > app/build/outputs/apk/release/app-release.apk.sha256
+          "$tools/aapt" dump badging "$apk" > "$apk.badging.txt"
+          grep -q "^package: name='com.karoopoc'" "$apk.badging.txt"
+          if [ "$BUILD_DEBUG" = true ]; then
+            grep -q '^application-debuggable' "$apk.badging.txt"
+          elif grep -q '^application-debuggable' "$apk.badging.txt"; then
+            echo "Expected a non-debuggable APK"
+            exit 1
+          fi
+          (cd "$(dirname "$apk")" && sha256sum "$(basename "$apk")") > "$apk.sha256"
+          echo "artifact=$artifact" >> "$GITHUB_OUTPUT"
+          echo "apk=$apk" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: aerocam-signed-${{ github.sha }}
+          name: ${{ steps.apk.outputs.artifact }}
           path: |
-            app/build/outputs/apk/release/app-release.apk
-            app/build/outputs/apk/release/app-release.apk.sha256
-          if-no-files-found: error
-          retention-days: 14
-      - name: Save build validation evidence
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: always()
-        with:
-          name: aerocam-build-evidence-${{ github.sha }}
-          path: |
-            build/trial/runtime.tsv
-            app/build/test-results/testDebugUnitTest/*.xml
-          if-no-files-found: warn
-          retention-days: 14
-      - name: Verify explicitly requested debug APK
-        if: github.event_name == 'workflow_dispatch' && inputs.release_signed_debug
-        run: |
-          certificate=$("$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --print-certs app/build/outputs/apk/debug/app-debug.apk | sed -n 's/^Signer #1 certificate SHA-256 digest: //p')
-          test "$certificate" = "cf5c62d207d7a6e7b03b056604c30873180390d11129f791231e19844ceab0ce"
-          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging app/build/outputs/apk/debug/app-debug.apk > app/build/outputs/apk/debug/app-debug.badging.txt
-          grep -q '^application-debuggable' app/build/outputs/apk/debug/app-debug.badging.txt
-          sha256sum app/build/outputs/apk/debug/app-debug.apk > app/build/outputs/apk/debug/app-debug.apk.sha256
-      - name: Save explicitly requested debug APK
-        if: github.event_name == 'workflow_dispatch' && inputs.release_signed_debug
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: aerocam-design-qa-debug-${{ github.sha }}
-          path: |
-            app/build/outputs/apk/debug/app-debug.apk
-            app/build/outputs/apk/debug/app-debug.apk.sha256
-            app/build/outputs/apk/debug/app-debug.badging.txt
+            ${{ steps.apk.outputs.apk }}
+            ${{ steps.apk.outputs.apk }}.sha256
+            ${{ steps.apk.outputs.apk }}.badging.txt
           if-no-files-found: error
           retention-days: 14
       - name: Remove temporary signing key

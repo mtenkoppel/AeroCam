@@ -4,7 +4,7 @@
 
 # AeroCam
 
-[![Release: v1.0](https://img.shields.io/badge/release-v1.0-2563EB)](https://github.com/mtenkoppel/AeroCam/releases/latest)
+[![Latest release](https://img.shields.io/github/v/release/mtenkoppel/AeroCam)](https://github.com/mtenkoppel/AeroCam/releases/latest)
 [![License: GPLv3](https://img.shields.io/badge/license-GPLv3-2563EB)](LICENSE)
 
 **Website:** [mtenkoppel.github.io/AeroCam](https://mtenkoppel.github.io/AeroCam/)

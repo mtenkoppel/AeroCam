@@ -1,9 +1,16 @@
-name: Release
+name: Publish release
 
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_dispatch:
+    inputs:
+      approved_commit:
+        description: Full SHA of the approved master commit
+        required: true
+        type: string
+
+concurrency:
+  group: publish-release
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -14,6 +21,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
+      - name: Check approved source
+        env:
+          APPROVED_COMMIT: ${{ inputs.approved_commit }}
+        run: |
+          if [ "$GITHUB_REF" != refs/heads/master ] || [ "$GITHUB_SHA" != "$APPROVED_COMMIT" ]; then
+            echo "Select master and enter the full SHA of its approved commit."
+            exit 1
+          fi
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -43,27 +58,47 @@ jobs:
           AEROCAM_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
           AEROCAM_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
         run: ./gradlew testDebugUnitTest assembleRelease
-      - name: Verify release signing identity
+      - name: Verify APK and prepare release assets
+        id: release
         run: |
-          certificate=$("$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --print-certs app/build/outputs/apk/release/app-release.apk | sed -n 's/^Signer #1 certificate SHA-256 digest: //p')
+          apk=app/build/outputs/apk/release/app-release.apk
+          tools="$ANDROID_HOME/build-tools/35.0.0"
+          signing_report=$("$tools/apksigner" verify --print-certs "$apk")
+          certificate=$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' <<< "$signing_report")
           test "$certificate" = "cf5c62d207d7a6e7b03b056604c30873180390d11129f791231e19844ceab0ce"
-      - name: Prepare release assets
-        run: |
-          cp app/build/outputs/apk/release/app-release.apk "AeroCam-${GITHUB_REF_NAME}.apk"
-          sha256sum "AeroCam-${GITHUB_REF_NAME}.apk" > "AeroCam-${GITHUB_REF_NAME}.apk.sha256"
-      - name: Create draft GitHub release
+          badging=$("$tools/aapt" dump badging "$apk")
+          grep -q "^package: name='com.karoopoc'" <<< "$badging"
+          if grep -q '^application-debuggable' <<< "$badging"; then
+            echo "Public APK must have debugging disabled."
+            exit 1
+          fi
+          version=$(sed -n "s/^package: .*versionName='\([^']*\)'.*/\1/p" <<< "$badging")
+          if ! [[ "$version" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+            echo "Expected a stable MAJOR.MINOR.PATCH version in the APK."
+            exit 1
+          fi
+          awk -v version="$version" '
+            $0 == "## [" version "]" || index($0, "## [" version "] - ") == 1 { found = 1; next }
+            found && /^## / { exit }
+            found { print }
+          ' CHANGELOG.md > release-notes.md
+          grep -q '[^[:space:]]' release-notes.md
+          tag="v$version"
+          cp "$apk" "AeroCam-$tag.apk"
+          sha256sum "AeroCam-$tag.apk" > "AeroCam-$tag.apk.sha256"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+      - name: Publish approved release
         env:
           GH_TOKEN: ${{ github.token }}
-          PRERELEASE_FLAG: ${{ contains(github.ref_name, '-') && '--prerelease' || '' }}
-        run: >-
-          gh release create "$GITHUB_REF_NAME"
-          "AeroCam-${GITHUB_REF_NAME}.apk"
-          "AeroCam-${GITHUB_REF_NAME}.apk.sha256"
-          --verify-tag
-          --draft
-          --generate-notes
-          $PRERELEASE_FLAG
-          --title "AeroCam ${GITHUB_REF_NAME}"
+          TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          existing_tag=$(git ls-remote --tags origin "refs/tags/$TAG")
+          if [ -n "$existing_tag" ]; then
+            echo "Tag $TAG already exists. Use a new version."
+            exit 1
+          fi
+          gh release create "$TAG" "AeroCam-$TAG.apk" "AeroCam-$TAG.apk.sha256" \
+            --target "$GITHUB_SHA" --title "AeroCam $TAG" --notes-file release-notes.md --latest
       - name: Remove temporary signing key
         if: always()
         run: rm -f "$RUNNER_TEMP/aerocam-release.jks"
