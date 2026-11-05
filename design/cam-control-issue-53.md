@@ -2,8 +2,11 @@
 
 [Issue #53](https://github.com/mtenkoppel/AeroCam/issues/53) · Source baseline: `7bf90c5`.
 
-Put battery and storage side by side. Give video settings a dedicated second
-line with a filmstrip icon. On full screen, span the field with the status block
+Keep status icons, type and row spacing consistent across sizes. Put battery
+and storage side by side above the video readout on Full screen, Small and
+Small + half. Stack battery, storage and video in three aligned rows on
+Large and Medium. Give the video readout a filmstrip icon.
+On full screen, span the field with the status block
 above the Keep Awake and Settings buttons. Use an even gap between the four
 button rows and remove the dedicated spacer rows.
 
@@ -22,7 +25,9 @@ There is no separate X-Large preset. The shared classifier enters Full at
 (at most 30 columns or under 360 px wide). The caption, when shown, consumes
 22 dp before the renderer receives its available height.
 
-Keep the existing 72 dp utility targets in compact fields. Use 6 dp gaps between
+Keep the existing 72 dp utility targets on Large and Medium. Give Small a
+wider center column with approximately 59 dp utility targets on either side
+at the gallery dimensions and Karoo 3 density. Use 6 dp gaps between
 the full-screen controls. Use a battery fill beside its percentage, an SD card,
 and a filmstrip. Keep the battery icon neutral at 20% or above and red below
 20%. Give the icons the same box and stroke weight, and use the
@@ -51,9 +56,8 @@ See the [DJI status protocol](https://github.com/dji-sdk/Osmo-GPS-Controller-Dem
 and [Osmo Action 4 specs](https://www.dji.com/osmo-action-4/specs).
 
 Show the filmstrip and **Refresh** when the camera is connected and no valid
-video profile is available. On the small half field, move the battery and
-storage row up, leave more space between the two rows, and draw a smaller
-SD-card glyph within its existing slot. Only switch
+video profile is available. Small + half uses the same compact row gap as
+Full screen. Only switch
 from Photo to Video after the user presses the refresh control. Leave the
 camera in Video and show **Switching to Video…** while waiting for a fresh
 status with valid parameters before
