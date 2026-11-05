@@ -71,9 +71,10 @@
                     android:textColor="@color/dji_text_primary_dark" />
                 <ImageView
                     android:id="@+id/widgetControlRefreshChevron"
-                    android:layout_width="@dimen/widget_control_status_icon"
+                    android:layout_width="10dp"
                     android:layout_height="@dimen/widget_control_status_icon"
                     android:src="@drawable/ic_chevron_right"
+                    android:tint="@color/dji_icon_primary"
                     android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
@@ -290,9 +291,10 @@
                     android:textColor="@color/dji_text_primary_dark" />
                 <ImageView
                     android:id="@+id/widgetControlFullRefreshChevron"
-                    android:layout_width="@dimen/widget_control_status_icon"
+                    android:layout_width="10dp"
                     android:layout_height="@dimen/widget_control_status_icon"
                     android:src="@drawable/ic_chevron_right"
+                    android:tint="@color/dji_icon_primary"
                     android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>

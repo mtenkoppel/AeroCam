@@ -72,10 +72,9 @@ to update the same label. Never queue a refresh mode change during recording.
 
 Show **Connect** in every disconnected size, including Small + half.
 Pressing it requests a manual reconnect through the existing connection flow.
-Show **Searching...** for up to 10 seconds, or until the camera reconnects.
+Show **Searching...** for the existing five-second prompt, or until the
+camera reconnects.
 If it stays disconnected, show **Connect** again and allow another attempt.
-The preview simulates the timeout. Switching its camera state to connected
-while searching represents an early reconnect.
 
 The dedicated BLE command `0x1D/0x04` was tested against the connected camera
 through AeroCam's existing command queue. The camera moved Photo → Video

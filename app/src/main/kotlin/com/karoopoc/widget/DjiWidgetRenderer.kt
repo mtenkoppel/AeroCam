@@ -805,7 +805,7 @@ object DjiWidgetRenderer {
         setViewVisibility(
             R.id.widgetControlPhotoIcon,
             when {
-                connected && viewState.photoAwaitingResponse != null -> View.GONE
+                connected && !state.recording && viewState.photoAwaitingResponse != null -> View.GONE
                 else -> View.VISIBLE
             },
         )
