@@ -159,6 +159,17 @@ object DjiWidgetRenderer {
         }
         setTextViewText(R.id.widgetVideoIdleMeta, idleLine ?: "")
         setViewVisibility(R.id.widgetVideoIdleMeta, if (idleLine != null) View.VISIBLE else View.GONE)
+        // Preserve the existing 26dp glyph; borrow its vertical padding for the subline in short slots.
+        if (android.os.Build.VERSION.SDK_INT >= 31) {
+            val density = context.resources.displayMetrics.density
+            val normalIcon = context.resources.getDimensionPixelSize(R.dimen.widget_icon_primary_size)
+            val lineHeight = if (idleLine != null) (15 * context.resources.displayMetrics.scaledDensity).toInt() else 0
+            val iconHeight = minOf(normalIcon, (buttonHeight - lineHeight - 4 * density).toInt()).coerceAtLeast(1)
+            setViewLayoutHeight(R.id.widgetVideoIcon, iconHeight.toFloat(), android.util.TypedValue.COMPLEX_UNIT_PX)
+            val sidePadding = context.resources.getDimensionPixelSize(R.dimen.widget_icon_primary_padding)
+            val verticalPadding = minOf(sidePadding, ((iconHeight - 26 * density) / 2).toInt().coerceAtLeast(0))
+            setViewPadding(R.id.widgetVideoIcon, sidePadding, verticalPadding, sidePadding, verticalPadding)
+        }
         var markHighlight = false
         if (recording && !pending) {
             val resources = context.resources
