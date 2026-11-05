@@ -55,9 +55,10 @@ is reserved. AeroCam decodes EIS but does not expose it in widget state.
 See the [DJI status protocol](https://github.com/dji-sdk/Osmo-GPS-Controller-Demo/blob/main/docs/protocol_data_segment.md#camera-status-push-1d02)
 and [Osmo Action 4 specs](https://www.dji.com/osmo-action-4/specs).
 
-Show the filmstrip and **Refresh** when the camera is connected and no valid
-video profile is available. Small + half uses the same compact row gap as
-Full screen. Only switch
+Show the filmstrip, **Refresh**, and a small chevron when the camera is
+connected and no valid video profile is available. Make the whole status
+panel a single target, including the battery and storage readouts.
+Small + half uses the same compact row gap as Full screen. Only switch
 from Photo to Video after the user presses the refresh control. Leave the
 camera in Video and show **Switching to Video…** while waiting for a fresh
 status with valid parameters before
@@ -68,6 +69,13 @@ DJI documents the resolution and photo aspect ratio as status fields, with no
 setter in the public remote protocol. The readout has no edit control.
 Starting a recording already requests Video mode, so use its incoming status
 to update the same label. Never queue a refresh mode change during recording.
+
+Show **Connect** in every disconnected size, including Small + half.
+Pressing it requests a manual reconnect through the existing connection flow.
+Show **Searching...** for up to 10 seconds, or until the camera reconnects.
+If it stays disconnected, show **Connect** again and allow another attempt.
+The preview simulates the timeout. Switching its camera state to connected
+while searching represents an early reconnect.
 
 The dedicated BLE command `0x1D/0x04` was tested against the connected camera
 through AeroCam's existing command queue. The camera moved Photo → Video
@@ -88,8 +96,7 @@ app does not expose the live photo aspect-ratio byte or the countdown
 fields. Its shared size and burst bytes retained video settings in this test.
 Recompute on each state update and explicitly clear or hide the group when
 reapplying RemoteViews. Verify the fresh-status path before deciding whether a
-scoped freshness flag is needed. Keep existing offline messages and half-width
-battery and storage placeholders.
+scoped freshness flag is needed.
 
 For implementation review, capture before and after on Karoo 3 in light and
 dark, covering all five presets, captions on/off, recording and Highlight,
