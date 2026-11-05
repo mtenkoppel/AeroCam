@@ -41,8 +41,15 @@ internal object RecordingButtonLayout {
         val bold = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = Typeface.DEFAULT_BOLD }
         val regular = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = Typeface.DEFAULT_BOLD }
         val preferred = sp(resources, preferredTimerSp.coerceIn(18, 38))
-        val secondary = (feedback ?: metadata)?.let { line(regular, it, sp(resources, 11)) }
-            ?.takeIf { regular.measureText(it.text) <= width }
+        val secondary = (feedback ?: metadata)?.let { text ->
+            var size = sp(resources, 11)
+            var fitted = line(regular, text, size)
+            while (regular.measureText(text) > width && size > sp(resources, 8)) {
+                size -= 1f
+                fitted = line(regular, text, size)
+            }
+            fitted.takeIf { regular.measureText(text) <= width }
+        }
         val reservedTimer = secondary?.let {
             fitTimer(bold, timer, preferred, width, height, it)
         }

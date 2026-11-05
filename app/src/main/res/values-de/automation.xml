@@ -24,8 +24,8 @@
     <string name="automation_invalid_number">Gib einen Wert zwischen %1$d und %2$d ein.</string>
     <string name="automation_auto_start">AUTO-START</string>
     <string name="automation_auto_stop">AUTO-STOPP</string>
-    <string name="automation_rec_started">AUFNAHME GESTARTET</string>
-    <string name="automation_rec_stopped">AUFNAHME GESTOPPT</string>
+    <string name="automation_rec_started">REC GESTARTET</string>
+    <string name="automation_rec_stopped">REC GESTOPPT</string>
     <string name="automation_lap_help">Halte einen Moment fest, wenn Karoo eine neue Runde erfasst.</string>
     <string name="automation_power_help">Halte harte Antritte fest, wenn deine Leistung den gewählten Wattwert überschreitet.</string>
     <string name="automation_speed_help">Halte schnelle Abschnitte fest, wenn deine Geschwindigkeit den Schwellenwert überschreitet.</string>

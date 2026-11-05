@@ -62,6 +62,7 @@ class DjiKarooIntegration(
     private val telemetryAt = mutableMapOf<String, Long>()
     private val automationHandler = Handler(Looper.getMainLooper())
     private var automationRunning = false
+    private var stopped = false
     private val automationTick = object : Runnable {
         override fun run() {
             if (!automationRunning) return
@@ -72,6 +73,7 @@ class DjiKarooIntegration(
     private var previousHighlightCount = 0
 
     fun start() {
+        stopped = false
         automationRunning = true
         automationHandler.post(automationTick)
         cancelCameraObservation = DjiCameraController.observe(appContext, ::onCameraState)
@@ -110,6 +112,7 @@ class DjiKarooIntegration(
     }
 
     fun stop() {
+        stopped = true
         automationRunning = false
         automationHandler.removeCallbacksAndMessages(null)
         DjiCameraController.cancelAutomation(appContext)
@@ -321,7 +324,7 @@ class DjiKarooIntegration(
         automationHandler.post {
             val settings = DjiSettings.read(appContext)
             val state = DjiCameraController.state()
-            if (!settings.autoHighlightsEnabled || rideState !is RideState.Recording ||
+            if (stopped || !settings.autoHighlightsEnabled || rideState !is RideState.Recording ||
                 state.connection != CameraConnectionState.CONNECTED) return@post
             if (state.automaticRecordingId != 0L) DjiCameraController.holdAutomaticRecording(appContext)
             autoStop.event() // Marker cooldown never suppresses the recording extension.

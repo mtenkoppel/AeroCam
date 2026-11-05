@@ -24,8 +24,8 @@
     <string name="automation_invalid_number">Introduce un valor entre %1$d y %2$d.</string>
     <string name="automation_auto_start">INICIO AUTO</string>
     <string name="automation_auto_stop">PARADA AUTO</string>
-    <string name="automation_rec_started">GRABACIÓN INICIADA</string>
-    <string name="automation_rec_stopped">GRABACIÓN DETENIDA</string>
+    <string name="automation_rec_started">REC INICIADA</string>
+    <string name="automation_rec_stopped">REC DETENIDA</string>
     <string name="automation_lap_help">Captura un momento cuando Karoo registra una vuelta nueva.</string>
     <string name="automation_power_help">Captura tus esfuerzos cuando la potencia supera el umbral elegido.</string>
     <string name="automation_speed_help">Captura tramos rápidos cuando la velocidad supera el umbral elegido.</string>

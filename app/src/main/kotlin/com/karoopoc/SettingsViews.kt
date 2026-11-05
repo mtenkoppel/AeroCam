@@ -20,17 +20,9 @@ import com.karoopoc.widget.DjiWidgetController
 internal class SettingsViews(val activity: Activity) {
     val palette = DjiTheme.appPalette(activity)
     private data class ToggleBinding(val view: Switch, val key: String, val default: Boolean, val changed: ((Boolean) -> Unit)?)
-    private data class NumericBinding(val view: EditText, val key: String, val default: Int)
     private val toggles = mutableListOf<ToggleBinding>()
-    private val numericBindings = mutableListOf<NumericBinding>()
     private var cooldownSpinner: Spinner? = null
     private var refreshing = false
-    private lateinit var autoHighlightsContent: LinearLayout
-    private lateinit var peakPowerThresholdRow: LinearLayout
-    private lateinit var maxSpeedThresholdRow: LinearLayout
-    private lateinit var peakHeartRateThresholdRow: LinearLayout
-    private lateinit var descentThresholdRows: LinearLayout
-    private lateinit var uphillThresholdRows: LinearLayout
     private fun getString(id: Int) = activity.getString(id)
     fun dp(value: Int): Int = (value * activity.resources.displayMetrics.density + .5f).toInt()
     fun fullWidthParams(topMargin: Int = 0, bottomMargin: Int = 0) = LinearLayout.LayoutParams(-1, -2).apply {
@@ -113,10 +105,6 @@ internal class SettingsViews(val activity: Activity) {
                     binding.view.isChecked = checked
                     binding.changed?.invoke(checked)
                 }
-            }
-            numericBindings.filter { !it.view.hasFocus() }.forEach {
-                val value = prefs.getInt(it.key, it.default).toString()
-                if (it.view.text.toString() != value) it.view.setText(value)
             }
         } finally { refreshing = false }
     }
@@ -214,60 +202,22 @@ internal class SettingsViews(val activity: Activity) {
         addView(secondaryText(getString(R.string.highlight_cooldown_summary)), fullWidthParams(topMargin = dp(8)))
     }
 
-    private fun labelText(value: String) = text(value, 14f)
-    private fun numberRow(
-        label: String,
-        key: String,
-        default: Int,
-        minimum: Int,
-        maximum: Int,
-    ): LinearLayout {
+    /** Native numeric row shared by settings detail pages; persistence belongs to their Save action. */
+    fun numberInput(parent: LinearLayout, label: String, value: Int, signed: Boolean = false): EditText {
         val input = EditText(activity).apply {
-            inputType = InputType.TYPE_CLASS_NUMBER or if (minimum < 0) InputType.TYPE_NUMBER_FLAG_SIGNED else 0
+            inputType = InputType.TYPE_CLASS_NUMBER or if (signed) InputType.TYPE_NUMBER_FLAG_SIGNED else 0
             imeOptions = EditorInfo.IME_ACTION_DONE
             setSingleLine(true)
             setSelectAllOnFocus(true)
             setTextColor(palette.textPrimary)
-            setText(DjiSettings.preferences(activity).getInt(key, default).toString())
-            setOnEditorActionListener { _, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    saveNumericSetting(this, key, default, minimum, maximum)
-                    clearFocus()
-                    true
-                } else {
-                    false
-                }
-            }
-            setOnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    saveNumericSetting(this, key, default, minimum, maximum)
-                }
-            }
+            setText(value.toString())
+            contentDescription = label
         }
-
-        numericBindings += NumericBinding(input, key, default)
-        return LinearLayout(activity).apply {
-            orientation = LinearLayout.HORIZONTAL
+        parent.addView(LinearLayout(activity).apply {
             gravity = Gravity.CENTER_VERTICAL
-            setPadding(dp(8), 0, 0, 0)
-            addView(
-                labelText(label),
-                LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f),
-            )
-            addView(input, LinearLayout.LayoutParams(dp(72), LinearLayout.LayoutParams.WRAP_CONTENT))
-        }
+            addView(text(label), LinearLayout.LayoutParams(0, -2, 1f))
+            addView(input, LinearLayout.LayoutParams(dp(72), -2))
+        }, fullWidthParams())
+        return input
     }
-
-    private fun saveNumericSetting(
-        input: EditText,
-        key: String,
-        default: Int,
-        minimum: Int,
-        maximum: Int,
-    ) {
-        val value = input.text.toString().toIntOrNull()?.coerceIn(minimum, maximum) ?: default
-        input.setText(value.toString())
-        DjiSettings.setInt(activity, key, value)
-    }
-
 }

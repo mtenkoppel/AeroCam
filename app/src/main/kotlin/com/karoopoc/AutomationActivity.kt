@@ -115,21 +115,9 @@ class AutomationActivity : Activity() {
         save?.let { commit -> root.addView(KarooNavigation.forwardButton(this, actionLabel, commit), FrameLayout.LayoutParams(-2, KarooNavigation.buttonSize(this), Gravity.RIGHT or Gravity.BOTTOM).apply { bottomMargin = KarooNavigation.bottomInset(this@AutomationActivity) }) }
         setContentView(root)
     }
-    private fun number(parent: LinearLayout, spec: TriggerNumber): EditText {
-        val input = EditText(this).apply {
-            inputType = InputType.TYPE_CLASS_NUMBER or if (spec.min < 0) InputType.TYPE_NUMBER_FLAG_SIGNED else 0
-            setSingleLine(true); setSelectAllOnFocus(true)
-            setTextColor(ui.palette.textPrimary)
-            setText(DjiSettings.preferences(this@AutomationActivity).getInt(spec.key, spec.default).toString())
-            contentDescription = getString(spec.label)
-        }
-        parent.addView(LinearLayout(this).apply {
-            gravity = Gravity.CENTER_VERTICAL
-            addView(ui.text(getString(spec.label)), LinearLayout.LayoutParams(0, -2, 1f))
-            addView(input, LinearLayout.LayoutParams(ui.dp(72), -2))
-        }, ui.fullWidthParams())
-        return input
-    }
+    private fun number(parent: LinearLayout, spec: TriggerNumber): EditText = ui.numberInput(
+        parent, getString(spec.label), DjiSettings.preferences(this).getInt(spec.key, spec.default), spec.min < 0,
+    )
     private fun committed() {
         DjiCameraController.cancelAutomation(this)
         DjiWidgetController.refresh()
