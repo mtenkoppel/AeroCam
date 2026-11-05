@@ -60,7 +60,10 @@ class SharedCameraButtonUiTest {
                 val image = bitmap(combinedButton)
                 assertTrue("$name/$caption/$stateName Video and Video + Photo parity", bitmap(videoButton).sameAs(image))
                 assertEquals("03:19", combinedButton.findViewById<TextView>(R.id.widgetVideoTimer).text.toString())
-                assertInkCentered(image, "$name/$caption/$stateName")
+                val content = combinedButton.findViewById<View>(R.id.widgetVideoRecording)
+                assertEquals(combinedButton.height, content.height)
+                assertEquals(combinedButton.width, content.width)
+                assertInkCentered(bitmap(content), "$name/$caption/$stateName")
                 if (name == "map" && caption) {
                     val dir = File("build/reports/settings-ui/shared-camera-buttons").apply { mkdirs() }
                     File(dir, "short-map-$stateName.png").outputStream().use {
@@ -134,7 +137,7 @@ class SharedCameraButtonUiTest {
         var bottom = -1
         for (y in 0 until image.height) for (x in 0 until image.width) {
             val pixel = image.getPixel(x, y)
-            if (Color.green(pixel) < 190 || Color.blue(pixel) < 190) continue
+            if (Color.alpha(pixel) < 192 || Color.green(pixel) < 190 || Color.blue(pixel) < 190) continue
             left = minOf(left, x)
             right = maxOf(right, x)
             top = minOf(top, y)
