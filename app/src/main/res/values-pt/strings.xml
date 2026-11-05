@@ -227,4 +227,7 @@
     <string name="ob_pair_again">Emparelhar de novo</string>
     <string name="ob_skip_pairing">Saltar emparelhamento</string>
     <string name="pairing_connect_camera">Ligar a câmara</string>
+    <string name="widget_refresh_video">Atualizar</string>
+    <string name="widget_refreshing_video">A atualizar…</string>
+    <string name="widget_switching_to_video">A mudar para vídeo…</string>
 </resources>
