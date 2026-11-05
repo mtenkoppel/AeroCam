@@ -227,4 +227,8 @@
     <string name="ob_pair_again">Associer à nouveau</string>
     <string name="ob_skip_pairing">Passer l’association</string>
     <string name="pairing_connect_camera">Connecter la caméra</string>
+    <string name="widget_refresh_video">Actualiser</string>
+    <string name="widget_refreshing_video">Actualisation…</string>
+    <string name="widget_switching_to_video">Passage en vidéo…</string>
+    <string name="widget_switching_to_video_short">Passage…</string>
 </resources>

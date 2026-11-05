@@ -33,14 +33,9 @@ class WidgetAlignmentUiTest {
         highlightFeedback = "HIGHLIGHT"))
     private fun config(alignment: ViewConfig.Alignment, full: Boolean = false) =
         ViewConfig(Pair(60, if (full) 60 else 30), Pair(480, if (full) 408 else 189), 32, alignment)
-    private fun horizontal(alignment: ViewConfig.Alignment) = when (alignment) {
-        ViewConfig.Alignment.LEFT -> Gravity.LEFT
-        ViewConfig.Alignment.CENTER -> Gravity.CENTER_HORIZONTAL
-        ViewConfig.Alignment.RIGHT -> Gravity.RIGHT
-    }
-    private fun checkText(view: View, id: Int, alignment: ViewConfig.Alignment) {
+    private fun checkCenteredText(view: View, id: Int) {
         val text = view.findViewById<TextView>(id)
-        assertEquals(horizontal(alignment), text.gravity and Gravity.HORIZONTAL_GRAVITY_MASK)
+        assertEquals(Gravity.CENTER_HORIZONTAL, text.gravity and Gravity.HORIZONTAL_GRAVITY_MASK)
         assertEquals(View.TEXT_ALIGNMENT_GRAVITY, text.textAlignment)
     }
     private fun save(view: View, height: Int, name: String) {
@@ -53,24 +48,29 @@ class WidgetAlignmentUiTest {
         File(dir, "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
         bitmap.recycle()
     }
-    @Test fun recordingValuesAndStatusesFollowKarooAlignmentIncludingReapply() {
+    @Test fun recordingValuesAndStatusesStayCenteredAcrossKarooAlignmentsAndReapply() {
         val parent = FrameLayout(context)
         var video: View? = null
+        var combined: View? = null
         var photo: View? = null
         for (alignment in ViewConfig.Alignment.entries) {
             val c = config(alignment)
             val videoViews = DjiWidgetRenderer.video(context, c, state)
             if (video == null) video = videoViews.apply(context, parent) else videoViews.reapply(context, video)
             for (id in listOf(R.id.widgetVideoTimer, R.id.widgetVideoMeta, R.id.widgetVideoStatus))
-                checkText(video!!, id, alignment)
+                checkCenteredText(video!!, id)
             assertEquals("14:45", video!!.findViewById<TextView>(R.id.widgetVideoTimer).text.toString())
+            val combinedViews = DjiWidgetRenderer.videoPhoto(context, c, state)
+            if (combined == null) combined = combinedViews.apply(context, parent) else combinedViews.reapply(context, combined)
+            checkCenteredText(combined!!, R.id.widgetVideoTimer)
+            checkCenteredText(combined!!, R.id.widgetVideoMeta)
             val photoViews = DjiWidgetRenderer.photo(context, c, state)
             if (photo == null) photo = photoViews.apply(context, parent) else photoViews.reapply(context, photo)
-            checkText(photo!!, R.id.widgetPhotoStatus, alignment)
+            checkCenteredText(photo!!, R.id.widgetPhotoStatus)
             save(video!!, 189, "video-$alignment")
         }
     }
-    @Test fun cameraDataSlotsAlignWithoutMovingControlsOrLosingLowBatteryColor() {
+    @Test fun cameraDataSlotsKeepTheirLayoutWhileRecordingFeedbackStaysCentered() {
         for (theme in listOf("light", "dark")) {
             DjiSettings.preferences(context).edit().putString(DjiSettings.KEY_THEME_MODE, theme).commit()
             var full: View? = null
@@ -78,17 +78,17 @@ class WidgetAlignmentUiTest {
             for (alignment in ViewConfig.Alignment.entries) {
                 val compact = DjiWidgetRenderer.cameraControl(context, config(alignment), state)
                     .apply(context, FrameLayout(context))
-                checkText(compact, R.id.widgetControlBattery, ViewConfig.Alignment.CENTER)
-                checkText(compact, R.id.widgetControlStorage, ViewConfig.Alignment.CENTER)
+                checkCenteredText(compact, R.id.widgetControlBattery)
+                checkCenteredText(compact, R.id.widgetControlStorage)
                 save(compact, 189, "$theme-compact-$alignment")
                 val remote = DjiWidgetRenderer.cameraControl(context, config(alignment, true), state)
                 if (full == null) full = remote.apply(context, FrameLayout(context)) else remote.reapply(context, full)
                 for (id in listOf(R.id.widgetControlFullBatteryGroup, R.id.widgetControlFullStorageGroup,
                     R.id.widgetControlVideoRecording)) {
-                    assertEquals(if (id == R.id.widgetControlVideoRecording) horizontal(alignment) else Gravity.CENTER_HORIZONTAL, full!!.findViewById<LinearLayout>(id).gravity and Gravity.HORIZONTAL_GRAVITY_MASK)
+                    assertEquals(Gravity.CENTER_HORIZONTAL, full!!.findViewById<LinearLayout>(id).gravity and Gravity.HORIZONTAL_GRAVITY_MASK)
                 }
-                checkText(full!!, R.id.widgetControlVideoFeedback, alignment)
-                assertEquals(DjiTheme.widgetPalette(context).batteryLow,
+                checkCenteredText(full!!, R.id.widgetControlVideoFeedback)
+                assertEquals(DjiTheme.widgetPalette(context).textPrimary,
                     full!!.findViewById<TextView>(R.id.widgetControlFullBattery).currentTextColor)
                 save(full!!, 408, "$theme-full-$alignment")
                 val positions = listOf(R.id.widgetControlFullKeepAwake, R.id.widgetControlMore,

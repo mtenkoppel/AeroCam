@@ -13,6 +13,7 @@ import android.widget.FrameLayout
 import android.widget.RemoteViews
 import com.karoopoc.R
 import com.karoopoc.dji.CameraConnectionState
+import com.karoopoc.dji.DjiCameraMode
 import com.karoopoc.dji.DjiCameraState
 import com.karoopoc.dji.DjiSettings
 import com.karoopoc.dji.PhotoCaptureState
@@ -21,7 +22,13 @@ import java.io.File
 
 /** Native equivalence checks: no camera commands, BLE permissions or activity launch. */
 class WidgetRenderingInstrumentation : Instrumentation() {
-    override fun onCreate(arguments: Bundle?) { super.onCreate(arguments); start() }
+    private var captureCamControl = false
+
+    override fun onCreate(arguments: Bundle?) {
+        super.onCreate(arguments)
+        captureCamControl = arguments?.getString("camControl") == "true"
+        start()
+    }
 
     override fun onStart() {
         try {
@@ -36,6 +43,11 @@ class WidgetRenderingInstrumentation : Instrumentation() {
             )
             val camera = DjiCameraState(configured = true, connection = CameraConnectionState.CONNECTED,
                 batteryPercent = 60, remainingCapacityMb = 14848, recordingDurationSeconds = 885)
+            if (captureCamControl) {
+                runOnMainSync { captureCamControl(sizes, camera) }
+                finish(Activity.RESULT_OK, Bundle().apply { putString("stream", "Cam Control screenshots saved. No camera actions sent.\n") })
+                return
+            }
             val ready = DjiWidgetViewState(camera)
             val cases = linkedMapOf(
                 "ready" to ready,
@@ -102,7 +114,7 @@ class WidgetRenderingInstrumentation : Instrumentation() {
                             if (!state.camera.recording && (state.photoAwaitingResponse != null || state.camera.photoState == PhotoCaptureState.CAPTURING)) {
                                 check(combined.findViewById<View>(R.id.widgetPhotoSpinner).visibility == View.VISIBLE)
                             }
-                            if (!captionsHidden) save(combined, "${theme.preferenceValue}-$size-$scenario")
+                            if (!captionsHidden) save(combined, "$theme-$size-$scenario")
                         }
                     }
                 }
@@ -110,6 +122,36 @@ class WidgetRenderingInstrumentation : Instrumentation() {
             finish(Activity.RESULT_OK, Bundle().apply { putString("stream", "PASS: $comparisons native pixel comparisons; 5 sizes, 2 themes, captions on/off, 13 states. No camera actions sent.\n") })
         } catch (t: Throwable) {
             finish(Activity.RESULT_CANCELED, Bundle().apply { putString("stream", "FAIL: ${t.stackTraceToString()}\n") })
+        }
+    }
+
+    private fun captureCamControl(sizes: List<Pair<String, ViewConfig>>, camera: DjiCameraState) {
+        val video = camera.copy(cameraMode = DjiCameraMode.VIDEO, videoResolution = 16, videoFps = 6, keepAwakeEnabled = true)
+        val photo = video.copy(cameraMode = DjiCameraMode.PHOTO)
+        val offline = video.copy(connection = CameraConnectionState.DISCONNECTED)
+        val cases = linkedMapOf(
+            "ready" to DjiWidgetViewState(video),
+            "refresh" to DjiWidgetViewState(photo),
+            "switching" to DjiWidgetViewState(photo, refreshingVideoSettings = true),
+            "offline" to DjiWidgetViewState(offline),
+            "searching" to DjiWidgetViewState(offline, connectPrompts = setOf(ConnectPrompt.CONTROL)),
+            "low-battery" to DjiWidgetViewState(video.copy(batteryPercent = 15)),
+            "recording" to DjiWidgetViewState(video.copy(recording = true, highlightFeedback = "HIGHLIGHT")),
+        )
+        for (theme in listOf("light", "dark")) {
+            val context = ContextThemeWrapper(targetContext, R.style.AppTheme).apply {
+                applyOverrideConfiguration(Configuration().apply {
+                    uiMode = if (theme == "dark") Configuration.UI_MODE_NIGHT_YES else Configuration.UI_MODE_NIGHT_NO
+                })
+            }
+            for ((name, config) in sizes) for ((scenario, state) in cases) {
+                val caption = context.resources.getDimensionPixelSize(R.dimen.widget_field_caption_height)
+                val body = config.copy(viewSize = config.viewSize.first to config.viewSize.second - caption)
+                val remote = DjiWidgetRenderer.captionedField(
+                    context, R.string.dji_power, true, DjiWidgetRenderer.cameraControl(context, body, state, interactive = false),
+                )
+                save(inflate(context, remote, config.viewSize.first, config.viewSize.second), "cam-control-$theme-$name-$scenario")
+            }
         }
     }
 

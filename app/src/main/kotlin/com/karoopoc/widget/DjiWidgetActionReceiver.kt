@@ -14,6 +14,7 @@ class DjiWidgetActionReceiver : BroadcastReceiver() {
         vibrate(context)
         when (intent.action) {
             ACTION_CONNECT -> DjiWidgetController.connect(context)
+            ACTION_REFRESH_VIDEO_SETTINGS -> DjiWidgetController.refreshVideoSettings(context)
             ACTION_PHOTO -> DjiWidgetController.triggerPhoto(context)
             ACTION_RECORD_TOGGLE -> DjiWidgetController.toggleRecording(context)
             ACTION_HIGHLIGHT -> DjiWidgetController.addHighlight(context)
@@ -37,6 +38,7 @@ class DjiWidgetActionReceiver : BroadcastReceiver() {
     companion object {
         private const val TAG = "KarooPoC"
         const val ACTION_CONNECT = "com.karoopoc.widget.CONNECT"
+        const val ACTION_REFRESH_VIDEO_SETTINGS = "com.karoopoc.widget.REFRESH_VIDEO_SETTINGS"
         const val ACTION_PHOTO = "com.karoopoc.widget.PHOTO"
         const val ACTION_RECORD_TOGGLE = "com.karoopoc.widget.RECORD_TOGGLE"
         const val ACTION_HIGHLIGHT = "com.karoopoc.widget.HIGHLIGHT"

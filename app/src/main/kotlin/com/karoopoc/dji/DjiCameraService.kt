@@ -69,6 +69,8 @@ object DjiCameraController {
 
     fun toggleMode(context: Context) = dispatch(context, DjiCameraService.ACTION_MODE_TOGGLE)
 
+    fun selectVideoMode(context: Context) = dispatch(context, DjiCameraService.ACTION_SELECT_VIDEO_MODE)
+
     fun sleep(context: Context) {
         preferences(context).edit().putBoolean(DjiSettings.KEY_KEEP_AWAKE_ENABLED, false).apply()
         publish(
@@ -241,6 +243,7 @@ class DjiCameraService : Service() {
                 intent?.getBooleanExtra(EXTRA_HIGHLIGHT_COOLDOWN_LIMITED, false) ?: false,
             )
             ACTION_MODE_TOGGLE -> client.toggleMode()
+            ACTION_SELECT_VIDEO_MODE -> client.selectVideoMode()
             ACTION_SLEEP -> {
                 client.setKeepAwake(false, DjiCameraController.keepAwakeIntervalSeconds(this))
                 client.sleepCamera()
@@ -378,6 +381,7 @@ class DjiCameraService : Service() {
         const val ACTION_RECORD_TOGGLE = "com.karoopoc.dji.RECORD_TOGGLE"
         const val ACTION_HIGHLIGHT = "com.karoopoc.dji.HIGHLIGHT"
         const val ACTION_MODE_TOGGLE = "com.karoopoc.dji.MODE_TOGGLE"
+        const val ACTION_SELECT_VIDEO_MODE = "com.karoopoc.dji.SELECT_VIDEO_MODE"
         const val ACTION_SLEEP = "com.karoopoc.dji.SLEEP"
         const val ACTION_FORGET = "com.karoopoc.dji.FORGET"
         const val ACTION_KEEP_AWAKE_CHANGED = "com.karoopoc.dji.KEEP_AWAKE_CHANGED"
