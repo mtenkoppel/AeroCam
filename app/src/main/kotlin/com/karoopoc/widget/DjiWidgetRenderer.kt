@@ -426,7 +426,7 @@ object DjiWidgetRenderer {
                     val statusGap = resources.getDimensionPixelSize(R.dimen.widget_control_status_gap)
                     val iconSize = resources.getDimensionPixelSize(R.dimen.widget_control_status_icon)
                     val textMetrics = Paint().apply {
-                        textSize = resources.getDimension(R.dimen.widget_control_status_text)
+                        textSize = resources.getDimension(R.dimen.widget_control_full_status_text)
                     }.fontMetricsInt
                     val statusHeight = 3 * maxOf(iconSize, textMetrics.descent - textMetrics.ascent) + 2 * statusGap
                     // At short heights, let the status determine the toolbar's minimum height.
@@ -700,12 +700,13 @@ object DjiWidgetRenderer {
             else -> 78f
         }
         val available = config.viewSize.first - 20 - 2 * sideWidth * density
+        val textSize = if (full) R.dimen.widget_control_full_status_text else R.dimen.widget_control_status_text
+        val paint = Paint().apply { this.textSize = resources.getDimension(textSize) }
         val label = if (state.hasCamControlVideoProfile()) {
             val mapped = checkNotNull(videoResolutionLabel(state.videoResolution))
             val format = mapped.substringBefore(' ')
             val ratio = mapped.substringAfter(' ', "16:9")
             val fps = videoFpsLabel(state.videoFps)
-            val paint = Paint().apply { textSize = resources.getDimension(R.dimen.widget_control_status_text) }
             listOf(
                 "$format · $fps fps · $ratio", "$format/$fps · $ratio", "$format · $fps fps", "$format/$fps", format,
             ).firstOrNull { paint.measureText(it) <= available - iconSize - 4 * density } ?: format
@@ -716,7 +717,6 @@ object DjiWidgetRenderer {
             label != null -> label
             refreshing && state.cameraMode != DjiCameraMode.VIDEO -> {
                 val message = context.getString(R.string.widget_switching_to_video)
-                val paint = Paint().apply { textSize = resources.getDimension(R.dimen.widget_control_status_text) }
                 if (paint.measureText(message) <= available - 4 * density) message
                 else context.getString(R.string.widget_switching_to_video_short)
             }
@@ -934,7 +934,7 @@ fun videoFpsLabel(value: Int?): String? = when (value) {
 }
 
 internal fun DjiCameraState.hasCamControlVideoProfile(): Boolean =
-    connection == CameraConnectionState.CONNECTED && cameraMode == DjiCameraMode.VIDEO &&
+    connection == CameraConnectionState.CONNECTED &&
         videoResolutionLabel(videoResolution) != null && videoFpsLabel(videoFps) != null
 
 private fun primaryTextSize(config: ViewConfig, size: DjiWidgetSize): Float {

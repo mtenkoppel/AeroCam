@@ -1233,8 +1233,10 @@ class DjiOsmoBleClient(
             recordingDurationSeconds = cameraStatus.recordTimeSeconds,
             remainingCapacityMb = cameraStatus.remainingCapacityMb,
             remainingRecordingSeconds = cameraStatus.remainingTimeSeconds,
-            videoResolution = cameraStatus.videoResolution,
-            videoFps = cameraStatus.fps,
+            // Photo status can carry placeholder video values. Keep the last Video readout
+            // for every Cam Control field until this camera connection ends.
+            videoResolution = if (cameraStatus.mode == CAMERA_MODE_VIDEO) cameraStatus.videoResolution else cameraState.videoResolution,
+            videoFps = if (cameraStatus.mode == CAMERA_MODE_VIDEO) cameraStatus.fps else cameraState.videoFps,
             cameraMode = when (cameraStatus.mode) {
                 CAMERA_MODE_VIDEO -> DjiCameraMode.VIDEO
                 CAMERA_MODE_PHOTO -> DjiCameraMode.PHOTO

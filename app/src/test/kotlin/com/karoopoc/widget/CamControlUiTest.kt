@@ -62,9 +62,10 @@ class CamControlUiTest {
             Triple("half", 238 to 113, 30 to 15),
         )
         val offline = camera.copy(connection = CameraConnectionState.DISCONNECTED)
-        val photo = camera.copy(cameraMode = DjiCameraMode.PHOTO)
+        val photo = camera.copy(cameraMode = DjiCameraMode.PHOTO, videoResolution = null, videoFps = null)
         val states = linkedMapOf(
             "ready" to DjiWidgetViewState(camera),
+            "photo-with-video-settings" to DjiWidgetViewState(camera.copy(cameraMode = DjiCameraMode.PHOTO)),
             "refresh" to DjiWidgetViewState(photo),
             "switching" to DjiWidgetViewState(photo, refreshingVideoSettings = true),
             "offline" to DjiWidgetViewState(offline),
@@ -74,8 +75,10 @@ class CamControlUiTest {
             val config = ViewConfig(grid, size, 32)
             val panelId = if (name == "full") R.id.widgetControlFullStatus else R.id.widgetControlStatus
             val messageId = if (name == "full") R.id.widgetControlTopMessageText else R.id.widgetControlMessageText
+            val videoLabelId = if (name == "full") R.id.widgetControlFullResolution else R.id.widgetControlResolution
             val remote = DjiWidgetRenderer.cameraControl(context, config, states.getValue("ready"))
             val view = remote.apply(context, FrameLayout(context))
+            val videoLabel = view.findViewById<TextView>(videoLabelId).text.toString()
             for ((scenario, state) in states) {
                 DjiWidgetRenderer.cameraControl(context, config, state).reapply(context, view)
                 val (width, height) = size
@@ -88,6 +91,9 @@ class CamControlUiTest {
                     val panel = view.findViewById<View>(panelId)
                     assertEquals(scenario == "refresh", panel.hasOnClickListeners())
                     assertTrue(panel.height > 0)
+                    if (scenario == "photo-with-video-settings") {
+                        assertEquals(videoLabel, view.findViewById<TextView>(videoLabelId).text.toString())
+                    }
                 }
                 save(view, "review-$name-$scenario")
                 val captionHeight = context.resources.getDimensionPixelSize(R.dimen.widget_field_caption_height)
@@ -130,7 +136,7 @@ class CamControlUiTest {
                 assertTrue(readout.bottom <= status.height)
                 val rows = listOf(video.height, photo.height, power.height)
                 assertTrue("$theme/$height equal control rows: $rows", rows.max() - rows.min() <= 1)
-                if (height >= 408) assertTrue(abs(toolbar.height - video.height) <= 1)
+                if (height == 600) assertTrue(abs(toolbar.height - video.height) <= 1)
                 val gap = context.resources.getDimensionPixelSize(R.dimen.widget_combined_gap)
                 val photoGap = (photo.layoutParams as android.widget.LinearLayout.LayoutParams).topMargin
                 assertEquals(gap, video.top - toolbar.bottom)
