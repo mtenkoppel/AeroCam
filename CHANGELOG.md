@@ -5,6 +5,14 @@ the matching version heading when preparing a release.
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-05
+
+- Clarified how to install and update AeroCam on Karoo.
+- Added screenshots showing how camera controls look at different data field sizes.
+- Made the README and website download links follow the latest stable release.
+
+Camera controls and recording work as in v1.0.
+
 ## [1.0] - 2026-11-04
 
 - Revised camera pairing and onboarding, with clearer re-pair and skip actions
