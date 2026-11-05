@@ -6,7 +6,7 @@ internal class AutoStopPolicy {
     private var delay = 0
     private var quietSince: Long? = null
     private var sent = false
-    fun event() { quietSince = null }
+    fun event() { quietSince = null; sent = false }
     fun update(now: Long, clipId: Long, enabled: Boolean, active: Boolean?, seconds: Int): Boolean {
         if (clip != clipId || delay != seconds || !enabled || clipId == 0L) {
             clip = clipId
@@ -14,8 +14,9 @@ internal class AutoStopPolicy {
             quietSince = null
             sent = false
         }
-        if (!enabled || clipId == 0L || sent) return false
-        if (active != false) { quietSince = null; return false }
+        if (!enabled || clipId == 0L) return false
+        if (active != false) { quietSince = null; sent = false; return false }
+        if (sent) return false
         val since = quietSince ?: now.also { quietSince = it }
         if (now - since < seconds.coerceAtLeast(1) * 1000L) return false
         sent = true
@@ -29,11 +30,12 @@ internal class RecordingOrigin {
     var clip = 0L; private set
     private var serial = 0L
     private var startUntil: Long? = null
-    private var stopping = false
+    var stopping = false; private set
     private var recording = false
     fun startPending(now: Long): Boolean = startUntil?.let { now <= it } == true
     fun requestStart(now: Long) { startUntil = now + 15000 }
     fun requestStop() { stopping = clip != 0L }
+    fun cancelStop() { stopping = false }
     fun cancel() { clip = 0; startUntil = null; stopping = false }
     fun status(next: Boolean, now: Long): Feedback? {
         val feedback = when {

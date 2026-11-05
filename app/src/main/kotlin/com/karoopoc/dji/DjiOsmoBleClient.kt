@@ -354,6 +354,12 @@ class DjiOsmoBleClient(
         if (!active) cancelAutomation()
     }
 
+    fun cancelPendingAutomaticStop() {
+        if (!recordingOrigin.stopping) return
+        automationGeneration++
+        recordingOrigin.cancelStop()
+    }
+
     fun cancelAutomation() {
         automationGeneration++
         recordingOrigin.cancel()
@@ -1241,6 +1247,7 @@ class DjiOsmoBleClient(
         latestRecording = cameraStatus.mode == CAMERA_MODE_VIDEO &&
             cameraStatus.status == CAMERA_STATUS_IN_PROGRESS
 
+        if (wasRecording != latestRecording) highlightFeedback = null
         val automaticFeedback = recordingOrigin.status(latestRecording, SystemClock.elapsedRealtime())
         if (automaticFeedback != null) {
             automationFeedback = automaticFeedback
@@ -1410,7 +1417,7 @@ class DjiOsmoBleClient(
                 !settings.autoHighlightsEnabled || settings.mode != expectedMode ||
                 (active.operation.label == "stop recording" && (!settings.autoStop || recordingOrigin.clip == 0L || !latestRecording)) ||
                 (active.operation.label != "stop recording" && latestRecording && active.stepIndex < active.operation.steps.size)) {
-                recordingOrigin.cancel()
+                if (active.operation.automationToken == automationGeneration) recordingOrigin.cancel()
                 activeOperation = null
                 drainOperationQueue()
                 return
@@ -1453,7 +1460,7 @@ class DjiOsmoBleClient(
             onComplete = { success ->
                 if (activeOperation !== active) return@queueFrame
                 if (!success) {
-                    if (active.operation.automationToken != null) recordingOrigin.cancel()
+                    if (active.operation.automationToken != null && active.operation.automationToken == automationGeneration) recordingOrigin.cancel()
                     Log.w(TAG, "DJI command step failed operation=${active.operation.label} step=${step.label}")
                     activeOperation = null
                     drainOperationQueue()
@@ -1771,6 +1778,7 @@ class DjiOsmoBleClient(
     }
 
     private fun showHighlightFeedback(message: String) {
+        automationFeedback = null
         highlightFeedback = message
         publishState()
         highlightFeedbackRunnable?.let(mainHandler::removeCallbacks)

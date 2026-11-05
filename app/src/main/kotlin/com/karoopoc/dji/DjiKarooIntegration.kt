@@ -323,6 +323,7 @@ class DjiKarooIntegration(
             val state = DjiCameraController.state()
             if (!settings.autoHighlightsEnabled || rideState !is RideState.Recording ||
                 state.connection != CameraConnectionState.CONNECTED) return@post
+            if (state.automaticRecordingId != 0L) DjiCameraController.holdAutomaticRecording(appContext)
             autoStop.event() // Marker cooldown never suppresses the recording extension.
             if (settings.mode == AutomationMode.PHOTOS) {
                 if (!state.recording) DjiCameraController.automaticPhoto(appContext)
@@ -343,7 +344,9 @@ class DjiKarooIntegration(
             settings.autoStop && rideState is RideState.Recording && state.recording &&
             state.connection == CameraConnectionState.CONNECTED
         val now = SystemClock.elapsedRealtime()
-        if (autoStop.update(now, state.automaticRecordingId, enabled, activeThresholds(settings, now), settings.stopAfterSeconds)) {
+        val active = activeThresholds(settings, now)
+        if (state.automaticRecordingId != 0L && active != false) DjiCameraController.holdAutomaticRecording(appContext)
+        if (autoStop.update(now, state.automaticRecordingId, enabled, active, settings.stopAfterSeconds)) {
             DjiCameraController.automaticStop(appContext, state.automaticRecordingId)
         }
     }

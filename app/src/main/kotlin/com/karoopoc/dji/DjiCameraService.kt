@@ -54,6 +54,7 @@ object DjiCameraController {
 
     fun automaticStart(context: Context) = dispatch(context, DjiCameraService.ACTION_AUTO_START) { putExtra("requestedAt", SystemClock.elapsedRealtime()) }
     fun automaticPhoto(context: Context) = dispatch(context, DjiCameraService.ACTION_AUTO_PHOTO) { putExtra("requestedAt", SystemClock.elapsedRealtime()) }
+    fun holdAutomaticRecording(context: Context) = dispatch(context, DjiCameraService.ACTION_AUTO_HOLD)
     fun cancelAutomation(context: Context) = dispatch(context, DjiCameraService.ACTION_AUTO_CANCEL)
     fun automaticStop(context: Context, clip: Long) = dispatch(context, DjiCameraService.ACTION_AUTO_STOP) {
         putExtra("clip", clip)
@@ -242,6 +243,7 @@ class DjiCameraService : Service() {
             ACTION_AUTO_START -> if (freshAutomaticRequest(intent)) client.automaticStart()
             ACTION_AUTO_PHOTO -> if (freshAutomaticRequest(intent)) client.automaticPhoto()
             ACTION_AUTO_CANCEL -> client.cancelAutomation()
+            ACTION_AUTO_HOLD -> client.cancelPendingAutomaticStop()
             ACTION_AUTO_STOP -> if (freshAutomaticRequest(intent)) {
                 client.automaticStop(intent?.getLongExtra("clip", 0) ?: 0)
             }
@@ -392,6 +394,7 @@ class DjiCameraService : Service() {
         const val ACTION_AUTO_START = "com.karoopoc.dji.AUTO_START"
         const val ACTION_AUTO_STOP = "com.karoopoc.dji.AUTO_STOP"
         const val ACTION_AUTO_PHOTO = "com.karoopoc.dji.AUTO_PHOTO"
+        const val ACTION_AUTO_HOLD = "com.karoopoc.dji.AUTO_HOLD"
         const val ACTION_AUTO_CANCEL = "com.karoopoc.dji.AUTO_CANCEL"
         const val ACTION_START = "com.karoopoc.dji.START"
         const val ACTION_DISCOVER = "com.karoopoc.dji.DISCOVER"

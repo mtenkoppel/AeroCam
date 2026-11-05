@@ -76,6 +76,17 @@ class AutomationClientTest {
         client.automaticPhoto(); client.automaticPhoto(); idle()
         assertEquals(1, writes().size)
     }
+    @Test fun renewedEffortCancelsQueuedStopWithoutLosingClipOwnership() {
+        origin().requestStart(SystemClock.elapsedRealtime()); origin().status(true, SystemClock.elapsedRealtime())
+        field("latestRecording").setBoolean(client, true)
+        val clip = origin().clip
+        client.automaticStop(clip)
+        client.cancelPendingAutomaticStop()
+        idle()
+        assertTrue(writes().isEmpty())
+        assertEquals(clip, origin().clip)
+        assertFalse(origin().stopping)
+    }
     @Test fun newDefaultsAndLegacyMigrationPreserveTriggerChoices() {
         val prefs = DjiSettings.preferences(context)
         prefs.edit().remove(DjiSettings.KEY_AUTOMATION_MODE).putBoolean(DjiSettings.KEY_AUTO_START_RECORDING, true)
