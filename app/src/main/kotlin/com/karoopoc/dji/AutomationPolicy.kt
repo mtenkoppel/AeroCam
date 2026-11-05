@@ -32,12 +32,17 @@ internal class RecordingOrigin {
     private var startUntil: Long? = null
     var stopping = false; private set
     private var recording = false
+    private var lastDuration: Int? = null
     fun startPending(now: Long): Boolean = startUntil?.let { now <= it } == true
     fun requestStart(now: Long) { startUntil = now + 15000 }
     fun requestStop() { stopping = clip != 0L }
     fun cancelStop() { stopping = false }
     fun cancel() { clip = 0; startUntil = null; stopping = false }
-    fun status(next: Boolean, now: Long): Feedback? {
+    fun status(next: Boolean, now: Long, durationSeconds: Int? = null): Feedback? {
+        // A stop/start on the camera can happen between status packets. A reset timer
+        // means ownership is uncertain even if we never observed recording=false.
+        if (next && recording && durationSeconds != null && lastDuration?.let { durationSeconds < it } == true) cancel()
+        lastDuration = durationSeconds.takeIf { next }
         val feedback = when {
             next && !recording && startUntil?.let { now <= it } == true -> {
                 clip = ++serial; Feedback.STARTED

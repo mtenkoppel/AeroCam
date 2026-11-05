@@ -1248,7 +1248,7 @@ class DjiOsmoBleClient(
             cameraStatus.status == CAMERA_STATUS_IN_PROGRESS
 
         if (wasRecording != latestRecording) highlightFeedback = null
-        val automaticFeedback = recordingOrigin.status(latestRecording, SystemClock.elapsedRealtime())
+        val automaticFeedback = recordingOrigin.status(latestRecording, SystemClock.elapsedRealtime(), cameraStatus.recordTimeSeconds)
         if (automaticFeedback != null) {
             automationFeedback = automaticFeedback
             automationFeedbackUntil = SystemClock.elapsedRealtime() + BRIEF_FEEDBACK_MS

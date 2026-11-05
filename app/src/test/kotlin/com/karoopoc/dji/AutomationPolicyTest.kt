@@ -78,6 +78,15 @@ class AutomationPolicyTest {
         assertEquals(RecordingOrigin.Feedback.STOPPED, p.status(false, 5000))
         assertEquals(0L, p.clip)
     }
+    @Test fun cameraStopStartBetweenStatusPacketsRevokesOwnershipWhenTimerResets() {
+        val p = RecordingOrigin()
+        p.requestStart(0)
+        p.status(true, 1000, 1)
+        p.status(true, 30000, 30)
+        assertTrue(p.clip > 0)
+        p.status(true, 31000, 0)
+        assertEquals(0L, p.clip)
+    }
     @Test fun photosNeverBurstOrReplaySkippedEvents() {
         val p = AutomaticPhotoPolicy()
         assertFalse(p.request(0, false))
