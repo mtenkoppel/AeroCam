@@ -56,7 +56,10 @@ object DjiCameraController {
         putExtra("requestedAt", SystemClock.elapsedRealtime())
         putExtra(DjiCameraService.EXTRA_AUTOMATION_REASON, reason)
     }
-    fun automaticPhoto(context: Context) = dispatch(context, DjiCameraService.ACTION_AUTO_PHOTO) { putExtra("requestedAt", SystemClock.elapsedRealtime()) }
+    fun automaticPhoto(context: Context, reason: String? = null) = dispatch(context, DjiCameraService.ACTION_AUTO_PHOTO) {
+        putExtra("requestedAt", SystemClock.elapsedRealtime())
+        putExtra(DjiCameraService.EXTRA_AUTOMATION_REASON, reason)
+    }
     fun holdAutomaticRecording(context: Context) = dispatch(context, DjiCameraService.ACTION_AUTO_HOLD)
     fun cancelAutomation(context: Context) = dispatch(context, DjiCameraService.ACTION_AUTO_CANCEL)
     fun automaticStop(context: Context, clip: Long) = dispatch(context, DjiCameraService.ACTION_AUTO_STOP) {

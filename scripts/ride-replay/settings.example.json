@@ -1,0 +1,17 @@
+{
+  "mode": "photos",
+  "enabled": true,
+  "honorPauses": true,
+  "photoIntervalSeconds": 120,
+  "autoStop": true,
+  "stopAfterSeconds": 60,
+  "highlights": true,
+  "speedKph": 40,
+  "heartRateBpm": 175,
+  "uphillGrade": 5,
+  "uphillRequireSpeed": false,
+  "uphillSpeedKph": 20,
+  "downhillGrade": -3,
+  "downhillRequireSpeed": true,
+  "downhillSpeedKph": 45
+}

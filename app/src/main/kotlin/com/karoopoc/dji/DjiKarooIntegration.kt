@@ -343,7 +343,7 @@ class DjiKarooIntegration(
             if (state.automaticRecordingId != 0L) DjiCameraController.holdAutomaticRecording(appContext)
             autoStop.event() // Marker cooldown never suppresses the recording extension.
             if (settings.mode == AutomationMode.PHOTOS) {
-                if (!state.recording) DjiCameraController.automaticPhoto(appContext)
+                if (!state.recording) DjiCameraController.automaticPhoto(appContext, reason)
                 return@post
             }
             if (!state.recording) {

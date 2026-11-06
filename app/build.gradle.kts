@@ -68,5 +68,6 @@ android {
 dependencies {
     implementation(libs.hammerhead.karoo.ext)
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     testImplementation("org.robolectric:robolectric:4.14.1")
 }
