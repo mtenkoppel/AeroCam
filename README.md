@@ -130,8 +130,8 @@ Choose your automation mode and add triggers during setup or later in Settings.
 
 Enable **Automation** in Settings, choose one mode, and use **+ Add trigger**:
 
-- **Only add automatic highlights:** you control when video starts and stops.
 - **Automatic recording:** triggers start video. By default, it stops after all enabled threshold conditions have been inactive for a full **60 seconds**. Renewed effort or a lap/summit event resets the delay. Auto recording settings lets you change the delay (10–3600 seconds), disable automatic stopping, or disable the default-on automatic highlights.
+- **Only add automatic highlights:** you control when video starts and stops.
 - **Only take photos automatically:** a trigger requests one still while the camera is idle and ready. A shared minimum interval prevents bursts: **two minutes by default**, adjustable in **Auto photo settings**. Recording, busy and unavailable cameras are skipped; missed events are never replayed.
 
 The video or photo icon contains an **A** while its automatic mode is armed. Confirmed automatic starts briefly show **REC STARTED** beneath the timer, then **AUTO REC** when the automatically started clip will also stop automatically. Confirmed automatic stops briefly show **REC STOPPED**. Manual recordings are never automatically stopped. Manually pausing or finishing a ride, changing automation settings, or losing the camera connection relinquishes automatic control of the current clip. Karoo auto-pause preserves automatic stopping but prevents new captures. Missing sensor data suspends the quiet period until fresh data is available; it does not count as an effort ending.
