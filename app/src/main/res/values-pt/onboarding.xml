@@ -70,4 +70,20 @@
     <string name="ob_downhill_range" formatted="false">Introduza uma velocidade de 40 a 80 km/h e uma inclinação de −30 a −1%.</string>
     <string name="ob_uphill_grade_range" formatted="false">Introduz uma inclinação de +1 a +30%.</string>
     <string name="ob_downhill_grade_range" formatted="false">Introduz uma inclinação de −30 a −1%.</string>
+
+    <string name="ob_automation_step">Automação · %1$d de 2</string>
+    <string name="ob_automation_title">Capturar seu pedal automaticamente?</string>
+    <string name="ob_automation_example" formatted="false">Por exemplo, inicie uma gravação numa descida de 5% ou durante um pico de potência acima de 500 W.</string>
+    <string name="ob_automation_recording">Iniciar e parar a gravação automaticamente</string>
+    <string name="ob_automation_highlights">Só adicionar destaques automáticos</string>
+    <string name="ob_automation_photos">Fotos automáticas</string>
+    <string name="ob_automation_off">Não, obrigado</string>
+    <string name="ob_automation_triggers">Adicione seus eventos</string>
+    <string name="ob_automation_trigger_intro">Os eventos indicam quando o AeroCam deve agir.</string>
+    <string name="ob_automation_add_trigger">Adicionar evento</string>
+    <string name="ob_automation_event">Evento do pedal</string>
+    <string name="ob_automation_boundary">Só marca gravações em andamento</string>
+    <string name="ob_automation_needs_start">Adicione um evento que possa iniciar um vídeo. O início e o fim do pedal só marcam gravações em andamento.</string>
+    <string name="ob_automation_settings">Você pode alterar seus eventos a qualquer momento em Configurações → Automação.</string>
+    <string name="ob_automation_skipped">Automação ignorada. Configure-a a qualquer momento em Configurações → Automação.</string>
 </resources>

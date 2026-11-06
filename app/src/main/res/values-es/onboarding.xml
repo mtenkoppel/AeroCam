@@ -70,4 +70,20 @@
     <string name="ob_downhill_range" formatted="false">Introduce una velocidad de 40 a 80 km/h y una pendiente de −30 a −1%.</string>
     <string name="ob_uphill_grade_range" formatted="false">Introduce una pendiente de +1 a +30%.</string>
     <string name="ob_downhill_grade_range" formatted="false">Introduce una pendiente de −30 a −1%.</string>
+
+    <string name="ob_automation_step">Automatización · %1$d de 2</string>
+    <string name="ob_automation_title">¿Capturar tu ruta automáticamente?</string>
+    <string name="ob_automation_example" formatted="false">Por ejemplo, empieza a grabar en un descenso del 5 % o al superar los 500 W de potencia.</string>
+    <string name="ob_automation_recording">Iniciar y detener la grabación automáticamente</string>
+    <string name="ob_automation_highlights">Solo añadir destacados automáticos</string>
+    <string name="ob_automation_photos">Fotos automáticas</string>
+    <string name="ob_automation_off">No, gracias</string>
+    <string name="ob_automation_triggers">Añade tus disparadores</string>
+    <string name="ob_automation_trigger_intro">Los disparadores le indican a AeroCam cuándo actuar.</string>
+    <string name="ob_automation_add_trigger">Añadir disparador</string>
+    <string name="ob_automation_event">Evento de la ruta</string>
+    <string name="ob_automation_boundary">Solo marca grabaciones en curso</string>
+    <string name="ob_automation_needs_start">Añade un disparador que pueda iniciar una grabación. El inicio y el fin de la ruta solo marcan grabaciones en curso.</string>
+    <string name="ob_automation_settings">Puedes cambiar tus disparadores cuando quieras en Ajustes → Automatización.</string>
+    <string name="ob_automation_skipped">Has omitido la automatización. Puedes configurarla cuando quieras en Ajustes → Automatización.</string>
 </resources>

@@ -9,6 +9,7 @@ import android.text.InputType
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.karoopoc.dji.AutomationMode
 import com.karoopoc.dji.DjiSettings
 import com.karoopoc.dji.GradientSpeedTrigger
 import org.json.JSONArray
@@ -35,25 +36,39 @@ class OnboardingTriggersUiTest {
     private fun descendants(v: View): List<View> = listOf(v) + if (v is ViewGroup)
         (0 until v.childCount).flatMap { descendants(v.getChildAt(it)) } else emptyList()
     private fun views(a: Activity) = descendants(a.findViewById(android.R.id.content))
-    private fun click(a: Activity, id: Int) = views(a).filterIsInstance<Button>().first { it.text.toString() == a.getString(id) }.performClick()
+    private fun button(a: Activity, id: Int) =
+        views(a).filterIsInstance<Button>().first { it.text.toString() == a.getString(id) }
+    private fun click(a: Activity, id: Int) {
+        val action = button(a, id)
+        assertTrue(action.isEnabled)
+        action.performClick()
+    }
+    private fun choose(a: Activity, id: Int) {
+        views(a).filterIsInstance<RadioButton>().single { it.text.toString() == a.getString(id) }.performClick()
+        click(a, R.string.ob_next)
+    }
+    private fun triggerRow(a: Activity, id: Int) =
+        views(a).filterIsInstance<Button>().firstOrNull { it.text.toString().substringBefore('\n') == a.getString(id) }
+    private fun openTrigger(a: Activity, id: Int) {
+        click(a, R.string.automation_add_trigger)
+        checkNotNull(triggerRow(a, id)).performClick()
+    }
+    private fun removeTrigger(a: Activity, id: Int) {
+        checkNotNull(triggerRow(a, id)).performClick()
+        click(a, R.string.automation_remove_trigger)
+    }
     private fun toggle(a: Activity, id: Int) = views(a).filterIsInstance<Switch>().first { it.text.toString() == a.getString(id) }
     private fun input(a: Activity, id: Int) = views(a).filterIsInstance<EditText>().first { it.contentDescription == a.getString(id) }
-    private fun save(a: Activity) = views(a).filterIsInstance<Button>().first { it.text.toString() == a.getString(R.string.ob_save_threshold) }
-    private fun seed(json: JSONObject = JSONObject().put("page", "TRIGGERS")) {
+    private fun save(a: Activity) = button(a, R.string.automation_add)
+    private fun seed(json: JSONObject = JSONObject().put("page", "AUTOMATION")) {
         prefs.edit().putString(OnboardingActivity.DRAFT, json.toString()).commit()
     }
     private fun launch() = Robolectric.buildActivity(OnboardingActivity::class.java).setup()
-    private fun render(a: Activity, name: String, scrollTo: Int? = null) {
+    private fun render(a: Activity, name: String) {
         shadowOf(Looper.getMainLooper()).idle()
         val root = a.findViewById<ViewGroup>(android.R.id.content).getChildAt(0)
         root.measure(View.MeasureSpec.makeMeasureSpec(480, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(755, View.MeasureSpec.EXACTLY))
         root.layout(0, 0, 480, 755)
-        if (scrollTo != null) {
-            val scroll = views(a).filterIsInstance<ScrollView>().single()
-            val target = toggle(a, scrollTo)
-            val rect = android.graphics.Rect(); target.getDrawingRect(rect)
-            scroll.offsetDescendantRectToMyCoords(target, rect); scroll.scrollTo(0, rect.top - 12)
-        }
         val bitmap = Bitmap.createBitmap(480, 755, Bitmap.Config.ARGB_8888)
         root.draw(Canvas(bitmap))
         val folder = File("build/reports/settings-ui/onboarding").apply { mkdirs() }
@@ -62,21 +77,25 @@ class OnboardingTriggersUiTest {
 
     @Test fun bothDirectionsSaveSeparateThresholdsUsedByDetector() {
         seed(); val controller = launch(); val a = controller.get()
-        toggle(a, R.string.highlight_uphill).performClick()
+        choose(a, R.string.ob_automation_highlights)
+        openTrigger(a, R.string.highlight_uphill)
         input(a, R.string.highlight_uphill_speed_threshold).setText("18")
         input(a, R.string.highlight_uphill_grade_threshold).setText("5")
         render(a, "uphill-thresholds-light"); save(a).performClick()
-        toggle(a, R.string.highlight_high_speed_descent).performClick()
+        openTrigger(a, R.string.highlight_high_speed_descent)
         input(a, R.string.highlight_descent_speed_threshold).setText("65")
         val grade = input(a, R.string.highlight_descent_grade_threshold)
         assertTrue(grade.inputType and InputType.TYPE_NUMBER_FLAG_SIGNED != 0)
         grade.setText("-8")
         render(a, "downhill-thresholds-light"); save(a).performClick()
-        toggle(a, R.string.highlight_ride_bookmarks).performClick()
-        render(a, "gradient-bookmark-options-light", R.string.highlight_uphill)
+        openTrigger(a, R.string.highlight_ride_bookmarks)
+        click(a, R.string.automation_add)
+        render(a, "gradient-bookmark-options-light")
         assertFalse(prefs.contains(DjiSettings.KEY_UPHILL_HIGHLIGHTS))
+        assertFalse(prefs.contains("selected_${DjiSettings.KEY_UPHILL_HIGHLIGHTS}"))
         click(a, R.string.ob_next)
         val settings = DjiSettings.read(a)
+        assertTrue(prefs.getBoolean("selected_${DjiSettings.KEY_UPHILL_HIGHLIGHTS}", false))
         assertTrue(settings.uphillHighlights); assertTrue(settings.highSpeedDescentHighlights); assertTrue(settings.rideBookmarks)
         assertEquals(18, settings.uphillSpeedKph); assertEquals(5, settings.uphillGradePercent)
         assertEquals(65, settings.descentSpeedKph); assertEquals(-8, settings.descentGradePercent)
@@ -89,7 +108,8 @@ class OnboardingTriggersUiTest {
     }
     @Test fun incompleteSignedInputSurvivesRecreationAndCancelLeavesNewTriggerOff() {
         seed(); var controller = launch(); var a = controller.get()
-        toggle(a, R.string.highlight_high_speed_descent).performClick()
+        choose(a, R.string.ob_automation_highlights)
+        openTrigger(a, R.string.highlight_high_speed_descent)
         input(a, R.string.highlight_descent_speed_threshold).setText("70")
         input(a, R.string.highlight_descent_grade_threshold).setText("-")
         assertFalse(save(a).isEnabled)
@@ -99,8 +119,11 @@ class OnboardingTriggersUiTest {
         assertFalse(save(a).isEnabled)
         input(a, R.string.highlight_descent_grade_threshold).setText("5"); assertFalse(save(a).isEnabled)
         input(a, R.string.highlight_descent_grade_threshold).setText("-5"); assertTrue(save(a).isEnabled)
-        a.onBackPressed(); assertFalse(toggle(a, R.string.highlight_high_speed_descent).isChecked)
-        click(a, R.string.ob_next)
+        a.onBackPressed() // Catalog
+        a.onBackPressed() // Trigger list
+        assertNull(triggerRow(a, R.string.highlight_high_speed_descent))
+        assertFalse(button(a, R.string.ob_next).isEnabled)
+        click(a, R.string.ob_skip)
         assertFalse(DjiSettings.read(a).highSpeedDescentHighlights)
         controller.pause().stop().destroy()
     }
@@ -108,35 +131,70 @@ class OnboardingTriggersUiTest {
         seed(JSONObject().put("page", "TRIGGERS").put("triggers", JSONArray(listOf(false,true,false,false,false)))
             .put("values", JSONArray(listOf(0,620,45,0,170))))
         val controller = launch(); val a = controller.get()
-        assertTrue(toggle(a, R.string.highlight_peak_power).isChecked)
-        listOf(R.string.highlight_uphill,R.string.highlight_high_speed_descent,R.string.highlight_ride_bookmarks).forEach { assertFalse(toggle(a,it).isChecked) }
+        click(a, R.string.ob_next) // Migrated draft preselects highlights.
+        assertTrue(checkNotNull(triggerRow(a, R.string.highlight_peak_power)).text.contains("620 W"))
+        listOf(R.string.highlight_uphill, R.string.highlight_high_speed_descent, R.string.highlight_ride_bookmarks)
+            .forEach { assertNull(triggerRow(a, it)) }
         click(a,R.string.ob_next)
         val settings=DjiSettings.read(a)
-        assertEquals(620,settings.peakPowerWatts); assertEquals(45,settings.maxSpeedKph)
+        assertEquals(620,settings.peakPowerWatts)
         assertEquals(20,settings.uphillSpeedKph); assertEquals(50,settings.descentSpeedKph)
         controller.pause().stop().destroy()
     }
-    @Test fun bookmarkOnlySelectionCannotAutoStartAndSkipClearsEveryTrigger() {
-        seed(); val controller=launch(); val a=controller.get()
-        toggle(a,R.string.highlight_ride_bookmarks).performClick()
-        assertFalse(toggle(a,R.string.highlight_auto_start_recording).isEnabled)
-        click(a,R.string.ob_next)
-        assertTrue(DjiSettings.read(a).rideBookmarks); assertTrue(DjiSettings.read(a).autoHighlightsEnabled)
-        assertFalse(DjiSettings.read(a).autoStartRecording)
-        a.onBackPressed(); click(a,R.string.ob_skip)
-        assertFalse(DjiSettings.read(a).rideBookmarks); assertFalse(DjiSettings.read(a).autoHighlightsEnabled)
-        assertFalse(DjiSettings.read(a).uphillHighlights); assertFalse(DjiSettings.read(a).highSpeedDescentHighlights)
+    @Test fun recordingRequiresAStartTriggerAndNoThanksPreservesConfiguredRules() {
+        seed()
+        val controller = launch(); val a = controller.get()
+        assertFalse(button(a, R.string.ob_next).isEnabled)
+        render(a, "automation-mode-light")
+        choose(a, R.string.ob_automation_recording)
+        render(a, "automation-triggers-empty-light")
+        openTrigger(a, R.string.highlight_ride_bookmarks)
+        click(a, R.string.automation_add)
+        assertFalse(button(a, R.string.ob_next).isEnabled)
+        openTrigger(a, R.string.highlight_lap)
+        click(a, R.string.automation_add)
+        click(a, R.string.ob_next)
+        assertEquals(AutomationMode.RECORDING, DjiSettings.read(a).mode)
+        assertTrue(DjiSettings.read(a).autoStop)
+        assertTrue(DjiSettings.read(a).rideBookmarks)
+        a.onBackPressed()
+        a.onBackPressed()
+        choose(a, R.string.ob_automation_off)
+        assertTrue(DjiSettings.read(a).rideBookmarks)
+        assertTrue(DjiSettings.read(a).lapHighlights)
+        assertFalse(DjiSettings.read(a).autoHighlightsEnabled)
+        assertTrue(views(a).filterIsInstance<TextView>().any { it.text.toString() == a.getString(R.string.ob_awesome) })
+        controller.pause().stop().destroy()
+    }
+
+    @Test fun photosUseExplicitModeAndExcludeRideBoundariesFromTheCatalog() {
+        prefs.edit().putString(DjiSettings.KEY_AUTOMATION_MODE, AutomationMode.RECORDING.name).commit()
+        seed()
+        val controller = launch(); val a = controller.get()
+        choose(a, R.string.ob_automation_photos)
+        click(a, R.string.automation_add_trigger)
+        assertNull(triggerRow(a, R.string.highlight_ride_bookmarks))
+        checkNotNull(triggerRow(a, R.string.highlight_lap)).performClick()
+        click(a, R.string.automation_add)
+        assertEquals(AutomationMode.RECORDING, DjiSettings.read(a).mode)
+        click(a, R.string.ob_next)
+        assertEquals(AutomationMode.PHOTOS, DjiSettings.read(a).mode)
+        assertTrue(DjiSettings.read(a).lapHighlights)
         controller.pause().stop().destroy()
     }
     @Test @Config(qualifiers = "de-w256dp-h427dp-port-300dpi")
     fun translatedGradientEditorStaysLightWithLegacyDarkPreferenceAndSignedInputs() {
         prefs.edit().putString(DjiSettings.KEY_THEME_MODE,"dark").commit()
         seed(); val controller=launch(); val a=controller.get()
-        toggle(a,R.string.highlight_high_speed_descent).performClick()
-        assertEquals("-3",input(a,R.string.highlight_descent_grade_threshold).text.toString())
-        render(a,"downhill-thresholds-de-dark")
-        a.onBackPressed(); toggle(a,R.string.highlight_ride_bookmarks).performClick()
-        render(a,"bookmark-option-de-dark",R.string.highlight_ride_bookmarks)
+        render(a, "automation-mode-de")
+        choose(a, R.string.ob_automation_highlights)
+        openTrigger(a, R.string.highlight_high_speed_descent)
+        assertEquals("-3", input(a, R.string.highlight_descent_grade_threshold).text.toString())
+        render(a, "downhill-thresholds-de-dark")
+        a.onBackPressed()
+        checkNotNull(triggerRow(a, R.string.highlight_ride_bookmarks)).performClick()
+        click(a, R.string.automation_add)
+        render(a, "bookmark-option-de-dark")
         controller.pause().stop().destroy()
     }
 
@@ -148,10 +206,11 @@ class OnboardingTriggersUiTest {
         val before=DjiSettings.read(context)
         val controller=Robolectric.buildActivity(OnboardingActivity::class.java,Intent(context,OnboardingActivity::class.java).putExtra("replay",true)).setup()
         val a=controller.get(); click(a,R.string.ob_start); click(a,R.string.ob_skip); click(a,R.string.ob_next)
-        assertTrue(toggle(a,R.string.highlight_uphill).isChecked); assertTrue(toggle(a,R.string.highlight_high_speed_descent).isChecked)
-        assertTrue(toggle(a,R.string.highlight_ride_bookmarks).isChecked)
+        click(a, R.string.ob_next) // Replay preselects the saved mode.
+        assertNotNull(triggerRow(a, R.string.highlight_uphill))
+        assertNotNull(triggerRow(a, R.string.highlight_ride_bookmarks))
         assertEquals(before,DjiSettings.read(a))
-        views(a).filterIsInstance<Button>().first { it.text.toString()=="65 km/h · -8%" }.performClick()
+        checkNotNull(triggerRow(a, R.string.highlight_high_speed_descent)).performClick()
         assertEquals("-8",input(a,R.string.highlight_descent_grade_threshold).text.toString())
         controller.pause().stop().destroy()
     }
@@ -160,17 +219,21 @@ class OnboardingTriggersUiTest {
         prefs.edit().putBoolean(DjiSettings.KEY_RIDE_BOOKMARKS, true).commit()
         seed()
         val controller = launch(); val a = controller.get()
-        assertTrue(toggle(a, R.string.highlight_ride_bookmarks).isChecked)
-        assertTrue(DjiSettings.read(a).rideBookmarks)
-        toggle(a, R.string.highlight_ride_bookmarks).performClick()
+        choose(a, R.string.ob_automation_highlights)
+        assertNotNull(triggerRow(a, R.string.highlight_ride_bookmarks))
+        openTrigger(a, R.string.highlight_lap)
+        click(a, R.string.automation_add)
+        removeTrigger(a, R.string.highlight_ride_bookmarks)
         assertTrue(DjiSettings.read(a).rideBookmarks)
         click(a, R.string.ob_next)
         assertFalse(DjiSettings.read(a).rideBookmarks)
+        assertFalse(prefs.getBoolean("selected_${DjiSettings.KEY_RIDE_BOOKMARKS}", true))
         controller.pause().stop().destroy()
     }
     @Test fun optionalSpeedSavesSeparatelyAndSurvivesDraftRestore() {
         seed(); var controller = launch(); var a = controller.get()
-        toggle(a, R.string.highlight_uphill).performClick()
+        choose(a, R.string.ob_automation_highlights)
+        openTrigger(a, R.string.highlight_uphill)
         input(a, R.string.highlight_uphill_speed_threshold).setText("")
         input(a, R.string.highlight_uphill_grade_threshold).setText("10")
         assertFalse(save(a).isEnabled)
@@ -227,8 +290,8 @@ class OnboardingTriggersUiTest {
         host.pause().stop().destroy()
     }
     @Test fun sharedKarooBackSitsBesideActionsAndReturnsThroughOnboardingHistory() {
-        for (page in listOf("CAMERA", "TRIGGERS", "THRESHOLD", "WIDGETS")) {
-            seed(JSONObject().put("page", page).put("history", JSONArray().put("WELCOME")))
+        for (page in listOf("CAMERA", "AUTOMATION", "TRIGGERS", "THRESHOLD", "WIDGETS")) {
+            seed(JSONObject().put("page", page).put("automationChoice", "HIGHLIGHTS").put("history", JSONArray().put("WELCOME")))
             val controller = launch()
             val a = controller.get()
             render(a, "karoo-footer-$page")

@@ -6,14 +6,14 @@ import android.content.Intent
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Typeface
+import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
 import android.text.Editable
-import android.text.InputType
 import android.text.TextWatcher
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
+import com.karoopoc.dji.AutomationMode
 import com.karoopoc.dji.DjiCameraController
 import com.karoopoc.dji.DjiSettings
 import com.karoopoc.widget.DjiWidgetController
@@ -22,8 +22,16 @@ import org.json.JSONObject
 
 /** Optional setup UI. Drafts are durable; camera setup commits only at confirmation. */
 class OnboardingActivity : Activity() {
-    private enum class Page { PAIRED, WELCOME, STANDBY, CAMERA, TIMER, RIDE, SKIPPED, TRIGGERS, THRESHOLD, WIDGETS, FINAL }
+    private enum class Page { PAIRED, WELCOME, STANDBY, CAMERA, TIMER, RIDE, SKIPPED, AUTOMATION, TRIGGERS, CATALOG, THRESHOLD, WIDGETS, FINAL }
+    private enum class AutomationChoice(val mode: AutomationMode?, val label: Int) {
+        RECORDING(AutomationMode.RECORDING, R.string.ob_automation_recording),
+        HIGHLIGHTS(AutomationMode.HIGHLIGHTS, R.string.ob_automation_highlights),
+        PHOTOS(AutomationMode.PHOTOS, R.string.ob_automation_photos),
+        OFF(null, R.string.ob_automation_off),
+    }
+
     private lateinit var palette: DjiPalette
+    private lateinit var ui: SettingsViews
     private lateinit var content: LinearLayout
     private lateinit var footer: LinearLayout
     private var page = Page.PAIRED
@@ -34,22 +42,14 @@ class OnboardingActivity : Activity() {
     private var gradeDraft = "3"
     private var uphillGrade = DjiSettings.DEFAULT_UPHILL_GRADE_PERCENT
     private var downhillGrade = DjiSettings.DEFAULT_DESCENT_GRADE_PERCENT
-    private var autoStart = false
-    private var triggers = BooleanArray(8)
-    private var values = intArrayOf(0, 250, 40, 0, 165, DjiSettings.DEFAULT_UPHILL_SPEED_KPH, DjiSettings.DEFAULT_DESCENT_SPEED_KPH, 0)
-    private var requireSpeed = booleanArrayOf(true, true)
+    private var choice: AutomationChoice? = null
+    private var automationSkipped = false
+    private val catalog = AutomationTriggers.all
+    private val triggers = BooleanArray(catalog.size)
+    private val removed = BooleanArray(catalog.size)
+    private val values = IntArray(catalog.size) { catalog[it].numbers.lastOrNull()?.default ?: 0 }
+    private val requireSpeed = booleanArrayOf(true, true)
     private var speedRequiredDraft = true
-    private var replay = false
-    private val triggerNames = intArrayOf(R.string.highlight_lap, R.string.highlight_peak_power,
-        R.string.highlight_max_speed, R.string.highlight_climb_summit, R.string.highlight_peak_heart_rate,
-        R.string.highlight_uphill, R.string.highlight_high_speed_descent, R.string.highlight_ride_bookmarks)
-    private val triggerDescriptions = intArrayOf(R.string.ob_lap, R.string.ob_power, R.string.ob_speed, R.string.ob_summit, R.string.ob_hr,
-        R.string.highlight_uphill_summary, R.string.highlight_descent_summary, R.string.ob_bookmarks)
-    private val triggerKeys = arrayOf(DjiSettings.KEY_LAP_HIGHLIGHTS, DjiSettings.KEY_PEAK_POWER_HIGHLIGHTS,
-        DjiSettings.KEY_MAX_SPEED_HIGHLIGHTS, DjiSettings.KEY_CLIMB_SUMMIT_HIGHLIGHTS, DjiSettings.KEY_PEAK_HEART_RATE_HIGHLIGHTS,
-        DjiSettings.KEY_UPHILL_HIGHLIGHTS, DjiSettings.KEY_HIGH_SPEED_DESCENT_HIGHLIGHTS, DjiSettings.KEY_RIDE_BOOKMARKS)
-    private val valueKeys = mapOf(1 to DjiSettings.KEY_PEAK_POWER_WATTS, 2 to DjiSettings.KEY_MAX_SPEED_KPH, 4 to DjiSettings.KEY_PEAK_HEART_RATE_BPM,
-        5 to DjiSettings.KEY_UPHILL_SPEED_KPH, 6 to DjiSettings.KEY_DESCENT_SPEED_KPH)
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(DjiTheme.activityContext(newBase))
@@ -58,7 +58,8 @@ class OnboardingActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         DjiTheme.applyActivityTheme(this)
         super.onCreate(savedInstanceState)
-        palette = DjiTheme.appPalette(this)
+        ui = SettingsViews(this)
+        palette = ui.palette
         restore()
         render()
     }
@@ -66,42 +67,66 @@ class OnboardingActivity : Activity() {
     private fun restore() {
         val prefs = DjiSettings.preferences(this)
         standby = (prefs.getInt(DjiSettings.KEY_KEEP_AWAKE_INTERVAL_SECONDS, 270) + 30).takeIf { it in listOf(60, 120, 300) } ?: 300
-        triggers[7] = prefs.getBoolean(DjiSettings.KEY_RIDE_BOOKMARKS, false)
+        catalog.forEachIndexed { index, trigger ->
+            triggers[index] = prefs.getBoolean(trigger.key, false) && trigger.selected(this)
+            trigger.numbers.lastOrNull()?.let { values[index] = prefs.getInt(it.key, it.default) }
+        }
+        uphillGrade = prefs.getInt(DjiSettings.KEY_UPHILL_GRADE_PERCENT, uphillGrade)
+        downhillGrade = prefs.getInt(DjiSettings.KEY_DESCENT_GRADE_PERCENT, downhillGrade)
+        requireSpeed[0] = prefs.getBoolean(DjiSettings.KEY_UPHILL_REQUIRE_SPEED, true)
+        requireSpeed[1] = prefs.getBoolean(DjiSettings.KEY_DESCENT_REQUIRE_SPEED, true)
+
         val raw = prefs.getString(DRAFT, null)
         if (raw != null) runCatching {
             val json = JSONObject(raw)
             page = Page.valueOf(json.getString("page"))
             standby = json.optInt("standby", standby).takeIf { it in listOf(60, 120, 300) } ?: 300
-            edit = json.optInt("edit", 1).takeIf { it in valueKeys } ?: 1
-            inputDraft = json.optString("input", "250")
-            requireSpeed = booleanArrayOf(json.optBoolean("uphillRequireSpeed", true), json.optBoolean("descentRequireSpeed", true))
+            edit = json.optInt("edit", 1).takeIf { it in catalog.indices } ?: 1
+            inputDraft = json.optString("input", values[edit].toString())
+            requireSpeed[0] = json.optBoolean("uphillRequireSpeed", requireSpeed[0])
+            requireSpeed[1] = json.optBoolean("descentRequireSpeed", requireSpeed[1])
             speedRequiredDraft = json.optBoolean("speedRequiredDraft", true)
-            replay = json.optBoolean("replay")
-            autoStart = json.optBoolean("autoStart")
-            uphillGrade = json.optInt("uphillGrade", DjiSettings.DEFAULT_UPHILL_GRADE_PERCENT)
-            downhillGrade = json.optInt("downhillGrade", DjiSettings.DEFAULT_DESCENT_GRADE_PERCENT)
-            gradeDraft = json.optString("gradeInput", if (edit == 6) downhillGrade.toString() else uphillGrade.toString())
+            uphillGrade = json.optInt("uphillGrade", uphillGrade)
+            downhillGrade = json.optInt("downhillGrade", downhillGrade)
+            gradeDraft = json.optString("gradeInput", grade(edit).toString())
+            automationSkipped = json.optBoolean("automationSkipped")
+            val legacy = !json.has("automationChoice")
+            choice = AutomationChoice.entries.firstOrNull { it.name == json.optString("automationChoice") }
+            val savedTriggers = json.optJSONArray("triggers")
             for (i in triggers.indices) {
-                val savedTriggers = json.optJSONArray("triggers")
-                if (savedTriggers != null && i < savedTriggers.length()) triggers[i] = savedTriggers.optBoolean(i)
+                if (savedTriggers != null && i < savedTriggers.length()) {
+                    val wasEnabled = triggers[i]
+                    triggers[i] = savedTriggers.optBoolean(i)
+                    removed[i] = if (legacy) wasEnabled && !triggers[i] else json.optJSONArray("removed")?.optBoolean(i) == true
+                }
                 values[i] = json.optJSONArray("values")?.optInt(i, values[i]) ?: values[i]
             }
             val stack = json.optJSONArray("history")
             for (i in 0 until (stack?.length() ?: 0)) history.add(Page.valueOf(stack!!.getString(i)))
+            if (legacy) {
+                if (json.optBoolean("autoStart")) choice = AutomationChoice.RECORDING
+                else if (triggers.any { it }) choice = AutomationChoice.HIGHLIGHTS
+                when (page) {
+                    Page.TRIGGERS -> page = Page.AUTOMATION
+                    Page.THRESHOLD -> {
+                        if (choice == null) choice = AutomationChoice.HIGHLIGHTS
+                        if (history.lastOrNull() == Page.TRIGGERS) history.removeAt(history.lastIndex)
+                        history.add(Page.AUTOMATION)
+                        history.add(Page.TRIGGERS)
+                        if (!triggers[edit]) history.add(Page.CATALOG)
+                    }
+                    else -> {
+                        if (history.lastOrNull() == Page.TRIGGERS) history[history.lastIndex] = Page.AUTOMATION
+                    }
+                }
+            }
+            Unit
         }.onFailure { page = Page.WELCOME; history.clear() }
         if (raw == null && intent.getBooleanExtra("replay", false)) {
-            replay = true
             page = if (intent.getBooleanExtra("paired", false)) Page.PAIRED else Page.WELCOME
-            val settings = DjiSettings.read(this)
-            triggers = booleanArrayOf(settings.lapHighlights, settings.peakPowerHighlights, settings.maxSpeedHighlights,
-                settings.climbSummitHighlights, settings.peakHeartRateHighlights,
-                settings.uphillHighlights, settings.highSpeedDescentHighlights, settings.rideBookmarks)
-            values = intArrayOf(0, settings.peakPowerWatts, settings.maxSpeedKph, 0, settings.peakHeartRateBpm,
-                settings.uphillSpeedKph, settings.descentSpeedKph, 0)
-            uphillGrade = settings.uphillGradePercent
-            downhillGrade = settings.descentGradePercent
-            requireSpeed = booleanArrayOf(settings.uphillRequireSpeed, settings.descentRequireSpeed)
-            autoStart = settings.autoStartRecording
+            if (prefs.getBoolean(DjiSettings.KEY_AUTO_HIGHLIGHTS_ENABLED, true) && triggers.any { it }) {
+                choice = AutomationChoice.entries.first { it.mode == DjiSettings.mode(this) }
+            }
         }
         persist()
     }
@@ -110,10 +135,10 @@ class OnboardingActivity : Activity() {
         val json = JSONObject().put("page", page.name).put("standby", standby).put("edit", edit)
             .put("gradeInput", gradeDraft).put("uphillGrade", uphillGrade).put("downhillGrade", downhillGrade)
             .put("uphillRequireSpeed", requireSpeed[0]).put("descentRequireSpeed", requireSpeed[1])
-            .put("speedRequiredDraft", speedRequiredDraft)
-            .put("input", inputDraft).put("replay", replay).put("autoStart", autoStart)
-            .put("triggers", JSONArray(triggers.toList())).put("values", JSONArray(values.toList()))
-            .put("history", JSONArray(history.map { it.name }))
+            .put("speedRequiredDraft", speedRequiredDraft).put("input", inputDraft)
+            .put("automationChoice", choice?.name.orEmpty()).put("automationSkipped", automationSkipped)
+            .put("triggers", JSONArray(triggers.toList())).put("removed", JSONArray(removed.toList()))
+            .put("values", JSONArray(values.toList())).put("history", JSONArray(history.map { it.name }))
         DjiSettings.preferences(this).edit().putString(DRAFT, json.toString()).apply()
     }
     private fun go(next: Page) { history.add(page); page = next; persist(); render() }
@@ -132,20 +157,32 @@ class OnboardingActivity : Activity() {
         finish()
     }
     private fun skipStandby() { DjiCameraController.setKeepAwake(this, false); go(Page.SKIPPED) }
-    private fun saveTriggers() {
+    private fun finishAutomation(mode: AutomationMode?) {
+        // Skipping turns automation off while retaining rules for later use in Settings.
         val editor = DjiSettings.preferences(this).edit()
-        triggerKeys.forEachIndexed { i, key -> editor.putBoolean(key, triggers[i]) }
-        valueKeys.forEach { (i, key) -> editor.putInt(key, values[i]) }
-        editor.putInt(DjiSettings.KEY_UPHILL_GRADE_PERCENT, uphillGrade)
-            .putInt(DjiSettings.KEY_DESCENT_GRADE_PERCENT, downhillGrade)
-        editor.putBoolean(DjiSettings.KEY_UPHILL_REQUIRE_SPEED, requireSpeed[0])
-            .putBoolean(DjiSettings.KEY_DESCENT_REQUIRE_SPEED, requireSpeed[1])
-        val any = triggers.any { it }
-        editor.putBoolean(DjiSettings.KEY_AUTO_HIGHLIGHTS_ENABLED, any)
-            .putBoolean(DjiSettings.KEY_AUTO_START_RECORDING, canAutoStart() && autoStart)
+            .putBoolean(DjiSettings.KEY_AUTO_HIGHLIGHTS_ENABLED, mode != null)
+            .putBoolean(DjiSettings.KEY_AUTO_START_RECORDING, mode == AutomationMode.RECORDING)
+        if (mode != null) {
+            editor.putString(DjiSettings.KEY_AUTOMATION_MODE, mode.name)
+            if (mode == AutomationMode.RECORDING) editor.putBoolean(DjiSettings.KEY_AUTO_STOP, true)
+            availableTriggers().forEach { index ->
+                val trigger = catalog[index]
+                if (removed[index]) {
+                    editor.putBoolean(trigger.selectionKey, false).putBoolean(trigger.key, false)
+                } else if (triggers[index]) {
+                    editor.putBoolean(trigger.selectionKey, true).putBoolean(trigger.key, true)
+                    trigger.numbers.forEachIndexed { field, spec -> editor.putInt(spec.key, fieldValue(index, field)) }
+                    trigger.speedKey?.let { editor.putBoolean(it, requireSpeed[index - 5]) }
+                }
+            }
+        }
         editor.apply()
+        automationSkipped = mode == null
+        DjiCameraController.cancelAutomation(this)
         DjiWidgetController.refresh()
+        go(Page.WIDGETS)
     }
+
     private fun render() {
         val root = FrameLayout(this).apply {
             setBackgroundColor(palette.appBackground)
@@ -219,152 +256,207 @@ class OnboardingActivity : Activity() {
                 heading(getString(R.string.ob_lock)); paragraph(R.string.ob_lock_body)
                 art(R.drawable.dji_lock_menu, 130, tint = false); paragraph(R.string.ob_lock_tip, true)
                 heading(getString(R.string.ob_prevents)); paragraph(R.string.ob_controls)
-                action(R.string.ob_next) { go(Page.TRIGGERS) }
+                action(R.string.ob_next) { go(Page.AUTOMATION) }
             }
             Page.SKIPPED -> {
                 title(R.string.ob_later); art(R.drawable.ic_coffee, 72)
                 paragraph(R.string.ob_later_body); paragraph(R.string.ob_later_faq)
-                action(R.string.ob_next) { go(Page.TRIGGERS) }
+                action(R.string.ob_next) { go(Page.AUTOMATION) }
             }
-            Page.TRIGGERS -> {
-                title(R.string.automatic_highlights); paragraph(R.string.ob_triggers_intro)
-                triggerKeys.indices.forEach { i ->
-                    val toggle = Switch(this).apply {
-                        text = getString(triggerNames[i]); textSize = 18f; setTextColor(palette.textPrimary)
-                        minHeight = dp(56); isChecked = triggers[i]
-                        setOnCheckedChangeListener { _, checked ->
-                            if (checked && i in valueKeys) {
-                                openThreshold(i)
-                            } else {
-                                triggers[i] = checked
-                                if (!canAutoStart()) autoStart = false
-                                persist(); render()
-                            }
-                        }
-                    }
-                    content.addView(toggle); paragraph(triggerDescriptions[i], true)
-                    if (triggers[i] && i in valueKeys) content.addView(button(thresholdLabel(i), false) {
-                        openThreshold(i)
-                    })
-                }
-                content.addView(Switch(this).apply {
-                    text = getString(R.string.highlight_auto_start_recording); textSize = 18f
-                    setTextColor(palette.textPrimary); setPadding(0, dp(24), 0, 0)
-                    isEnabled = canAutoStart(); isChecked = autoStart && isEnabled; minHeight = dp(72)
-                    setOnCheckedChangeListener { _, checked -> autoStart = checked; persist() }
-                })
-                paragraph(R.string.ob_auto_start_body, true)
-                action(R.string.ob_skip, false) {
-                    triggers.fill(false); autoStart = false; saveTriggers(); go(Page.WIDGETS)
-                }
-                action(R.string.ob_next) { saveTriggers(); go(Page.WIDGETS) }
-            }
-            Page.THRESHOLD -> {
-                title(triggerNames[edit])
-                val gradient = edit == 5 || edit == 6
-                paragraph(if (gradient) R.string.ob_gradient_threshold else R.string.ob_threshold)
-                var speedHeading: TextView? = null
-                var speedToggle: Switch? = null
-                val field = EditText(this).apply {
-                    inputType = InputType.TYPE_CLASS_NUMBER; setSingleLine(true)
-                    setTextColor(palette.textPrimary); textSize = 24f
-                    setText(inputDraft); contentDescription = if (gradient) getString(speedLabel(edit)) else "${getString(triggerNames[edit])} (${unit(edit)})"
-                }
-                val gradeField = if (gradient) EditText(this).apply {
-                    inputType = InputType.TYPE_CLASS_NUMBER or (if (edit == 6) InputType.TYPE_NUMBER_FLAG_SIGNED else 0)
-                    setSingleLine(true); setTextColor(palette.textPrimary); textSize = 24f
-                    contentDescription = getString(gradeLabel(edit)); setText(gradeDraft)
-                }.also { heading(getString(gradeLabel(edit)), 16f); content.addView(it) } else null
-                if (gradient) {
-                    speedToggle = Switch(this).apply {
-                        text = getString(R.string.highlight_require_speed); textSize = 17f
-                        setTextColor(palette.textPrimary); minHeight = dp(53)
-                        isChecked = speedRequiredDraft
-                    }
-                    content.addView(speedToggle)
-                    speedHeading = text(getString(speedLabel(edit)), 16f).apply {
-                        visibility = if (speedRequiredDraft) View.VISIBLE else View.GONE
-                    }
-                    content.addView(speedHeading, params(8))
-                    field.visibility = if (speedRequiredDraft) View.VISIBLE else View.GONE
-                }
-                content.addView(field)
-                if (!gradient) heading(unit(edit), 16f)
-                val note = text("", 16f, true); content.addView(note)
-                fun speedValue() = if (gradient) OnboardingPolicy.gradientSpeed(field.text.toString(), edit == 5)
-                    else OnboardingPolicy.threshold(field.text.toString())
-                fun gradeValue() = gradeField?.let { OnboardingPolicy.gradient(it.text.toString(), edit == 5) }
-                val save = action(R.string.ob_save_threshold) {
-                    val speed = if (gradient && !speedRequiredDraft) values[edit] else speedValue()
-                    val grade = gradeValue()
-                    if (speed != null && (!gradient || grade != null)) {
-                        values[edit] = speed
-                        if (gradient) requireSpeed[edit - 5] = speedRequiredDraft
-                        if (edit == 5) uphillGrade = grade!!
-                        if (edit == 6) downhillGrade = grade!!
-                        triggers[edit] = true; persist(); onBackPressed()
-                    }
-                }
-                fun update() {
-                    val value = speedValue()
-                    save.isEnabled = (value != null || (gradient && !speedRequiredDraft)) && (!gradient || gradeValue() != null)
-                    note.text = if (!save.isEnabled) getString(if (gradient) {
-                        if (!speedRequiredDraft) {
-                            if (edit == 5) R.string.ob_uphill_grade_range else R.string.ob_downhill_grade_range
-                        } else if (edit == 5) R.string.ob_uphill_range else R.string.ob_downhill_range
-                    } else R.string.ob_positive_number) else if (gradient) "" else feedback(edit, value!!)
-                }
-                fun watch(input: EditText, grade: Boolean) = input.addTextChangedListener(object : TextWatcher {
-                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                        if (grade) gradeDraft = s.toString() else inputDraft = s.toString()
-                        persist(); update()
-                    }
-                    override fun afterTextChanged(s: Editable?) = Unit
-                })
-                speedToggle?.setOnCheckedChangeListener { _, checked ->
-                    speedRequiredDraft = checked
-                    field.visibility = if (checked) View.VISIBLE else View.GONE
-                    speedHeading?.visibility = field.visibility
-                    persist(); update()
-                }
-                watch(field, false); gradeField?.let { watch(it, true) }
-                update()
-            }
-            Page.WIDGETS -> {
+            Page.AUTOMATION -> renderAutomationChoice()
+            Page.TRIGGERS -> renderTriggers()
+            Page.CATALOG -> renderCatalog()
+            Page.THRESHOLD -> renderTriggerEditor()
+            Page.WIDGETS, Page.FINAL -> {
                 title(R.string.ob_awesome); paragraph(R.string.ob_widgets); paragraph(R.string.ob_sizes)
-                action(R.string.ob_done) { complete() }
-            }
-            Page.FINAL -> { // Resume older drafts at the new final page.
-                title(R.string.ob_awesome); paragraph(R.string.ob_widgets); paragraph(R.string.ob_sizes)
+                if (page == Page.WIDGETS) {
+                    if (automationSkipped) automationNote(R.string.ob_automation_skipped)
+                    else choice?.takeIf { it.mode != null }?.let { automationNote(it.label) }
+                }
                 action(R.string.ob_done) { complete() }
             }
         }
     }
-    private fun canAutoStart() = triggers.take(7).any { it }
-    private fun openThreshold(i: Int) {
-        edit = i; inputDraft = values[i].toString()
-        speedRequiredDraft = if (i in 5..6) requireSpeed[i - 5] else true
-        gradeDraft = (if (i == 6) downhillGrade else uphillGrade).toString()
+
+    private fun renderAutomationChoice() {
+        automationStep(1)
+        title(R.string.ob_automation_title)
+        paragraph(R.string.ob_automation_example)
+        val next = action(R.string.ob_next) {
+            when (choice) {
+                null -> Unit
+                AutomationChoice.OFF -> finishAutomation(null)
+                else -> go(Page.TRIGGERS)
+            }
+        }.apply { isEnabled = choice != null }
+        val group = RadioGroup(this).apply { orientation = LinearLayout.VERTICAL }
+        AutomationChoice.entries.forEach { option ->
+            val radio = RadioButton(this).apply {
+                id = View.generateViewId()
+                text = getString(option.label)
+                textSize = 16f
+                minHeight = dp(48)
+                setTextColor(palette.textPrimary)
+                background = RippleDrawable(ColorStateList.valueOf(0x14000000), ui.cardBackground(), null)
+                setPadding(dp(8), dp(4), dp(8), dp(4))
+            }
+            group.addView(radio, RadioGroup.LayoutParams(-1, -2).apply { bottomMargin = dp(6) })
+            if (choice == option) group.check(radio.id)
+            radio.setOnClickListener {
+                choice = option
+                next.isEnabled = true
+                persist()
+            }
+        }
+        content.addView(group, params(12))
+    }
+
+    private fun availableTriggers() = catalog.indices.filter { index ->
+        choice != AutomationChoice.PHOTOS || !catalog[index].isRideBoundary
+    }
+
+    private fun renderTriggers() {
+        automationStep(2)
+        title(R.string.ob_automation_triggers)
+        paragraph(R.string.ob_automation_trigger_intro)
+        val available = availableTriggers()
+        val active = available.filter { triggers[it] }
+        active.forEach { index ->
+            val trigger = catalog[index]
+            val detail = trigger.thresholdSummary(
+                value = { spec -> fieldValue(index, trigger.numbers.indexOf(spec)) },
+                requireSpeed = trigger.speedKey == null || requireSpeed[index - 5],
+            ).ifEmpty { getString(if (trigger.isRideBoundary) R.string.ob_automation_boundary else R.string.ob_automation_event) }
+            content.addView(trigger.row(ui, detail) { openTrigger(index) }, params(8))
+        }
+        if (active.size < available.size) {
+            content.addView(button(getString(R.string.automation_add_trigger), false) { go(Page.CATALOG) }, params(8))
+        }
+        val canContinue = active.isNotEmpty() &&
+            (choice != AutomationChoice.RECORDING || active.any { !catalog[it].isRideBoundary })
+        if (active.isNotEmpty() && !canContinue) paragraph(R.string.ob_automation_needs_start, true)
+        automationNote(R.string.ob_automation_settings)
+        action(R.string.ob_skip, false) { finishAutomation(null) }
+        action(R.string.ob_next) { choice?.mode?.let(::finishAutomation) }.isEnabled = canContinue
+    }
+
+    private fun renderCatalog() {
+        title(R.string.ob_automation_add_trigger)
+        paragraph(R.string.automation_catalog_help)
+        availableTriggers().filterNot { triggers[it] }.forEach { index ->
+            val trigger = catalog[index]
+            val description = if (trigger.isRideBoundary) R.string.automation_boundary_help else trigger.description
+            content.addView(trigger.row(ui, getString(description)) { openTrigger(index) }, params(8))
+        }
+    }
+
+    private fun openTrigger(index: Int) {
+        edit = index
+        inputDraft = values[index].toString()
+        gradeDraft = grade(index).toString()
+        speedRequiredDraft = catalog[index].speedKey == null || requireSpeed[index - 5]
         go(Page.THRESHOLD)
     }
-    private fun speedLabel(i: Int) = if (i == 5) R.string.highlight_uphill_speed_threshold else R.string.highlight_descent_speed_threshold
-    private fun gradeLabel(i: Int) = if (i == 5) R.string.highlight_uphill_grade_threshold else R.string.highlight_descent_grade_threshold
-    private fun thresholdLabel(i: Int): String = when (i) {
-        5 -> if (requireSpeed[0]) "${values[i]} km/h · +$uphillGrade%" else "+$uphillGrade%"
-        6 -> if (requireSpeed[1]) "${values[i]} km/h · $downhillGrade%" else "$downhillGrade%"
-        else -> "${values[i]} ${unit(i)}"
-    }
-    private fun unit(i: Int) = when (i) { 1 -> "W"; 2, 5, 6 -> "km/h"; else -> "bpm" }
-    private fun feedback(i: Int, value: Int): String {
-        val resources = when (i) {
-            1 -> intArrayOf(0, R.string.ob_power_fun1, R.string.ob_power_fun2, R.string.ob_power_fun3)
-            2 -> intArrayOf(0, R.string.ob_speed_fun1, R.string.ob_speed_fun2, R.string.ob_speed_fun3)
-            else -> return ""
+
+    private fun renderTriggerEditor() {
+        val trigger = catalog[edit]
+        val existing = triggers[edit]
+        val gradient = trigger.speedKey != null
+        title(trigger.title)
+        paragraph(if (trigger.isRideBoundary) R.string.automation_boundary_help else trigger.description)
+        val speedToggle = if (gradient) Switch(this).apply {
+            text = getString(R.string.highlight_require_speed)
+            textSize = 16f
+            minHeight = dp(48)
+            isChecked = speedRequiredDraft
+        } else null
+        val fields = trigger.numbers.mapIndexed { index, spec ->
+            if (index == 1 && speedToggle != null) content.addView(speedToggle, params())
+            ui.numberInput(content, getString(spec.label), fieldValue(edit, index), spec.min < 0).apply {
+                setText(if (gradient && index == 0) gradeDraft else inputDraft)
+            }
         }
-        val level = if (i == 1) OnboardingPolicy.powerMessage(value) else OnboardingPolicy.speedMessage(value)
-        return if (level == 0) "" else getString(resources[level])
+        val note = ui.secondaryText("")
+        content.addView(note, params(8))
+        if (existing) {
+            content.addView(trigger.removeButton(ui) {
+                triggers[edit] = false
+                removed[edit] = true
+                onBackPressed()
+            }, LinearLayout.LayoutParams(-2, -2).apply {
+                gravity = Gravity.CENTER_HORIZONTAL
+                topMargin = dp(16)
+            })
+        }
+        fun fieldError(): TriggerNumber? = trigger.numbers.zip(fields).firstOrNull { (spec, field) ->
+            val value = field.text.toString().toIntOrNull()
+            field.visibility == View.VISIBLE && (value == null || value !in spec.min..spec.max)
+        }?.first
+        val save = action(if (existing) R.string.automation_save else R.string.automation_add) {
+            if (fieldError() != null) return@action
+            if (gradient) {
+                val grade = fields.first().text.toString().toInt()
+                if (edit == 5) uphillGrade = grade else downhillGrade = grade
+                requireSpeed[edit - 5] = speedRequiredDraft
+            }
+            if (fields.isNotEmpty() && (!gradient || speedRequiredDraft)) {
+                values[edit] = fields.last().text.toString().toInt()
+            }
+            triggers[edit] = true
+            removed[edit] = false
+            if (!existing && history.lastOrNull() == Page.CATALOG) history.removeAt(history.lastIndex)
+            onBackPressed()
+        }
+        fun update() {
+            val error = fieldError()
+            save.isEnabled = error == null
+            note.text = error?.let { getString(R.string.automation_invalid_number, it.min, it.max) }.orEmpty()
+            note.visibility = if (error == null) View.GONE else View.VISIBLE
+        }
+        if (speedToggle != null) {
+            val speed = fields.last()
+            fun showSpeed() {
+                val visibility = if (speedRequiredDraft) View.VISIBLE else View.GONE
+                (speed.parent as View).visibility = visibility
+                speed.visibility = visibility
+            }
+            showSpeed()
+            speedToggle.setOnCheckedChangeListener { _, checked ->
+                speedRequiredDraft = checked
+                showSpeed()
+                persist()
+                update()
+            }
+        }
+        fields.forEachIndexed { index, field ->
+            field.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    if (gradient && index == 0) gradeDraft = s.toString() else inputDraft = s.toString()
+                    persist()
+                    update()
+                }
+                override fun afterTextChanged(s: Editable?) = Unit
+            })
+        }
+        update()
     }
+
+    private fun grade(index: Int) = if (index == 6) downhillGrade else uphillGrade
+    private fun fieldValue(index: Int, field: Int) =
+        if (catalog[index].speedKey != null && field == 0) grade(index) else values[index]
+
+    private fun automationStep(step: Int) {
+        content.addView(ui.secondaryText(getString(R.string.ob_automation_step, step)), params(6))
+    }
+
+    private fun automationNote(id: Int) {
+        content.addView(ui.secondaryText(getString(id)).apply {
+            background = ui.cardBackground()
+            setPadding(dp(8), dp(8), dp(8), dp(8))
+        }, params(12))
+    }
+
     private fun title(id: Int) {
         content.addView(text(getString(id), 19f).apply { typeface = Typeface.DEFAULT_BOLD }, params(12))
     }
@@ -452,9 +544,11 @@ class OnboardingActivity : Activity() {
         fun prepare(context: Context) {
             val prefs = DjiSettings.preferences(context)
             if (!prefs.getBoolean(DONE, false) && !prefs.contains(DRAFT)) {
-                prefs.edit().putString(DRAFT, JSONObject().put("page", Page.PAIRED.name).toString())
-                    .putBoolean(DjiSettings.KEY_AUTO_HIGHLIGHTS_ENABLED, false)
-                    .putBoolean(DjiSettings.KEY_AUTO_START_RECORDING, false).apply()
+                val editor = prefs.edit().putString(DRAFT, JSONObject().put("page", Page.PAIRED.name).toString())
+                if (!prefs.contains(DjiSettings.KEY_AUTO_HIGHLIGHTS_ENABLED)) {
+                    editor.putBoolean(DjiSettings.KEY_AUTO_HIGHLIGHTS_ENABLED, false)
+                }
+                editor.apply()
             }
         }
     }

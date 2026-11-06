@@ -1,7 +1,11 @@
 package com.karoopoc
 
 import android.app.Activity
-import android.content.Intent
+import android.graphics.Typeface
+import android.text.SpannableStringBuilder
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.Gravity
 import android.view.View
 import android.widget.*
@@ -11,10 +15,58 @@ import com.karoopoc.widget.DjiWidgetController
 internal data class TriggerNumber(val key: String, val label: Int, val default: Int, val min: Int, val max: Int)
 internal data class AutomationTrigger(val key: String, val title: Int, val description: Int,
     val numbers: List<TriggerNumber> = emptyList(), val speedKey: String? = null) {
+    val selectionKey get() = "selected_$key"
+    val isRideBoundary get() = key == DjiSettings.KEY_RIDE_BOOKMARKS
+
     fun selected(activity: Activity): Boolean {
-        val p = DjiSettings.preferences(activity)
-        return p.getBoolean("selected_$key", p.getBoolean(key, false))
+        val prefs = DjiSettings.preferences(activity)
+        return prefs.getBoolean(selectionKey, prefs.getBoolean(key, false))
     }
+
+    fun thresholdSummary(value: (TriggerNumber) -> Int, requireSpeed: Boolean): String {
+        val visibleNumbers = if (speedKey != null && !requireSpeed) numbers.dropLast(1) else numbers
+        return visibleNumbers.joinToString(" · ") { number ->
+            val unit = when (number.key) {
+                DjiSettings.KEY_PEAK_POWER_WATTS -> " W"
+                DjiSettings.KEY_PEAK_HEART_RATE_BPM -> " bpm"
+                DjiSettings.KEY_UPHILL_GRADE_PERCENT, DjiSettings.KEY_DESCENT_GRADE_PERCENT -> "%"
+                else -> " km/h"
+            }
+            "${value(number)}$unit"
+        }
+    }
+
+    fun row(ui: SettingsViews, detail: String, onClick: () -> Unit): Button {
+        val label = SpannableStringBuilder(ui.activity.getString(title)).apply {
+            setSpan(StyleSpan(Typeface.BOLD), 0, length, 0)
+            setSpan(AbsoluteSizeSpan(17, true), 0, length, 0)
+            if (detail.isNotEmpty()) {
+                append("\n")
+                val start = length
+                append(detail)
+                setSpan(ForegroundColorSpan(ui.palette.textSecondary), start, length, 0)
+            }
+        }
+        return ui.action(label, onClick).apply {
+            textSize = 15f
+            typeface = Typeface.DEFAULT
+            setLineSpacing(0f, 1.12f)
+            setPadding(ui.dp(10), ui.dp(8), ui.dp(8), ui.dp(8))
+            backgroundTintList = null
+            val shape = ui.cardBackground()
+            background = android.graphics.drawable.RippleDrawable(
+                android.content.res.ColorStateList.valueOf(0x22000000), shape, shape.constantState!!.newDrawable())
+        }
+    }
+
+    fun removeButton(ui: SettingsViews, onClick: () -> Unit): Button =
+        ui.action(ui.activity.getString(R.string.automation_remove_trigger), onClick).apply {
+            gravity = Gravity.CENTER
+            val icon = ui.activity.getDrawable(android.R.drawable.ic_menu_delete)!!.mutate()
+            icon.setTint(ui.palette.textSecondary)
+            icon.setBounds(0, 0, ui.dp(20), ui.dp(20))
+            setCompoundDrawablesRelative(icon, null, null, null)
+        }
 }
 internal object AutomationTriggers {
     val all = listOf(

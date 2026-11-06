@@ -40,4 +40,5 @@
     <string name="automation_ride_help">Aggiungi momenti salienti a inizio e fine uscita se un video è già in registrazione.</string>
     <string name="automation_photo_settings">Impostazioni foto automatiche</string>
     <string name="automation_photo_interval_seconds">Tempo minimo tra le foto (secondi)</string>
+    <string name="automation_boundary_help">I limiti della pedalata aggiungono solo momenti salienti a un video già in corso. Non avviano video né scattano foto. Pause e riprese non aggiungono questi marcatori.</string>
 </resources>

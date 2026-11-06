@@ -40,4 +40,5 @@
     <string name="automation_ride_help">Add highlights at ride start and finish while a video is already recording.</string>
     <string name="automation_photo_settings">Auto photo settings</string>
     <string name="automation_photo_interval_seconds">Minimum time between photos (seconds)</string>
+    <string name="automation_boundary_help">Ride boundaries only add highlights to a video already recording. They never start a video or take a photo. Pausing and resuming do not add boundary markers.</string>
 </resources>

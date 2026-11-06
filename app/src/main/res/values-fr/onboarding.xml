@@ -70,4 +70,20 @@
     <string name="ob_downhill_range" formatted="false">Saisissez une vitesse de 40 à 80 km/h et une pente de −30 à −1%.</string>
     <string name="ob_uphill_grade_range" formatted="false">Saisis une pente de +1 à +30%.</string>
     <string name="ob_downhill_grade_range" formatted="false">Saisis une pente de −30 à −1%.</string>
+
+    <string name="ob_automation_step">Automatisation · %1$d sur 2</string>
+    <string name="ob_automation_title">Capturer votre sortie automatiquement ?</string>
+    <string name="ob_automation_example" formatted="false">Par exemple, lancez un enregistrement dans une descente à 5 % ou lors d’un effort de plus de 500 W.</string>
+    <string name="ob_automation_recording">Démarrer et arrêter l’enregistrement automatiquement</string>
+    <string name="ob_automation_highlights">Ajouter seulement des temps forts automatiques</string>
+    <string name="ob_automation_photos">Photos automatiques</string>
+    <string name="ob_automation_off">Non merci</string>
+    <string name="ob_automation_triggers">Ajoutez vos déclencheurs</string>
+    <string name="ob_automation_trigger_intro">Les déclencheurs indiquent à AeroCam quand agir.</string>
+    <string name="ob_automation_add_trigger">Ajouter un déclencheur</string>
+    <string name="ob_automation_event">Événement de la sortie</string>
+    <string name="ob_automation_boundary">Marque uniquement la vidéo en cours</string>
+    <string name="ob_automation_needs_start">Ajoutez un déclencheur qui peut lancer une vidéo. Le début et la fin de la sortie marquent uniquement la vidéo en cours.</string>
+    <string name="ob_automation_settings">Vous pouvez modifier vos déclencheurs à tout moment dans Paramètres → Automatisation.</string>
+    <string name="ob_automation_skipped">Automatisation ignorée. Configurez-la à tout moment dans Paramètres → Automatisation.</string>
 </resources>
