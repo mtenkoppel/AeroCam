@@ -13,3 +13,12 @@ The seven chat QA items are resolved by later decisions where they conflict.
 No automation algorithm, BLE lifecycle or SDK changes. SDK 1.1.9 remains unchanged (minimum KOS 1.634.2440, per official SDK release notes checked 2026-11-06).
 
 Validation: CI unit tests and native Android rendering captures; signed build/device review evidence is stored outside source alongside the downloaded APK. No camera capture/ride validation is implied by screenshots.
+
+
+## Follow-up browser review — build 52
+
+- Shared outer frames now use 6px above/below when untitled; captioned fields retain 4px above and 8px below, keeping the same total height budget. Covers all four field types and both caption states in regression captures.
+- Header help uses the official Google Material help_outline vector tinted with the existing theme accent. Automation uses the same A silhouette as its widget indicators.
+- Compact card padding/header gaps and control rows; standby toggle reads “Enable prevent standby” (localized). Removed all three automation mode sublines.
+- Catalog choices are shaded, whole-row tappable boxes. Trigger detail has one explanatory sentence per trigger; the generic second paragraph is removed.
+- Numeric validation clears when the corrected value becomes valid. The earlier red exclamation mark in the gallery was a stale error left by an invalid-input test; invalid input remains validated, and the normal screenshot is now captured after clearing the corrected error.

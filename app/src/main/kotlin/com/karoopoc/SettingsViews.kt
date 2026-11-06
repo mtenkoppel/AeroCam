@@ -135,7 +135,7 @@ internal class SettingsViews(val activity: Activity) {
         textSize = 14f
         gravity = Gravity.CENTER_VERTICAL or Gravity.START
         minHeight = dp(44)
-            minimumHeight = dp(44)
+        minimumHeight = dp(44)
         setPadding(0, dp(2), 0, dp(2))
         val chevron = activity.getDrawable(R.drawable.ic_chevron_right)!!.mutate()
         chevron.setTint(palette.textSecondary)

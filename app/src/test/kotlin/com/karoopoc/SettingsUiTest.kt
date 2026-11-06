@@ -124,7 +124,7 @@ class SettingsUiTest {
         assertEquals(before, prefs.all)
         assertEquals(65, DjiSettings.read(controller.get()).descentSpeedKph)
         assertEquals(-3, DjiSettings.read(controller.get()).descentGradePercent)
-        assertTrue(views(controller.get()).filterIsInstance<Switch>().first { it.text.toString() == activity.getString(R.string.keep_camera_awake) }.isChecked)
+        assertTrue(views(controller.get()).filterIsInstance<Switch>().first { it.text.toString() == context.getString(R.string.keep_camera_awake) }.isChecked)
         controller.pause().stop().destroy()
     }
 
