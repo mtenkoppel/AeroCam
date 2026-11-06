@@ -18,6 +18,15 @@ mode.
 [Installation steps](#install-on-your-karoo) · [Screenshots](#screenshots) ·
 [Compatibility](#compatibility)
 
+## Try the 1.1 beta
+
+[Download AeroCam 1.1.0-beta.1](https://github.com/mtenkoppel/AeroCam/releases/tag/v1.1.0-beta.1) for automatic recording, photos, the new automation setup guide and improved camera widgets. The beta is opt-in; the latest stable release remains 1.0.2. Install over the existing app to retain your settings and camera pairing. Camera/ride testing is still in progress; report issues with your camera model and firmware.
+
+<p>
+<img src="landingpage/images/beta-1.1/setup-mode.png" alt="Choose an automation mode in the 1.1 beta setup guide" width="220">
+<img src="landingpage/images/beta-1.1/setup-triggers.png" alt="Add triggers in the 1.1 beta setup guide" width="220">
+</p>
+
 ## Install on your Karoo
 
 **Start here: [open the latest AeroCam release](https://github.com/mtenkoppel/AeroCam/releases/latest).**
@@ -131,17 +140,17 @@ heading out. Built-in help stays available on the Karoo.
 - **Six languages:** English, German, Spanish, French, Italian, and Portuguese
   are selected automatically from the Karoo language.
 
-### Automation (1.1 development)
+### Automation (1.1 beta)
 
 Enable **Automation** in Settings, choose one mode, and use **+ Add trigger**:
 
 - **Only add automatic highlights:** you control when video starts and stops.
 - **Automatic recording:** triggers start video. By default, it stops after all enabled threshold conditions have been inactive for a full **60 seconds**. Renewed effort or a lap/summit event resets the delay. Auto recording settings lets you change the delay (10–3600 seconds), disable automatic stopping, or disable the default-on automatic highlights.
-- **Only take photos automatically:** a trigger requests one still while the camera is idle and ready. A shared **30-second minimum interval** prevents bursts. Recording, busy and unavailable cameras are skipped; missed events are never replayed.
+- **Only take photos automatically:** a trigger requests one still while the camera is idle and ready. A shared minimum interval prevents bursts: **two minutes by default**, adjustable in **Auto photo settings**. Recording, busy and unavailable cameras are skipped; missed events are never replayed.
 
 The video or photo icon contains an **A** while its automatic mode is armed. Confirmed automatic starts briefly show **REC STARTED** beneath the timer, then **AUTO REC** when the automatically started clip will also stop automatically. Confirmed automatic stops briefly show **REC STOPPED**. Manual recordings are never automatically stopped. Pausing or finishing a ride, changing automation settings, or losing the camera connection relinquishes automatic control of the current clip. Missing sensor data suspends the quiet period until fresh data is available; it does not count as an effort ending.
 
-The camera must be powered on and connected. Automatic photos reuse the existing photo-mode switch and shutter sequence; hardware validation remains required before the 1.1 release. Onboarding follow-up: [#60](https://github.com/mtenkoppel/AeroCam/issues/60).
+The camera must be powered on and connected. Automatic photos reuse the existing photo-mode switch and shutter sequence; real camera and ride validation is part of this beta. The setup guide now lets you choose a mode, then add and edit triggers; you can also skip automation and configure it later.
 
 Available triggers:
 
