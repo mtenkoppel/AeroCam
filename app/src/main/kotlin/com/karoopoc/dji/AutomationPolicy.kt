@@ -37,6 +37,7 @@ internal class RecordingOrigin {
     fun requestStart(now: Long) { startUntil = now + 15000 }
     fun requestStop() { stopping = clip != 0L }
     fun cancelStop() { stopping = false }
+    fun cancelPendingStart() { startUntil = null }
     fun cancel() { clip = 0; startUntil = null; stopping = false }
     fun status(next: Boolean, now: Long, durationSeconds: Int? = null): Feedback? {
         // A stop/start on the camera can happen between status packets. A reset timer

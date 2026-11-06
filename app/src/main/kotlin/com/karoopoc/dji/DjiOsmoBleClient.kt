@@ -87,6 +87,7 @@ class DjiOsmoBleClient(
     private var sleepShutdownRunnable: Runnable? = null
     private var reconnectAttempt = 0
     private var automationRideActive = false
+    private var automationCaptureActive = false
     private var rideActive = false
     private var photoState = PhotoCaptureState.IDLE
     private var photoCompletedRunnable: Runnable? = null
@@ -349,8 +350,16 @@ class DjiOsmoBleClient(
         }, SCAN_DURATION_MS)
     }
 
-    fun setAutomationRideActive(active: Boolean) {
+    fun setAutomationRideActive(active: Boolean, allowCapture: Boolean = active) {
+        // Auto-pause must not orphan a confirmed automatic clip. It may still stop,
+        // but no new capture (including a queued one) should start while stationary.
+        if (active && !allowCapture && automationCaptureActive) {
+            automationGeneration++
+            recordingOrigin.cancelPendingStart()
+            recordingOrigin.cancelStop()
+        }
         automationRideActive = active
+        automationCaptureActive = active && allowCapture
         if (!active) cancelAutomation()
     }
 
@@ -369,7 +378,7 @@ class DjiOsmoBleClient(
 
     private fun automationReady(mode: AutomationMode): Boolean {
         val settings = DjiSettings.read(appContext)
-        return automationRideActive && settings.autoHighlightsEnabled && settings.mode == mode &&
+        return automationRideActive && automationCaptureActive && settings.autoHighlightsEnabled && settings.mode == mode &&
             isProtocolLinkFresh() && !latestRecording && activeOperation == null && operationQueue.isEmpty() &&
             photoState !in listOf(PhotoCaptureState.REQUESTED, PhotoCaptureState.CAPTURING)
     }

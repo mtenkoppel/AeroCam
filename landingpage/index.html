@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AeroCam — DJI Osmo Action control for Hammerhead Karoo</title>
-  <meta name="description" content="AeroCam is an open-source Karoo extension that controls your DJI Osmo Action over Bluetooth. Record, shoot, and highlight the best moments of your ride — without reaching for the camera." />
-  <link rel="stylesheet" href="styles.css?v=595420ade244" />
+  <meta name="description" content="AeroCam is an open-source Karoo extension that controls your DJI Osmo Action over Bluetooth. Automatic recording, photos and video highlights, triggered by your ride." />
+  <link rel="stylesheet" href="styles.css?v=1.1.0" />
 </head>
 <body>
 
@@ -29,7 +29,7 @@
       <a class="brand" href="#top"><svg class="brand-logo"><use href="#aerocam-mark"/></svg>AeroCam</a>
       <nav class="nav-links">
         <a href="#features">Features</a>
-        <a href="#highlights">Auto highlights</a>
+        <a href="#highlights">Automation</a>
         <a href="#keepawake">Keep awake</a>
         <a href="#how">Install</a>
         <a href="#transparency">Transparency</a>
@@ -52,8 +52,8 @@
         <h1>Control your DJI Osmo action cam from your <span class="accent">Karoo.</span></h1>
         <p class="lede">
           AeroCam turns your Hammerhead Karoo into a remote for your DJI Osmo Action.
-          Record, shoot, and highlight the best moments of the ride — while the camera stays
-          mounted and your hands stay on the bars.
+          Let ride triggers start and stop video, add highlights, or take photos.
+          Your camera captures the moments while you stay focused on the ride.
         </p>
         <div class="cta-row">
           <a class="btn btn-primary" href="#how">
@@ -123,9 +123,8 @@
         </article>
         <article class="card reveal">
           <div class="card-icon">★</div>
-          <h3>Automatic highlights</h3>
-          <p>Peak power, max speed, summit, heart rate, ascent and descent: AeroCam adds a highlight to the
-          recording the moment it happens. That way, when you watch the footage back, you can immediately find the highlights.</p>
+          <h3>Ride-triggered capture</h3>
+          <p>Choose automatic recording, highlights, or photos. Set triggers for your climbs, fast stretches and hard efforts, and let AeroCam handle the camera.</p>
         </article>
         <article class="card reveal">
           <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M18,8H19C20.66,8 22,9.34 22,11C22,12.66 20.66,14 19,14H18V15C18,17.21 16.21,19 14,19H7C4.79,19 3,17.21 3,15V8H18M18,10V12H19C19.55,12 20,11.55 20,11C20,10.45 19.55,10 19,10H18M5,10V15C5,16.1 5.9,17 7,17H14C15.1,17 16,16.1 16,15V10H5M6,21H17V23H6V21M7,1H9V5H7V1M11,1H13V5H11V1M15,1H17V5H15V1Z"/></svg></div>
@@ -151,26 +150,27 @@
         <h2 id="widgets-title">Your controls. Your ride screen.</h2>
         <p>Keep video and photo controls beside your map, fit a recording button into a small field,
           or give Cam Control a screen of its own.</p>
-        <p class="widget-choice-note"><strong>Three examples. Many more widgets and sizes.</strong>
+        <p class="widget-choice-note"><strong>Compact widgets. Full-page control.</strong>
           Choose from Video, Photo, Video + Photo, and Cam Control in a range of sizes to suit your ride screen.</p>
       </div>
-      <div class="widget-gallery">
+      <div class="widget-gallery release-gallery">
         <figure class="widget-example reveal">
-          <img src="images/widgets/map-video-photo.jpg" width="486" height="811" loading="lazy" decoding="async"
-            alt="Karoo map and speed with the Video + Photo widget recording at 00:12 and a highlight button below." />
-          <figcaption><h3>Video + Photo</h3><p>Two controls, right below your map.</p></figcaption>
+          <img src="images/release-1.1/video-photo-auto.png" width="480" height="138" loading="lazy" decoding="async" alt="Video and photo controls with an A inside the video icon." />
+          <figcaption><h3>Ready for the next moment</h3><p>The A shows automatic recording is armed. Manual controls remain available.</p></figcaption>
+          <img src="images/release-1.1/video-auto-recording.png" width="480" height="97" loading="lazy" decoding="async" alt="Red recording timer, AUTO REC label and highlight button." />
+          <figcaption><h3>Clear while recording</h3><p>AUTO REC means this clip is under automatic-stop control. You can stop it yourself at any time.</p></figcaption>
         </figure>
         <figure class="widget-example reveal">
-          <img src="images/widgets/map-video-half.png" width="486" height="811" loading="lazy" decoding="async"
-            alt="Karoo map and speed with a compact Video field recording at 00:12 beside the bell, with its title label shown." />
-          <figcaption><h3>Small field. Same control.</h3><p>A recording button that fits beside your bell. You can turn off field labels in settings.</p></figcaption>
+          <img src="images/release-1.1/video-photo-auto-photos.png" width="480" height="97" loading="lazy" decoding="async" alt="Video and photo buttons with A inside the photo icon." />
+          <figcaption><h3>Automatic photos, too</h3><p>The same A appears in the photo icon when automatic photos are armed.</p></figcaption>
+          <img src="images/release-1.1/settings.png" width="480" height="755" loading="lazy" decoding="async" alt="Polished Prevent standby and Automation settings." />
         </figure>
         <figure class="widget-example reveal">
-          <img src="images/widgets/cam-control-full.png" width="486" height="811" loading="lazy" decoding="async"
-            alt="Full-size Cam Control with a green photo button confirming a successfully captured picture." />
+          <img src="images/release-1.1/cam-control.png" width="480" height="600" loading="lazy" decoding="async" alt="Full-size Cam Control with camera status and shared video and photo buttons." />
           <figcaption><h3>Full-size Cam Control</h3><p>Camera status and controls, all in one place.</p></figcaption>
         </figure>
       </div>
+      <p class="widget-choice-note">Screenshots of the current app layouts with example camera states.</p>
     </div>
   </section>
 
@@ -178,37 +178,27 @@
   <section class="section" id="highlights">
     <div class="container split">
       <div class="split-copy reveal">
-        <span class="kicker">// Auto highlights</span>
-        <h2>Your ride tags its own footage</h2>
-        <p>
-          The expensive part of ride video isn't recording it — it's finding the eight
-          seconds worth keeping in two hours of footage. Highlights solve that: they are
-          markers inside the recording, so in the edit you jump from moment to moment
-          instead of scrubbing through the whole file.
-        </p>
-        <p>
-          AeroCam sets those markers for you. It watches your ride data — power, speed,
-          heart rate, laps, climbs, ascents and descents — and adds a highlight the moment a threshold you
-          defined is crossed.
-        </p>
-        <p><strong>Try the 1.1 beta:</strong> choose automatic highlights, automatic recording, or automatic photos.
-          Automatic recording starts on a trigger and stops after a full quiet minute by default; a renewed effort resets the delay.
-          The delay is adjustable, and manual recordings stay under your control. Automatic photos default to at least two minutes apart, adjustable in Auto photo settings,
-          and skip a camera that is recording, busy, or disconnected. Keep the camera powered on and connected. The new setup guide helps you choose a mode and add triggers.</p>
-        <p><a href="https://github.com/mtenkoppel/AeroCam/releases/tag/v1.1.0-beta.1">Download 1.1.0-beta.1</a> · Opt-in beta; the main download remains stable 1.0.2. Real camera and ride testing is ongoing.</p>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px">
-          <img src="images/beta-1.1/setup-mode.png" alt="1.1 beta setup: choose an automation mode" style="width:46%;height:auto;align-self:flex-start" loading="lazy">
-          <img src="images/beta-1.1/setup-triggers.png" alt="1.1 beta setup: add ride triggers" style="width:46%;height:auto;align-self:flex-start" loading="lazy">
+        <span class="kicker">// New in 1.1 · Automation</span>
+        <h2>Enjoy the ride. Let AeroCam capture it.</h2>
+        <p><strong>Automatic recording.</strong> A trigger starts the video. By default, it stops after a full minute with no active triggers; another effort resets the delay. Change that delay or turn automatic stopping off in Settings.</p>
+        <p>You can always start a recording yourself or stop one that started automatically. Add highlights manually or let AeroCam add them to your automatic recordings.</p>
+        <p><strong>Automatic highlights.</strong> You decide when to start and stop video. AeroCam marks the interesting moments so they are easy to find later.</p>
+        <p><strong>Automatic photos.</strong> Capture a photo when a trigger fires, with at least two minutes between shots by default. Change the interval in Auto photo settings. Photos are skipped while the camera is busy, recording, or disconnected.</p>
+        <p>Keep your camera powered on and connected. The setup guide helps you choose one mode and add triggers; you can change them later in Settings.</p>
+        <p><a href="https://github.com/mtenkoppel/AeroCam/releases/tag/v1.1.0">Download AeroCam 1.1.0</a> · Update without uninstalling to keep your settings and pairing.</p>
+        <div class="automation-screenshots">
+          <img src="images/release-1.1/setup-mode.png" width="480" height="755" alt="Choose your automation mode in the setup guide" loading="lazy">
+          <img src="images/release-1.1/triggers.png" width="480" height="755" alt="Add a ride trigger from the catalog" loading="lazy">
         </div>
       </div>
       <div class="trigger-board reveal">
-        <details class="trigger-detail"><summary>Lap marker</summary><p>Adds a highlight when Karoo records a new lap.</p></details>
-        <details class="trigger-detail"><summary>Peak power</summary><p>Adds a highlight when your power crosses the configured wattage.</p></details>
-        <details class="trigger-detail"><summary>Max speed</summary><p>Adds a highlight when your speed crosses the configured threshold.</p></details>
-        <details class="trigger-detail"><summary>Climb summit</summary><p>Adds a highlight when you reach the summit of a climb in your active route.</p></details>
-        <details class="trigger-detail"><summary>Peak heart rate</summary><p>Adds a highlight when your heart rate crosses the configured threshold.</p></details>
-        <details class="trigger-detail"><summary>Ascent</summary><p>Mark a climb at your chosen positive gradient. Optionally require a minimum speed too.</p></details>
-        <details class="trigger-detail"><summary>Descent</summary><p>Mark a descent at your chosen negative gradient. Optionally require a minimum speed too.</p></details>
+        <details class="trigger-detail"><summary>Lap marker</summary><p>Triggers your chosen action when Karoo records a new lap.</p></details>
+        <details class="trigger-detail"><summary>Peak power</summary><p>Triggers your chosen action when your power crosses the configured wattage.</p></details>
+        <details class="trigger-detail"><summary>Max speed</summary><p>Triggers your chosen action when your speed crosses the configured threshold.</p></details>
+        <details class="trigger-detail"><summary>Climb summit</summary><p>Triggers your chosen action when you reach the summit of a climb in your active route.</p></details>
+        <details class="trigger-detail"><summary>Peak heart rate</summary><p>Triggers your chosen action when your heart rate crosses the configured threshold.</p></details>
+        <details class="trigger-detail"><summary>Ascent</summary><p>Capture a climb at your chosen positive gradient. Optionally require a minimum speed too.</p></details>
+        <details class="trigger-detail"><summary>Descent</summary><p>Capture a descent at your chosen negative gradient. Optionally require a minimum speed too.</p></details>
         <details class="trigger-detail"><summary>Ride start / end</summary><p>Adds a highlight at the start and end of a ride when the camera is recording.</p></details>
       </div>
     </div>

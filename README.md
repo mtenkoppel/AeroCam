@@ -10,22 +10,20 @@
 **Website:** [mtenkoppel.github.io/AeroCam](https://mtenkoppel.github.io/AeroCam/)
 
 AeroCam is an independent Karoo extension for controlling a DJI Osmo Action
-camera over Bluetooth Low Energy. It provides in-ride camera controls, automatic
-reconnection, GPS telemetry, video highlights, and a configurable keep-awake
-mode.
+camera over Bluetooth Low Energy. It provides in-ride camera controls, automatic recording and photos, video highlights, GPS telemetry,
+automatic reconnection, and a configurable keep-awake mode.
 
 **[Download the latest release](https://github.com/mtenkoppel/AeroCam/releases/latest)** ·
 [Installation steps](#install-on-your-karoo) · [Screenshots](#screenshots) ·
 [Compatibility](#compatibility)
 
-## Try the 1.1 beta
+## New in 1.1
 
-[Download AeroCam 1.1.0-beta.1](https://github.com/mtenkoppel/AeroCam/releases/tag/v1.1.0-beta.1) for automatic recording, photos, the new automation setup guide and improved camera widgets. The beta is opt-in; the latest stable release remains 1.0.2. Install over the existing app to retain your settings and camera pairing. Camera/ride testing is still in progress; report issues with your camera model and firmware.
+Let your ride trigger recordings, highlights, or photos. Choose a mode, add your triggers, and keep your attention on the ride. Automatic recordings stop after a quiet minute by default; automatic photos are at least two minutes apart. Both intervals are adjustable, and manual recording stays available.
 
-<p>
-<img src="landingpage/images/beta-1.1/setup-mode.png" alt="Choose an automation mode in the 1.1 beta setup guide" width="220">
-<img src="landingpage/images/beta-1.1/setup-triggers.png" alt="Add triggers in the 1.1 beta setup guide" width="220">
-</p>
+The new setup guide walks you through automation. Refined camera controls share consistent spacing, clearer labels, and an **A** inside the icon when automation is armed.
+
+[Download AeroCam 1.1.0](https://github.com/mtenkoppel/AeroCam/releases/tag/v1.1.0). Install over the existing app to keep pairing and settings.
 
 ## Install on your Karoo
 
@@ -81,39 +79,27 @@ and paired camera are preserved. If an update fails, ask for help through
 ## Screenshots
 
 Fit camera controls beside your map or give Cam Control a page of its own.
-The ride previews below show small full-width, half-width, and full-screen
-layouts, including the recording state.
+These screenshots render the app’s current Android layouts with example camera states.
 
 <table>
+  <tr><th>Automatic recording armed</th><th>Automatic recording</th><th>Cam Control</th></tr>
   <tr>
-    <th>Video + Photo · small full width</th>
-    <th>Video · half width</th>
-    <th>Video · recording</th>
-    <th>Cam Control · full screen</th>
+    <td><img src="landingpage/images/release-1.1/video-photo-auto.png" alt="Video and photo controls with A inside the video icon" width="280"></td>
+    <td><img src="landingpage/images/release-1.1/video-auto-recording.png" alt="Recording timer with AUTO REC below and a highlight button" width="280"></td>
+    <td rowspan="3"><img src="landingpage/images/release-1.1/cam-control.png" alt="Cam Control with battery, storage, resolution and camera buttons" width="240"></td>
   </tr>
-  <tr>
-    <td><img src="assets/screenshots/video-photo-small.jpg" alt="Small full-width Video + Photo widget below the map and speed field" width="180"></td>
-    <td><img src="assets/screenshots/video-half-idle.png" alt="Half-width Video widget beside the Bell field on a map ride page" width="180"></td>
-    <td><img src="assets/screenshots/video-half-recording.png" alt="Half-width Video widget with a red recording timer beside Bell" width="180"></td>
-    <td><img src="assets/screenshots/cam-control-full.jpg" alt="Full-screen Cam Control with battery, storage, prevent standby, video, photo, settings and power controls" width="180"></td>
-  </tr>
+  <tr><th colspan="2">Automatic photos armed</th></tr>
+  <tr><td colspan="2"><img src="landingpage/images/release-1.1/video-photo-auto-photos.png" alt="Video and photo controls with A inside the photo icon" width="360"></td></tr>
 </table>
 
-Pair your camera, follow the setup guide, and configure Prevent standby before
-heading out. Built-in help stays available on the Karoo.
+Choose your automation mode and add triggers during setup or later in Settings.
 
 <table>
+  <tr><th>Automation setup</th><th>Add triggers</th><th>Settings</th></tr>
   <tr>
-    <th>Connect camera</th>
-    <th>Camera setup</th>
-    <th>Prevent standby</th>
-    <th>Help</th>
-  </tr>
-  <tr>
-    <td><img src="assets/screenshots/connect-camera.png" alt="Connect camera screen with the Search button" width="180"></td>
-    <td><img src="assets/screenshots/setup.png" alt="Camera setup guide welcome screen" width="180"></td>
-    <td><img src="assets/screenshots/prevent-standby.png" alt="Settings with Keep camera awake enabled and the recommended camera setup link" width="180"></td>
-    <td><img src="assets/screenshots/help.png" alt="Built-in help articles for ride preparation, prevent standby and auto highlights" width="180"></td>
+    <td><img src="landingpage/images/release-1.1/setup-mode.png" alt="Setup guide with recording, highlights and photos modes" width="240"></td>
+    <td><img src="landingpage/images/release-1.1/triggers.png" alt="Trigger catalog with simple descriptions and grouped cards" width="240"></td>
+    <td><img src="landingpage/images/release-1.1/settings.png" alt="Compact settings with Prevent standby and Automation" width="240"></td>
   </tr>
 </table>
 
@@ -140,27 +126,27 @@ heading out. Built-in help stays available on the Karoo.
 - **Six languages:** English, German, Spanish, French, Italian, and Portuguese
   are selected automatically from the Karoo language.
 
-### Automation (1.1 beta)
+### Automation
 
 Enable **Automation** in Settings, choose one mode, and use **+ Add trigger**:
 
-- **Only add automatic highlights:** you control when video starts and stops.
 - **Automatic recording:** triggers start video. By default, it stops after all enabled threshold conditions have been inactive for a full **60 seconds**. Renewed effort or a lap/summit event resets the delay. Auto recording settings lets you change the delay (10–3600 seconds), disable automatic stopping, or disable the default-on automatic highlights.
+- **Only add automatic highlights:** you control when video starts and stops.
 - **Only take photos automatically:** a trigger requests one still while the camera is idle and ready. A shared minimum interval prevents bursts: **two minutes by default**, adjustable in **Auto photo settings**. Recording, busy and unavailable cameras are skipped; missed events are never replayed.
 
-The video or photo icon contains an **A** while its automatic mode is armed. Confirmed automatic starts briefly show **REC STARTED** beneath the timer, then **AUTO REC** when the automatically started clip will also stop automatically. Confirmed automatic stops briefly show **REC STOPPED**. Manual recordings are never automatically stopped. Pausing or finishing a ride, changing automation settings, or losing the camera connection relinquishes automatic control of the current clip. Missing sensor data suspends the quiet period until fresh data is available; it does not count as an effort ending.
+The video or photo icon contains an **A** while its automatic mode is armed. Confirmed automatic starts briefly show **REC STARTED** beneath the timer, then **AUTO REC** when the automatically started clip will also stop automatically. Confirmed automatic stops briefly show **REC STOPPED**. Manual recordings are never automatically stopped. Manually pausing or finishing a ride, changing automation settings, or losing the camera connection relinquishes automatic control of the current clip. Karoo auto-pause preserves automatic stopping but prevents new captures. Missing sensor data suspends the quiet period until fresh data is available; it does not count as an effort ending.
 
-The camera must be powered on and connected. Automatic photos reuse the existing photo-mode switch and shutter sequence; real camera and ride validation is part of this beta. The setup guide now lets you choose a mode, then add and edit triggers; you can also skip automation and configure it later.
+The camera must be powered on and connected. Automatic photos use the camera’s photo-mode switch and shutter sequence. The setup guide now lets you choose a mode, then add and edit triggers; you can also skip automation and configure it later.
 
 Available triggers:
 
-- **Lap marker:** Adds a highlight whenever Karoo records a new lap.
-- **Peak power:** Adds a highlight when power crosses the configured wattage.
-- **Maximum speed:** Adds a highlight when speed crosses the configured km/h
+- **Lap marker:** Triggers the selected action whenever Karoo records a new lap.
+- **Peak power:** Triggers the selected action when power crosses the configured wattage.
+- **Maximum speed:** Triggers the selected action when speed crosses the configured km/h
   threshold.
-- **Climb summit:** Adds a highlight when the ridden distance reaches the summit
+- **Climb summit:** Triggers the selected action when the ridden distance reaches the summit
   of a climb in the active Karoo route.
-- **Peak heart rate:** Adds a highlight when heart rate crosses the configured
+- **Peak heart rate:** Triggers the selected action when heart rate crosses the configured
   bpm threshold.
 - **Ascent and descent:** Separate gradient thresholds for climbs and descents,
   each with an optional minimum speed condition.

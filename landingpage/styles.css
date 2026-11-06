@@ -520,3 +520,10 @@ section[id] { scroll-margin-top: 82px; }
 @media (prefers-reduced-motion: reduce) {
   .cockpit-recording-dot { animation: none; }
 }
+
+/* Native 1.1 screenshots retain their original proportions. */
+.release-gallery { align-items: start; }
+.release-gallery .widget-example img { height: auto; object-fit: contain; }
+.release-gallery figcaption + img { margin-top: 28px; }
+.automation-screenshots { display: flex; gap: 12px; align-items: flex-start; margin-top: 24px; }
+.automation-screenshots img { width: calc(50% - 6px); height: auto; border-radius: 12px; }

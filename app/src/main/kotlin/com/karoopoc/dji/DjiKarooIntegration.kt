@@ -158,13 +158,24 @@ class DjiKarooIntegration(
             // Boundary markers never auto-start a recording and always bypass threshold cooldown.
             DjiCameraController.addHighlight(appContext, reason, cooldownLimited = false)
         }
+        val wasAutomaticallyPaused = (rideState as? RideState.Paused)?.auto == true
         rideState = next
-        if (next !is RideState.Recording) {
+        val automaticallyPaused = next is RideState.Paused && next.auto
+        if (automaticallyPaused && !wasAutomaticallyPaused) {
+            // The client invalidates pending commands on auto-pause; rearm the stop
+            // clock so a cancelled queued stop can be requested again safely.
+            autoStop.event()
+        }
+        if (next !is RideState.Recording && !automaticallyPaused) {
             DjiCameraController.cancelAutomation(appContext)
             autoStop.event()
             notificationHandler.post { notificationQueue.clearPending() }
         }
-        DjiCameraController.setRideActive(appContext, isRiding, next is RideState.Recording)
+        DjiCameraController.setRideActive(
+            appContext, isRiding,
+            automationActive = next is RideState.Recording || automaticallyPaused,
+            automationCaptureActive = next is RideState.Recording,
+        )
 
         if (!wasRiding && next is RideState.Recording) {
             batteryAlertArmed = true
@@ -332,11 +343,11 @@ class DjiKarooIntegration(
             if (state.automaticRecordingId != 0L) DjiCameraController.holdAutomaticRecording(appContext)
             autoStop.event() // Marker cooldown never suppresses the recording extension.
             if (settings.mode == AutomationMode.PHOTOS) {
-                if (!state.recording) DjiCameraController.automaticPhoto(appContext)
+                if (!state.recording) DjiCameraController.automaticPhoto(appContext, reason)
                 return@post
             }
             if (!state.recording) {
-                if (settings.mode == AutomationMode.RECORDING) DjiCameraController.automaticStart(appContext)
+                if (settings.mode == AutomationMode.RECORDING) DjiCameraController.automaticStart(appContext, reason)
             } else if (settings.mode == AutomationMode.HIGHLIGHTS || settings.addAutomaticHighlights) {
                 DjiCameraController.addHighlight(appContext, reason, cooldownLimited = !cooldownExempt)
             }
@@ -347,7 +358,7 @@ class DjiKarooIntegration(
         val settings = DjiSettings.read(appContext)
         val state = DjiCameraController.state()
         val enabled = settings.autoHighlightsEnabled && settings.mode == AutomationMode.RECORDING &&
-            settings.autoStop && rideState is RideState.Recording && state.recording &&
+            settings.autoStop && (rideState is RideState.Recording || (rideState as? RideState.Paused)?.auto == true) && state.recording &&
             state.connection == CameraConnectionState.CONNECTED
         val now = SystemClock.elapsedRealtime()
         val active = activeThresholds(settings, now)

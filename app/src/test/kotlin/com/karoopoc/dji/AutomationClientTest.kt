@@ -29,7 +29,7 @@ class AutomationClientTest {
         field("cameraState").set(client, DjiCameraState(configured = true, connection = CameraConnectionState.CONNECTED))
         field("protocolConnected").setBoolean(client, true)
         field("lastCameraRxAtMs").setLong(client, SystemClock.elapsedRealtime())
-        field("automationRideActive").setBoolean(client, true)
+        client.setAutomationRideActive(true)
         field("writeInProgress").setBoolean(client, true)
     }
     @Test fun offlineEventsNeverQueueForReconnect() {
@@ -86,6 +86,40 @@ class AutomationClientTest {
         assertTrue(writes().isEmpty())
         assertEquals(clip, origin().clip)
         assertFalse(origin().stopping)
+    }
+    @Test fun autoPausePreservesOwnedClipAndAllowsStoppingButNotNewCaptures() {
+        origin().requestStart(SystemClock.elapsedRealtime()); origin().status(true, SystemClock.elapsedRealtime())
+        field("latestRecording").setBoolean(client, true)
+        val clip = origin().clip
+        client.setAutomationRideActive(true, allowCapture = false)
+        assertEquals(clip, origin().clip)
+        client.automaticStop(clip); idle()
+        assertEquals(1, writes().size)
+        assertTrue(origin().stopping)
+    }
+    @Test fun autoPauseCancelsPendingStartAndBlocksPhotos() {
+        client.automaticStart()
+        client.setAutomationRideActive(true, allowCapture = false)
+        idle()
+        assertTrue(writes().isEmpty())
+        client.automaticStart(); mode(AutomationMode.PHOTOS); client.automaticPhoto(); idle()
+        assertTrue(writes().isEmpty())
+        origin().status(true, SystemClock.elapsedRealtime())
+        assertEquals(0L, origin().clip)
+    }
+    @Test fun autoPauseAndResumeNeverClaimManualRecording() {
+        field("latestRecording").setBoolean(client, true)
+        origin().status(true, SystemClock.elapsedRealtime())
+        client.setAutomationRideActive(true, allowCapture = false)
+        client.setAutomationRideActive(true)
+        client.automaticStop(1); idle()
+        assertEquals(0L, origin().clip)
+        assertTrue(writes().isEmpty())
+    }
+    @Test fun manualPauseStillRevokesConfirmedOwnership() {
+        origin().requestStart(SystemClock.elapsedRealtime()); origin().status(true, SystemClock.elapsedRealtime())
+        client.setAutomationRideActive(false)
+        assertEquals(0L, origin().clip)
     }
     @Test fun newDefaultsAndLegacyMigrationPreserveTriggerChoices() {
         val prefs = DjiSettings.preferences(context)
