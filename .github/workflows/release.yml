@@ -73,8 +73,8 @@ jobs:
             exit 1
           fi
           version=$(sed -n "s/^package: .*versionName='\([^']*\)'.*/\1/p" <<< "$badging")
-          if ! [[ "$version" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
-            echo "Expected a stable MAJOR.MINOR.PATCH version in the APK."
+          if ! [[ "$version" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-beta\.([1-9][0-9]*))?$ ]]; then
+            echo "Expected MAJOR.MINOR.PATCH or MAJOR.MINOR.PATCH-beta.N in the APK."
             exit 1
           fi
           awk -v version="$version" '
@@ -87,18 +87,26 @@ jobs:
           cp "$apk" "AeroCam-$tag.apk"
           sha256sum "AeroCam-$tag.apk" > "AeroCam-$tag.apk.sha256"
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          if [[ "$version" == *-beta.* ]]; then
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Publish approved release
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ steps.release.outputs.tag }}
+          PRERELEASE: ${{ steps.release.outputs.prerelease }}
         run: |
           existing_tag=$(git ls-remote --tags origin "refs/tags/$TAG")
           if [ -n "$existing_tag" ]; then
             echo "Tag $TAG already exists. Use a new version."
             exit 1
           fi
+          release_flags=(--latest)
+          if [ "$PRERELEASE" = true ]; then release_flags=(--prerelease --latest=false); fi
           gh release create "$TAG" "AeroCam-$TAG.apk" "AeroCam-$TAG.apk.sha256" \
-            --target "$GITHUB_SHA" --title "AeroCam $TAG" --notes-file release-notes.md --latest
+            --target "$GITHUB_SHA" --title "AeroCam $TAG" --notes-file release-notes.md "${release_flags[@]}"
       - name: Remove temporary signing key
         if: always()
         run: rm -f "$RUNNER_TEMP/aerocam-release.jks"
