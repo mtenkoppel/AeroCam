@@ -84,11 +84,11 @@ class AutomationWidgetUiTest {
                 }
                 val view = rv.apply(context, FrameLayout(context))
                 view.findViewById<android.widget.ImageView>(R.id.widgetVideoIcon)?.let {
-                    assertEquals(org.robolectric.Shadows.shadowOf(it).imageResourceId,
+                    assertEquals(org.robolectric.Shadows.shadowOf(it.drawable).createdFromResId,
                         if (mode == AutomationMode.RECORDING) R.drawable.ic_widget_video_auto else R.drawable.ic_widget_video)
                 }
                 view.findViewById<android.widget.ImageView>(R.id.widgetPhotoIcon)?.let {
-                    assertEquals(org.robolectric.Shadows.shadowOf(it).imageResourceId,
+                    assertEquals(org.robolectric.Shadows.shadowOf(it.drawable).createdFromResId,
                         if (mode == AutomationMode.PHOTOS) R.drawable.ic_widget_photo_auto else R.drawable.ic_widget_photo)
                 }
                 view.measure(View.MeasureSpec.makeMeasureSpec(config.viewSize.first, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(config.viewSize.second, View.MeasureSpec.EXACTLY))
@@ -107,7 +107,7 @@ class AutomationWidgetUiTest {
         assertEquals(View.GONE, view.findViewById<View>(R.id.widgetVideoMeta).visibility)
         prefs.edit().putBoolean(DjiSettings.KEY_AUTO_HIGHLIGHTS_ENABLED, false).commit()
         view = DjiWidgetRenderer.video(context, config, DjiWidgetViewState(idle)).apply(context, FrameLayout(context))
-        assertEquals(R.drawable.ic_widget_video, org.robolectric.Shadows.shadowOf(view.findViewById<android.widget.ImageView>(R.id.widgetVideoIcon)).imageResourceId)
+        assertEquals(R.drawable.ic_widget_video, org.robolectric.Shadows.shadowOf(view.findViewById<android.widget.ImageView>(R.id.widgetVideoIcon).drawable).createdFromResId)
         prefs.edit().putString(DjiSettings.KEY_AUTOMATION_MODE, AutomationMode.PHOTOS.name)
             .putBoolean(DjiSettings.KEY_AUTO_HIGHLIGHTS_ENABLED, true).commit()
         for ((camera, expected) in listOf(
@@ -116,7 +116,7 @@ class AutomationWidgetUiTest {
             idle.copy(connection = CameraConnectionState.DISCONNECTED) to R.drawable.ic_widget_photo_disabled,
         )) {
             view = DjiWidgetRenderer.photo(context, config, DjiWidgetViewState(camera)).apply(context, FrameLayout(context))
-            assertEquals(expected, org.robolectric.Shadows.shadowOf(view.findViewById<android.widget.ImageView>(R.id.widgetPhotoIcon)).imageResourceId)
+            assertEquals(expected, org.robolectric.Shadows.shadowOf(view.findViewById<android.widget.ImageView>(R.id.widgetPhotoIcon).drawable).createdFromResId)
         }
     }
 

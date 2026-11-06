@@ -41,7 +41,7 @@ internal object RecordingButtonLayout {
         val bold = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = Typeface.DEFAULT_BOLD }
         val regular = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = Typeface.DEFAULT_BOLD }
         val preferred = sp(resources, (preferredTimerSp * 1.3f).toInt().coerceIn(23, 49))
-        val secondary = (feedback ?: metadata)?.let { text ->
+        var secondary = (feedback ?: metadata)?.let { text ->
             var size = sp(resources, 14)
             var fitted = line(regular, text, size)
             while (regular.measureText(text) > width && size > sp(resources, 8)) {
@@ -50,11 +50,17 @@ internal object RecordingButtonLayout {
             }
             fitted.takeIf { regular.measureText(text) <= width }
         }
-        val reservedTimer = secondary?.let {
+        var reservedTimer = secondary?.let {
             fitTimer(bold, timer, preferred, width, height, it)
         }
         // Allow feedback to reduce the timer slightly. Metadata uses spare room only.
         val minimumWithSecondary = sp(resources, 14)
+        // Grow labels where space permits, but preserve the established short-slot feedback.
+        while (secondary != null && secondary.size > sp(resources, 11) &&
+            (reservedTimer == null || reservedTimer.size < minimumWithSecondary)) {
+            secondary = line(regular, secondary.text, secondary.size - 1f)
+            reservedTimer = fitTimer(bold, timer, preferred, width, height, secondary)
+        }
         val showSecondary = reservedTimer != null && reservedTimer.size >= minimumWithSecondary
         val timerLine = if (showSecondary) checkNotNull(reservedTimer)
         else checkNotNull(fitTimer(bold, timer, preferred, width, height.coerceAtLeast(4)))
