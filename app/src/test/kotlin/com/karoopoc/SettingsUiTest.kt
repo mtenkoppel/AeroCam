@@ -313,4 +313,24 @@ class SettingsUiTest {
         assertEquals(before, prefs.all)
         controller.pause().stop().destroy()
     }
+    @Test fun triggerCatalogGroupsDescriptionAndSuccessfulAddDismissesWholeFlow() {
+        val context = RuntimeEnvironment.getApplication()
+        val intent = Intent(context, AutomationActivity::class.java).putExtra("page", "catalog")
+        val catalog = Robolectric.buildActivity(AutomationActivity::class.java, intent).setup()
+        val row = views(catalog.get()).filterIsInstance<Button>().first {
+            it.text.toString().startsWith(catalog.get().getString(R.string.highlight_lap))
+        }
+        assertTrue(row.text.toString().contains(catalog.get().getString(R.string.automation_lap_help)))
+        row.performClick()
+        val launch = shadowOf(catalog.get()).nextStartedActivityForResult
+        assertTrue(launch.intent.getBooleanExtra("drill_down", false))
+        val detail = Robolectric.buildActivity(AutomationActivity::class.java, launch.intent).setup()
+        button(detail.get(), detail.get().getString(R.string.automation_add)).performClick()
+        assertEquals(Activity.RESULT_OK, shadowOf(detail.get()).resultCode)
+        shadowOf(catalog.get()).receiveResult(launch.intent, Activity.RESULT_OK, Intent())
+        assertTrue(catalog.get().isFinishing)
+        assertTrue(DjiSettings.read(context).lapHighlights)
+        detail.pause().stop().destroy(); catalog.pause().stop().destroy()
+    }
+
 }

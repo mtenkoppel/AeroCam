@@ -36,6 +36,7 @@ internal class SettingsViews(val activity: Activity) {
         setTextColor(palette.textPrimary)
         if (bold) setTypeface(Typeface.DEFAULT_BOLD)
     }
+    fun article(markdown: String) = HelpContent.render(activity, markdown, palette, ::dp)
     fun secondaryText(value: String) = text(value, 13f).apply { setTextColor(palette.textSecondary) }
     fun scroll(content: LinearLayout, viewId: Int = View.NO_ID) = ScrollView(activity).apply {
         id = viewId
@@ -48,7 +49,7 @@ internal class SettingsViews(val activity: Activity) {
         setColor(palette.previewBackground)
         setStroke(dp(1), if (palette.appBackground == Color.BLACK) 0xFF303030.toInt() else 0xFFDDDDDD.toInt())
     }
-    fun group(parent: LinearLayout, title: String, icon: Int? = null): LinearLayout {
+    fun group(parent: LinearLayout, title: String, icon: Int? = null, help: (() -> Unit)? = null): LinearLayout {
         val card = column().apply {
             background = cardBackground()
             setPadding(dp(8), dp(10), dp(8), dp(10))
@@ -62,6 +63,22 @@ internal class SettingsViews(val activity: Activity) {
                 compoundDrawablePadding = dp(6)
             }
         }, fullWidthParams(bottomMargin = dp(8)))
+        if (help != null) {
+            val heading = card.getChildAt(0)
+            card.removeView(heading)
+            card.addView(LinearLayout(activity).apply {
+                gravity = Gravity.CENTER_VERTICAL
+                addView(heading, LinearLayout.LayoutParams(0, -2, 1f))
+                addView(Button(activity, null, android.R.attr.borderlessButtonStyle).apply {
+                    text = "?"; textSize = 22f
+                    contentDescription = "$title: ${getString(R.string.automation_more_information)}"
+                    minWidth = dp(40); minimumWidth = dp(40); minHeight = dp(48)
+                    setPadding(0, 0, 0, 0)
+                    setTextColor(palette.textPrimary)
+                    setOnClickListener { help() }
+                }, LinearLayout.LayoutParams(dp(40), dp(48)))
+            }, fullWidthParams(bottomMargin = dp(8)))
+        }
         parent.addView(card, fullWidthParams(bottomMargin = dp(12)))
         return card
     }
@@ -122,9 +139,10 @@ internal class SettingsViews(val activity: Activity) {
         setOnClickListener { activity.currentFocus?.clearFocus(); action() }
     }
     fun standby(parent: LinearLayout) {
-        val card = group(parent, getString(R.string.prevent_standby), R.drawable.ic_coffee)
-        settingsSwitch(card, getString(R.string.keep_camera_awake), DjiSettings.KEY_KEEP_AWAKE_ENABLED, false,
-            getString(R.string.prevent_standby_summary))
+        val card = group(parent, getString(R.string.prevent_standby), R.drawable.ic_coffee) {
+            HelpActivity.open(activity, "prevent-standby.md")
+        }
+        settingsSwitch(card, getString(R.string.keep_camera_awake), DjiSettings.KEY_KEEP_AWAKE_ENABLED, false)
         card.addView(action(getString(R.string.recommended_camera_setup)) {
             HelpActivity.open(activity, "recommended-camera-setup.md")
         }, fullWidthParams())

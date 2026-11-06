@@ -40,9 +40,9 @@ internal object RecordingButtonLayout {
             .coerceAtLeast(1)
         val bold = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = Typeface.DEFAULT_BOLD }
         val regular = Paint(Paint.ANTI_ALIAS_FLAG).apply { typeface = Typeface.DEFAULT_BOLD }
-        val preferred = sp(resources, preferredTimerSp.coerceIn(18, 38))
+        val preferred = sp(resources, (preferredTimerSp * 1.3f).toInt().coerceIn(23, 49))
         val secondary = (feedback ?: metadata)?.let { text ->
-            var size = sp(resources, 11)
+            var size = sp(resources, 14)
             var fitted = line(regular, text, size)
             while (regular.measureText(text) > width && size > sp(resources, 8)) {
                 size -= 1f

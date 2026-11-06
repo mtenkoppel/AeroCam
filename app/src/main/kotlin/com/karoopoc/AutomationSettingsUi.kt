@@ -41,7 +41,7 @@ internal class AutomationSettingsUi(private val activity: Activity, private val 
     private lateinit var card: LinearLayout
     private var signature = ""
     fun attach(parent: LinearLayout) {
-        card = ui.group(parent, activity.getString(R.string.automation_title), R.drawable.ic_widget_highlight)
+        card = ui.group(parent, activity.getString(R.string.automation_title), R.drawable.ic_widget_highlight) { open("help") }
         refresh()
     }
     fun refresh() {
@@ -49,18 +49,6 @@ internal class AutomationSettingsUi(private val activity: Activity, private val 
         if (signature == current) return
         signature = current
         while (card.childCount > 1) card.removeViewAt(1)
-        val heading = card.getChildAt(0)
-        if (heading is TextView) {
-            card.removeView(heading)
-            card.addView(LinearLayout(activity).apply {
-                gravity = Gravity.CENTER_VERTICAL
-                addView(heading, LinearLayout.LayoutParams(0, -2, 1f))
-                addView(ui.action(activity.getString(R.string.automation_more_information)) { open("help") }.apply {
-                    textSize = 12f
-                    setCompoundDrawables(null, null, null, null)
-                })
-            }, 0)
-        }
         val settings = DjiSettings.read(activity)
         val master = Switch(activity).apply {
             text = activity.getString(R.string.automation_enable); textSize = 16f; minHeight = ui.dp(48)
@@ -129,5 +117,5 @@ internal class AutomationSettingsUi(private val activity: Activity, private val 
         }, ui.fullWidthParams(ui.dp(8)))
     }
     private fun changed() { DjiCameraController.cancelAutomation(activity); DjiWidgetController.refresh() }
-    private fun open(page: String) { activity.startActivity(Intent(activity, AutomationActivity::class.java).putExtra("page", page)) }
+    private fun open(page: String) { AutomationActivity.open(activity, page) }
 }

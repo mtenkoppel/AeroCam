@@ -16,7 +16,7 @@ android {
         applicationId = "com.karoopoc"
         minSdk = 23
         targetSdk = 34
-        versionCode = 49
+        versionCode = 50
         versionName = "1.1.0-automation-test"
         testInstrumentationRunner = "com.karoopoc.widget.WidgetRenderingInstrumentation"
     }

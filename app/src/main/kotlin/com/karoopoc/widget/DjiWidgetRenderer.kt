@@ -145,16 +145,19 @@ object DjiWidgetRenderer {
         applyIconPadding(context, R.dimen.widget_icon_utility_padding, R.id.widgetVideoHighlightIcon)
         setTextColor(R.id.widgetVideoTimer, palette.textOnAccent)
         setTextColor(R.id.widgetVideoMeta, palette.textOnAccent)
-        setImageViewResource(R.id.widgetVideoIcon, if (connected) R.drawable.ic_widget_video else R.drawable.ic_widget_video_disabled)
+        val automation = com.karoopoc.dji.DjiSettings.read(context)
+        setImageViewResource(R.id.widgetVideoIcon, when {
+            !connected -> R.drawable.ic_widget_video_disabled
+            automation.autoHighlightsEnabled && automation.autoStartRecording -> R.drawable.ic_widget_video_auto
+            else -> R.drawable.ic_widget_video
+        })
         setViewVisibility(R.id.widgetVideoIdle, if (!recording && !pending && !showConnect) View.VISIBLE else View.GONE)
         setViewVisibility(R.id.widgetVideoRecording, if (recording && !pending) View.VISIBLE else View.GONE)
         setViewVisibility(R.id.widgetVideoSpinner, if (pending) View.VISIBLE else View.GONE)
         setViewVisibility(R.id.widgetVideoHighlight, if (showHighlight) View.VISIBLE else View.GONE)
 
-        val automation = com.karoopoc.dji.DjiSettings.read(context)
         val idleLine = when {
             state.automationFeedback == "STOPPED" -> context.getString(R.string.automation_rec_stopped)
-            automation.autoHighlightsEnabled && automation.autoStartRecording -> context.getString(R.string.automation_auto_start)
             else -> null
         }
         setTextViewText(R.id.widgetVideoIdleMeta, idleLine ?: "")
@@ -183,7 +186,7 @@ object DjiWidgetRenderer {
                 else -> null
             }
             val autoStopLine = if (state.automaticRecordingId != 0L && automation.autoHighlightsEnabled &&
-                automation.autoStartRecording && automation.autoStop) context.getString(R.string.automation_auto_stop) else null
+                automation.autoStartRecording && automation.autoStop) context.getString(R.string.automation_auto_rec) else null
             markHighlight = RecordingButtonLayout.render(
                 this, resources, config.viewSize.first - FIELD_HORIZONTAL_INSET - highlightWidth, buttonHeight,
                 formatDuration(state.recordingDurationSeconds), config.textSize, feedback,
@@ -224,10 +227,12 @@ object DjiWidgetRenderer {
         applyIconPadding(context, R.dimen.widget_icon_primary_padding, R.id.widgetPhotoIcon)
         setViewVisibility(R.id.widgetPhotoIcon, if (pending || showConnect) View.GONE else View.VISIBLE)
         setViewVisibility(R.id.widgetPhotoSpinner, if (pending) View.VISIBLE else View.GONE)
+        val automation = com.karoopoc.dji.DjiSettings.read(context)
         setImageViewResource(R.id.widgetPhotoIcon, when {
             !connected -> R.drawable.ic_widget_photo_disabled
             state.recording -> R.drawable.ic_widget_photo_muted
             completed -> R.drawable.ic_widget_photo_success
+            automation.autoHighlightsEnabled && automation.mode == com.karoopoc.dji.AutomationMode.PHOTOS -> R.drawable.ic_widget_photo_auto
             else -> R.drawable.ic_widget_photo
         })
         setInt(R.id.widgetPhotoPrimary, "setBackgroundResource", when {

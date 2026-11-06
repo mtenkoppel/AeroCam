@@ -1,6 +1,9 @@
 package com.karoopoc
 
 import android.app.Activity
+import android.app.ActivityOptions
+import android.transition.Slide
+import android.view.Window
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -16,7 +19,11 @@ class AutomationActivity : Activity() {
     override fun attachBaseContext(newBase: Context) = super.attachBaseContext(DjiTheme.activityContext(newBase))
     override fun onCreate(savedInstanceState: Bundle?) {
         DjiTheme.applyActivityTheme(this)
+        window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
         super.onCreate(savedInstanceState)
+        val edge = if (intent.getBooleanExtra("drill_down", false)) Gravity.END else Gravity.BOTTOM
+        window.enterTransition = Slide(edge)
+        window.returnTransition = Slide(edge)
         ui = SettingsViews(this)
         render()
     }
@@ -30,8 +37,8 @@ class AutomationActivity : Activity() {
         val prefs = DjiSettings.preferences(this)
         var save: (() -> Unit)? = null
         var actionLabel = getString(R.string.automation_save)
-        fun title(id: Int) { content.addView(ui.text(getString(id), 22f, true), ui.fullWidthParams(0, ui.dp(12))) }
-        fun description(id: Int) { content.addView(ui.secondaryText(getString(id)), ui.fullWidthParams(0, ui.dp(16))) }
+        fun title(id: Int) { content.addView(ui.article("# " + getString(id))) }
+        fun description(id: Int) { content.addView(ui.article(getString(id))) }
         when (page) {
             "help" -> {
                 title(R.string.automation_about)
@@ -41,10 +48,20 @@ class AutomationActivity : Activity() {
                 title(R.string.automation_add_trigger)
                 description(R.string.automation_catalog_help)
                 AutomationTriggers.all.filterNot { it.selected(this) }.forEach { trigger ->
-                    content.addView(ui.action(getString(trigger.title)) {
-                        startActivity(Intent(this, AutomationActivity::class.java).putExtra("page", trigger.key))
-                    }, ui.fullWidthParams())
-                    description(trigger.description)
+                    val label = android.text.SpannableStringBuilder(getString(trigger.title)).apply {
+                        setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, length, 0)
+                        setSpan(android.text.style.AbsoluteSizeSpan(17, true), 0, length, 0)
+                        append("\n")
+                        val start = length
+                        append(getString(trigger.description))
+                        setSpan(android.text.style.ForegroundColorSpan(ui.palette.textSecondary), start, length, 0)
+                    }
+                    content.addView(ui.action(label) {
+                        startActivityForResult(Intent(this, AutomationActivity::class.java)
+                            .putExtra("page", trigger.key).putExtra("drill_down", true), ADD_TRIGGER,
+                            ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                    }.apply { textSize = 15f; setLineSpacing(ui.dp(2).toFloat(), 1.12f) },
+                        ui.fullWidthParams(0, ui.dp(8)))
                 }
             }
             "recording" -> {
@@ -121,6 +138,18 @@ class AutomationActivity : Activity() {
     private fun committed() {
         DjiCameraController.cancelAutomation(this)
         DjiWidgetController.refresh()
-        finish()
+        setResult(RESULT_OK)
+        finishAfterTransition()
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == ADD_TRIGGER && resultCode == RESULT_OK) finishAfterTransition()
+    }
+    companion object {
+        private const val ADD_TRIGGER = 1
+        fun open(activity: Activity, page: String) {
+            activity.startActivity(Intent(activity, AutomationActivity::class.java).putExtra("page", page),
+                ActivityOptions.makeSceneTransitionAnimation(activity).toBundle())
+        }
     }
 }

@@ -5,6 +5,8 @@ the matching version heading when preparing a release.
 
 ## [Unreleased]
 
+- Refined automation controls with an A inside armed video/photo icons and AUTO REC beneath automatically controlled recording timers. Unified help typography, compact trigger catalog rows and return-to-settings after adding a trigger.
+
 - Added an Automation section with one choice of automatic video highlights, automatic recording, or automatic photos, plus a trigger catalog and editable trigger details.
 - Automatic recordings stop after a full quiet minute by default. Renewed efforts reset the delay; the delay is adjustable and automatic stopping can be disabled. Automatic highlights default on.
 - Added AUTO START / AUTO STOP sublines and brief REC STARTED / REC STOPPED feedback to the shared video control. Manual recordings remain under rider control.
