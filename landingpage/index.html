@@ -6,6 +6,7 @@
   <title>AeroCam — DJI Osmo Action control for Hammerhead Karoo</title>
   <meta name="description" content="AeroCam is an open-source Karoo extension that controls your DJI Osmo Action over Bluetooth. Automatic recording, photos and video highlights, triggered by your ride." />
   <link rel="stylesheet" href="styles.css?v=1.1.0" />
+  <link rel="stylesheet" href="ride-demo.css?v=9">
 </head>
 <body>
 
@@ -29,7 +30,7 @@
       <a class="brand" href="#top"><svg class="brand-logo"><use href="#aerocam-mark"/></svg>AeroCam</a>
       <nav class="nav-links">
         <a href="#features">Features</a>
-        <a href="#highlights">Automation</a>
+        <a href="#widgets">Automation</a>
         <a href="#keepawake">Keep awake</a>
         <a href="#how">Install</a>
         <a href="#transparency">Transparency</a>
@@ -142,64 +143,124 @@
     </div>
   </section>
 
-  <!-- ======================= WIDGETS ======================= -->
-  <section class="section widget-showcase" id="widgets" aria-labelledby="widgets-title">
+  <section class="section" id="widgets" aria-labelledby="ride-demo-title">
     <div class="container">
-      <div class="section-head reveal">
-        <span class="kicker">// On your Karoo</span>
-        <h2 id="widgets-title">Your controls. Your ride screen.</h2>
-        <p>Keep video and photo controls beside your map, fit a recording button into a small field,
-          or give Cam Control a screen of its own.</p>
-        <p class="widget-choice-note"><strong>Compact widgets. Full-page control.</strong>
-          Choose from Video, Photo, Video + Photo, and Cam Control in a range of sizes to suit your ride screen.</p>
-      </div>
-      <div class="widget-gallery release-gallery">
-        <figure class="widget-example reveal">
-          <img src="images/release-1.1/video-photo-auto.png" width="480" height="138" loading="lazy" decoding="async" alt="Video and photo controls with an A inside the video icon." />
-          <figcaption><h3>Ready for the next moment</h3><p>The A shows automatic recording is armed. Manual controls remain available.</p></figcaption>
-          <img src="images/release-1.1/video-auto-recording.png" width="480" height="97" loading="lazy" decoding="async" alt="Red recording timer, AUTO REC label and highlight button." />
-          <figcaption><h3>Clear while recording</h3><p>AUTO REC means this clip is under automatic-stop control. You can stop it yourself at any time.</p></figcaption>
-        </figure>
-        <figure class="widget-example reveal">
-          <img src="images/release-1.1/video-photo-auto-photos.png" width="480" height="97" loading="lazy" decoding="async" alt="Video and photo buttons with A inside the photo icon." />
-          <figcaption><h3>Automatic photos, too</h3><p>The same A appears in the photo icon when automatic photos are armed.</p></figcaption>
-          <img src="images/release-1.1/settings.png" width="480" height="755" loading="lazy" decoding="async" alt="Polished Prevent standby and Automation settings." />
-        </figure>
-        <figure class="widget-example reveal">
-          <img src="images/release-1.1/cam-control.png" width="480" height="600" loading="lazy" decoding="async" alt="Full-size Cam Control with camera status and shared video and photo buttons." />
-          <figcaption><h3>Full-size Cam Control</h3><p>Camera status and controls, all in one place.</p></figcaption>
-        </figure>
-      </div>
-      <p class="widget-choice-note">Screenshots of the current app layouts with example camera states.</p>
-    </div>
-  </section>
-
-  <!-- ======================= AUTO HIGHLIGHTS ======================= -->
-  <section class="section" id="highlights">
-    <div class="container split">
-      <div class="split-copy reveal">
-        <span class="kicker">// New in 1.1 · Automation</span>
-        <h2>Enjoy the ride. Let AeroCam capture it.</h2>
-        <p><strong>Automatic recording.</strong> A trigger starts the video. By default, it stops after a full minute with no active triggers; another effort resets the delay. Change that delay or turn automatic stopping off in Settings.</p>
-        <p>You can always start a recording yourself or stop one that started automatically. Add highlights manually or let AeroCam add them to your automatic recordings.</p>
-        <p><strong>Automatic highlights.</strong> You decide when to start and stop video. AeroCam marks the interesting moments so they are easy to find later.</p>
-        <p><strong>Automatic photos.</strong> Capture a photo when a trigger fires, with at least two minutes between shots by default. Change the interval in Auto photo settings. Photos are skipped while the camera is busy, recording, or disconnected.</p>
-        <p>Keep your camera powered on and connected. The setup guide helps you choose one mode and add triggers; you can change them later in Settings.</p>
-        <p><a href="https://github.com/mtenkoppel/AeroCam/releases/tag/v1.1.0">Download AeroCam 1.1.0</a> · Update without uninstalling to keep your settings and pairing.</p>
-        <div class="automation-screenshots">
-          <img src="images/release-1.1/setup-mode.png" width="480" height="755" alt="Choose your automation mode in the setup guide" loading="lazy">
-          <img src="images/release-1.1/triggers.png" width="480" height="755" alt="Add a ride trigger from the catalog" loading="lazy">
+      <header class="ride-demo-intro">
+        <h2 id="ride-demo-title">Go for a test ride</h2>
+        <p id="ride-mode-label">Pick your mode</p>
+        <div class="ride-mode" role="radiogroup" aria-labelledby="ride-mode-label">
+          <label><input type="radio" name="ride-mode" value="video" checked><span>Auto video</span></label>
+          <label><input type="radio" name="ride-mode" value="photo"><span>Auto photo</span></label>
+          <label><input type="radio" name="ride-mode" value="manual"><span>Manual</span></label>
         </div>
-      </div>
-      <div class="trigger-board reveal">
-        <details class="trigger-detail"><summary>Lap marker</summary><p>Triggers your chosen action when Karoo records a new lap.</p></details>
-        <details class="trigger-detail"><summary>Peak power</summary><p>Triggers your chosen action when your power crosses the configured wattage.</p></details>
-        <details class="trigger-detail"><summary>Max speed</summary><p>Triggers your chosen action when your speed crosses the configured threshold.</p></details>
-        <details class="trigger-detail"><summary>Climb summit</summary><p>Triggers your chosen action when you reach the summit of a climb in your active route.</p></details>
-        <details class="trigger-detail"><summary>Peak heart rate</summary><p>Triggers your chosen action when your heart rate crosses the configured threshold.</p></details>
-        <details class="trigger-detail"><summary>Ascent</summary><p>Capture a climb at your chosen positive gradient. Optionally require a minimum speed too.</p></details>
-        <details class="trigger-detail"><summary>Descent</summary><p>Capture a descent at your chosen negative gradient. Optionally require a minimum speed too.</p></details>
-        <details class="trigger-detail"><summary>Ride start / end</summary><p>Adds a highlight at the start and end of a ride when the camera is recording.</p></details>
+      </header>
+      <div class="ride-demo" data-ride-demo data-mode="video">
+        <div class="ride-device">
+          <svg class="ride-device-outline" viewBox="0 0 210 340" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M105 3C165 3 193 8 196 36L202 294Q202 315 188 329Q167 337 105 337Q43 337 22 329Q8 315 8 294L14 36C17 8 45 3 105 3Z"/>
+            <path d="M12.6 78H8L6 132H11.8M10.5 190H5L3 245H9.1M197.4 78H202L204 132H198.2M199.5 190H205L207 245H200.9"/>
+          </svg>
+          <div class="ride-display" role="group" aria-label="Ride and camera widgets">
+            <div class="ride-metrics">
+              <div><span>SPEED</span><strong data-speed>28.0</strong><small>km/h</small></div>
+              <div><span>POWER</span><strong data-watts>165</strong><small>W</small></div>
+              <div><span>GRADE</span><strong data-grade>0</strong><small>%</small></div>
+            </div>
+            <div class="ride-camera">
+              <span>VIDEO + PHOTO</span>
+              <div class="ride-camera-row">
+                <button type="button" class="ride-video" aria-label="Start recording">
+                  <span class="ride-armed"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><g transform="translate(0 0) translate(12 12) scale(1.111111) translate(-12 -12)"><path fill-rule="nonzero" d="M15,8v8H5V8h10m1,-2H4c-0.55,0 -1,0.45 -1,1v10c0,0.55 0.45,1 1,1h12c0.55,0 1,-0.45 1,-1v-3.5l4,4v-11l-4,4V7c0,-0.55 -0.45,-1 -1,-1z"/></g><g class="ride-video-auto" transform="translate(-2.222222 0) translate(12 12) scale(1) translate(-12 -12)"><path fill-rule="evenodd" d="M8.9,15L11.1,9h1.8l2.2,6h-1.5l-0.4,-1.3h-2.4L10.4,15zM11.2,12.5h1.6L12,10.2z"/></g></svg></span>
+                  <span class="ride-recording" hidden><b data-timer>00:00</b><small data-rec-label>AUTO REC</small></span>
+                </button>
+                <button type="button" class="ride-photo" aria-label="Take photo">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M14.12,4l1.83,2H20v12H4V6h4.05l1.83,-2h4.24M15,2H9L7.17,4H4c-1.1,0 -2,0.9 -2,2v12c0,1.1 0.9,2 2,2h16c1.1,0 2,-0.9 2,-2V6c0,-1.1 -0.9,-2 -2,-2h-3.17L15,2z"/>
+                    <path class="ride-photo-lens" d="M12,9c1.65,0 3,1.35 3,3s-1.35,3 -3,3 -3,-1.35 -3,-3 1.35,-3 3,-3M12,7c-2.76,0 -5,2.24 -5,5s2.24,5 5,5 5,-2.24 5,-5 -2.24,-5 -5,-5z"/>
+                    <path class="ride-photo-auto" fill-rule="evenodd" d="M8.9,15L11.1,9h1.8l2.2,6h-1.5l-0.4,-1.3h-2.4L10.4,15zM11.2,12.5h1.6L12,10.2z"/>
+                    <path class="ride-photo-check" d="M10.2,17.2L6.8,13.8 8.2,12.4 10.2,14.4 15.8,8.8 17.2,10.2z"/>
+                  </svg>
+                </button>
+                <button type="button" class="ride-star" aria-label="Add highlight" hidden><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="nonzero" d="M12,17.27L18.18,21 16.54,13.97 22,9.24 14.81,8.62 12,2 9.19,8.62 2,9.24 7.45,13.97 5.82,21z"/></svg></button>
+              </div>
+            </div>
+          </div>
+          <p class="ride-status" role="status">Auto video armed</p>
+        </div>
+        <div class="johnny-panel">
+          <div class="johnny-scene">
+            <svg viewBox="37 -2 212 183" role="img" aria-label="Side view of Johnny pedaling a bicycle">
+      <defs>
+        <linearGradient id="johnny-ground-fade" gradientUnits="userSpaceOnUse" x1="38" x2="246" y1="163.7" y2="163.7">
+          <stop offset="0%" stop-color="#000"/>
+          <stop offset="28%" stop-color="#707070"/>
+          <stop offset="72%" stop-color="#707070"/>
+          <stop offset="100%" stop-color="#000"/>
+        </linearGradient>
+      </defs>
+      <path data-ground d="M38 163.7H246" stroke="url(#johnny-ground-fade)" stroke-width="1.25" stroke-linecap="round"/>
+      <g data-sprite>
+      <g data-assembly fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <g class="bike-rims" stroke-width="1.5">
+          <circle cx="91" cy="129" r="34"/>
+          <circle cx="192" cy="129" r="34"/>
+        </g>
+        <g class="bike-inner-rims" stroke-width="1.45">
+          <circle cx="91" cy="129" r="29.2"/>
+          <circle cx="192" cy="129" r="29.2"/>
+        </g>
+        <g class="bike-spokes" stroke-width="1">
+          <path data-wheel="91" d="M63 129h56M91 101v56m-20-48 40 40m0-40-40 40"/>
+          <path data-wheel="192" d="M164 129h56M192 101v56m-20-48 40 40m0-40-40 40"/>
+        </g>
+        <path data-far stroke="currentColor" opacity=".42" stroke-width="4.6"/>
+        <g class="bike-outline">
+          <g aria-label="Chain and rear derailleur">
+            <path d="M91 125l42 2m0 18-41 4" stroke-width="1"/>
+            <path d="M91 130q1 3 4 6l-3 13"/>
+            <circle class="bike-tubes" cx="91" cy="129" r="5.2"/>
+            <circle class="bike-tubes" cx="92" cy="149" r="2.2"/>
+          </g>
+          <circle cx="192" cy="129" r="6.2" stroke-width="1"/>
+          <g aria-label="Stem and drop bars">
+            <path class="bike-tubes" d="M166 80l-2-6 10-4 8 1v3l-8 .5-4 5.5z"/>
+            <path class="bike-tubes" d="M178 69q4-1 9 0 3 0 4-4 2-2 4 .2l1 2-2.5 5-6 1q.8 4.5-3 8-5 3.8-12 4l-.4-2.6q6.6-.5 10-3.6 3.7-4.1 0-7.2l-4.5-.1z"/>
+            <path d="M194 71q-3 4-2 9" stroke-width="1"/>
+          </g>
+          <g aria-label="Saddle">
+            <path class="bike-tubes" d="M109.5 70l2.6-.7 6.7 20.5-2.7 1z"/>
+            <path class="bike-tubes" d="M100 65q4 0 8.7 1.2l10-.2q3.8-.1 4.8 1.9l-8.8.8-4.3 1.3h-4.8q-2.5-2.6-5.6-3.2z"/>
+          </g>
+          <path class="bike-tubes" d="M173 94l4.8-1.5 15.7 35.4q.6 1.5-1.2 2.1l-2-.4z"/>
+          <path class="bike-tubes" fill-rule="evenodd"
+            d="M88 128l29.3-33.7-1.3-5.4 50.1-9.7 2-.9 2.9-.8 7.2 16.8-3.7 1.2
+               q-1.7-2.5-4.7.4l-33.7 40.9-5 1.7-40.8-6.6z
+               M93 128l25.9-29.8 9.1 35.2z
+               M120.2 91.7l45.2-9.1q3.4-.4 4.2 3.1 1.2 3.1-.6 5.8l-36 42.8z"/>
+          <circle class="bike-tubes" cx="133" cy="136" r="8.5"/>
+          <circle cx="133" cy="136" r="5.4" stroke-width="1"/>
+          <path data-crank/>
+        </g>
+        <path data-body stroke="currentColor" stroke-width="5"/>
+        <g data-head>
+          <path d="M-6-3q3-6 9-3l4 4 2 4-2 .5-.8 4.5Q4 10 0 8.5-7 6-6-3z" fill="currentColor"/>
+          <path class="rider-helmet" stroke="currentColor" stroke-width="1.3"
+            d="M-12-.5q1-8.1 8.4-10.2Q4-13 9.1-7.2q2.1 2.3 2.4 5.2L6-.9 1.5-2.3l-5.8 2z"/>
+          <path d="M-7-5.1l3.9-2.5m1.4 1.5 3.7-1.9" stroke="currentColor" stroke-width="1.1"/>
+          <path d="M-4 .4l3 5.4 3.5-7.1" stroke="var(--background)" stroke-width="1"/>
+        </g>
+        <path data-near stroke="currentColor" stroke-width="5"/>
+      </g>
+      </g>
+    </svg>
+          </div>
+          <div class="johnny-actions" role="group" aria-label="Ride mode">
+            <button type="button" class="btn btn-ghost" data-move="normal" aria-pressed="true">Normal<small>Getting Brötchen</small></button>
+            <button type="button" class="btn btn-ghost" data-move="uphill" aria-pressed="false">Uphill<small>Ascent ≥ 7%</small></button>
+            <button type="button" class="btn btn-ghost" data-move="downhill" aria-pressed="false">Downhill<small>Speed ≥ 45 km/h</small></button>
+            <button type="button" class="btn btn-ghost" data-move="attack" aria-pressed="false">Attack<small>Power ≥ 352 W</small></button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -319,5 +380,6 @@
 
 
   <script src="script.js?v=ce62c2b5a13b"></script>
+  <script src="ride-demo.js?v=9"></script>
 </body>
 </html>

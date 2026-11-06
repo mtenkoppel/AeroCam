@@ -1,0 +1,118 @@
+#widgets { padding-block: 60px; scroll-margin-top: 64px; }
+.ride-demo-intro { margin-bottom: 36px; }
+.ride-demo-intro p { margin-top: 4px; color: var(--text-2); }
+.ride-demo {
+  display: grid;
+  grid-template-columns: minmax(0, 275px) minmax(0, 1fr);
+  gap: clamp(12px, 4vw, 54px);
+  align-items: center;
+}
+.ride-mode {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3px;
+  max-width: 300px;
+  margin-top: 8px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.ride-mode input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.ride-mode span {
+  display: grid;
+  place-items: center;
+  min-height: 42px;
+  padding: 4px;
+  border-radius: 8px;
+  color: var(--text-2);
+  font-size: .8rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+}
+.ride-mode input:checked + span { background: var(--accent); color: #04211c; }
+.ride-mode input:focus-visible + span { outline: 2px solid var(--text); outline-offset: 1px; }
+.ride-device {
+  position: relative;
+  display: grid;
+  align-content: end;
+  aspect-ratio: 210 / 340;
+  min-width: 0;
+  padding: 0;
+}
+.ride-device-outline {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--text-3);
+  pointer-events: none;
+}
+.ride-display {
+  container-type: inline-size;
+  display: grid;
+  gap: 5px;
+  margin: 0 10% 15%;
+  color: white;
+  font: 400 15px/1 Arial, sans-serif;
+}
+.ride-metrics {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr .8fr;
+  gap: 5px;
+}
+.ride-metrics > div, .ride-camera {
+  background: #000;
+  border: 1px solid #454545;
+  border-radius: 3.7cqw;
+}
+.ride-metrics > div { padding: 3cqw 2cqw; white-space: nowrap; }
+.ride-metrics span, .ride-camera > span { display: block; font-size: 5.5cqw; margin-bottom: 2.3cqw; }
+.ride-metrics strong { font-size: 11cqw; font-weight: 400; font-variant-numeric: tabular-nums; }
+.ride-metrics small { display: block; font-size: 4cqw; margin-top: 1cqw; }
+.ride-camera { padding: 2.6cqw 2.1cqw 2.8cqw; }
+.ride-camera-row { display: flex; flex: 1; gap: 2cqw; }
+.ride-camera-row > :is(span, button) { flex: 1; display: grid; place-items: center; background: #616161; border-radius: 3.3cqw; min-height: 15cqw; }
+.ride-camera-row svg { display: block; width: 9.7cqw; height: 9.7cqw; }
+.ride-camera-row > [hidden], .ride-camera-row button [hidden] { display: none; }
+.ride-camera-row button { border: 0; color: inherit; font: inherit; padding: 0; cursor: pointer; }
+.ride-camera-row button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ride-photo[data-captured] { background: #6ccb31; }
+.ride-demo:not([data-mode="video"]) .ride-video-auto,
+.ride-demo:not([data-mode="photo"]) .ride-photo-auto,
+.ride-demo[data-mode="photo"] .ride-photo-lens,
+.ride-photo[data-captured] .ride-photo-auto,
+.ride-photo:not([data-captured]) .ride-photo-check,
+.ride-photo[data-captured] .ride-photo-lens { display: none; }
+.ride-camera-row .ride-star { flex: 0 0 29%; }
+.ride-demo[data-recording] .ride-video { background: #ed0000; }
+.ride-recording { display: grid; justify-items: center; gap: .5cqw; }
+.ride-recording b { font-size: 8cqw; font-variant-numeric: tabular-nums; }
+.ride-recording small { font-size: 3cqw; font-weight: 700; }
+.ride-status { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.johnny-panel { min-width: 0; }
+.johnny-scene { --background: #000; background: #000; color: #f5f5f5; overflow: hidden; }
+.johnny-scene svg { display: block; width: min(100%, 460px); margin-inline: auto; }
+.johnny-scene .bike-outline { stroke: currentColor; stroke-width: 1.5; stroke-opacity: .34; }
+.johnny-scene .bike-tubes { fill: color-mix(in srgb, var(--background) 95%, currentColor); }
+.johnny-scene .rider-helmet { fill: color-mix(in srgb, var(--background) 78%, currentColor); }
+.johnny-scene .bike-inner-rims { stroke: #55d6be; opacity: .42; }
+.johnny-scene .bike-rims { stroke: currentColor; opacity: .25; }
+.johnny-scene .bike-spokes { stroke: currentColor; opacity: .32; }
+.johnny-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 12px; }
+.johnny-actions button { display: flex; flex-direction: column; justify-content: center; gap: 4px; font: inherit; padding: 9px 14px; cursor: pointer; }
+.johnny-actions small { color: var(--text-2); font-size: .75rem; font-weight: 400; }
+.johnny-actions [aria-pressed="true"] { border-color: var(--accent); background: var(--accent-dim); }
+.johnny-actions :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (max-width: 640px) {
+  .ride-demo { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); }
+  .johnny-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; }
+  .johnny-actions button { padding-inline: 5px; font-size: .8rem; }
+}
+@media (max-width: 480px) {
+  .ride-demo { grid-template-columns: minmax(0, 1fr); }
+  .ride-device { width: min(100%, 275px); justify-self: center; }
+  .johnny-actions { max-width: 300px; margin-inline: auto; }
+}
