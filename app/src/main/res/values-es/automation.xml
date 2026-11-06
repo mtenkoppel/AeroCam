@@ -40,5 +40,4 @@
     <string name="automation_ride_help">Añade destacados al inicio y al final de la ruta si ya se está grabando un vídeo.</string>
     <string name="automation_photo_settings">Ajustes de fotos automáticas</string>
     <string name="automation_photo_interval_seconds">Tiempo mínimo entre fotos (segundos)</string>
-    <string name="automation_boundary_help">Los límites de la actividad solo añaden destacados a un vídeo en curso. Nunca inician vídeos ni toman fotos. Las pausas y reanudaciones no añaden estos marcadores.</string>
 </resources>

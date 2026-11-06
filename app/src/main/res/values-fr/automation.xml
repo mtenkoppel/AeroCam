@@ -40,5 +40,4 @@
     <string name="automation_ride_help">Ajoutez des moments forts au début et à la fin de la sortie si une vidéo est déjà en cours.</string>
     <string name="automation_photo_settings">Réglages des photos automatiques</string>
     <string name="automation_photo_interval_seconds">Délai minimum entre les photos (secondes)</string>
-    <string name="automation_boundary_help">Les limites de sortie ajoutent uniquement des moments forts à une vidéo en cours. Elles ne démarrent pas de vidéo et ne prennent pas de photo. Les pauses et reprises n’ajoutent pas ces marqueurs.</string>
 </resources>

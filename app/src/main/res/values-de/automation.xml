@@ -40,5 +40,4 @@
     <string name="automation_ride_help">Füge beim Start und Ende der Fahrt Highlights zu einem bereits laufenden Video hinzu.</string>
     <string name="automation_photo_settings">Einstellungen für automatische Fotos</string>
     <string name="automation_photo_interval_seconds">Mindestabstand zwischen Fotos (Sekunden)</string>
-    <string name="automation_boundary_help">Fahrtgrenzen fügen nur einer laufenden Videoaufnahme Highlights hinzu. Sie starten keine Videos und nehmen keine Fotos auf. Pausen und Fortsetzungen setzen keine Fahrtmarker.</string>
 </resources>

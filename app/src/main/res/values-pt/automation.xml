@@ -40,5 +40,4 @@
     <string name="automation_ride_help">Adiciona destaques no início e no fim da volta se um vídeo já estiver a ser gravado.</string>
     <string name="automation_photo_settings">Definições de fotos automáticas</string>
     <string name="automation_photo_interval_seconds">Tempo mínimo entre fotos (segundos)</string>
-    <string name="automation_boundary_help">Os limites da atividade só adicionam destaques a um vídeo em curso. Nunca iniciam vídeos nem tiram fotos. Pausas e retomas não adicionam estes marcadores.</string>
 </resources>
