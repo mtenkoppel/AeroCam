@@ -176,7 +176,7 @@
     <string name="waiting_for_screen_off">Esperando a que se apague la pantalla</string>
     <string name="dji_independence_notice">AeroCam es un proyecto independiente y no está afiliado, respaldado ni patrocinado por DJI. DJI y Osmo son marcas de sus respectivos propietarios.</string>
     <string name="prevent_standby">Evitar el apagado automático</string>
-    <string name="keep_camera_awake">Mantener la cámara activa</string>
+    <string name="keep_camera_awake">Activar prevención de reposo</string>
     <string name="prevent_standby_summary">Evita que la cámara se apague automáticamente.</string>
     <string name="recommended_camera_setup">Configuración recomendada de la cámara</string>
     <string name="captions_summary">Oculta el nombre del widget y ahorra algo de espacio.</string>

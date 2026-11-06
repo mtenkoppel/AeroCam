@@ -124,7 +124,7 @@ class SettingsUiTest {
         assertEquals(before, prefs.all)
         assertEquals(65, DjiSettings.read(controller.get()).descentSpeedKph)
         assertEquals(-3, DjiSettings.read(controller.get()).descentGradePercent)
-        assertTrue(views(controller.get()).filterIsInstance<Switch>().first { it.text.toString() == "Keep camera awake" }.isChecked)
+        assertTrue(views(controller.get()).filterIsInstance<Switch>().first { it.text.toString() == activity.getString(R.string.keep_camera_awake) }.isChecked)
         controller.pause().stop().destroy()
     }
 
@@ -137,7 +137,7 @@ class SettingsUiTest {
             val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
             val activity = controller.get()
             val switches = views(activity).filterIsInstance<Switch>().associate { it.text.toString() to it.isChecked }
-            assertEquals(false, switches["Keep camera awake"])
+            assertEquals(false, switches[activity.getString(R.string.keep_camera_awake)])
             assertEquals(true, switches[activity.getString(R.string.automation_enable)])
             assertFalse(DjiSettings.read(activity).rideBookmarks)
             assertEquals(true, switches["Low camera battery at 20%"])
@@ -254,7 +254,9 @@ class SettingsUiTest {
         button(activity, activity.getString(R.string.automation_add)).performClick()
         assertNotNull(input.error)
         assertFalse(DjiSettings.read(activity).peakPowerHighlights)
+        render(activity, "automation-power-invalid")
         input.setText("500")
+        assertNull("Correcting a valid value clears the validation marker", input.error)
         render(activity, "automation-power-add")
         button(activity, activity.getString(R.string.automation_add)).performClick()
         assertTrue(DjiSettings.read(activity).peakPowerHighlights)

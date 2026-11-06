@@ -52,7 +52,7 @@ internal class SettingsViews(val activity: Activity) {
     fun group(parent: LinearLayout, title: String, icon: Int? = null, help: (() -> Unit)? = null): LinearLayout {
         val card = column().apply {
             background = cardBackground()
-            setPadding(dp(8), dp(10), dp(8), dp(10))
+            setPadding(dp(8), dp(4), dp(8), dp(6))
         }
         card.addView(text(title, 18f, true).apply {
             if (icon != null) {
@@ -62,24 +62,27 @@ internal class SettingsViews(val activity: Activity) {
                 setCompoundDrawables(drawable, null, null, null)
                 compoundDrawablePadding = dp(6)
             }
-        }, fullWidthParams(bottomMargin = dp(8)))
+        }, fullWidthParams(bottomMargin = dp(4)))
         if (help != null) {
             val heading = card.getChildAt(0)
             card.removeView(heading)
             card.addView(LinearLayout(activity).apply {
                 gravity = Gravity.CENTER_VERTICAL
                 addView(heading, LinearLayout.LayoutParams(0, -2, 1f))
-                addView(Button(activity, null, android.R.attr.borderlessButtonStyle).apply {
-                    text = "?"; textSize = 22f
+                addView(ImageButton(activity, null, android.R.attr.borderlessButtonStyle).apply {
+                    setImageResource(R.drawable.ic_help_outline)
+                    val accent = android.util.TypedValue().also {
+                        activity.theme.resolveAttribute(android.R.attr.colorAccent, it, true)
+                    }.data
+                    imageTintList = android.content.res.ColorStateList.valueOf(accent)
+                    scaleType = ImageView.ScaleType.CENTER_INSIDE
                     contentDescription = "$title: ${getString(R.string.automation_more_information)}"
-                    minWidth = dp(40); minimumWidth = dp(40); minHeight = dp(48)
-                    setPadding(0, 0, 0, 0)
-                    setTextColor(palette.textPrimary)
+                    setPadding(dp(8), dp(8), dp(8), dp(8))
                     setOnClickListener { help() }
-                }, LinearLayout.LayoutParams(dp(40), dp(48)))
-            }, fullWidthParams(bottomMargin = dp(8)))
+                }, LinearLayout.LayoutParams(dp(40), dp(40)))
+            }, fullWidthParams())
         }
-        parent.addView(card, fullWidthParams(bottomMargin = dp(12)))
+        parent.addView(card, fullWidthParams(bottomMargin = dp(8)))
         return card
     }
     private fun subgroup(parent: LinearLayout, title: String): LinearLayout = column().also {
@@ -93,7 +96,8 @@ internal class SettingsViews(val activity: Activity) {
             textSize = 16f
             setTextColor(palette.textPrimary)
             switchPadding = dp(10)
-            minHeight = dp(48)
+            minHeight = dp(44)
+            minimumHeight = dp(44)
             isChecked = DjiSettings.preferences(activity).getBoolean(key, default)
             setOnCheckedChangeListener { _, checked ->
                 if (!refreshing) {
@@ -130,8 +134,9 @@ internal class SettingsViews(val activity: Activity) {
         isAllCaps = false
         textSize = 14f
         gravity = Gravity.CENTER_VERTICAL or Gravity.START
-        minHeight = dp(48)
-        setPadding(0, dp(4), 0, dp(4))
+        minHeight = dp(44)
+            minimumHeight = dp(44)
+        setPadding(0, dp(2), 0, dp(2))
         val chevron = activity.getDrawable(R.drawable.ic_chevron_right)!!.mutate()
         chevron.setTint(palette.textSecondary)
         chevron.setBounds(0, 0, dp(20), dp(20))

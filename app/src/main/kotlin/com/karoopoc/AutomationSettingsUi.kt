@@ -26,13 +26,13 @@ internal object AutomationTriggers {
         AutomationTrigger(DjiSettings.KEY_CLIMB_SUMMIT_HIGHLIGHTS, R.string.highlight_climb_summit, R.string.automation_summit_help),
         AutomationTrigger(DjiSettings.KEY_PEAK_HEART_RATE_HIGHLIGHTS, R.string.highlight_peak_heart_rate, R.string.automation_hr_help,
             listOf(TriggerNumber(DjiSettings.KEY_PEAK_HEART_RATE_BPM, R.string.highlight_peak_heart_rate_threshold, 165, 1, 250))),
-        AutomationTrigger(DjiSettings.KEY_UPHILL_HIGHLIGHTS, R.string.highlight_uphill, R.string.highlight_uphill_summary,
+        AutomationTrigger(DjiSettings.KEY_UPHILL_HIGHLIGHTS, R.string.highlight_uphill, R.string.automation_uphill_help,
             listOf(TriggerNumber(DjiSettings.KEY_UPHILL_GRADE_PERCENT, R.string.highlight_uphill_grade_threshold, 3, 1, 30),
                 TriggerNumber(DjiSettings.KEY_UPHILL_SPEED_KPH, R.string.highlight_uphill_speed_threshold, 20, 1, 80)), DjiSettings.KEY_UPHILL_REQUIRE_SPEED),
-        AutomationTrigger(DjiSettings.KEY_HIGH_SPEED_DESCENT_HIGHLIGHTS, R.string.highlight_high_speed_descent, R.string.highlight_descent_summary,
+        AutomationTrigger(DjiSettings.KEY_HIGH_SPEED_DESCENT_HIGHLIGHTS, R.string.highlight_high_speed_descent, R.string.automation_descent_help,
             listOf(TriggerNumber(DjiSettings.KEY_DESCENT_GRADE_PERCENT, R.string.highlight_descent_grade_threshold, -3, -30, -1),
                 TriggerNumber(DjiSettings.KEY_DESCENT_SPEED_KPH, R.string.highlight_descent_speed_threshold, 50, 40, 80)), DjiSettings.KEY_DESCENT_REQUIRE_SPEED),
-        AutomationTrigger(DjiSettings.KEY_RIDE_BOOKMARKS, R.string.highlight_ride_bookmarks, R.string.ob_bookmarks),
+        AutomationTrigger(DjiSettings.KEY_RIDE_BOOKMARKS, R.string.highlight_ride_bookmarks, R.string.automation_ride_help),
     )
 }
 
@@ -41,7 +41,7 @@ internal class AutomationSettingsUi(private val activity: Activity, private val 
     private lateinit var card: LinearLayout
     private var signature = ""
     fun attach(parent: LinearLayout) {
-        card = ui.group(parent, activity.getString(R.string.automation_title), R.drawable.ic_widget_highlight) { open("help") }
+        card = ui.group(parent, activity.getString(R.string.automation_title), R.drawable.ic_automation) { open("help") }
         refresh()
     }
     fun refresh() {
@@ -51,7 +51,7 @@ internal class AutomationSettingsUi(private val activity: Activity, private val 
         while (card.childCount > 1) card.removeViewAt(1)
         val settings = DjiSettings.read(activity)
         val master = Switch(activity).apply {
-            text = activity.getString(R.string.automation_enable); textSize = 16f; minHeight = ui.dp(48)
+            text = activity.getString(R.string.automation_enable); textSize = 16f; minHeight = ui.dp(44)
             isChecked = settings.autoHighlightsEnabled
             setOnCheckedChangeListener { _, checked ->
                 DjiSettings.setBoolean(activity, DjiSettings.KEY_AUTO_HIGHLIGHTS_ENABLED, checked)
@@ -66,9 +66,9 @@ internal class AutomationSettingsUi(private val activity: Activity, private val 
             Triple(AutomationMode.RECORDING, if (settings.autoStop) R.string.automation_recording else R.string.automation_recording_start_only, R.string.automation_recording_summary),
             Triple(AutomationMode.PHOTOS, R.string.automation_photos, R.string.automation_photos_summary),
         )
-        modes.forEach { (mode, title, summary) ->
+        modes.forEach { (mode, title, _) ->
             choices.addView(RadioButton(activity).apply {
-                id = View.generateViewId(); text = activity.getString(title); textSize = 16f; minHeight = ui.dp(48)
+                id = View.generateViewId(); text = activity.getString(title); textSize = 16f; minHeight = ui.dp(44)
                 isChecked = settings.mode == mode
                 setOnClickListener {
                     DjiSettings.preferences(activity).edit().putString(DjiSettings.KEY_AUTOMATION_MODE, mode.name)
@@ -76,7 +76,6 @@ internal class AutomationSettingsUi(private val activity: Activity, private val 
                     changed(); refresh()
                 }
             }, ui.fullWidthParams())
-            choices.addView(ui.secondaryText(activity.getString(summary)).apply { setPadding(ui.dp(32), 0, 0, ui.dp(8)) })
         }
         card.addView(choices)
         if (settings.mode == AutomationMode.RECORDING) card.addView(ui.action(activity.getString(R.string.automation_recording_settings)) { open("recording") }, ui.fullWidthParams())
@@ -101,7 +100,7 @@ internal class AutomationSettingsUi(private val activity: Activity, private val 
                 addView(ui.action(label) { open(trigger.key) }, LinearLayout.LayoutParams(0, -2, 1f))
                 addView(View(activity).apply { setBackgroundColor(0xFFDDDDDD.toInt()) }, LinearLayout.LayoutParams(ui.dp(1), ui.dp(32)))
                 addView(Switch(activity).apply {
-                    minWidth = ui.dp(56); minHeight = ui.dp(48)
+                    minWidth = ui.dp(56); minHeight = ui.dp(44)
                     contentDescription = activity.getString(trigger.title)
                     isChecked = prefs.getBoolean(trigger.key, false)
                     setOnCheckedChangeListener { _, checked ->

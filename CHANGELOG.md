@@ -5,6 +5,8 @@ the matching version heading when preparing a release.
 
 ## [Unreleased]
 
+- Center untitled widget frames, compact automation settings, add Material help icons and simplify trigger descriptions.
+
 - Refined automation controls with an A inside armed video/photo icons and AUTO REC beneath automatically controlled recording timers. Unified help typography, compact trigger catalog rows and return-to-settings after adding a trigger.
 
 - Added an Automation section with one choice of automatic video highlights, automatic recording, or automatic photos, plus a trigger catalog and editable trigger details.

@@ -1,0 +1,6 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24">
+    <!-- Same A silhouette used inside the shared automatic video/photo icons. -->
+    <group android:pivotX="12" android:pivotY="12" android:scaleX="3" android:scaleY="3">
+        <path android:fillColor="#FF000000" android:fillType="evenOdd" android:pathData="M8.9,15L11.1,9h1.8l2.2,6h-1.5l-0.4,-1.3h-2.4L10.4,15zM11.2,12.5h1.6L12,10.2z" />
+    </group>
+</vector>

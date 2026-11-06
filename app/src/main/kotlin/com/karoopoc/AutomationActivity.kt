@@ -60,7 +60,14 @@ class AutomationActivity : Activity() {
                         startActivityForResult(Intent(this, AutomationActivity::class.java)
                             .putExtra("page", trigger.key).putExtra("drill_down", true), ADD_TRIGGER,
                             ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
-                    }.apply { textSize = 15f; typeface = android.graphics.Typeface.DEFAULT; setLineSpacing(0f, 1.12f) },
+                    }.apply {
+                        textSize = 15f; typeface = android.graphics.Typeface.DEFAULT; setLineSpacing(0f, 1.12f)
+                        setPadding(ui.dp(10), ui.dp(8), ui.dp(8), ui.dp(8))
+                        backgroundTintList = null
+                        val shape = ui.cardBackground()
+                        background = android.graphics.drawable.RippleDrawable(
+                            android.content.res.ColorStateList.valueOf(0x22000000), shape, shape.constantState!!.newDrawable())
+                    },
                         ui.fullWidthParams(0, ui.dp(8)))
                 }
             }
@@ -88,7 +95,6 @@ class AutomationActivity : Activity() {
                 val existing = trigger.selected(this)
                 title(trigger.title)
                 description(trigger.description)
-                description(if (trigger.key == DjiSettings.KEY_RIDE_BOOKMARKS) R.string.automation_boundary_help else R.string.automation_trigger_detail_help)
                 val fields = trigger.numbers.associateWith { number(content, it) }
                 val speed = trigger.speedKey?.let { key ->
                     Switch(this).apply {
@@ -134,7 +140,16 @@ class AutomationActivity : Activity() {
     }
     private fun number(parent: LinearLayout, spec: TriggerNumber): EditText = ui.numberInput(
         parent, getString(spec.label), DjiSettings.preferences(this).getInt(spec.key, spec.default), spec.min < 0,
-    )
+    ).apply {
+        addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+            override fun afterTextChanged(value: android.text.Editable?) {
+                val number = value?.toString()?.toIntOrNull()
+                if (number != null && number in spec.min..spec.max) error = null
+            }
+        })
+    }
     private fun committed() {
         DjiCameraController.cancelAutomation(this)
         DjiWidgetController.refresh()

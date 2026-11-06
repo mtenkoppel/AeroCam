@@ -125,4 +125,39 @@ class AutomationWidgetUiTest {
         }
     }
 
+    @Test fun sharedFrameCentersUntitledFieldsAndKeepsTighterCaptionSpacing() {
+        val context = RuntimeEnvironment.getApplication()
+        DjiSettings.resetAll(context)
+        DjiSettings.preferences(context).edit().putString(DjiSettings.KEY_AUTOMATION_MODE, AutomationMode.RECORDING.name).commit()
+        val state = DjiWidgetViewState(DjiCameraState(configured = true, connection = CameraConnectionState.CONNECTED))
+        for ((size, width, height) in listOf(Triple("half", 238, 138), Triple("map", 480, 138), Triple("full", 480, 700))) {
+            for (caption in listOf(false, true)) for (kind in listOf("video", "photo", "combined", "control")) {
+                val captionHeight = if (caption) context.resources.getDimensionPixelSize(R.dimen.widget_field_caption_height) else 0
+                val config = ViewConfig((if (width < 360) 30 else 60) to (if (size == "full") 60 else 15), width to height - captionHeight, 26)
+                val (body, root) = when (kind) {
+                    "video" -> DjiWidgetRenderer.video(context, config, state) to R.id.widgetVideoRoot
+                    "photo" -> DjiWidgetRenderer.photo(context, config, state) to R.id.widgetPhotoRoot
+                    "combined" -> DjiWidgetRenderer.videoPhoto(context, config, state) to R.id.widgetVideoPhotoRoot
+                    else -> DjiWidgetRenderer.cameraControl(context, config, state) to R.id.widgetControlRoot
+                }
+                val captionId = when (kind) {
+                    "video" -> R.string.dji_status
+                    "photo" -> R.string.dji_photo
+                    "combined" -> R.string.dji_video_photo
+                    else -> R.string.dji_power
+                }
+                val view = DjiWidgetRenderer.captionedField(context, captionId, caption, body).apply(context, FrameLayout(context))
+                val frame = view.findViewById<View>(root)
+                assertEquals(if (caption) 4 else 6, frame.paddingTop)
+                assertEquals(if (caption) 8 else 6, frame.paddingBottom)
+                view.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY))
+                view.layout(0, 0, width, height)
+                val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+                view.draw(Canvas(bitmap))
+                val folder = File("build/reports/settings-ui/automation-widgets").apply { mkdirs() }
+                File(folder, "$size-$kind-caption-$caption.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+            }
+        }
+    }
+
 }

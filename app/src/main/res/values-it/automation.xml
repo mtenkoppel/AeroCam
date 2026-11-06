@@ -35,4 +35,7 @@
     <string name="automation_boundary_help">I limiti della pedalata aggiungono solo momenti salienti a un video già in corso. Non avviano video né scattano foto. Pause e riprese non aggiungono questi marcatori.</string>
     <string name="automation_help">Scegli un modo e aggiungi eventi. Con i momenti salienti automatici controlli tu avvio e arresto. La registrazione automatica avvia un video al verificarsi di un evento e lo ferma dopo un minuto intero senza soglie attive. Un nuovo sforzo o evento azzera il ritardo. Puoi cambiare la durata o disattivare l’arresto nelle impostazioni. I momenti salienti automatici sono attivi per impostazione predefinita. Le foto automatiche sono distanziate di almeno 30 secondi; fotocamere occupate, disconnesse o in registrazione vengono ignorate. Gli eventi non vengono rimandati. I video manuali non si fermano mai automaticamente. Pausa, fine della pedalata, modifiche alle impostazioni o disconnessione restituiscono il video al controllo manuale. Senza dati dei sensori il timer attende dati nuovi. La fotocamera deve essere accesa e connessa.</string>
     <string name="automation_auto_rec">AUTO REC</string>
+    <string name="automation_uphill_help">Cattura le salite alla pendenza scelta e con una velocità minima facoltativa.</string>
+    <string name="automation_descent_help">Cattura le discese alla pendenza scelta e con una velocità minima facoltativa.</string>
+    <string name="automation_ride_help">Aggiungi momenti salienti a inizio e fine uscita se un video è già in registrazione.</string>
 </resources>

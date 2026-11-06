@@ -62,6 +62,7 @@ object DjiWidgetLayout {
 object DjiWidgetRenderer {
     fun captionedField(context: Context, caption: Int, showCaption: Boolean, body: RemoteViews): RemoteViews =
         RemoteViews(context.packageName, R.layout.widget_dji_field).apply {
+            body.applyWidgetFrameForCaption(showCaption)
             setTextViewText(R.id.widgetFieldCaption, context.getString(caption).uppercase())
             setViewVisibility(R.id.widgetFieldCaption, if (showCaption) View.VISIBLE else View.GONE)
             removeAllViews(R.id.widgetFieldBody)
@@ -667,8 +668,20 @@ object DjiWidgetRenderer {
         return 3 * maxOf(icon, metrics.descent - metrics.ascent) + 2 * gap
     }
 
-    private fun RemoteViews.applyWidgetFrame(rootId: Int) {
-        setViewPadding(rootId, 10, 4, 10, 8)
+    private fun RemoteViews.applyWidgetFrame(rootId: Int, showCaption: Boolean = false) {
+        // Total inset stays 12px, so every shared button keeps its measured space.
+        setViewPadding(rootId, 10, if (showCaption) 4 else 6, 10, if (showCaption) 8 else 6)
+    }
+
+    private fun RemoteViews.applyWidgetFrameForCaption(showCaption: Boolean) {
+        val rootId = when (layoutId) {
+            R.layout.widget_dji_video -> R.id.widgetVideoRoot
+            R.layout.widget_dji_photo -> R.id.widgetPhotoRoot
+            R.layout.widget_dji_video_photo -> R.id.widgetVideoPhotoRoot
+            R.layout.widget_dji_control -> R.id.widgetControlRoot
+            else -> return
+        }
+        applyWidgetFrame(rootId, showCaption)
     }
 
     private fun RemoteViews.applyIconPadding(
