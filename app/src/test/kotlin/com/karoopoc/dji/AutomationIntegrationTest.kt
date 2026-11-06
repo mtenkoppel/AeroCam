@@ -17,6 +17,25 @@ import java.time.Duration
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [32])
 class AutomationIntegrationTest {
+    @Test fun autoPauseRetainsStopPermissionWhileManualPauseCancelsAutomation() {
+        val context = RuntimeEnvironment.getApplication()
+        DjiSettings.resetAll(context)
+        val integration = DjiKarooIntegration(context, KarooSystemService(context))
+        val method = DjiKarooIntegration::class.java.getDeclaredMethod("onRideState", RideState::class.java)
+            .apply { isAccessible = true }
+        method.invoke(integration, RideState.Recording)
+        while (shadowOf(context).nextStartedService != null) { }
+        method.invoke(integration, RideState.Paused(auto = true))
+        val automatic = generateSequence { shadowOf(context).nextStartedService }.toList()
+        assertFalse(automatic.any { it.action == DjiCameraService.ACTION_AUTO_CANCEL })
+        val state = automatic.single { it.action == DjiCameraService.ACTION_RIDE_STATE_CHANGED }
+        assertTrue(state.getBooleanExtra("automationRideActive", false))
+        assertFalse(state.getBooleanExtra("automationCaptureActive", true))
+        method.invoke(integration, RideState.Paused(auto = false))
+        val manual = generateSequence { shadowOf(context).nextStartedService }.toList()
+        assertTrue(manual.any { it.action == DjiCameraService.ACTION_AUTO_CANCEL })
+    }
+
     @Test fun freshSpeedCannotTriggerCaptureUsingStaleGradient() {
         val context = RuntimeEnvironment.getApplication()
         DjiSettings.resetAll(context)
