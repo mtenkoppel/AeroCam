@@ -79,3 +79,7 @@ historical `v1.0` tag. The first patch uses `versionName = "1.0.1"` and tag
 The README and landing page use `/releases/latest`. GitHub points that URL to
 the current stable release. Published tags and APKs stay immutable. For a fix or
 revert, publish a new patch with a higher Android version code.
+
+## Official beta releases
+
+Use `1.1.0-beta.1` (tag `v1.1.0-beta.1`) and a version code above all distributed builds. The same approved-master workflow accepts `MAJOR.MINOR.PATCH-beta.N`, verifies the established certificate and publishes with `--prerelease --latest=false`. Stable versions retain `--latest`. Beta downloads must link to their explicit release page; `/releases/latest` continues to serve the stable release. Each beta gets a new immutable tag and higher version code.

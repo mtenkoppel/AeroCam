@@ -70,4 +70,20 @@
     <string name="ob_downhill_range" formatted="false">Inserisci una velocità da 40 a 80 km/h e una pendenza da −30 a −1%.</string>
     <string name="ob_uphill_grade_range" formatted="false">Inserisci una pendenza da +1 a +30%.</string>
     <string name="ob_downhill_grade_range" formatted="false">Inserisci una pendenza da −30 a −1%.</string>
+
+    <string name="ob_automation_step">Automazione · %1$d di 2</string>
+    <string name="ob_automation_title">Riprendere automaticamente la tua uscita?</string>
+    <string name="ob_automation_example" formatted="false">Per esempio, avvia una registrazione su una discesa del 5% o durante uno scatto oltre i 500 W.</string>
+    <string name="ob_automation_recording">Avvia e ferma la registrazione automaticamente</string>
+    <string name="ob_automation_highlights">Aggiungi solo momenti salienti automatici</string>
+    <string name="ob_automation_photos">Foto automatiche</string>
+    <string name="ob_automation_off">No, grazie</string>
+    <string name="ob_automation_triggers">Aggiungi i tuoi eventi</string>
+    <string name="ob_automation_trigger_intro">Gli eventi scelti indicano ad AeroCam quando agire.</string>
+    <string name="ob_automation_add_trigger">Aggiungi evento</string>
+    <string name="ob_automation_event">Evento dell’uscita</string>
+    <string name="ob_automation_boundary">Contrassegna solo i video in registrazione</string>
+    <string name="ob_automation_needs_start">Aggiungi un evento che possa avviare un video. L’inizio e la fine dell’uscita contrassegnano solo i video in registrazione.</string>
+    <string name="ob_automation_settings">Puoi modificare i tuoi eventi in qualsiasi momento in Impostazioni → Automazione.</string>
+    <string name="ob_automation_skipped">Automazione saltata. Puoi configurarla in qualsiasi momento in Impostazioni → Automazione.</string>
 </resources>

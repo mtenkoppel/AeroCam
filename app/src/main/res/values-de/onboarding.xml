@@ -70,4 +70,20 @@
     <string name="ob_downhill_range" formatted="false">Gib ein Tempo von 40 bis 80 km/h und ein Gefälle von −30 bis −1% ein.</string>
     <string name="ob_uphill_grade_range" formatted="false">Gib eine Steigung von +1 bis +30% ein.</string>
     <string name="ob_downhill_grade_range" formatted="false">Gib ein Gefälle von −30 bis −1% ein.</string>
+
+    <string name="ob_automation_step">Automatisierung · %1$d von 2</string>
+    <string name="ob_automation_title">Deine Fahrt automatisch festhalten?</string>
+    <string name="ob_automation_example" formatted="false">Starte eine Aufnahme zum Beispiel bei 5 % Gefälle oder bei einer Leistungsspitze über 500 W.</string>
+    <string name="ob_automation_recording">Aufnahme automatisch starten und stoppen</string>
+    <string name="ob_automation_highlights">Nur automatische Highlights</string>
+    <string name="ob_automation_photos">Automatische Fotos</string>
+    <string name="ob_automation_off">Nein, danke</string>
+    <string name="ob_automation_triggers">Auslöser hinzufügen</string>
+    <string name="ob_automation_trigger_intro">Auslöser bestimmen, wann AeroCam aktiv wird.</string>
+    <string name="ob_automation_add_trigger">Auslöser hinzufügen</string>
+    <string name="ob_automation_event">Fahrtereignis</string>
+    <string name="ob_automation_boundary">Markiert nur laufende Aufnahmen</string>
+    <string name="ob_automation_needs_start">Füge einen Auslöser hinzu, der eine Aufnahme starten kann. Fahrtbeginn und -ende markieren nur laufende Aufnahmen.</string>
+    <string name="ob_automation_settings">Du kannst deine Auslöser jederzeit unter Einstellungen → Automatisierung ändern.</string>
+    <string name="ob_automation_skipped">Automatisierung übersprungen. Du kannst sie jederzeit unter Einstellungen → Automatisierung einrichten.</string>
 </resources>

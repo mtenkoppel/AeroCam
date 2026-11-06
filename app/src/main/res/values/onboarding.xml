@@ -70,4 +70,20 @@
     <string name="ob_downhill_range" formatted="false">Enter speed from 40 to 80 km/h and gradient from −30 to −1%.</string>
     <string name="ob_uphill_grade_range" formatted="false">Enter a gradient from +1 to +30%.</string>
     <string name="ob_downhill_grade_range" formatted="false">Enter a gradient from −30 to −1%.</string>
+
+    <string name="ob_automation_step">Automation · %1$d of 2</string>
+    <string name="ob_automation_title">Capture your ride automatically?</string>
+    <string name="ob_automation_example" formatted="false">For example, start recording on a 5% descent or during a burst over 500 W.</string>
+    <string name="ob_automation_recording">Auto start/stop recording</string>
+    <string name="ob_automation_highlights">Only add auto highlights</string>
+    <string name="ob_automation_photos">Auto photos</string>
+    <string name="ob_automation_off">No thanks</string>
+    <string name="ob_automation_triggers">Add your triggers</string>
+    <string name="ob_automation_trigger_intro">Triggers tell AeroCam when to act.</string>
+    <string name="ob_automation_add_trigger">Add trigger</string>
+    <string name="ob_automation_event">Ride event</string>
+    <string name="ob_automation_boundary">Marks existing video only</string>
+    <string name="ob_automation_needs_start">Add a trigger that can start a video. Ride start/end markers only mark video that’s already recording.</string>
+    <string name="ob_automation_settings">You can change your triggers anytime in Settings → Automation.</string>
+    <string name="ob_automation_skipped">Automation skipped. Set it up any time in Settings → Automation.</string>
 </resources>

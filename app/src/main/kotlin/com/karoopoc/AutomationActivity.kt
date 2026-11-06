@@ -48,27 +48,11 @@ class AutomationActivity : Activity() {
                 title(R.string.automation_add_trigger)
                 description(R.string.automation_catalog_help)
                 AutomationTriggers.all.filterNot { it.selected(this) }.forEach { trigger ->
-                    val label = android.text.SpannableStringBuilder(getString(trigger.title)).apply {
-                        setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, length, 0)
-                        setSpan(android.text.style.AbsoluteSizeSpan(17, true), 0, length, 0)
-                        append("\n")
-                        val start = length
-                        append(getString(trigger.description))
-                        setSpan(android.text.style.ForegroundColorSpan(ui.palette.textSecondary), start, length, 0)
-                    }
-                    content.addView(ui.action(label) {
+                    content.addView(trigger.row(ui, getString(trigger.description)) {
                         startActivityForResult(Intent(this, AutomationActivity::class.java)
                             .putExtra("page", trigger.key).putExtra("drill_down", true), ADD_TRIGGER,
                             ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
-                    }.apply {
-                        textSize = 15f; typeface = android.graphics.Typeface.DEFAULT; setLineSpacing(0f, 1.12f)
-                        setPadding(ui.dp(10), ui.dp(8), ui.dp(8), ui.dp(8))
-                        backgroundTintList = null
-                        val shape = ui.cardBackground()
-                        background = android.graphics.drawable.RippleDrawable(
-                            android.content.res.ColorStateList.valueOf(0x22000000), shape, shape.constantState!!.newDrawable())
-                    },
-                        ui.fullWidthParams(0, ui.dp(8)))
+                    }, ui.fullWidthParams(0, ui.dp(8)))
                 }
             }
             "photos" -> {
