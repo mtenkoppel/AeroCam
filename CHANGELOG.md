@@ -5,18 +5,21 @@ the matching version heading when preparing a release.
 
 ## [Unreleased]
 
-- Added Auto photo settings with a saved minimum interval (default two minutes) and simplified rider-focused automation help.
+## [1.1.0-beta.1] - 2026-11-06
 
-- Order automation modes as recordings, highlights, then photos, separate the choices more clearly, circle the settings A icon, and increase automatic widget indicator contrast. Help icons now match the heading color.
+This is the first official 1.1 beta. The stable release remains 1.0.2.
 
-- Center untitled widget frames, compact automation settings, add Material help icons and simplify trigger descriptions.
+- Choose automatic recording, automatic video highlights, or automatic photos, then add the ride triggers that matter to you.
+- Automatic recordings stop after a quiet minute by default. Renewed triggers keep the clip running. Adjust the delay or disable automatic stopping in Auto recording settings; manual recordings remain under your control.
+- Set the minimum time between automatic photos in Auto photo settings (two minutes by default). Busy, recording or unavailable cameras skip photos rather than queue them.
+- Follow the new two-step automation onboarding: choose a mode, then add and edit triggers. You can skip automation and configure it later.
+- An A inside the video/photo icon indicates the armed automatic mode. AUTO REC beneath the timer identifies a clip under automatic-stop control, with brief start/stop feedback.
+- Shared camera controls now use consistent layouts, readable labels and centered content across widget sizes. Cam Control shows video resolution alongside battery and storage status.
+- Simpler automation help, compact settings, and shared trigger cards across setup and Settings, localized in all six supported languages.
 
-- Refined automation controls with an A inside armed video/photo icons and AUTO REC beneath automatically controlled recording timers. Unified help typography, compact trigger catalog rows and return-to-settings after adding a trigger.
+Install this APK over your existing AeroCam installation to keep pairing and settings. Do not uninstall first.
 
-- Added an Automation section with one choice of automatic video highlights, automatic recording, or automatic photos, plus a trigger catalog and editable trigger details.
-- Automatic recordings stop after a full quiet minute by default. Renewed efforts reset the delay; the delay is adjustable and automatic stopping can be disabled. Automatic highlights default on.
-- Added AUTO START / AUTO STOP sublines and brief REC STARTED / REC STOPPED feedback to the shared video control. Manual recordings remain under rider control.
-- Automatic photos use a configurable minimum interval, defaulting to two minutes and skip recording, busy, or unavailable cameras without replaying events later.
+Beta testing: camera commands and ride automation need real-world validation. In particular, test overlapping triggers, manual start/stop overrides, reconnects and switching between photos and video. Configure automation before riding and review results when stopped.
 
 ## [1.0.2] - 2026-11-05
 
