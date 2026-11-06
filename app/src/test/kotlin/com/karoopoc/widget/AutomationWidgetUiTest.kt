@@ -49,6 +49,8 @@ class AutomationWidgetUiTest {
                 assertEquals("$size/$name", expected, line.text.toString())
                 assertEquals(if (expected.isEmpty()) View.GONE else View.VISIBLE, line.visibility)
                 if (line.visibility == View.VISIBLE) {
+                    if (camera.recording) assertTrue("$size/$kind/$name keeps timer prominent",
+                        view.findViewById<TextView>(R.id.widgetVideoTimer).textSize >= line.textSize * 1.2f)
                     assertTrue("$size/$name fits width", line.paint.measureText(line.text.toString()) <= line.width)
                     val loc = IntArray(2); line.getLocationOnScreen(loc)
                     assertTrue("$size/$name fits height", loc[1] >= 0 && loc[1] + line.height <= view.height)

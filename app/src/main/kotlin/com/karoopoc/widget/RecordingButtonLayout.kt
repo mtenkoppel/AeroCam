@@ -57,7 +57,7 @@ internal object RecordingButtonLayout {
         val minimumWithSecondary = sp(resources, 14)
         // Grow labels where space permits, but preserve the established short-slot feedback.
         while (secondary != null && secondary.size > sp(resources, 11) &&
-            (reservedTimer == null || reservedTimer.size < minimumWithSecondary)) {
+            (reservedTimer == null || reservedTimer.size < maxOf(minimumWithSecondary, secondary.size * 1.25f))) {
             secondary = line(regular, secondary.text, secondary.size - 1f)
             reservedTimer = fitTimer(bold, timer, preferred, width, height, secondary)
         }
