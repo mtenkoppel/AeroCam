@@ -44,3 +44,10 @@ License: Apache License 2.0
 
 AeroCam includes adapted Android vector versions of selected outlined Material
 icons.
+
+## Google Material Icons
+
+The `help_outline` icon is from Google Material Design Icons, licensed under Apache License 2.0. Its original path is preserved in `ic_help_outline.xml`.
+
+Source: https://github.com/google/material-design-icons/blob/master/src/action/help_outline/materialicons/24px.svg
+License: https://github.com/google/material-design-icons/blob/master/LICENSE

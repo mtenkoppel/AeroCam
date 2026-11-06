@@ -52,6 +52,15 @@ object DjiCameraController {
 
     fun diagnosticReconnect(context: Context) = dispatch(context, DjiCameraService.ACTION_DIAGNOSTIC_RECONNECT)
 
+    fun automaticStart(context: Context) = dispatch(context, DjiCameraService.ACTION_AUTO_START) { putExtra("requestedAt", SystemClock.elapsedRealtime()) }
+    fun automaticPhoto(context: Context) = dispatch(context, DjiCameraService.ACTION_AUTO_PHOTO) { putExtra("requestedAt", SystemClock.elapsedRealtime()) }
+    fun holdAutomaticRecording(context: Context) = dispatch(context, DjiCameraService.ACTION_AUTO_HOLD)
+    fun cancelAutomation(context: Context) = dispatch(context, DjiCameraService.ACTION_AUTO_CANCEL)
+    fun automaticStop(context: Context, clip: Long) = dispatch(context, DjiCameraService.ACTION_AUTO_STOP) {
+        putExtra("clip", clip)
+        putExtra("requestedAt", SystemClock.elapsedRealtime())
+    }
+
     fun takePhoto(context: Context) = dispatch(context, DjiCameraService.ACTION_PHOTO)
 
     fun startRecording(context: Context) = dispatch(context, DjiCameraService.ACTION_RECORD_START)
@@ -98,11 +107,11 @@ object DjiCameraController {
         dispatch(context, DjiCameraService.ACTION_KEEP_AWAKE_CHANGED)
     }
 
-    fun setRideActive(context: Context, active: Boolean) {
+    fun setRideActive(context: Context, active: Boolean, automationActive: Boolean = active) {
         dispatch(
             context,
             DjiCameraService.ACTION_RIDE_STATE_CHANGED,
-            extras = { putExtra(DjiCameraService.EXTRA_RIDE_ACTIVE, active) },
+            extras = { putExtra(DjiCameraService.EXTRA_RIDE_ACTIVE, active); putExtra("automationRideActive", automationActive) },
         )
     }
 
@@ -231,6 +240,13 @@ class DjiCameraService : Service() {
             ACTION_CONNECT -> client.autoConnectKnownDevice()
             ACTION_DIAGNOSTIC_DISCONNECT -> client.diagnosticDisconnect()
             ACTION_DIAGNOSTIC_RECONNECT -> client.diagnosticReconnect()
+            ACTION_AUTO_START -> if (freshAutomaticRequest(intent)) client.automaticStart()
+            ACTION_AUTO_PHOTO -> if (freshAutomaticRequest(intent)) client.automaticPhoto()
+            ACTION_AUTO_CANCEL -> client.cancelAutomation()
+            ACTION_AUTO_HOLD -> client.cancelPendingAutomaticStop()
+            ACTION_AUTO_STOP -> if (freshAutomaticRequest(intent)) {
+                client.automaticStop(intent?.getLongExtra("clip", 0) ?: 0)
+            }
             ACTION_PHOTO -> client.triggerPhoto()
             ACTION_RECORD_START -> {
                 if (!client.state().recording) client.startVideoRecording()
@@ -250,9 +266,10 @@ class DjiCameraService : Service() {
             }
             ACTION_FORGET -> client.forgetKnownDevice()
             ACTION_KEEP_AWAKE_CHANGED -> applyKeepAwakeSettings()
-            ACTION_RIDE_STATE_CHANGED -> client.setRideActive(
-                intent?.getBooleanExtra(EXTRA_RIDE_ACTIVE, false) ?: false,
-            )
+            ACTION_RIDE_STATE_CHANGED -> {
+                client.setAutomationRideActive(intent?.getBooleanExtra("automationRideActive", false) ?: false)
+                client.setRideActive(intent?.getBooleanExtra(EXTRA_RIDE_ACTIVE, false) ?: false)
+            }
             ACTION_GPS_UPDATED -> client.updateGpsTelemetry(
                 DjiGpsTelemetry(
                     latitude = intent?.getDoubleExtra(EXTRA_GPS_LATITUDE, 0.0) ?: 0.0,
@@ -270,6 +287,9 @@ class DjiCameraService : Service() {
         }
         return START_STICKY
     }
+
+    private fun freshAutomaticRequest(intent: Intent?): Boolean =
+        SystemClock.elapsedRealtime() - (intent?.getLongExtra("requestedAt", -10000) ?: -10000) in 0..1999
 
     override fun onDestroy() {
         client.disconnect()
@@ -371,6 +391,11 @@ class DjiCameraService : Service() {
         private const val BLUETOOTH_RESOURCE = "dji-camera"
         private const val BLUETOOTH_REQUEST_DEBOUNCE_MS = 2_000L
 
+        const val ACTION_AUTO_START = "com.karoopoc.dji.AUTO_START"
+        const val ACTION_AUTO_STOP = "com.karoopoc.dji.AUTO_STOP"
+        const val ACTION_AUTO_PHOTO = "com.karoopoc.dji.AUTO_PHOTO"
+        const val ACTION_AUTO_HOLD = "com.karoopoc.dji.AUTO_HOLD"
+        const val ACTION_AUTO_CANCEL = "com.karoopoc.dji.AUTO_CANCEL"
         const val ACTION_START = "com.karoopoc.dji.START"
         const val ACTION_DISCOVER = "com.karoopoc.dji.DISCOVER"
         const val ACTION_DIAGNOSTIC_DISCONNECT = "com.karoopoc.dji.DIAGNOSTIC_DISCONNECT"

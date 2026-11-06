@@ -62,6 +62,7 @@ object DjiWidgetLayout {
 object DjiWidgetRenderer {
     fun captionedField(context: Context, caption: Int, showCaption: Boolean, body: RemoteViews): RemoteViews =
         RemoteViews(context.packageName, R.layout.widget_dji_field).apply {
+            body.applyWidgetFrameForCaption(showCaption)
             setTextViewText(R.id.widgetFieldCaption, context.getString(caption).uppercase())
             setViewVisibility(R.id.widgetFieldCaption, if (showCaption) View.VISIBLE else View.GONE)
             removeAllViews(R.id.widgetFieldBody)
@@ -145,12 +146,41 @@ object DjiWidgetRenderer {
         applyIconPadding(context, R.dimen.widget_icon_utility_padding, R.id.widgetVideoHighlightIcon)
         setTextColor(R.id.widgetVideoTimer, palette.textOnAccent)
         setTextColor(R.id.widgetVideoMeta, palette.textOnAccent)
-        setImageViewResource(R.id.widgetVideoIcon, if (connected) R.drawable.ic_widget_video else R.drawable.ic_widget_video_disabled)
+        val automation = com.karoopoc.dji.DjiSettings.read(context)
+        setImageViewResource(R.id.widgetVideoIcon, when {
+            !connected -> R.drawable.ic_widget_video_disabled
+            automation.autoHighlightsEnabled && automation.autoStartRecording -> R.drawable.ic_widget_video_auto
+            else -> R.drawable.ic_widget_video
+        })
         setViewVisibility(R.id.widgetVideoIdle, if (!recording && !pending && !showConnect) View.VISIBLE else View.GONE)
         setViewVisibility(R.id.widgetVideoRecording, if (recording && !pending) View.VISIBLE else View.GONE)
         setViewVisibility(R.id.widgetVideoSpinner, if (pending) View.VISIBLE else View.GONE)
         setViewVisibility(R.id.widgetVideoHighlight, if (showHighlight) View.VISIBLE else View.GONE)
 
+        val idleLine = when {
+            state.automationFeedback == "STOPPED" -> context.getString(R.string.automation_rec_stopped)
+            else -> null
+        }
+        if (idleLine != null) {
+            val preferred = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 11f, context.resources.displayMetrics)
+            val paint = Paint().apply { textSize = preferred; typeface = android.graphics.Typeface.DEFAULT_BOLD }
+            val available = (config.viewSize.first - FIELD_HORIZONTAL_INSET).coerceAtLeast(1)
+            setTextViewTextSize(R.id.widgetVideoIdleMeta, TypedValue.COMPLEX_UNIT_PX,
+                minOf(preferred, preferred * available / paint.measureText(idleLine)))
+        }
+        setTextViewText(R.id.widgetVideoIdleMeta, idleLine ?: "")
+        setViewVisibility(R.id.widgetVideoIdleMeta, if (idleLine != null) View.VISIBLE else View.GONE)
+        // Preserve the existing 26dp glyph; borrow its vertical padding for the subline in short slots.
+        if (android.os.Build.VERSION.SDK_INT >= 31) {
+            val density = context.resources.displayMetrics.density
+            val normalIcon = context.resources.getDimensionPixelSize(R.dimen.widget_icon_primary_size)
+            val lineHeight = if (idleLine != null) (15 * context.resources.displayMetrics.scaledDensity).toInt() else 0
+            val iconHeight = minOf(normalIcon, (buttonHeight - lineHeight - 4 * density).toInt()).coerceAtLeast(1)
+            setViewLayoutHeight(R.id.widgetVideoIcon, iconHeight.toFloat(), android.util.TypedValue.COMPLEX_UNIT_PX)
+            val sidePadding = context.resources.getDimensionPixelSize(R.dimen.widget_icon_primary_padding)
+            val verticalPadding = minOf(sidePadding, ((iconHeight - 26 * density) / 2).toInt().coerceAtLeast(0))
+            setViewPadding(R.id.widgetVideoIcon, sidePadding, verticalPadding, sidePadding, verticalPadding)
+        }
         var markHighlight = false
         if (recording && !pending) {
             val resources = context.resources
@@ -158,13 +188,18 @@ object DjiWidgetRenderer {
                 resources.getDimensionPixelSize(R.dimen.widget_highlight_button_width) +
                     resources.getDimensionPixelSize(R.dimen.widget_combined_gap)
             } else 0
-            val feedback = state.highlightFeedback?.let { "★ ${compactFeedback(context, it)}" }
+            val feedback = when {
+                state.automationFeedback == "STARTED" -> context.getString(R.string.automation_rec_started)
+                state.highlightFeedback != null -> "★ ${compactFeedback(context, state.highlightFeedback)}"
+                else -> null
+            }
+            val autoStopLine = if (state.automaticRecordingId != 0L && automation.autoHighlightsEnabled &&
+                automation.autoStartRecording && automation.autoStop) context.getString(R.string.automation_auto_rec) else null
             markHighlight = RecordingButtonLayout.render(
                 this, resources, config.viewSize.first - FIELD_HORIZONTAL_INSET - highlightWidth, buttonHeight,
                 formatDuration(state.recordingDurationSeconds), config.textSize, feedback,
                 // Cam Control already shows available storage in its status area.
-                metadata = if (hasConnectionButton || state.remainingCapacityMb == null) null
-                else formatStorage(context, state.remainingCapacityMb),
+                metadata = autoStopLine,
             )
         }
         setInt(R.id.widgetVideoHighlight, "setBackgroundResource",
@@ -200,10 +235,12 @@ object DjiWidgetRenderer {
         applyIconPadding(context, R.dimen.widget_icon_primary_padding, R.id.widgetPhotoIcon)
         setViewVisibility(R.id.widgetPhotoIcon, if (pending || showConnect) View.GONE else View.VISIBLE)
         setViewVisibility(R.id.widgetPhotoSpinner, if (pending) View.VISIBLE else View.GONE)
+        val automation = com.karoopoc.dji.DjiSettings.read(context)
         setImageViewResource(R.id.widgetPhotoIcon, when {
             !connected -> R.drawable.ic_widget_photo_disabled
             state.recording -> R.drawable.ic_widget_photo_muted
             completed -> R.drawable.ic_widget_photo_success
+            automation.autoHighlightsEnabled && automation.mode == com.karoopoc.dji.AutomationMode.PHOTOS -> R.drawable.ic_widget_photo_auto
             else -> R.drawable.ic_widget_photo
         })
         setInt(R.id.widgetPhotoPrimary, "setBackgroundResource", when {
@@ -631,8 +668,20 @@ object DjiWidgetRenderer {
         return 3 * maxOf(icon, metrics.descent - metrics.ascent) + 2 * gap
     }
 
-    private fun RemoteViews.applyWidgetFrame(rootId: Int) {
-        setViewPadding(rootId, 10, 4, 10, 8)
+    private fun RemoteViews.applyWidgetFrame(rootId: Int, showCaption: Boolean = false) {
+        // Total inset stays 12px, so every shared button keeps its measured space.
+        setViewPadding(rootId, 10, if (showCaption) 4 else 6, 10, if (showCaption) 8 else 6)
+    }
+
+    private fun RemoteViews.applyWidgetFrameForCaption(showCaption: Boolean) {
+        val rootId = when (layoutId) {
+            R.layout.widget_dji_video -> R.id.widgetVideoRoot
+            R.layout.widget_dji_photo -> R.id.widgetPhotoRoot
+            R.layout.widget_dji_video_photo -> R.id.widgetVideoPhotoRoot
+            R.layout.widget_dji_control -> R.id.widgetControlRoot
+            else -> return
+        }
+        applyWidgetFrame(rootId, showCaption)
     }
 
     private fun RemoteViews.applyIconPadding(

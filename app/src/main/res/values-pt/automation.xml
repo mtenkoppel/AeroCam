@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="automation_title">Automação</string>
+    <string name="automation_more_information">Mais informações</string>
+    <string name="automation_enable">Ativar automação</string>
+    <string name="automation_highlights">Adicionar apenas destaques automáticos</string>
+    <string name="automation_highlights_summary">Controla o início e a paragem da gravação.</string>
+    <string name="automation_recording">As gravações iniciam e param automaticamente</string>
+    <string name="automation_recording_start_only">As gravações iniciam automaticamente</string>
+    <string name="automation_recording_summary">Concentre-se em pedalar.</string>
+    <string name="automation_photos">Tirar apenas fotos automaticamente</string>
+    <string name="automation_photos_summary">Tira uma foto quando ocorre um evento. O vídeo continua manual.</string>
+    <string name="automation_recording_settings">Definições de gravação automática</string>
+    <string name="automation_empty">Adicione o primeiro evento: uma descida de 5 % acima de 50 km/h ou o próximo esforço acima de 500 W.</string>
+    <string name="automation_add_trigger">+ Adicionar evento</string>
+    <string name="automation_save">Guardar</string>
+    <string name="automation_add">Adicionar</string>
+    <string name="automation_about">Sobre a automação</string>
+    <string name="automation_catalog_help">Escolha um evento ou limiar para captar momentos automaticamente. Pode adicionar vários eventos.</string>
+    <string name="automation_stop_automatically">Parar automaticamente</string>
+    <string name="automation_stop_seconds">Parar após (segundos)</string>
+    <string name="automation_add_highlights">Adicionar destaques automáticos</string>
+    <string name="automation_remove_trigger">Remover evento</string>
+    <string name="automation_invalid_number">Introduza um valor entre %1$d e %2$d.</string>
+    <string name="automation_auto_start">INÍCIO AUTO</string>
+    <string name="automation_auto_stop">PARAGEM AUTO</string>
+    <string name="automation_rec_started">GRAV. INICIADA</string>
+    <string name="automation_rec_stopped">GRAV. PARADA</string>
+    <string name="automation_lap_help">Capte um momento quando o Karoo regista uma nova volta.</string>
+    <string name="automation_power_help">Capte esforços quando a potência ultrapassa o limiar escolhido.</string>
+    <string name="automation_speed_help">Capte trechos rápidos quando a velocidade ultrapassa o limiar escolhido.</string>
+    <string name="automation_summit_help">Capte o topo de uma subida na rota ativa.</string>
+    <string name="automation_hr_help">Capte esforços intensos quando a frequência cardíaca ultrapassa o limiar escolhido.</string>
+    <string name="automation_trigger_detail_help">Este evento usa o modo escolhido durante uma atividade em curso. Dispara uma vez ao ultrapassar o limiar e fica pronto novamente após descer abaixo do limite de reposição. Dados em falta não provocam capturas.</string>
+    <string name="automation_boundary_help">Os limites da atividade só adicionam destaques a um vídeo em curso. Nunca iniciam vídeos nem tiram fotos. Pausas e retomas não adicionam estes marcadores.</string>
+    <string name="automation_help">Escolhe um modo e adiciona condições para os momentos que queres captar durante a volta.\n\n**Gravação automática**\n\nA câmara começa a gravar quando uma condição é cumprida. Por predefinição, para um minuto depois de todas as condições ficarem inativas. Uma nova condição mantém a gravação. Podes alterar este tempo ou desativar a paragem automática nas definições de gravação automática.\n\nPodes sempre iniciar uma gravação manualmente ou parar uma gravação automática. As gravações que inicias não param automaticamente. As gravações automáticas também podem incluir destaques.\n\n**Destaques automáticos**\n\nTu inicias e paras a gravação. As condições adicionam destaques para encontrares os teus momentos favoritos mais tarde.\n\n**Fotos automáticas**\n\nA câmara tira uma foto quando uma condição é cumprida, com pelo menos dois minutos entre fotos por predefinição. Podes alterar este intervalo nas definições de fotos automáticas. As fotos só são tiradas quando a câmara está pronta e não está a gravar vídeo.\n\nMantém a câmara ligada e conectada durante a volta.</string>
+    <string name="automation_auto_rec">AUTO REC</string>
+    <string name="automation_uphill_help">Capta subidas com a inclinação escolhida e uma velocidade mínima opcional.</string>
+    <string name="automation_descent_help">Capta descidas com a inclinação escolhida e uma velocidade mínima opcional.</string>
+    <string name="automation_ride_help">Adiciona destaques no início e no fim da volta se um vídeo já estiver a ser gravado.</string>
+    <string name="automation_photo_settings">Definições de fotos automáticas</string>
+    <string name="automation_photo_interval_seconds">Tempo mínimo entre fotos (segundos)</string>
+</resources>

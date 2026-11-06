@@ -68,12 +68,15 @@ class SettingsThemeTest {
             assertReadable(it.currentTextColor, palette.previewBackground, "Switch ${it.text}")
             assertNativeColors(it.context, palette.previewBackground)
         }
-        val inputs = controls.filterIsInstance<EditText>()
+        val detail = Robolectric.buildActivity(AutomationActivity::class.java,
+            android.content.Intent(activity, AutomationActivity::class.java).putExtra("page", "recording")).setup()
+        val inputs = descendants(detail.get().findViewById(android.R.id.content)).filterIsInstance<EditText>()
         assertTrue(inputs.isNotEmpty())
         inputs.forEach {
             assertReadable(it.currentTextColor, palette.previewBackground, "Numeric input")
             assertNativeColors(it.context, palette.previewBackground)
         }
+        detail.pause().stop().destroy()
         assertTrue("The appearance selector must be removed", controls.filterIsInstance<Spinner>().isEmpty())
         controls.filterIsInstance<Button>().single { it.text.toString() == activity.getString(R.string.highlight_cooldown) }.performClick()
         val cooldown = org.robolectric.shadows.ShadowAlertDialog.getLatestAlertDialog()

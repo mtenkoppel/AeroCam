@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="automation_title">Automation</string>
+    <string name="automation_more_information">More information</string>
+    <string name="automation_enable">Enable automation</string>
+    <string name="automation_highlights">Only add automatic highlights</string>
+    <string name="automation_highlights_summary">You control start and stop recording.</string>
+    <string name="automation_recording">Recordings are automatically started and stopped</string>
+    <string name="automation_recording_start_only">Recordings are automatically started</string>
+    <string name="automation_recording_summary">Stay focused on riding.</string>
+    <string name="automation_photos">Only take photos automatically</string>
+    <string name="automation_photos_summary">Take a photo when a trigger occurs. Video recording stays manual.</string>
+    <string name="automation_recording_settings">Auto recording settings</string>
+    <string name="automation_empty">Add your first trigger to capture the good stuff: a 5% descent above 50 km/h, or your next 500 W+ burst.</string>
+    <string name="automation_add_trigger">+ Add trigger</string>
+    <string name="automation_save">Save</string>
+    <string name="automation_add">Add</string>
+    <string name="automation_about">About automation</string>
+    <string name="automation_catalog_help">Choose a ride event or threshold to capture moments automatically. You can add several triggers.</string>
+    <string name="automation_stop_automatically">Stop automatically</string>
+    <string name="automation_stop_seconds">Stop after (seconds)</string>
+    <string name="automation_add_highlights">Add automatic highlights</string>
+    <string name="automation_remove_trigger">Remove trigger</string>
+    <string name="automation_invalid_number">Enter a value from %1$d to %2$d.</string>
+    <string name="automation_auto_start">AUTO START</string>
+    <string name="automation_auto_stop">AUTO STOP</string>
+    <string name="automation_rec_started">REC STARTED</string>
+    <string name="automation_rec_stopped">REC STOPPED</string>
+    <string name="automation_lap_help">Capture a moment whenever Karoo records a new lap.</string>
+    <string name="automation_power_help">Capture your hard efforts when power crosses your chosen wattage.</string>
+    <string name="automation_speed_help">Capture fast stretches when speed crosses your chosen threshold.</string>
+    <string name="automation_summit_help">Capture the summit of a climb on your active route.</string>
+    <string name="automation_hr_help">Capture intense efforts when heart rate crosses your chosen threshold.</string>
+    <string name="automation_trigger_detail_help">This trigger uses the selected automation mode during an active ride. Threshold triggers fire once on crossing, then rearm after you fall below the reset boundary. Missing sensor data cannot trigger a capture.</string>
+    <string name="automation_boundary_help">Ride boundaries only add highlights to a video already recording. They never start a video or take a photo. Pausing and resuming do not add boundary markers.</string>
+    <string name="automation_help">Choose a mode and add triggers for moments you want to capture during your ride.\n\n**Automatic recording**\n\nYour camera starts recording when a trigger is met. By default, it stops one minute after all triggers become inactive. A new trigger keeps it recording. You can change this delay or turn off automatic stopping in Auto recording settings.\n\nYou can always start a recording yourself or manually stop an automatic recording. Recordings you start yourself won’t stop automatically. Automatic recordings can also include highlights.\n\n**Automatic highlights**\n\nYou start and stop recording yourself. Triggers add highlights so you can find your favourite moments later.\n\n**Automatic photos**\n\nYour camera takes a photo when a trigger is met, with at least two minutes between photos by default. You can change this interval in Auto photo settings. Photos are only taken when the camera is ready and isn’t recording video.\n\nKeep your camera on and connected while riding.</string>
+    <string name="automation_auto_rec">AUTO REC</string>
+    <string name="automation_uphill_help">Capture climbs at your chosen gradient and optional minimum speed.</string>
+    <string name="automation_descent_help">Capture descents at your chosen gradient and optional minimum speed.</string>
+    <string name="automation_ride_help">Add highlights at ride start and finish while a video is already recording.</string>
+    <string name="automation_photo_settings">Auto photo settings</string>
+    <string name="automation_photo_interval_seconds">Minimum time between photos (seconds)</string>
+</resources>

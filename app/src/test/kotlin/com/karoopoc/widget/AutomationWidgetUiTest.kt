@@ -1,0 +1,163 @@
+package com.karoopoc.widget
+
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.view.View
+import android.widget.FrameLayout
+import android.widget.TextView
+import com.karoopoc.R
+import com.karoopoc.dji.*
+import io.hammerhead.karooext.models.ViewConfig
+import org.junit.Assert.*
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.GraphicsMode
+import java.io.File
+
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [32], qualifiers = "w256dp-h427dp-port-300dpi")
+@GraphicsMode(GraphicsMode.Mode.NATIVE)
+class AutomationWidgetUiTest {
+    @Test fun automaticStatesUseSharedSublinesAndManualClipsHaveNoStopPromise() {
+        val context = RuntimeEnvironment.getApplication()
+        DjiSettings.resetAll(context)
+        DjiSettings.preferences(context).edit().putString(DjiSettings.KEY_AUTOMATION_MODE, AutomationMode.RECORDING.name).commit()
+        val idle = DjiCameraState(configured = true, connection = CameraConnectionState.CONNECTED)
+        val recording = idle.copy(recording = true, automaticRecordingId = 1, recordingDurationSeconds = 199)
+        val states = listOf(
+            Triple("idle", idle, ""),
+            Triple("started", recording.copy(automationFeedback = "STARTED"), "REC STARTED"),
+            Triple("recording", recording, "AUTO REC"),
+            Triple("highlight", recording.copy(highlightFeedback = "HIGHLIGHT"), "★ HIGHLIGHT"),
+            Triple("manual", recording.copy(automaticRecordingId = 0), ""),
+            Triple("stopped", idle.copy(automationFeedback = "STOPPED"), "REC STOPPED"),
+        )
+        for ((size, config) in listOf("half" to ViewConfig(30 to 15, 238 to 85, 24), "map" to ViewConfig(60 to 15, 480 to 97, 32), "full" to ViewConfig(60 to 60, 480 to 660, 40))) {
+            for ((name, camera, expected) in states) for (kind in if (size == "full") listOf("video", "combined", "control") else listOf("video", "combined")) {
+                val rv = when (kind) {
+                    "combined" -> DjiWidgetRenderer.videoPhoto(context, config, DjiWidgetViewState(camera))
+                    "control" -> DjiWidgetRenderer.cameraControl(context, config, DjiWidgetViewState(camera))
+                    else -> DjiWidgetRenderer.video(context, config, DjiWidgetViewState(camera))
+                }
+                val view = rv.apply(context, FrameLayout(context))
+                view.measure(View.MeasureSpec.makeMeasureSpec(config.viewSize.first, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(config.viewSize.second, View.MeasureSpec.EXACTLY))
+                view.layout(0, 0, config.viewSize.first, config.viewSize.second)
+                val line = view.findViewById<TextView>(if (camera.recording) R.id.widgetVideoMeta else R.id.widgetVideoIdleMeta)
+                assertEquals("$size/$name", expected, line.text.toString())
+                assertEquals(if (expected.isEmpty()) View.GONE else View.VISIBLE, line.visibility)
+                if (line.visibility == View.VISIBLE) {
+                    if (camera.recording) assertTrue("$size/$kind/$name keeps timer prominent",
+                        view.findViewById<TextView>(R.id.widgetVideoTimer).textSize >= line.textSize * 1.2f)
+                    assertTrue("$size/$name fits width", line.paint.measureText(line.text.toString()) <= line.width)
+                    val loc = IntArray(2); line.getLocationOnScreen(loc)
+                    assertTrue("$size/$name fits height", loc[1] >= 0 && loc[1] + line.height <= view.height)
+                }
+                val folder = File("build/reports/settings-ui/automation-widgets").apply { mkdirs() }
+                val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+                view.draw(Canvas(bitmap))
+                File(folder, "$size-$kind-$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+            }
+        }
+    }
+    private fun visibleInTree(view: View): Boolean = view.visibility == View.VISIBLE &&
+        ((view.parent as? View)?.let(::visibleInTree) ?: true)
+
+    @Test fun indicatorsRespectModeOwnershipAndPhotoFeedbackAcrossSharedFields() {
+        val context = RuntimeEnvironment.getApplication()
+        DjiSettings.resetAll(context)
+        val prefs = DjiSettings.preferences(context)
+        val idle = DjiCameraState(configured = true, connection = CameraConnectionState.CONNECTED)
+        val sizes = listOf(
+            "half" to ViewConfig(30 to 15, 238 to 85, 24),
+            "map" to ViewConfig(60 to 15, 480 to 97, 32),
+            "medium" to ViewConfig(60 to 20, 480 to 154, 32),
+            "large" to ViewConfig(60 to 30, 480 to 189, 40),
+            "full" to ViewConfig(60 to 60, 480 to 660, 40),
+        )
+        for (mode in AutomationMode.entries) for ((size, config) in sizes) {
+            prefs.edit().putString(DjiSettings.KEY_AUTOMATION_MODE, mode.name)
+                .putBoolean(DjiSettings.KEY_AUTO_HIGHLIGHTS_ENABLED, true).commit()
+            for (kind in listOf("video", "photo", "combined", "control")) {
+                val rv = when (kind) {
+                    "video" -> DjiWidgetRenderer.video(context, config, DjiWidgetViewState(idle))
+                    "photo" -> DjiWidgetRenderer.photo(context, config, DjiWidgetViewState(idle))
+                    "combined" -> DjiWidgetRenderer.videoPhoto(context, config, DjiWidgetViewState(idle))
+                    else -> DjiWidgetRenderer.cameraControl(context, config, DjiWidgetViewState(idle))
+                }
+                val view = rv.apply(context, FrameLayout(context))
+                view.findViewById<android.widget.ImageView>(R.id.widgetVideoIcon)?.takeIf(::visibleInTree)?.let {
+                    assertEquals(org.robolectric.Shadows.shadowOf(it.drawable).createdFromResId,
+                        if (mode == AutomationMode.RECORDING) R.drawable.ic_widget_video_auto else R.drawable.ic_widget_video)
+                }
+                view.findViewById<android.widget.ImageView>(R.id.widgetPhotoIcon)?.takeIf(::visibleInTree)?.let {
+                    assertEquals(org.robolectric.Shadows.shadowOf(it.drawable).createdFromResId,
+                        if (mode == AutomationMode.PHOTOS) R.drawable.ic_widget_photo_auto else R.drawable.ic_widget_photo)
+                }
+                view.measure(View.MeasureSpec.makeMeasureSpec(config.viewSize.first, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(config.viewSize.second, View.MeasureSpec.EXACTLY))
+                view.layout(0, 0, config.viewSize.first, config.viewSize.second)
+                val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+                view.draw(Canvas(bitmap))
+                val folder = File("build/reports/settings-ui/automation-widgets").apply { mkdirs() }
+                File(folder, "$size-$kind-${mode.name.lowercase()}-idle.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+            }
+        }
+        prefs.edit().putString(DjiSettings.KEY_AUTOMATION_MODE, AutomationMode.RECORDING.name)
+            .putBoolean(DjiSettings.KEY_AUTO_STOP, false).commit()
+        val config = ViewConfig(60 to 15, 480 to 97, 32)
+        val recording = idle.copy(recording = true, automaticRecordingId = 1, recordingDurationSeconds = 19)
+        var view = DjiWidgetRenderer.video(context, config, DjiWidgetViewState(recording)).apply(context, FrameLayout(context))
+        assertEquals(View.GONE, view.findViewById<View>(R.id.widgetVideoMeta).visibility)
+        prefs.edit().putBoolean(DjiSettings.KEY_AUTO_HIGHLIGHTS_ENABLED, false).commit()
+        view = DjiWidgetRenderer.video(context, config, DjiWidgetViewState(idle)).apply(context, FrameLayout(context))
+        assertEquals(R.drawable.ic_widget_video, org.robolectric.Shadows.shadowOf(view.findViewById<android.widget.ImageView>(R.id.widgetVideoIcon).drawable).createdFromResId)
+        prefs.edit().putString(DjiSettings.KEY_AUTOMATION_MODE, AutomationMode.PHOTOS.name)
+            .putBoolean(DjiSettings.KEY_AUTO_HIGHLIGHTS_ENABLED, true).commit()
+        for ((camera, expected) in listOf(
+            idle.copy(recording = true) to R.drawable.ic_widget_photo_muted,
+            idle.copy(photoState = PhotoCaptureState.COMPLETE) to R.drawable.ic_widget_photo_success,
+            idle.copy(connection = CameraConnectionState.DISCONNECTED) to R.drawable.ic_widget_photo_disabled,
+        )) {
+            view = DjiWidgetRenderer.photo(context, config, DjiWidgetViewState(camera)).apply(context, FrameLayout(context))
+            assertEquals(expected, org.robolectric.Shadows.shadowOf(view.findViewById<android.widget.ImageView>(R.id.widgetPhotoIcon).drawable).createdFromResId)
+        }
+    }
+
+    @Test fun sharedFrameCentersUntitledFieldsAndKeepsTighterCaptionSpacing() {
+        val context = RuntimeEnvironment.getApplication()
+        DjiSettings.resetAll(context)
+        DjiSettings.preferences(context).edit().putString(DjiSettings.KEY_AUTOMATION_MODE, AutomationMode.RECORDING.name).commit()
+        val state = DjiWidgetViewState(DjiCameraState(configured = true, connection = CameraConnectionState.CONNECTED))
+        for ((size, width, height) in listOf(Triple("half", 238, 138), Triple("map", 480, 138), Triple("full", 480, 700))) {
+            for (caption in listOf(false, true)) for (kind in listOf("video", "photo", "combined", "control")) {
+                val captionHeight = if (caption) context.resources.getDimensionPixelSize(R.dimen.widget_field_caption_height) else 0
+                val config = ViewConfig((if (width < 360) 30 else 60) to (if (size == "full") 60 else 15), width to height - captionHeight, 26)
+                val (body, root) = when (kind) {
+                    "video" -> DjiWidgetRenderer.video(context, config, state) to R.id.widgetVideoRoot
+                    "photo" -> DjiWidgetRenderer.photo(context, config, state) to R.id.widgetPhotoRoot
+                    "combined" -> DjiWidgetRenderer.videoPhoto(context, config, state) to R.id.widgetVideoPhotoRoot
+                    else -> DjiWidgetRenderer.cameraControl(context, config, state) to R.id.widgetControlRoot
+                }
+                val captionId = when (kind) {
+                    "video" -> R.string.dji_status
+                    "photo" -> R.string.dji_photo
+                    "combined" -> R.string.dji_video_photo
+                    else -> R.string.dji_power
+                }
+                val view = DjiWidgetRenderer.captionedField(context, captionId, caption, body).apply(context, FrameLayout(context))
+                val frame = view.findViewById<View>(root)
+                assertEquals(if (caption) 4 else 6, frame.paddingTop)
+                assertEquals(if (caption) 8 else 6, frame.paddingBottom)
+                view.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY))
+                view.layout(0, 0, width, height)
+                val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+                view.draw(Canvas(bitmap))
+                val folder = File("build/reports/settings-ui/automation-widgets").apply { mkdirs() }
+                File(folder, "$size-$kind-caption-$caption.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+            }
+        }
+    }
+
+}

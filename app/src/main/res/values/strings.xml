@@ -177,7 +177,7 @@
     <string name="dji_independence_notice">AeroCam is an independent project and is not affiliated with, endorsed by, or sponsored by DJI. DJI and Osmo are trademarks of their respective owners.</string>
 
     <string name="prevent_standby">Prevent standby</string>
-    <string name="keep_camera_awake">Keep camera awake</string>
+    <string name="keep_camera_awake">Enable prevent standby</string>
     <string name="prevent_standby_summary">Prevents the camera from automatically turning off.</string>
     <string name="recommended_camera_setup">Recommended camera setup</string>
     <string name="captions_summary">Hides the widget name and saves you some space.</string>

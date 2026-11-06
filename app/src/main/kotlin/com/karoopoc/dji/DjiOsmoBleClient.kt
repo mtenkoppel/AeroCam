@@ -75,12 +75,18 @@ class DjiOsmoBleClient(
     private var latestRecording = false
     private val highlightCooldown = HighlightCooldown()
     private var highlightCount = 0
+    private val recordingOrigin = RecordingOrigin()
+    private val automaticPhotos = AutomaticPhotoPolicy()
+    private var automationGeneration = 0L
+    private var automationFeedback: RecordingOrigin.Feedback? = null
+    private var automationFeedbackUntil = 0L
     private var highlightFeedback: String? = null
     private var pendingHighlightFeedback: String? = null
     private var highlightFeedbackRunnable: Runnable? = null
     private var sleepOfflineAssumed = false
     private var sleepShutdownRunnable: Runnable? = null
     private var reconnectAttempt = 0
+    private var automationRideActive = false
     private var rideActive = false
     private var photoState = PhotoCaptureState.IDLE
     private var photoCompletedRunnable: Runnable? = null
@@ -343,7 +349,53 @@ class DjiOsmoBleClient(
         }, SCAN_DURATION_MS)
     }
 
+    fun setAutomationRideActive(active: Boolean) {
+        automationRideActive = active
+        if (!active) cancelAutomation()
+    }
+
+    fun cancelPendingAutomaticStop() {
+        if (!recordingOrigin.stopping) return
+        automationGeneration++
+        recordingOrigin.cancelStop()
+    }
+
+    fun cancelAutomation() {
+        automationGeneration++
+        recordingOrigin.cancel()
+        automationFeedback = null
+        publishState()
+    }
+
+    private fun automationReady(mode: AutomationMode): Boolean {
+        val settings = DjiSettings.read(appContext)
+        return automationRideActive && settings.autoHighlightsEnabled && settings.mode == mode &&
+            isProtocolLinkFresh() && !latestRecording && activeOperation == null && operationQueue.isEmpty() &&
+            photoState !in listOf(PhotoCaptureState.REQUESTED, PhotoCaptureState.CAPTURING)
+    }
+
+    fun automaticStart() {
+        if (recordingOrigin.startPending(SystemClock.elapsedRealtime()) || !automationReady(AutomationMode.RECORDING)) return
+        recordingOrigin.requestStart(SystemClock.elapsedRealtime())
+        startVideoRecordingNow(automationGeneration)
+    }
+
+    fun automaticStop(clip: Long) {
+        val settings = DjiSettings.read(appContext)
+        if (clip == 0L || clip != recordingOrigin.clip || !latestRecording || !isProtocolLinkFresh() ||
+            !automationRideActive || !settings.autoHighlightsEnabled || settings.mode != AutomationMode.RECORDING || !settings.autoStop) return
+        recordingOrigin.requestStop()
+        stopVideoRecordingNow(automationGeneration)
+    }
+
+    fun automaticPhoto() {
+        if (!automaticPhotos.request(SystemClock.elapsedRealtime(), automationReady(AutomationMode.PHOTOS),
+                DjiSettings.read(appContext).photoIntervalSeconds)) return
+        triggerPhotoNow(automationGeneration)
+    }
+
     fun triggerPhoto() {
+        cancelAutomation()
         if (!runWhenReady(PendingCameraAction.PHOTO)) {
             return
         }
@@ -352,6 +404,7 @@ class DjiOsmoBleClient(
     }
 
     fun startVideoRecording() {
+        cancelAutomation()
         if (!runWhenReady(PendingCameraAction.START_VIDEO)) {
             return
         }
@@ -360,6 +413,7 @@ class DjiOsmoBleClient(
     }
 
     fun stopVideoRecording() {
+        cancelAutomation()
         if (!runWhenReady(PendingCameraAction.STOP_VIDEO)) {
             return
         }
@@ -445,7 +499,7 @@ class DjiOsmoBleClient(
         publishState()
     }
 
-    private fun triggerPhotoNow() {
+    private fun triggerPhotoNow(automatic: Long? = null) {
         photoState = PhotoCaptureState.REQUESTED
         publishState()
 
@@ -464,6 +518,7 @@ class DjiOsmoBleClient(
         logStatus("DJI photo trigger queued: switch to Photo then press Record")
         enqueueOperation(
             label = "take photo",
+            automationToken = automatic,
             priority = CommandPriority.USER_ACTION,
             steps = listOf(
                 CommandStep(
@@ -568,11 +623,12 @@ class DjiOsmoBleClient(
         }
     }
 
-    private fun startVideoRecordingNow() {
+    private fun startVideoRecordingNow(automatic: Long? = null) {
         val commandDeviceId = DjiProtocol.cameraCommandDeviceId(cameraDeviceId)
         logStatus("DJI recording start queued")
         enqueueOperation(
             label = "start recording",
+            automationToken = automatic,
             priority = CommandPriority.USER_ACTION,
             steps = listOf(
                 CommandStep(
@@ -589,11 +645,12 @@ class DjiOsmoBleClient(
         )
     }
 
-    private fun stopVideoRecordingNow() {
+    private fun stopVideoRecordingNow(automatic: Long? = null) {
         val commandDeviceId = DjiProtocol.cameraCommandDeviceId(cameraDeviceId)
         logStatus("DJI recording stop queued")
         enqueueOperation(
             label = "stop recording",
+            automationToken = automatic,
             priority = CommandPriority.USER_ACTION,
             steps = listOf(recordControlStep(commandDeviceId, start = false)),
         )
@@ -1191,6 +1248,13 @@ class DjiOsmoBleClient(
         latestRecording = cameraStatus.mode == CAMERA_MODE_VIDEO &&
             cameraStatus.status == CAMERA_STATUS_IN_PROGRESS
 
+        if (wasRecording != latestRecording) highlightFeedback = null
+        val automaticFeedback = recordingOrigin.status(latestRecording, SystemClock.elapsedRealtime(), cameraStatus.recordTimeSeconds)
+        if (automaticFeedback != null) {
+            automationFeedback = automaticFeedback
+            automationFeedbackUntil = SystemClock.elapsedRealtime() + BRIEF_FEEDBACK_MS
+            mainHandler.postDelayed({ publishState() }, BRIEF_FEEDBACK_MS)
+        }
         if (wasRecording != latestRecording) rideEvent("RECORDING", "active=$latestRecording")
         if (latestRecording) {
             if (keepAwakeScheduled || keepAwakeAttempt != null) cancelKeepAwake()
@@ -1262,6 +1326,7 @@ class DjiOsmoBleClient(
 
     private fun logReturnCode(label: String, frame: DjiProtocol.Frame) {
         val retCode = frame.payload.firstOrNull()?.toUByteInt()
+        if (label == "record control" && retCode != null && retCode != 0) recordingOrigin.cancel()
         Log.i(TAG, "DJI $label response retCode=$retCode")
     }
 
@@ -1274,13 +1339,14 @@ class DjiOsmoBleClient(
         writeType: Int,
         seq: Int = nextSeq(),
         keepAwakeToken: Long? = null,
+        automaticValid: (() -> Boolean)? = null,
         onComplete: (Boolean) -> Unit = {},
     ) {
         val frame = DjiProtocol.createFrame(cmdSet, cmdId, cmdType, payload, seq)
         mainHandler.post {
             if (diagnosticConnectionPaused) return@post
             if (keepAwakeToken != null && !validKeepAwakeToken(keepAwakeToken)) return@post
-            writeQueue.addLast(PendingWrite(label, frame, writeType, onComplete, keepAwakeToken))
+            writeQueue.addLast(PendingWrite(label, frame, writeType, onComplete, keepAwakeToken, automaticValid))
             drainWriteQueue()
         }
     }
@@ -1293,6 +1359,7 @@ class DjiOsmoBleClient(
         keepAwakeToken: Long? = null,
         onComplete: () -> Unit = {},
         cooldownLimitedHighlight: Boolean = false,
+        automationToken: Long? = null,
     ) {
         mainHandler.post {
             if (diagnosticConnectionPaused) return@post
@@ -1304,6 +1371,7 @@ class DjiOsmoBleClient(
             operationOrder += 1
             operationQueue += CameraOperation(
                 label = label,
+                automationToken = automationToken,
                 priority = priority,
                 steps = steps,
                 order = operationOrder,
@@ -1343,6 +1411,19 @@ class DjiOsmoBleClient(
 
     private fun executeActiveOperationStep() {
         val active = activeOperation ?: return
+        if (active.operation.automationToken != null) {
+            val settings = DjiSettings.read(appContext)
+            val expectedMode = if (active.operation.label == "take photo") AutomationMode.PHOTOS else AutomationMode.RECORDING
+            if (active.operation.automationToken != automationGeneration || SystemClock.elapsedRealtime() > active.operation.automationDeadline || !automationRideActive || !isProtocolLinkFresh() ||
+                !settings.autoHighlightsEnabled || settings.mode != expectedMode ||
+                (active.operation.label == "stop recording" && (!settings.autoStop || recordingOrigin.clip == 0L || !latestRecording)) ||
+                (active.operation.label != "stop recording" && latestRecording && active.stepIndex < active.operation.steps.size)) {
+                if (active.operation.automationToken == automationGeneration) recordingOrigin.cancel()
+                activeOperation = null
+                drainOperationQueue()
+                return
+            }
+        }
         if (active.operation.coalesceKey == KEEP_AWAKE_OPERATION_KEY &&
             !validKeepAwakeToken(active.operation.keepAwakeToken)) {
             Log.i(TAG, "DJI keep awake command cancelled before execution: camera state changed")
@@ -1373,9 +1454,14 @@ class DjiOsmoBleClient(
             payload = step.payload,
             writeType = step.writeType,
             keepAwakeToken = active.operation.keepAwakeToken,
+            automaticValid = active.operation.automationToken?.let { token -> {
+                token == automationGeneration && automationRideActive &&
+                    SystemClock.elapsedRealtime() <= active.operation.automationDeadline && isProtocolLinkFresh()
+            } },
             onComplete = { success ->
                 if (activeOperation !== active) return@queueFrame
                 if (!success) {
+                    if (active.operation.automationToken != null && active.operation.automationToken == automationGeneration) recordingOrigin.cancel()
                     Log.w(TAG, "DJI command step failed operation=${active.operation.label} step=${step.label}")
                     activeOperation = null
                     drainOperationQueue()
@@ -1395,6 +1481,11 @@ class DjiOsmoBleClient(
     private fun drainWriteQueue() {
         if (writeInProgress) return
         val pending = writeQueue.removeFirstOrNull() ?: return
+        if (pending.automaticValid?.invoke() == false) {
+            pending.onComplete(false)
+            drainWriteQueue()
+            return
+        }
         if (pending.keepAwakeToken != null && !validKeepAwakeToken(pending.keepAwakeToken)) {
             pending.onComplete(false)
             drainWriteQueue()
@@ -1688,6 +1779,7 @@ class DjiOsmoBleClient(
     }
 
     private fun showHighlightFeedback(message: String) {
+        automationFeedback = null
         highlightFeedback = message
         publishState()
         highlightFeedbackRunnable?.let(mainHandler::removeCallbacks)
@@ -1711,6 +1803,11 @@ class DjiOsmoBleClient(
         lastMessage: String = cameraState.lastMessage,
     ) {
         val configured = hasKnownDevice()
+        if (connection != CameraConnectionState.CONNECTED || sleepOfflineAssumed) {
+            recordingOrigin.cancel()
+            automationGeneration++
+            automationFeedback = null
+        }
         cameraState = cameraState.copy(
             diagnosticConnectionPaused = diagnosticConnectionPaused,
             configured = configured,
@@ -1731,6 +1828,8 @@ class DjiOsmoBleClient(
             videoResolution = videoResolution.takeIf { connection == CameraConnectionState.CONNECTED },
             videoFps = videoFps.takeIf { connection == CameraConnectionState.CONNECTED },
             cameraMode = if (connection == CameraConnectionState.CONNECTED) cameraMode else DjiCameraMode.UNKNOWN,
+            automaticRecordingId = recordingOrigin.clip,
+            automationFeedback = automationFeedback?.takeIf { SystemClock.elapsedRealtime() < automationFeedbackUntil }?.name,
             highlightCount = highlightCount,
             highlightFeedback = highlightFeedback,
             photoState = photoState,
@@ -1809,6 +1908,7 @@ class DjiOsmoBleClient(
         val writeType: Int,
         val onComplete: (Boolean) -> Unit,
         val keepAwakeToken: Long? = null,
+        val automaticValid: (() -> Boolean)? = null,
     )
 
     private data class CommandStep(
@@ -1822,6 +1922,8 @@ class DjiOsmoBleClient(
     )
 
     private data class CameraOperation(
+        val automationToken: Long? = null,
+        val automationDeadline: Long = SystemClock.elapsedRealtime() + 2000,
         val label: String,
         val priority: CommandPriority,
         val steps: List<CommandStep>,
@@ -1964,6 +2066,8 @@ data class DjiCameraState(
     val videoResolution: Int? = null,
     val videoFps: Int? = null,
     val cameraMode: DjiCameraMode = DjiCameraMode.UNKNOWN,
+    val automaticRecordingId: Long = 0,
+    val automationFeedback: String? = null,
     val highlightCount: Int = 0,
     val highlightFeedback: String? = null,
     val photoState: PhotoCaptureState = PhotoCaptureState.IDLE,

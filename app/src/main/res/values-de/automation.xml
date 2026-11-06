@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="automation_title">Automatisierung</string>
+    <string name="automation_more_information">Weitere Informationen</string>
+    <string name="automation_enable">Automatisierung aktivieren</string>
+    <string name="automation_highlights">Nur automatische Highlights hinzufügen</string>
+    <string name="automation_highlights_summary">Du steuerst Start und Stopp der Aufnahme.</string>
+    <string name="automation_recording">Aufnahmen werden automatisch gestartet und gestoppt</string>
+    <string name="automation_recording_start_only">Aufnahmen werden automatisch gestartet</string>
+    <string name="automation_recording_summary">Konzentriere dich aufs Fahren.</string>
+    <string name="automation_photos">Nur automatisch Fotos aufnehmen</string>
+    <string name="automation_photos_summary">Bei einem Auslöser ein Foto aufnehmen. Videoaufnahmen bleiben manuell.</string>
+    <string name="automation_recording_settings">Einstellungen für automatische Aufnahmen</string>
+    <string name="automation_empty">Füge deinen ersten Auslöser hinzu: eine Abfahrt mit 5 % Gefälle über 50 km/h oder dein nächster Kraftakt mit mehr als 500 W.</string>
+    <string name="automation_add_trigger">+ Auslöser hinzufügen</string>
+    <string name="automation_save">Speichern</string>
+    <string name="automation_add">Hinzufügen</string>
+    <string name="automation_about">Über die Automatisierung</string>
+    <string name="automation_catalog_help">Wähle ein Fahrereignis oder einen Schwellenwert, um Momente automatisch festzuhalten. Du kannst mehrere Auslöser hinzufügen.</string>
+    <string name="automation_stop_automatically">Automatisch stoppen</string>
+    <string name="automation_stop_seconds">Stoppen nach (Sekunden)</string>
+    <string name="automation_add_highlights">Automatische Highlights hinzufügen</string>
+    <string name="automation_remove_trigger">Auslöser entfernen</string>
+    <string name="automation_invalid_number">Gib einen Wert zwischen %1$d und %2$d ein.</string>
+    <string name="automation_auto_start">AUTO-START</string>
+    <string name="automation_auto_stop">AUTO-STOPP</string>
+    <string name="automation_rec_started">REC GESTARTET</string>
+    <string name="automation_rec_stopped">REC GESTOPPT</string>
+    <string name="automation_lap_help">Halte einen Moment fest, wenn Karoo eine neue Runde erfasst.</string>
+    <string name="automation_power_help">Halte harte Antritte fest, wenn deine Leistung den gewählten Wattwert überschreitet.</string>
+    <string name="automation_speed_help">Halte schnelle Abschnitte fest, wenn deine Geschwindigkeit den Schwellenwert überschreitet.</string>
+    <string name="automation_summit_help">Halte den Gipfel eines Anstiegs auf deiner aktiven Route fest.</string>
+    <string name="automation_hr_help">Halte intensive Belastungen fest, wenn deine Herzfrequenz den Schwellenwert überschreitet.</string>
+    <string name="automation_trigger_detail_help">Dieser Auslöser verwendet während einer aktiven Fahrt den gewählten Automatisierungsmodus. Schwellen lösen beim Überschreiten einmal aus und werden nach Unterschreiten der Rücksetzgrenze erneut bereit. Fehlende Sensordaten lösen keine Aufnahme aus.</string>
+    <string name="automation_boundary_help">Fahrtgrenzen fügen nur einer laufenden Videoaufnahme Highlights hinzu. Sie starten keine Videos und nehmen keine Fotos auf. Pausen und Fortsetzungen setzen keine Fahrtmarker.</string>
+    <string name="automation_help">Wähle einen Modus und füge Auslöser für Momente hinzu, die du während deiner Fahrt festhalten möchtest.\n\n**Automatische Aufnahme**\n\nDeine Kamera startet die Aufnahme, sobald ein Auslöser erfüllt ist. Standardmäßig endet sie eine Minute, nachdem alle Auslöser inaktiv geworden sind. Ein neuer Auslöser hält die Aufnahme am Laufen. In den Einstellungen für automatische Aufnahmen kannst du diese Verzögerung ändern oder das automatische Stoppen ausschalten.\n\nDu kannst jederzeit selbst eine Aufnahme starten oder eine automatische Aufnahme manuell stoppen. Selbst gestartete Aufnahmen werden nicht automatisch gestoppt. Auch automatische Aufnahmen können Highlights enthalten.\n\n**Automatische Highlights**\n\nDu startest und stoppst die Aufnahme selbst. Auslöser fügen Highlights hinzu, damit du deine Lieblingsmomente später wiederfindest.\n\n**Automatische Fotos**\n\nDeine Kamera macht ein Foto, sobald ein Auslöser erfüllt ist. Standardmäßig liegen mindestens zwei Minuten zwischen Fotos. Diesen Abstand kannst du in den Einstellungen für automatische Fotos ändern. Fotos werden nur gemacht, wenn die Kamera bereit ist und kein Video aufnimmt.\n\nLass deine Kamera während der Fahrt eingeschaltet und verbunden.</string>
+    <string name="automation_auto_rec">AUTO REC</string>
+    <string name="automation_uphill_help">Erfasse Anstiege bei deiner gewählten Steigung und optionalen Mindestgeschwindigkeit.</string>
+    <string name="automation_descent_help">Erfasse Abfahrten bei deinem gewählten Gefälle und deiner optionalen Mindestgeschwindigkeit.</string>
+    <string name="automation_ride_help">Füge beim Start und Ende der Fahrt Highlights zu einem bereits laufenden Video hinzu.</string>
+    <string name="automation_photo_settings">Einstellungen für automatische Fotos</string>
+    <string name="automation_photo_interval_seconds">Mindestabstand zwischen Fotos (Sekunden)</string>
+</resources>

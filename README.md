@@ -131,14 +131,19 @@ heading out. Built-in help stays available on the Karoo.
 - **Six languages:** English, German, Spanish, French, Italian, and Portuguese
   are selected automatically from the Karoo language.
 
-### Auto Highlights
+### Automation (1.1 development)
 
-Auto highlights use Karoo ride data to mark useful moments while a ride and
-camera recording are active. Each trigger can be enabled separately, and power,
-speed, heart-rate, ascent, and descent thresholds can be customized. Optional
-**Auto-start recording** starts recording when a trigger occurs while the camera
-is idle; that first event starts the recording rather than adding an immediate
-marker.
+Enable **Automation** in Settings, choose one mode, and use **+ Add trigger**:
+
+- **Only add automatic highlights:** you control when video starts and stops.
+- **Automatic recording:** triggers start video. By default, it stops after all enabled threshold conditions have been inactive for a full **60 seconds**. Renewed effort or a lap/summit event resets the delay. Auto recording settings lets you change the delay (10–3600 seconds), disable automatic stopping, or disable the default-on automatic highlights.
+- **Only take photos automatically:** a trigger requests one still while the camera is idle and ready. A shared **30-second minimum interval** prevents bursts. Recording, busy and unavailable cameras are skipped; missed events are never replayed.
+
+The video or photo icon contains an **A** while its automatic mode is armed. Confirmed automatic starts briefly show **REC STARTED** beneath the timer, then **AUTO REC** when the automatically started clip will also stop automatically. Confirmed automatic stops briefly show **REC STOPPED**. Manual recordings are never automatically stopped. Pausing or finishing a ride, changing automation settings, or losing the camera connection relinquishes automatic control of the current clip. Missing sensor data suspends the quiet period until fresh data is available; it does not count as an effort ending.
+
+The camera must be powered on and connected. Automatic photos reuse the existing photo-mode switch and shutter sequence; hardware validation remains required before the 1.1 release. Onboarding follow-up: [#60](https://github.com/mtenkoppel/AeroCam/issues/60).
+
+Available triggers:
 
 - **Lap marker:** Adds a highlight whenever Karoo records a new lap.
 - **Peak power:** Adds a highlight when power crosses the configured wattage.
