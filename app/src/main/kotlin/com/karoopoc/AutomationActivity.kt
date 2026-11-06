@@ -60,7 +60,7 @@ class AutomationActivity : Activity() {
                         startActivityForResult(Intent(this, AutomationActivity::class.java)
                             .putExtra("page", trigger.key).putExtra("drill_down", true), ADD_TRIGGER,
                             ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
-                    }.apply { textSize = 15f; setLineSpacing(ui.dp(2).toFloat(), 1.12f) },
+                    }.apply { textSize = 15f; typeface = android.graphics.Typeface.DEFAULT; setLineSpacing(0f, 1.12f) },
                         ui.fullWidthParams(0, ui.dp(8)))
                 }
             }
