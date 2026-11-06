@@ -10,7 +10,7 @@
 
 One Automation card contains Enable automation, mutually exclusive native radio choices, Auto recording settings when relevant, and the trigger list. More information opens a page. Trigger switches preserve their saved thresholds and selection. Detail pages use the existing Karoo Back and Add/Save tabs; Back discards edits. Remove trigger is a centered ghost button.
 
-The shared video button shows AUTO START below its idle icon when automatic recording is enabled. A camera-confirmed automatic start shows the timer with REC STARTED for five seconds, then AUTO STOP only for an automatically owned clip with stopping enabled. A confirmed automatic stop shows REC STOPPED for five seconds, then returns to the idle cue. Manual clips have no AUTO STOP promise. With no secondary line the timer recenters. Recording buttons no longer contain SD capacity. Existing glyphs, surfaces and measured shared layout are retained; compact idle layouts borrow icon padding to fit the subline.
+The shared video icon contains an A when automatic recording is enabled. Automatic photos use the same A inside the photo body, replacing its lens circle. A camera-confirmed automatic start shows the timer with REC STARTED for five seconds, then AUTO REC only for an automatically owned clip with stopping enabled. A confirmed automatic stop shows REC STOPPED for five seconds, then returns to the idle cue. Manual clips have no AUTO REC promise. With no secondary line the timer recenters. Recording buttons no longer contain SD capacity. Existing glyphs, surfaces and measured shared layout are retained; idle automation uses no subline; the existing temporary REC STOPPED feedback retains its subline with width fitting for narrow combined slots.
 
 ## Algorithm and conservative choices
 
@@ -39,7 +39,7 @@ Before releasing 1.1, perform a stationary camera test followed by at least two 
 
 1. Trigger start; verify confirmed feedback, timer and the full 60-second quiet stop. Repeat with a custom delay and stopping disabled.
 2. Re-enter a threshold just before expiry; verify a fresh full delay, overlapping triggers and hysteresis jitter. Repeat while automatic marker cooldown is active.
-3. Start/stop manually from both Karoo and camera. Verify manual clips never show AUTO STOP and cannot inherit an old timer.
+3. Start/stop manually from both Karoo and camera. Verify manual clips never show AUTO REC and cannot inherit an old timer.
 4. Pause, finish, disconnect, reconnect and restart the app during an automatic clip. Confirm there is no delayed start, stop or shutter. Verify ride-end marker ordering.
 5. Drop or disable a configured sensor and verify recording is not prematurely stopped.
 6. Test photos from idle video and photo modes, simultaneous triggers and sustained effort; check no burst, no capture during video, and return to manual video recording.

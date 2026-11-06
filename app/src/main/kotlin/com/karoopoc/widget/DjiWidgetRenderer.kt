@@ -160,6 +160,13 @@ object DjiWidgetRenderer {
             state.automationFeedback == "STOPPED" -> context.getString(R.string.automation_rec_stopped)
             else -> null
         }
+        if (idleLine != null) {
+            val preferred = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 11f, context.resources.displayMetrics)
+            val paint = Paint().apply { textSize = preferred; typeface = android.graphics.Typeface.DEFAULT_BOLD }
+            val available = (config.viewSize.first - FIELD_HORIZONTAL_INSET).coerceAtLeast(1)
+            setTextViewTextSize(R.id.widgetVideoIdleMeta, TypedValue.COMPLEX_UNIT_PX,
+                minOf(preferred, preferred * available / paint.measureText(idleLine)))
+        }
         setTextViewText(R.id.widgetVideoIdleMeta, idleLine ?: "")
         setViewVisibility(R.id.widgetVideoIdleMeta, if (idleLine != null) View.VISIBLE else View.GONE)
         // Preserve the existing 26dp glyph; borrow its vertical padding for the subline in short slots.

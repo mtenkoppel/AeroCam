@@ -60,6 +60,9 @@ class AutomationWidgetUiTest {
             }
         }
     }
+    private fun visibleInTree(view: View): Boolean = view.visibility == View.VISIBLE &&
+        ((view.parent as? View)?.let(::visibleInTree) ?: true)
+
     @Test fun indicatorsRespectModeOwnershipAndPhotoFeedbackAcrossSharedFields() {
         val context = RuntimeEnvironment.getApplication()
         DjiSettings.resetAll(context)
@@ -83,11 +86,11 @@ class AutomationWidgetUiTest {
                     else -> DjiWidgetRenderer.cameraControl(context, config, DjiWidgetViewState(idle))
                 }
                 val view = rv.apply(context, FrameLayout(context))
-                view.findViewById<android.widget.ImageView>(R.id.widgetVideoIcon)?.let {
+                view.findViewById<android.widget.ImageView>(R.id.widgetVideoIcon)?.takeIf(::visibleInTree)?.let {
                     assertEquals(org.robolectric.Shadows.shadowOf(it.drawable).createdFromResId,
                         if (mode == AutomationMode.RECORDING) R.drawable.ic_widget_video_auto else R.drawable.ic_widget_video)
                 }
-                view.findViewById<android.widget.ImageView>(R.id.widgetPhotoIcon)?.let {
+                view.findViewById<android.widget.ImageView>(R.id.widgetPhotoIcon)?.takeIf(::visibleInTree)?.let {
                     assertEquals(org.robolectric.Shadows.shadowOf(it.drawable).createdFromResId,
                         if (mode == AutomationMode.PHOTOS) R.drawable.ic_widget_photo_auto else R.drawable.ic_widget_photo)
                 }
@@ -96,7 +99,7 @@ class AutomationWidgetUiTest {
                 val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
                 view.draw(Canvas(bitmap))
                 val folder = File("build/reports/settings-ui/automation-widgets").apply { mkdirs() }
-                File(folder, "$size-$kind-${mode.name.lowercase()}.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+                File(folder, "$size-$kind-${mode.name.lowercase()}-idle.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
             }
         }
         prefs.edit().putString(DjiSettings.KEY_AUTOMATION_MODE, AutomationMode.RECORDING.name)
