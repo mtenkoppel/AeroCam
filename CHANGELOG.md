@@ -5,6 +5,8 @@ the matching version heading when preparing a release.
 
 ## [Unreleased]
 
+- Order automation modes as recordings, highlights, then photos, separate the choices more clearly, circle the settings A icon, and increase automatic widget indicator contrast. Help icons now match the heading color.
+
 - Center untitled widget frames, compact automation settings, add Material help icons and simplify trigger descriptions.
 
 - Refined automation controls with an A inside armed video/photo icons and AUTO REC beneath automatically controlled recording timers. Unified help typography, compact trigger catalog rows and return-to-settings after adding a trigger.

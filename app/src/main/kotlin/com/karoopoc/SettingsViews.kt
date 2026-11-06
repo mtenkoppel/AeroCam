@@ -71,10 +71,7 @@ internal class SettingsViews(val activity: Activity) {
                 addView(heading, LinearLayout.LayoutParams(0, -2, 1f))
                 addView(ImageButton(activity, null, android.R.attr.borderlessButtonStyle).apply {
                     setImageResource(R.drawable.ic_help_outline)
-                    val accent = android.util.TypedValue().also {
-                        activity.theme.resolveAttribute(android.R.attr.colorAccent, it, true)
-                    }.data
-                    imageTintList = android.content.res.ColorStateList.valueOf(accent)
+                    imageTintList = android.content.res.ColorStateList.valueOf(palette.textPrimary)
                     scaleType = ImageView.ScaleType.CENTER_INSIDE
                     contentDescription = "$title: ${getString(R.string.automation_more_information)}"
                     setPadding(dp(8), dp(8), dp(8), dp(8))

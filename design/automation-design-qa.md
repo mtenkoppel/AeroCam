@@ -22,3 +22,12 @@ Validation: CI unit tests and native Android rendering captures; signed build/de
 - Compact card padding/header gaps and control rows; standby toggle reads “Enable prevent standby” (localized). Removed all three automation mode sublines.
 - Catalog choices are shaded, whole-row tappable boxes. Trigger detail has one explanatory sentence per trigger; the generic second paragraph is removed.
 - Numeric validation clears when the corrected value becomes valid. The earlier red exclamation mark in the gallery was a stale error left by an invalid-input test; invalid input remains validated, and the normal screenshot is now captured after clearing the corrected error.
+
+
+### Follow-up after build 52
+
+- Circle the settings Automation A; keep the video/photo icon geometry unchanged.
+- Order modes: recordings, highlights, photos. Add 4dp above/below each mode row to separate multiline options.
+- Help icons use primary text color (black in light theme, white in dark theme).
+- Both automatic video/photo A paths are fully opaque, matching their white icon outlines.
+- No additional screenshot/device QA round requested. About automation copy remains unchanged pending focused iteration.

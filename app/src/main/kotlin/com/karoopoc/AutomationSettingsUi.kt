@@ -62,8 +62,8 @@ internal class AutomationSettingsUi(private val activity: Activity, private val 
         if (!master.isChecked) return
         val choices = RadioGroup(activity)
         val modes = listOf(
-            Triple(AutomationMode.HIGHLIGHTS, R.string.automation_highlights, R.string.automation_highlights_summary),
             Triple(AutomationMode.RECORDING, if (settings.autoStop) R.string.automation_recording else R.string.automation_recording_start_only, R.string.automation_recording_summary),
+            Triple(AutomationMode.HIGHLIGHTS, R.string.automation_highlights, R.string.automation_highlights_summary),
             Triple(AutomationMode.PHOTOS, R.string.automation_photos, R.string.automation_photos_summary),
         )
         modes.forEach { (mode, title, _) ->
@@ -75,7 +75,7 @@ internal class AutomationSettingsUi(private val activity: Activity, private val 
                         .putBoolean(DjiSettings.KEY_AUTO_START_RECORDING, mode == AutomationMode.RECORDING).apply()
                     changed(); refresh()
                 }
-            }, ui.fullWidthParams())
+            }, ui.fullWidthParams(topMargin = ui.dp(4), bottomMargin = ui.dp(4)))
         }
         card.addView(choices)
         if (settings.mode == AutomationMode.RECORDING) card.addView(ui.action(activity.getString(R.string.automation_recording_settings)) { open("recording") }, ui.fullWidthParams())
