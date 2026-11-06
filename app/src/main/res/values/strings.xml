@@ -235,4 +235,8 @@
     <string name="ob_pair_again">Pair again</string>
     <string name="ob_skip_pairing">Skip pairing</string>
     <string name="pairing_connect_camera">Connect camera</string>
+    <string name="widget_refresh_video">Refresh</string>
+    <string name="widget_refreshing_video">Refreshing…</string>
+    <string name="widget_switching_to_video">Switching to Video…</string>
+    <string name="widget_switching_to_video_short">Switching…</string>
 </resources>

@@ -72,8 +72,6 @@ class DjiOsmoBleClient(
     private var latestBatteryPercent: Int? = null
     private var latestCameraStatus: Int? = null
     private var latestCameraMode: Int? = null
-    private var latestVideoResolution: Int? = null
-    private var latestVideoFps: Int? = null
     private var latestRecording = false
     private val highlightCooldown = HighlightCooldown()
     private var highlightCount = 0
@@ -410,6 +408,13 @@ class DjiOsmoBleClient(
         toggleModeNow()
     }
 
+    fun selectVideoMode() {
+        if (!protocolConnected || cameraState.connection != CameraConnectionState.CONNECTED ||
+            latestRecording || latestCameraMode == CAMERA_MODE_VIDEO
+        ) return
+        switchModeNow(switchToPhoto = false)
+    }
+
     fun setKeepAwake(enabled: Boolean, intervalSeconds: Int) {
         val wasEnabled = keepAwakeEnabled
         keepAwakeFaulted = false
@@ -502,8 +507,11 @@ class DjiOsmoBleClient(
     }
 
     private fun toggleModeNow() {
+        switchModeNow(switchToPhoto = latestCameraMode != CAMERA_MODE_PHOTO)
+    }
+
+    private fun switchModeNow(switchToPhoto: Boolean) {
         val commandDeviceId = DjiProtocol.cameraCommandDeviceId(cameraDeviceId)
-        val switchToPhoto = latestCameraMode != CAMERA_MODE_PHOTO
         logStatus("DJI mode switch queued: ${if (switchToPhoto) "Photo" else "Video"}")
         enqueueOperation(
             label = "toggle camera mode",
@@ -1179,8 +1187,6 @@ class DjiOsmoBleClient(
         latestBatteryPercent = cameraStatus.batteryPercent
         latestCameraStatus = cameraStatus.status
         latestCameraMode = cameraStatus.mode
-        latestVideoResolution = cameraStatus.videoResolution
-        latestVideoFps = cameraStatus.fps
         val wasRecording = latestRecording
         latestRecording = cameraStatus.mode == CAMERA_MODE_VIDEO &&
             cameraStatus.status == CAMERA_STATUS_IN_PROGRESS
@@ -1213,8 +1219,10 @@ class DjiOsmoBleClient(
             recordingDurationSeconds = cameraStatus.recordTimeSeconds,
             remainingCapacityMb = cameraStatus.remainingCapacityMb,
             remainingRecordingSeconds = cameraStatus.remainingTimeSeconds,
-            videoResolution = cameraStatus.videoResolution,
-            videoFps = cameraStatus.fps,
+            // Photo status can carry placeholder video values. Keep the last Video readout
+            // for every Cam Control field until this camera connection ends.
+            videoResolution = if (cameraStatus.mode == CAMERA_MODE_VIDEO) cameraStatus.videoResolution else cameraState.videoResolution,
+            videoFps = if (cameraStatus.mode == CAMERA_MODE_VIDEO) cameraStatus.fps else cameraState.videoFps,
             cameraMode = when (cameraStatus.mode) {
                 CAMERA_MODE_VIDEO -> DjiCameraMode.VIDEO
                 CAMERA_MODE_PHOTO -> DjiCameraMode.PHOTO
@@ -1697,8 +1705,8 @@ class DjiOsmoBleClient(
         recordingDurationSeconds: Int = cameraState.recordingDurationSeconds,
         remainingCapacityMb: Long? = cameraState.remainingCapacityMb,
         remainingRecordingSeconds: Long? = cameraState.remainingRecordingSeconds,
-        videoResolution: Int? = latestVideoResolution ?: cameraState.videoResolution,
-        videoFps: Int? = latestVideoFps ?: cameraState.videoFps,
+        videoResolution: Int? = cameraState.videoResolution,
+        videoFps: Int? = cameraState.videoFps,
         cameraMode: DjiCameraMode = cameraState.cameraMode,
         lastMessage: String = cameraState.lastMessage,
     ) {
@@ -1720,9 +1728,9 @@ class DjiOsmoBleClient(
             recordingDurationSeconds = recordingDurationSeconds,
             remainingCapacityMb = remainingCapacityMb,
             remainingRecordingSeconds = remainingRecordingSeconds,
-            videoResolution = videoResolution,
-            videoFps = videoFps,
-            cameraMode = cameraMode,
+            videoResolution = videoResolution.takeIf { connection == CameraConnectionState.CONNECTED },
+            videoFps = videoFps.takeIf { connection == CameraConnectionState.CONNECTED },
+            cameraMode = if (connection == CameraConnectionState.CONNECTED) cameraMode else DjiCameraMode.UNKNOWN,
             highlightCount = highlightCount,
             highlightFeedback = highlightFeedback,
             photoState = photoState,

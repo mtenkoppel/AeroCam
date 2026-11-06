@@ -13,6 +13,13 @@
     <dimen name="widget_icon_utility_padding">7dp</dimen>
     <dimen name="widget_icon_status_padding">0dp</dimen>
     <dimen name="widget_combined_gap">6dp</dimen>
+    <dimen name="widget_highlight_button_width">72dp</dimen>
+    <dimen name="widget_recording_horizontal_padding">6dp</dimen>
+    <dimen name="widget_recording_vertical_padding">3dp</dimen>
+    <dimen name="widget_control_status_icon">14dp</dimen>
+    <dimen name="widget_control_status_text">12sp</dimen>
+    <dimen name="widget_control_full_status_text">14sp</dimen>
+    <dimen name="widget_control_status_gap">2dp</dimen>
     <dimen name="widget_control_group_gap">15dp</dimen>
     <dimen name="widget_control_total_gaps">36dp</dimen>
 </resources>

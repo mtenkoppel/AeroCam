@@ -5,43 +5,5 @@
     android:layout_height="match_parent"
     android:background="@drawable/widget_root_dark">
 
-    <FrameLayout
-        android:id="@+id/widgetPhotoPrimary"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/widget_surface_selector">
-
-        <ImageView
-            android:id="@+id/widgetPhotoIcon"
-            android:layout_width="@dimen/widget_icon_primary_size"
-            android:layout_height="@dimen/widget_icon_primary_size"
-            android:layout_gravity="center"
-            android:contentDescription="@string/widget_take_photo"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_widget_photo" />
-
-        <TextView
-            android:id="@+id/widgetPhotoStatus"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:maxLines="2"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:text="@string/widget_searching"
-            android:textAlignment="gravity"
-            android:textColor="@color/dji_text_primary_dark"
-            android:textSize="16sp" />
-
-        <ProgressBar
-            android:id="@+id/widgetPhotoSpinner"
-            style="?android:attr/progressBarStyleSmall"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_gravity="center"
-            android:indeterminate="true"
-            android:indeterminateTint="@color/dji_icon_primary"
-            android:indeterminateTintMode="src_in"
-            android:visibility="gone" />
-    </FrameLayout>
+    <include layout="@layout/widget_photo_button" />
 </FrameLayout>

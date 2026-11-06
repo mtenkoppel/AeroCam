@@ -11,6 +11,7 @@ import com.karoopoc.DjiTheme
 import com.karoopoc.MainActivity
 import com.karoopoc.R
 import com.karoopoc.dji.CameraConnectionState
+import com.karoopoc.dji.DjiCameraMode
 import com.karoopoc.dji.DjiCameraState
 import com.karoopoc.dji.DjiSettings
 import io.hammerhead.karooext.models.ViewConfig
@@ -32,7 +33,8 @@ import kotlin.math.abs
 class CamControlUiTest {
     private val context get() = RuntimeEnvironment.getApplication()
     private val camera = DjiCameraState(configured = true, connection = CameraConnectionState.CONNECTED,
-        batteryPercent = 60, remainingCapacityMb = 14848, recordingDurationSeconds = 885, keepAwakeEnabled = true)
+        batteryPercent = 60, remainingCapacityMb = 14848, recordingDurationSeconds = 885, keepAwakeEnabled = true,
+        cameraMode = DjiCameraMode.VIDEO, videoResolution = 16, videoFps = 6)
     private fun render(height: Int, state: DjiWidgetViewState = DjiWidgetViewState(camera), interactive: Boolean = true): View {
         val config = ViewConfig(Pair(60, if (height >= 280) 60 else if (height >= 170) 30 else if (height >= 130) 20 else 15), Pair(480, height), 32)
         val view = DjiWidgetRenderer.cameraControl(context, config, state, interactive).apply(context, FrameLayout(context))
@@ -50,7 +52,68 @@ class CamControlUiTest {
         File(dir, "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
         bitmap.recycle()
     }
-    @Test fun fourRowsShareRemainingHeightAndPreserveBatteryColorAndRecordingState() {
+
+    @Test fun refreshAndConnectUseTheExpectedTargetsAtAllGallerySizes() {
+        val sizes = listOf(
+            Triple("full", 480 to 420, 60 to 60),
+            Triple("large", 480 to 189, 60 to 30),
+            Triple("medium", 480 to 154, 60 to 20),
+            Triple("small", 480 to 113, 60 to 15),
+            Triple("half", 238 to 113, 30 to 15),
+        )
+        val offline = camera.copy(connection = CameraConnectionState.DISCONNECTED)
+        val photo = camera.copy(cameraMode = DjiCameraMode.PHOTO, videoResolution = null, videoFps = null)
+        val states = linkedMapOf(
+            "ready" to DjiWidgetViewState(camera),
+            "photo-with-video-settings" to DjiWidgetViewState(camera.copy(cameraMode = DjiCameraMode.PHOTO)),
+            "refresh" to DjiWidgetViewState(photo),
+            "switching" to DjiWidgetViewState(photo, refreshingVideoSettings = true),
+            "offline" to DjiWidgetViewState(offline),
+            "searching" to DjiWidgetViewState(offline, connectPrompts = setOf(ConnectPrompt.CONTROL)),
+        )
+        for ((name, size, grid) in sizes) {
+            val config = ViewConfig(grid, size, 32)
+            val panelId = if (name == "full") R.id.widgetControlFullStatus else R.id.widgetControlStatus
+            val messageId = if (name == "full") R.id.widgetControlTopMessageText else R.id.widgetControlMessageText
+            val videoLabelId = if (name == "full") R.id.widgetControlFullResolution else R.id.widgetControlResolution
+            val remote = DjiWidgetRenderer.cameraControl(context, config, states.getValue("ready"))
+            val view = remote.apply(context, FrameLayout(context))
+            val videoLabel = view.findViewById<TextView>(videoLabelId).text.toString()
+            for ((scenario, state) in states) {
+                DjiWidgetRenderer.cameraControl(context, config, state).reapply(context, view)
+                val (width, height) = size
+                view.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY))
+                view.layout(0, 0, width, height)
+                if (scenario in setOf("offline", "searching")) {
+                    val expected = if (scenario == "searching") R.string.widget_searching else R.string.widget_connect
+                    assertEquals(context.getString(expected), view.findViewById<TextView>(messageId).text.toString())
+                } else {
+                    val panel = view.findViewById<View>(panelId)
+                    assertEquals(scenario == "refresh", panel.hasOnClickListeners())
+                    assertTrue(panel.height > 0)
+                    if (scenario == "photo-with-video-settings") {
+                        assertEquals(videoLabel, view.findViewById<TextView>(videoLabelId).text.toString())
+                    }
+                }
+                save(view, "review-$name-$scenario")
+                val captionHeight = context.resources.getDimensionPixelSize(R.dimen.widget_field_caption_height)
+                val fieldConfig = config.copy(viewSize = width to height - captionHeight)
+                val field = DjiWidgetRenderer.captionedField(
+                    context, R.string.dji_power, true,
+                    DjiWidgetRenderer.cameraControl(context, fieldConfig, state, interactive = false),
+                ).apply(context, FrameLayout(context))
+                field.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY))
+                field.layout(0, 0, width, height)
+                if (scenario !in setOf("offline", "searching")) {
+                    val panel = field.findViewById<ViewGroup>(panelId)
+                    val videoLine = panel.getChildAt(panel.childCount - 1)
+                    assertTrue("$name/$scenario readout fits below the native caption", videoLine.top >= 0 && videoLine.bottom <= panel.height)
+                }
+                save(field, "field-$name-$scenario")
+            }
+        }
+    }
+    @Test fun fullStatusSitsBetweenUtilityButtonsAndPreservesRecordingState() {
         for (theme in listOf("dark", "light")) {
             DjiSettings.preferences(context).edit().putString(DjiSettings.KEY_THEME_MODE, theme).commit()
             for (height in listOf(280, 320, 408, 420, 600)) {
@@ -60,14 +123,26 @@ class CamControlUiTest {
                 val video = view.findViewById<View>(R.id.widgetControlFull)
                 val photo = view.findViewById<View>(R.id.widgetControlPhoto)
                 val power = view.findViewById<View>(R.id.widgetControlFullSleep)
-                val rows = listOf(awake.height, settings.height, video.height, photo.height, power.height)
-                assertTrue("$theme/$height equal rows: $rows", rows.max() - rows.min() <= 1)
-                val gap = context.resources.getDimensionPixelSize(R.dimen.widget_control_group_gap)
+                val toolbar = view.findViewById<View>(R.id.widgetControlFullUtility)
+                val status = view.findViewById<View>(R.id.widgetControlFullStatus)
+                val battery = view.findViewById<View>(R.id.widgetControlFullBatteryGroup)
+                val storage = view.findViewById<View>(R.id.widgetControlFullStorageGroup)
+                val readout = view.findViewById<View>(R.id.widgetControlFullResolutionRow)
+                assertEquals(toolbar.height, awake.height)
+                assertEquals(toolbar.height, settings.height)
+                assertEquals(toolbar.height, status.height)
+                assertTrue(awake.right <= status.left && status.right <= settings.left)
+                assertTrue(battery.bottom <= storage.top && storage.bottom <= readout.top)
+                assertTrue(readout.bottom <= status.height)
+                val rows = listOf(video.height, photo.height, power.height)
+                assertTrue("$theme/$height equal control rows: $rows", rows.max() - rows.min() <= 1)
+                if (height == 600) assertTrue(abs(toolbar.height - video.height) <= 1)
+                val gap = context.resources.getDimensionPixelSize(R.dimen.widget_combined_gap)
                 val photoGap = (photo.layoutParams as android.widget.LinearLayout.LayoutParams).topMargin
-                assertEquals(gap, video.top - view.findViewById<View>(R.id.widgetControlFullUtility).bottom)
+                assertEquals(gap, video.top - toolbar.bottom)
                 assertEquals(gap, power.top - photo.bottom)
                 assertEquals(photoGap, photo.top - video.bottom)
-                assertTrue(abs(4 * video.height + 2 * gap + photoGap - (height - view.paddingTop - view.paddingBottom)) <= 3)
+                assertEquals(height - view.paddingTop - view.paddingBottom, toolbar.height + rows.sum() + 2 * gap + photoGap)
                 assertEquals(DjiTheme.widgetPalette(context).textPrimary, view.findViewById<TextView>(R.id.widgetControlFullBattery).currentTextColor)
                 save(view, "$theme-xl-$height-ready")
                 if (height in listOf(320, 408, 600)) {
@@ -82,13 +157,14 @@ class CamControlUiTest {
                 save(render(height, DjiWidgetViewState(camera.copy(connection = CameraConnectionState.DISCONNECTED))), "$theme-compact-$height-offline")
             }
             val low = render(420, DjiWidgetViewState(camera.copy(batteryPercent = 15)))
-            assertEquals(DjiTheme.widgetPalette(context).batteryLow, low.findViewById<TextView>(R.id.widgetControlFullBattery).currentTextColor)
+            assertEquals(DjiTheme.widgetPalette(context).textPrimary, low.findViewById<TextView>(R.id.widgetControlFullBattery).currentTextColor)
             save(low, "$theme-xl-low-battery")
             val recording = render(420, DjiWidgetViewState(camera.copy(recording = true, highlightFeedback = "HIGHLIGHT")))
-            assertEquals(View.VISIBLE, recording.findViewById<View>(R.id.widgetControlVideoHighlight).visibility)
-            assertEquals(View.VISIBLE, recording.findViewById<View>(R.id.widgetControlVideoRecording).visibility)
-            assertEquals("14:45", recording.findViewById<TextView>(R.id.widgetControlVideoTimer).text.toString())
-            assertFalse(recording.findViewById<View>(R.id.widgetControlPhoto).hasOnClickListeners())
+            assertEquals(View.VISIBLE, recording.findViewById<View>(R.id.widgetVideoHighlight).visibility)
+            assertEquals(View.VISIBLE, recording.findViewById<View>(R.id.widgetVideoRecording).visibility)
+            assertEquals("14:45", recording.findViewById<TextView>(R.id.widgetVideoTimer).text.toString())
+            assertFalse(recording.findViewById<View>(R.id.widgetPhotoPrimary).isEnabled)
+            assertFalse(recording.findViewById<View>(R.id.widgetPhotoPrimary).hasOnClickListeners())
             save(recording, "$theme-xl-recording")
             save(render(420, DjiWidgetViewState(camera, sleepConfirmation = true)), "$theme-xl-confirmation")
             save(render(420, DjiWidgetViewState(camera.copy(connection = CameraConnectionState.DISCONNECTED))), "$theme-xl-offline")
@@ -98,7 +174,7 @@ class CamControlUiTest {
         val host = Robolectric.buildActivity(Activity::class.java).setup()
         for (height in listOf(113, 154, 189)) {
             val view = render(height, DjiWidgetViewState(camera.copy(batteryPercent = 15)))
-            assertEquals(DjiTheme.widgetPalette(context).batteryLow, view.findViewById<TextView>(R.id.widgetControlBattery).currentTextColor)
+            assertEquals(DjiTheme.widgetPalette(context).textPrimary, view.findViewById<TextView>(R.id.widgetControlBattery).currentTextColor)
             val settings = view.findViewById<View>(R.id.widgetControlSettings)
             assertEquals(View.VISIBLE, settings.visibility)
             assertTrue(settings.performClick())
@@ -116,12 +192,14 @@ class CamControlUiTest {
     @Test fun feedbackExpiryAndDisconnectReapplyRestoreExistingControlState() {
         val config = ViewConfig(Pair(60,60), Pair(480,420), 32)
         val view = render(420, DjiWidgetViewState(camera.copy(recording = true, highlightFeedback = "HIGHLIGHT")))
-        val timer = view.findViewById<TextView>(R.id.widgetControlVideoTimer)
-        val group = view.findViewById<View>(R.id.widgetControlVideoRecording)
-        assertTrue(group.paddingBottom > 0)
+        val timer = view.findViewById<TextView>(R.id.widgetVideoTimer)
+        val feedback = view.findViewById<TextView>(R.id.widgetVideoMeta)
+        assertEquals(View.VISIBLE, feedback.visibility)
+        assertTrue(feedback.text.toString().contains("HIGHLIGHT"))
         DjiWidgetRenderer.cameraControl(context, config, DjiWidgetViewState(camera.copy(recording = true))).reapply(context, view)
-        assertEquals(0, group.paddingBottom)
-        assertEquals(28f * context.resources.displayMetrics.scaledDensity, timer.textSize, .1f)
+        assertEquals(View.GONE, feedback.visibility)
+        assertEquals("", feedback.text.toString())
+        assertEquals("14:45", timer.text.toString())
         DjiWidgetRenderer.cameraControl(context, config, DjiWidgetViewState(camera)).reapply(context, view)
         assertTrue(view.findViewById<View>(R.id.widgetControlFullSleep).hasOnClickListeners())
         DjiWidgetRenderer.cameraControl(context, config,
@@ -237,13 +315,16 @@ class CamControlUiTest {
                 }
                 val battery=view.findViewById<TextView>(R.id.widgetControlBattery)
                 assertEquals("15%",battery.text.toString())
-                assertEquals(DjiTheme.widgetPalette(context).batteryLow,battery.currentTextColor)
+                assertEquals(DjiTheme.widgetPalette(context).textPrimary,battery.currentTextColor)
                 assertTrue(view.findViewById<TextView>(R.id.widgetControlStorage).text.toString().contains("14.5"))
                 save(view,"$theme-half-$height-status")
                 DjiWidgetRenderer.cameraControl(context,config,
                     state.copy(camera=camera.copy(connection=CameraConnectionState.DISCONNECTED))).reapply(context,view)
-                assertEquals("--%",battery.text.toString())
-                assertEquals(View.GONE,view.findViewById<View>(R.id.widgetControlMessageContainer).visibility)
+                assertEquals(View.VISIBLE, view.findViewById<View>(R.id.widgetControlMessageContainer).visibility)
+                assertEquals(View.GONE, view.findViewById<View>(R.id.widgetControlMessageSettings).visibility)
+                assertEquals(context.getString(R.string.widget_connect), view.findViewById<TextView>(R.id.widgetControlMessageText).text.toString())
+                assertTrue(view.findViewById<View>(R.id.widgetControlMessage).hasOnClickListeners())
+                save(view, "$theme-half-$height-offline")
                 val fullConfig=ViewConfig(Pair(60,15),Pair(480,113),26)
                 DjiWidgetRenderer.cameraControl(context,fullConfig,state).reapply(context,view)
                 assertEquals(View.VISIBLE,view.findViewById<View>(R.id.widgetControlKeepAwake).visibility)

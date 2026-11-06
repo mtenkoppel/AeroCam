@@ -6,6 +6,7 @@ import android.os.Looper
 import com.karoopoc.R
 import com.karoopoc.dji.CameraConnectionState
 import com.karoopoc.dji.DjiCameraController
+import com.karoopoc.dji.DjiCameraMode
 import com.karoopoc.dji.DjiCameraState
 import com.karoopoc.dji.PhotoCaptureState
 import java.util.concurrent.CopyOnWriteArraySet
@@ -22,6 +23,7 @@ object DjiWidgetController {
     private val connectPrompts = linkedMapOf<ConnectPrompt, Runnable>()
     private var photoAwaitingResponse: String? = null
     private var videoAwaitingResponse: String? = null
+    private var videoSettingsRefresh: Runnable? = null
     private var photoAwaitingClear: Runnable? = null
     private var videoAwaitingClear: Runnable? = null
     private var photoAwaitingTick: Runnable? = null
@@ -37,6 +39,9 @@ object DjiWidgetController {
             cancelCameraObservation = DjiCameraController.observe(context.applicationContext) { next ->
                 val previous = cameraState
                 cameraState = next
+                if (next.connection != CameraConnectionState.CONNECTED || next.recording || next.hasCamControlVideoProfile()) {
+                    clearVideoSettingsRefresh()
+                }
                 if (next.connection == CameraConnectionState.CONNECTED) {
                     clearAllConnectPrompts()
                 }
@@ -66,6 +71,24 @@ object DjiWidgetController {
     fun connect(context: Context) {
         if (!state().configured) return
         toggleConnectPrompt(context, ConnectPrompt.CONTROL)
+    }
+
+    fun refreshVideoSettings(context: Context) {
+        val camera = state()
+        if (camera.connection != CameraConnectionState.CONNECTED || camera.recording ||
+            camera.hasCamControlVideoProfile() || videoSettingsRefresh != null
+        ) return
+        videoSettingsRefresh = Runnable {
+            videoSettingsRefresh = null
+            emit()
+        }.also { mainHandler.postDelayed(it, VIDEO_SETTINGS_REFRESH_MS) }
+        if (camera.cameraMode != DjiCameraMode.VIDEO) DjiCameraController.selectVideoMode(context)
+        emit()
+    }
+
+    private fun clearVideoSettingsRefresh() {
+        videoSettingsRefresh?.let(mainHandler::removeCallbacks)
+        videoSettingsRefresh = null
     }
 
     fun triggerPhoto(context: Context) {
@@ -113,6 +136,7 @@ object DjiWidgetController {
     }
 
     fun confirmSleep(context: Context) {
+        clearVideoSettingsRefresh()
         confirmationClear?.let(mainHandler::removeCallbacks)
         confirmationClear = null
         sleepConfirmation = false
@@ -196,6 +220,7 @@ object DjiWidgetController {
         connectPrompts = connectPrompts.keys.toSet(),
         photoAwaitingResponse = photoAwaitingResponse,
         videoAwaitingResponse = videoAwaitingResponse,
+        refreshingVideoSettings = videoSettingsRefresh != null,
     )
 
     private fun emit() {
@@ -296,6 +321,7 @@ object DjiWidgetController {
     private const val CONFIRMATION_MS = 5_000L
     private const val WAITING_TICK_MS = 320L
     private const val WAITING_RESPONSE_TIMEOUT_MS = 2_500L
+    private const val VIDEO_SETTINGS_REFRESH_MS = 8_000L
 }
 
 enum class ConnectPrompt {
