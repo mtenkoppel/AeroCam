@@ -35,9 +35,13 @@ class AutomationWidgetUiTest {
             Triple("manual", recording.copy(automaticRecordingId = 0), ""),
             Triple("stopped", idle.copy(automationFeedback = "STOPPED"), "REC STOPPED"),
         )
-        for ((size, config) in listOf("half" to ViewConfig(30 to 15, 238 to 85, 24), "map" to ViewConfig(60 to 15, 480 to 97, 32), "full" to ViewConfig(60 to 60, 480 to 420, 40))) {
-            for ((name, camera, expected) in states) {
-                val rv = DjiWidgetRenderer.video(context, config, DjiWidgetViewState(camera))
+        for ((size, config) in listOf("half" to ViewConfig(30 to 15, 238 to 85, 24), "map" to ViewConfig(60 to 15, 480 to 97, 32), "full" to ViewConfig(60 to 60, 480 to 660, 40))) {
+            for ((name, camera, expected) in states) for (kind in if (size == "full") listOf("video", "combined", "control") else listOf("video", "combined")) {
+                val rv = when (kind) {
+                    "combined" -> DjiWidgetRenderer.videoPhoto(context, config, DjiWidgetViewState(camera))
+                    "control" -> DjiWidgetRenderer.cameraControl(context, config, DjiWidgetViewState(camera))
+                    else -> DjiWidgetRenderer.video(context, config, DjiWidgetViewState(camera))
+                }
                 val view = rv.apply(context, FrameLayout(context))
                 view.measure(View.MeasureSpec.makeMeasureSpec(config.viewSize.first, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(config.viewSize.second, View.MeasureSpec.EXACTLY))
                 view.layout(0, 0, config.viewSize.first, config.viewSize.second)
@@ -52,7 +56,7 @@ class AutomationWidgetUiTest {
                 val folder = File("build/reports/settings-ui/automation-widgets").apply { mkdirs() }
                 val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
                 view.draw(Canvas(bitmap))
-                File(folder, "$size-$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+                File(folder, "$size-$kind-$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
             }
         }
     }
