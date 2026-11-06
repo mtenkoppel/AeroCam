@@ -389,7 +389,8 @@ class DjiOsmoBleClient(
     }
 
     fun automaticPhoto() {
-        if (!automaticPhotos.request(SystemClock.elapsedRealtime(), automationReady(AutomationMode.PHOTOS))) return
+        if (!automaticPhotos.request(SystemClock.elapsedRealtime(), automationReady(AutomationMode.PHOTOS),
+                DjiSettings.read(appContext).photoIntervalSeconds)) return
         triggerPhotoNow(automationGeneration)
     }
 

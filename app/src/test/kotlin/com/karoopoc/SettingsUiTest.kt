@@ -286,6 +286,35 @@ class SettingsUiTest {
         controller.pause().stop().destroy()
     }
 
+    @Test fun photoIntervalDefaultsValidatesSavesAndBackDiscards() {
+        val context = RuntimeEnvironment.getApplication()
+        assertEquals(120, DjiSettings.read(context).photoIntervalSeconds)
+        fun open() = Robolectric.buildActivity(AutomationActivity::class.java,
+            Intent(context, AutomationActivity::class.java).putExtra("page", "photos")).setup()
+        val first = open()
+        val activity = first.get()
+        val input = views(activity).filterIsInstance<EditText>().single()
+        assertEquals("120", input.text.toString())
+        for (invalid in listOf("", "0", "86401")) {
+            input.setText(invalid)
+            button(activity, activity.getString(R.string.automation_save)).performClick()
+            assertNotNull(input.error)
+            assertEquals(120, DjiSettings.read(context).photoIntervalSeconds)
+        }
+        input.setText("300")
+        assertNull(input.error)
+        button(activity, activity.getString(R.string.automation_save)).performClick()
+        assertEquals(300, DjiSettings.read(context).photoIntervalSeconds)
+        first.pause().stop().destroy()
+        val second = open()
+        val draft = views(second.get()).filterIsInstance<EditText>().single()
+        assertEquals("300", draft.text.toString())
+        draft.setText("60")
+        second.get().findViewById<View>(R.id.karoo_back).performClick()
+        assertEquals(300, DjiSettings.read(context).photoIntervalSeconds)
+        second.pause().stop().destroy()
+    }
+
     @Test fun automationPagesRenderAndRecordingDefaultsAreExplicit() {
         val context = RuntimeEnvironment.getApplication()
         val settings = DjiSettings.read(context)

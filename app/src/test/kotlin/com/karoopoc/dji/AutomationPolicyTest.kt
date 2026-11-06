@@ -89,10 +89,25 @@ class AutomationPolicyTest {
     }
     @Test fun photosNeverBurstOrReplaySkippedEvents() {
         val p = AutomaticPhotoPolicy()
-        assertFalse(p.request(0, false))
-        assertTrue(p.request(1, true))
-        assertFalse(p.request(1, true))
-        assertFalse(p.request(29999, true))
-        assertTrue(p.request(30001, true))
+        assertFalse(p.request(0, false, 120))
+        assertTrue(p.request(1, true, 120))
+        assertFalse(p.request(1, true, 120))
+        assertFalse(p.request(120000, true, 120))
+        assertTrue(p.request(120001, true, 120))
+    }
+    @Test fun photoIntervalChangesApplyToLastAcceptedRequest() {
+        val p = AutomaticPhotoPolicy()
+        assertTrue(p.request(0, true, 120))
+        assertFalse(p.request(60000, true, 120))
+        assertTrue(p.request(60000, true, 60))
+        assertFalse(p.request(180000, true, 300))
+        assertFalse(p.request(360000, false, 300))
+        assertTrue(p.request(360001, true, 300))
+    }
+    @Test fun photoIntervalUsesLongMillisecondsForLargeValues() {
+        val p = AutomaticPhotoPolicy()
+        assertTrue(p.request(0, true, 86400))
+        assertFalse(p.request(86399999, true, 86400))
+        assertTrue(p.request(86400000, true, 86400))
     }
 }

@@ -79,6 +79,7 @@ internal class AutomationSettingsUi(private val activity: Activity, private val 
         }
         card.addView(choices)
         if (settings.mode == AutomationMode.RECORDING) card.addView(ui.action(activity.getString(R.string.automation_recording_settings)) { open("recording") }, ui.fullWidthParams())
+        if (settings.mode == AutomationMode.PHOTOS) card.addView(ui.action(activity.getString(R.string.automation_photo_settings)) { open("photos") }, ui.fullWidthParams())
         card.addView(ui.text(activity.getString(R.string.highlight_triggers), 16f), ui.fullWidthParams(ui.dp(12), ui.dp(4)))
         val selected = AutomationTriggers.all.filter { it.selected(activity) }
         if (selected.isEmpty()) card.addView(ui.secondaryText(activity.getString(R.string.automation_empty)), ui.fullWidthParams(0, ui.dp(8)))

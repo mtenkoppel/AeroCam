@@ -21,7 +21,7 @@ The shared video icon contains an A when automatic recording is enabled. Automat
 - A queued automatic stop carries clip identity and generation guards. Renewed effort cancels a queued stop while preserving ownership. Automatic operations and queued writes have freshness checks; stale intents and delayed operations are discarded rather than replayed after reconnect.
 - Pausing or ending the ride revokes automatic control and leaves an ongoing recording running manually. Eligible ride-end highlights retain the existing boundary behavior. Resume does not take ownership of that clip again.
 - Editing automation settings also relinquishes the current clip. Manual highlight actions do not cancel recording ownership.
-- Photos use the existing switch-to-photo, 700 ms settling delay, and shutter sequence. There is one shared minimum interval of 30 seconds; sustained threshold conditions do not retrigger until reset. Busy, recording and unavailable cameras are skipped. The existing manual video start explicitly switches back to video mode.
+- Photos use the existing switch-to-photo, 700 ms settling delay, and shutter sequence. There is one shared configurable minimum interval (default 120 seconds, adjustable from 1 to 86,400 seconds in Auto photo settings); sustained threshold conditions do not retrigger until reset. Busy, recording and unavailable cameras are skipped. The existing manual video start explicitly switches back to video mode.
 
 ## Automated checks
 
@@ -46,3 +46,5 @@ Before releasing 1.1, perform a stationary camera test followed by at least two 
 7. Check low storage, failed commands, camera power-off and rapid manual override. Review the actual saved files and markers, not only the Karoo UI.
 
 Use the signed test APK as an in-place update; preserve pairing/settings and do not uninstall or clear data. Onboarding and final release-copy review remain release follow-ups.
+
+Photo interval changes apply against the last accepted automatic-photo request; changing the setting does not clear that timestamp. Unavailable-camera events neither consume the interval nor queue a future shot. Existing users without a saved interval also receive the new 120-second default. Back discards edits; Save validates and persists.

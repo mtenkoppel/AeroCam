@@ -5,6 +5,8 @@ the matching version heading when preparing a release.
 
 ## [Unreleased]
 
+- Added Auto photo settings with a saved minimum interval (default two minutes) and simplified rider-focused automation help.
+
 - Order automation modes as recordings, highlights, then photos, separate the choices more clearly, circle the settings A icon, and increase automatic widget indicator contrast. Help icons now match the heading color.
 
 - Center untitled widget frames, compact automation settings, add Material help icons and simplify trigger descriptions.
@@ -14,7 +16,7 @@ the matching version heading when preparing a release.
 - Added an Automation section with one choice of automatic video highlights, automatic recording, or automatic photos, plus a trigger catalog and editable trigger details.
 - Automatic recordings stop after a full quiet minute by default. Renewed efforts reset the delay; the delay is adjustable and automatic stopping can be disabled. Automatic highlights default on.
 - Added AUTO START / AUTO STOP sublines and brief REC STARTED / REC STOPPED feedback to the shared video control. Manual recordings remain under rider control.
-- Automatic photos use a 30-second minimum interval and skip recording, busy, or unavailable cameras without replaying events later.
+- Automatic photos use a configurable minimum interval, defaulting to two minutes and skip recording, busy, or unavailable cameras without replaying events later.
 
 ## [1.0.2] - 2026-11-05
 

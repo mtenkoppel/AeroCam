@@ -71,6 +71,19 @@ class AutomationActivity : Activity() {
                         ui.fullWidthParams(0, ui.dp(8)))
                 }
             }
+            "photos" -> {
+                title(R.string.automation_photo_settings)
+                val spec = TriggerNumber(DjiSettings.KEY_PHOTO_INTERVAL_SECONDS,
+                    R.string.automation_photo_interval_seconds, DjiSettings.DEFAULT_PHOTO_INTERVAL_SECONDS,
+                    DjiSettings.MIN_PHOTO_INTERVAL_SECONDS, DjiSettings.MAX_PHOTO_INTERVAL_SECONDS)
+                val seconds = number(content, spec)
+                save = {
+                    val value = seconds.text.toString().toIntOrNull()
+                    if (value == null || value !in spec.min..spec.max)
+                        seconds.error = getString(R.string.automation_invalid_number, spec.min, spec.max)
+                    else { prefs.edit().putInt(spec.key, value).apply(); committed() }
+                }
+            }
             "recording" -> {
                 title(R.string.automation_recording_settings)
                 val settings = DjiSettings.read(this)

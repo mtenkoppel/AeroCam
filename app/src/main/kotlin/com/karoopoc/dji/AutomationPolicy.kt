@@ -59,8 +59,8 @@ internal class RecordingOrigin {
 
 internal class AutomaticPhotoPolicy {
     private var last: Long? = null
-    fun request(now: Long, ready: Boolean): Boolean {
-        if (!ready || last?.let { now - it < 30000 } == true) return false
+    fun request(now: Long, ready: Boolean, intervalSeconds: Int): Boolean {
+        if (!ready || last?.let { now - it < intervalSeconds.coerceAtLeast(1) * 1000L } == true) return false
         last = now
         return true
     }
