@@ -70,7 +70,7 @@
 .ride-metrics > div { padding: 3cqw 2cqw; white-space: nowrap; }
 .ride-metrics span, .ride-camera > span { display: block; font-size: 5.5cqw; margin-bottom: 2.3cqw; }
 .ride-metrics strong { font-size: 11cqw; font-weight: 400; font-variant-numeric: tabular-nums; }
-.ride-metrics small { display: block; font-size: 4cqw; margin-top: 1cqw; }
+.ride-metrics small { display: block; font-size: max(11px, 4cqw); margin-top: 1cqw; }
 .ride-camera { padding: 2.6cqw 2.1cqw 2.8cqw; }
 .ride-camera-row { display: flex; flex: 1; gap: 2cqw; }
 .ride-camera-row > :is(span, button) { flex: 1; display: grid; place-items: center; background: #616161; border-radius: 3.3cqw; min-height: 15cqw; }
@@ -89,7 +89,7 @@
 .ride-demo[data-recording] .ride-video { background: #ed0000; }
 .ride-recording { display: grid; justify-items: center; gap: .5cqw; }
 .ride-recording b { font-size: 8cqw; font-variant-numeric: tabular-nums; }
-.ride-recording small { font-size: 3cqw; font-weight: 700; }
+.ride-recording small { font-size: max(11px, 3cqw); font-weight: 700; }
 .ride-status { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 .johnny-panel { min-width: 0; }

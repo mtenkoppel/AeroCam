@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AeroCam — DJI Osmo Action control for Hammerhead Karoo</title>
   <meta name="description" content="AeroCam is an open-source Karoo extension that controls your DJI Osmo Action over Bluetooth. Automatic recording, photos and video highlights, triggered by your ride." />
-  <link rel="stylesheet" href="styles.css?v=1.1.0" />
-  <link rel="stylesheet" href="ride-demo.css?v=9">
+  <link rel="stylesheet" href="styles.css?v=582ee460f938" />
+  <link rel="stylesheet" href="ride-demo.css?v=d69779c7762c">
 </head>
 <body>
 
@@ -29,11 +29,12 @@
     <div class="container nav-inner">
       <a class="brand" href="#top"><svg class="brand-logo"><use href="#aerocam-mark"/></svg>AeroCam</a>
       <nav class="nav-links">
+        <a href="#highlights">Automation</a>
+        <a href="#widgets">Test ride</a>
         <a href="#features">Features</a>
-        <a href="#widgets">Automation</a>
-        <a href="#keepawake">Keep awake</a>
+        <a href="#keepawake">Prevent standby</a>
         <a href="#how">Install</a>
-        <a href="#transparency">Transparency</a>
+        <a href="#transparency">AI transparency</a>
       </nav>
       <a class="btn btn-ghost btn-sm" href="https://github.com/mtenkoppel/AeroCam" target="_blank" rel="noopener">
         <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
@@ -99,46 +100,23 @@
     </div>
   </section>
 
-  <!-- ======================= FEATURES ======================= -->
-  <section class="section" id="features">
-    <div class="container">
-      <div class="section-head reveal">
-        <span class="kicker">// Features</span>
-        <h2>Distraction-free interaction</h2>
+  <!-- ======================= AUTOMATION ======================= -->
+  <section class="section" id="highlights">
+    <div class="container split">
+      <div class="split-copy reveal">
+        <h2>Automatic recording: keeps your attention on the road</h2>
+        <p>Choose automatic recording, highlights or photos, then set triggers for climbs, speed or effort. AeroCam handles the capture while you ride.</p>
+        <p>By default, automatic video stops after one minute without an active trigger, and automatic photos have a two-minute minimum interval. Adjust these timings in Settings; manual controls remain available.</p>
       </div>
-      <div class="cards">
-        <article class="card reveal">
-          <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="6" fill="#ff0505"/></svg></div>
-          <h3>In-ride camera control</h3>
-          <p>Start and stop recordings and take photos from Karoo data fields.</p>
-        </article>
-        <article class="card reveal">
-          <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 10h18M11 10v11"/></svg></div>
-          <h3>Different widget sizes</h3>
-          <p>Choose a small recording button or a full-page control widget, depending on how you like to use your ride screen.</p>
-        </article>
-        <article class="card reveal">
-          <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5M20 12a8 8 0 1 0-2 5"/></svg></div>
-          <h3>Reconnects itself</h3>
-          <p>Preparing for a ride is tedious enough. AeroCam reconnects automatically after you turn the camera on.</p>
-        </article>
-        <article class="card reveal">
-          <div class="card-icon">★</div>
-          <h3>Ride-triggered capture</h3>
-          <p>Choose automatic recording, highlights, or photos. Set triggers for your climbs, fast stretches and hard efforts, and let AeroCam handle the camera.</p>
-        </article>
-        <article class="card reveal">
-          <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M18,8H19C20.66,8 22,9.34 22,11C22,12.66 20.66,14 19,14H18V15C18,17.21 16.21,19 14,19H7C4.79,19 3,17.21 3,15V8H18M18,10V12H19C19.55,12 20,11.55 20,11C20,10.45 19.55,10 19,10H18M5,10V15C5,16.1 5.9,17 7,17H14C15.1,17 16,16.1 16,15V10H5M6,21H17V23H6V21M7,1H9V5H7V1M11,1H13V5H11V1M15,1H17V5H15V1Z"/></svg></div>
-          <h3>Keep awake</h3>
-          <p>Osmo cameras can't be woken remotely once they power off. AeroCam's workaround keeps the camera
-          in a semi-standby mode, so you can leave it mounted without worrying about it during the ride.</p>
-        </article>
-        <article class="card reveal">
-          <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 3 4 4-4 4-4-4zM19 13l4 4-4 4-4-4zM8 9l7 7M14 3a7 7 0 0 1 7 7M14 7a3 3 0 0 1 3 3M9 15l-3 3M3 21l3-3"/></svg></div>
-          <h3>GPS telemetry to the camera</h3>
-          <p>AeroCam streams live Karoo GPS data to the camera, including position, altitude, and velocity.
-          You can then overlay that data onto the video using the DJI app or other external apps.</p>
-        </article>
+      <div class="trigger-board reveal">
+        <details class="trigger-detail"><summary><span class="trigger-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V3m0 1h13l-3 4 3 4H5"/></svg></span><span class="trigger-label">Lap marker</span></summary><p>Triggers your chosen action when Karoo records a new lap.</p></details>
+        <details class="trigger-detail"><summary><span class="trigger-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m13 2-8 12h6l-1 8 9-13h-6z"/></svg></span><span class="trigger-label">Peak power</span></summary><p>Triggers your chosen action when your power crosses the configured wattage.</p></details>
+        <details class="trigger-detail"><summary><span class="trigger-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18a9 9 0 1 1 16 0M12 13l5-5"/><circle cx="12" cy="13" r="1.5"/></svg></span><span class="trigger-label">Max speed</span></summary><p>Triggers your chosen action when your speed crosses the configured threshold.</p></details>
+        <details class="trigger-detail"><summary><span class="trigger-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m2 20 7-12 4 6 3-5 6 11H2m4-7 3 2 3-2"/></svg></span><span class="trigger-label">Climb summit</span></summary><p>Triggers your chosen action when you reach the summit of a climb in your active route.</p></details>
+        <details class="trigger-detail"><summary><span class="trigger-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.8a5.5 5.5 0 0 0-7.8 0L12 6l-1-1.2a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.4a5.5 5.5 0 0 0 0-7.8Z"/><path d="M3 12h4l2-4 3 8 2-4h7"/></svg></span><span class="trigger-label">Peak heart rate</span></summary><p>Triggers your chosen action when your heart rate crosses the configured threshold.</p></details>
+        <details class="trigger-detail"><summary><span class="trigger-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18 19 5m-8 0h8v8"/></svg></span><span class="trigger-label">Ascent</span></summary><p>Capture a climb at your chosen positive gradient. Optionally require a minimum speed too.</p></details>
+        <details class="trigger-detail"><summary><span class="trigger-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 15 13m-8 0h8v-8"/></svg></span><span class="trigger-label">Descent</span></summary><p>Capture a descent at your chosen negative gradient. Optionally require a minimum speed too.</p></details>
+        <details class="trigger-detail"><summary><span class="trigger-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="18" r="2"/><circle cx="19" cy="6" r="2"/><path d="M7 18h7a4 4 0 0 0 0-8h-4a4 4 0 0 1 0-8h6"/></svg></span><span class="trigger-label">Ride start / end</span></summary><p>Adds a highlight at the start and end of a ride when the camera is recording.</p></details>
       </div>
     </div>
   </section>
@@ -146,7 +124,7 @@
   <section class="section" id="widgets" aria-labelledby="ride-demo-title">
     <div class="container">
       <header class="ride-demo-intro">
-        <h2 id="ride-demo-title">Go for a test ride</h2>
+        <h3 id="ride-demo-title">Go for an automatic test ride</h3>
         <p id="ride-mode-label">Pick your mode</p>
         <div class="ride-mode" role="radiogroup" aria-labelledby="ride-mode-label">
           <label><input type="radio" name="ride-mode" value="video" checked><span>Auto video</span></label>
@@ -265,11 +243,46 @@
     </div>
   </section>
 
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-head reveal">
+        <h2>Features</h2>
+      </div>
+      <div class="cards">
+        <article class="card reveal">
+          <h3><span class="feature-graphic" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="6" fill="#ff0505"/></svg></span><span class="feature-title">In-ride camera control</span></h3>
+          <p>Start and stop recordings and take photos from Karoo data fields.</p>
+        </article>
+        <article class="card reveal">
+          <h3><span class="feature-graphic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 10h18M11 10v11"/></svg></span><span class="feature-title">Different widget sizes</span></h3>
+          <p>Choose a small recording button or a full-page control widget, depending on how you like to use your ride screen.</p>
+        </article>
+        <article class="card reveal">
+          <h3><span class="feature-graphic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5M20 12a8 8 0 1 0-2 5"/></svg></span><span class="feature-title">Reconnects itself</span></h3>
+          <p>Preparing for a ride is tedious enough. AeroCam reconnects automatically after you turn the camera on.</p>
+        </article>
+        <article class="card reveal">
+          <h3><span class="feature-graphic" aria-hidden="true">★</span><span class="feature-title">Automatic recording</span></h3>
+          <p>Choose automatic recording, highlights, or photos. Set triggers for your climbs, fast stretches and hard efforts, and let AeroCam handle the camera.</p>
+        </article>
+        <article class="card reveal">
+          <h3><span class="feature-graphic" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M18,8H19C20.66,8 22,9.34 22,11C22,12.66 20.66,14 19,14H18V15C18,17.21 16.21,19 14,19H7C4.79,19 3,17.21 3,15V8H18M18,10V12H19C19.55,12 20,11.55 20,11C20,10.45 19.55,10 19,10H18M5,10V15C5,16.1 5.9,17 7,17H14C15.1,17 16,16.1 16,15V10H5M6,21H17V23H6V21M7,1H9V5H7V1M11,1H13V5H11V1M15,1H17V5H15V1Z"/></svg></span><span class="feature-title">Prevent standby</span></h3>
+          <p>Osmo cameras can't be woken remotely once they power off. AeroCam's workaround keeps the camera
+          in a semi-standby mode, so you can leave it mounted without worrying about it during the ride.</p>
+        </article>
+        <article class="card reveal">
+          <h3><span class="feature-graphic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 3 4 4-4 4-4-4zM19 13l4 4-4 4-4-4zM8 9l7 7M14 3a7 7 0 0 1 7 7M14 7a3 3 0 0 1 3 3M9 15l-3 3M3 21l3-3"/></svg></span><span class="feature-title">GPS telemetry to the camera</span></h3>
+          <p>AeroCam streams live Karoo GPS data to the camera, including position, altitude, and velocity.
+          You can then overlay that data onto the video using the DJI app or other external apps.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <!-- ======================= KEEP AWAKE ======================= -->
   <section class="section section-alt" id="keepawake">
     <div class="container split split-reverse">
       <div class="split-copy reveal">
-        <span class="kicker">// Keep awake</span>
         <h2>AeroCam can prevent your camera from turning off</h2>
         <p>Your DJI camera automatically turns off after a period of inactivity, typically
           five minutes, even with a remote connected. AeroCam can prevent this with a modest
@@ -289,7 +302,6 @@
   <section class="section" id="how">
     <div class="container">
       <div class="section-head reveal">
-        <span class="kicker">// Setup</span>
         <h2>How to install AeroCam</h2>
       </div>
       <ol class="steps">
@@ -317,26 +329,14 @@
 
   <!-- ======================= AI TRANSPARENCY ======================= -->
   <section class="section section-alt" id="transparency">
-    <div class="container split">
+    <div class="container transparency-copy">
       <div class="split-copy reveal">
-        <div class="transparency-badge">AI Transparency Note.</div>
-        <h2 class="gradient-heading">How AeroCam was developed</h2>
+        <h2>AI transparency</h2>
         <p>AeroCam started with a practical need: controlling a mounted camera from the Karoo.
           Different ideas were mocked up in Figma and implemented by large language models.
           Human direction shaped the interface for ease of use, with experiments and daily use on real Karoo and Osmo hardware guiding the result.</p>
       </div>
-      <div class="codev reveal">
-        <div class="orb-stage">
-          <div class="orb orb-human"></div>
-          <div class="orb orb-machine"></div>
-          <div class="orb-core"></div>
-          <div class="orb-caption">
-            <span>human design</span>
-            <span class="orb-caption-center">aerocam</span>
-            <span>machine code</span>
-          </div>
-        </div>
-      </div>
+
     </div>
   </section>
 
@@ -377,7 +377,6 @@
       </div>
     </div>
   </section>
-
 
   <script src="script.js?v=ce62c2b5a13b"></script>
   <script src="ride-demo.js?v=9"></script>
