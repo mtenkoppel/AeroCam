@@ -2,12 +2,12 @@
   const demo = document.querySelector('[data-ride-demo]');
   if (!demo) return;
 
-  const cruise = { speed: 28, watts: 165, grade: 0, cadence: 84, tilt: 0, reach: 0, drop: 0, lift: 0, forward: 0 };
+  const cruise = { speed: 28, watts: 165, grade: 0, cadence: 84, tilt: 0, reach: 0, drop: 0, lift: 0, forward: 0, handX: 193, handY: 67 };
   const moves = {
     normal: cruise,
-    uphill: { speed: 19, watts: 290, grade: 8, cadence: 48, tilt: -8, reach: 8, drop: -9, lift: 11, forward: 15 },
-    downhill: { speed: 49, watts: 190, grade: -6, cadence: 102, tilt: 7, reach: 14, drop: 11, lift: 0, forward: 0 },
-    attack: { speed: 37, watts: 352, grade: 0, cadence: 113, tilt: 0, reach: 10, drop: 4, lift: 7, forward: 0 },
+    uphill: { ...cruise, speed: 19, watts: 290, grade: 8, cadence: 48, tilt: -8, reach: 8, drop: -9, lift: 11, forward: 15 },
+    downhill: { ...cruise, speed: 49, watts: 190, grade: -6, cadence: 102, tilt: 7, reach: 14, drop: 11, lift: 0, forward: 0, handX: 185, handY: 80 },
+    attack: { ...cruise, speed: 37, watts: 352, grade: 0, cadence: 113, tilt: 0, reach: 10, drop: 4, lift: 7, forward: 0 },
   };
   const readouts = Object.fromEntries(
     ['speed', 'watts', 'grade'].map(key => [key, demo.querySelector(`[data-${key}]`)]),
@@ -57,7 +57,7 @@
   }
 
   function selectMove(key, now) {
-    if (key === 'uphill' && selectedMove === 'uphill') key = 'normal';
+    if ((key === 'uphill' || key === 'downhill') && selectedMove === key) key = 'normal';
     selectedMove = key;
     transitionTo(moves[key], now);
     attackStarted = key === 'attack' ? now : null;
@@ -144,7 +144,7 @@
   }
 
   function drawCyclist(now, dt) {
-    const { tilt, reach, drop, lift, forward, cadence, speed } = pose;
+    const { tilt, reach, drop, lift, forward, cadence, speed, handX, handY } = pose;
     if (!reducedMotion.matches) {
       phase = (phase + dt * cadence * Math.PI / 30_000) % (2 * Math.PI);
       wheelAngle = (wheelAngle + dt * speed * .018) % 360;
@@ -167,7 +167,7 @@
     far.setAttribute('d', leg(hipX, hipY, 133 - x, 136 - y));
     near.setAttribute('d', leg(hipX, hipY, 133 + x, 136 + y));
     crank.setAttribute('d', `M${133 - x} ${136 - y}L${133 + x} ${136 + y}`);
-    body.setAttribute('d', `M${hipX} ${hipY}L${shoulderX} ${shoulderY}L${(shoulderX + 193) / 2 - 3} ${(shoulderY + 67) / 2 + 7}L193 67`);
+    body.setAttribute('d', `M${hipX} ${hipY}L${shoulderX} ${shoulderY}L${(shoulderX + handX) / 2 - 3} ${(shoulderY + handY) / 2 + 7}L${handX} ${handY}`);
     head.setAttribute('transform', `translate(${shoulderX + 10} ${shoulderY - 15})`);
   }
 
