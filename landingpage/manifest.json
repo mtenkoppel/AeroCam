@@ -1,0 +1,9 @@
+{
+  "label": "AeroCam",
+  "packageName": "com.karoopoc",
+  "latestApkUrl": "https://github.com/mtenkoppel/AeroCam/releases/download/v1.1.0/AeroCam-v1.1.0.apk",
+  "latestVersion": "1.1.0",
+  "latestVersionCode": 54,
+  "description": "Control a compatible DJI Osmo Action camera from your Hammerhead Karoo. Start and stop recording, mark highlights, and use ride triggers to capture videos or photos automatically.",
+  "releaseNotes": "AeroCam 1.1 adds automatic video and photo capture, guided automation setup, and improved in-ride camera controls."
+}
