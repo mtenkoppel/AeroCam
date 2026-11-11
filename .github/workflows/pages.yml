@@ -6,6 +6,11 @@ on:
     paths:
       - "landingpage/**"
       - ".github/workflows/pages.yml"
+  # Releases published with GITHUB_TOKEN do not trigger release events.
+  workflow_run:
+    workflows: [Publish release]
+    branches: [master]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -13,19 +18,64 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: pages
-  cancel-in-progress: true
-
 jobs:
   deploy:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          ref: master
+          persist-credentials: false
+      - name: Refresh Karoo manifest from the latest stable release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          release=$(gh api "repos/$GITHUB_REPOSITORY/releases/latest")
+          tag=$(jq -er 'select(.draft == false and .prerelease == false) | .tag_name' <<< "$release")
+          if ! [[ "$tag" =~ ^v[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
+            echo "::error::Expected a stable AeroCam release tag, got $tag"
+            exit 1
+          fi
+          asset="AeroCam-$tag.apk"
+          apk_url=$(jq -er --arg asset "$asset" '
+            .assets[] | select(.name == $asset and .state == "uploaded") | .browser_download_url
+          ' <<< "$release")
+          apk="$RUNNER_TEMP/$asset"
+          gh release download "$tag" --repo "$GITHUB_REPOSITORY" --pattern "$asset" --output "$apk"
+
+          tools="$ANDROID_HOME/build-tools/35.0.0"
+          signing_report=$("$tools/apksigner" verify --print-certs "$apk")
+          certificate=$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' <<< "$signing_report")
+          test "$certificate" = "cf5c62d207d7a6e7b03b056604c30873180390d11129f791231e19844ceab0ce"
+
+          badging=$("$tools/aapt" dump badging "$apk")
+          package=$(sed -n "s/^package: name='\([^']*\)'.*/\1/p" <<< "$badging")
+          version=$(sed -n "s/^package: .*versionName='\([^']*\)'.*/\1/p" <<< "$badging")
+          code=$(sed -n "s/^package: .*versionCode='\([0-9][0-9]*\)'.*/\1/p" <<< "$badging")
+          test "$package" = "$(jq -er '.packageName' landingpage/manifest.json)"
+          test "v$version" = "$tag"
+          test "$code" -gt 0
+          if grep -q '^application-debuggable' <<< "$badging"; then
+            echo "::error::The published APK is debuggable"
+            exit 1
+          fi
+
+          notes=$(jq -r '.body // ""' <<< "$release")
+          jq --arg url "$apk_url" --arg version "$version" --argjson code "$code" --arg notes "$notes" '
+            .latestApkUrl = $url | .latestVersion = $version | .latestVersionCode = $code | .releaseNotes = $notes
+          ' landingpage/manifest.json > "$RUNNER_TEMP/manifest.json"
+          mv "$RUNNER_TEMP/manifest.json" landingpage/manifest.json
+          echo "Karoo manifest points to AeroCam $version (build $code)."
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload landing page
