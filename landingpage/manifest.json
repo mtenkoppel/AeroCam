@@ -5,5 +5,5 @@
   "latestVersion": "1.1.0",
   "latestVersionCode": 54,
   "description": "Control a compatible DJI Osmo Action camera from your Hammerhead Karoo. Start and stop recording, mark highlights, and use ride triggers to capture videos or photos automatically.",
-  "releaseNotes": "AeroCam 1.1 adds automatic video and photo capture, guided automation setup, and improved in-ride camera controls."
+  "releaseNotes": "Choose when AeroCam automatically records video or takes photos during a ride."
 }

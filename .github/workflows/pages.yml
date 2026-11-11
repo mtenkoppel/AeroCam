@@ -70,9 +70,17 @@ jobs:
             exit 1
           fi
 
-          notes=$(jq -r '.body // ""' <<< "$release")
+          notes=$(jq -r '
+            [(.body // "") | split("\n")[] |
+              capture("^<!-- karoo-release-notes: (?<summary>\\S(?:.*?\\S)?)[ \t]*-->[ \t\r]*$").summary
+            ][0] // ""
+          ' <<< "$release")
           jq --arg url "$apk_url" --arg version "$version" --argjson code "$code" --arg notes "$notes" '
-            .latestApkUrl = $url | .latestVersion = $version | .latestVersionCode = $code | .releaseNotes = $notes
+            if $notes != "" then .releaseNotes = $notes
+            elif .latestVersion != $version then del(.releaseNotes)
+            else .
+            end
+            | .latestApkUrl = $url | .latestVersion = $version | .latestVersionCode = $code
           ' landingpage/manifest.json > "$RUNNER_TEMP/manifest.json"
           mv "$RUNNER_TEMP/manifest.json" landingpage/manifest.json
           echo "Karoo manifest points to AeroCam $version (build $code)."
