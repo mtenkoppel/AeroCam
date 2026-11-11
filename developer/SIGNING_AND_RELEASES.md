@@ -80,6 +80,16 @@ The README and landing page use `/releases/latest`. GitHub points that URL to
 the current stable release. Published tags and APKs stay immutable. For a fix or
 revert, publish a new patch with a higher Android version code.
 
+For the Karoo Extension Library, add a one-line summary under the new stable
+version heading in CHANGELOG.md. Focus on what riders can do or what works
+better. The comment stays hidden in the rendered GitHub release notes.
+
+```markdown
+<!-- karoo-release-notes: See camera battery and storage at a glance. -->
+```
+
+The published manifest omits release notes when a new release has no summary.
+
 ## Official beta releases
 
 Use `1.1.0-beta.1` (tag `v1.1.0-beta.1`) and a version code above all distributed builds. The same approved-master workflow accepts `MAJOR.MINOR.PATCH-beta.N`, verifies the established certificate and publishes with `--prerelease --latest=false`. Stable versions retain `--latest`. Beta downloads must link to their explicit release page; `/releases/latest` continues to serve the stable release. Each beta gets a new immutable tag and higher version code.
