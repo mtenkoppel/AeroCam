@@ -5,6 +5,8 @@ the matching version heading when preparing a release.
 
 ## [Unreleased]
 
+- Added the beta-only **Hardware start/stop hack** under Advanced settings. Karoo lap events toggle video recording when enabled, overriding AeroCam’s lap automation.
+
 ## [1.1.0] - 2026-11-06
 
 AeroCam 1.1 brings automatic recording and photos, guided setup, and polished ride controls.

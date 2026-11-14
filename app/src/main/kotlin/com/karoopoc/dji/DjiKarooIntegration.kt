@@ -79,12 +79,7 @@ class DjiKarooIntegration(
         cancelCameraObservation = DjiCameraController.observe(appContext, ::onCameraState)
 
         karooSystem.addConsumer<RideState>(onEvent = { next -> automationHandler.post { onRideState(next) } })
-        karooSystem.addConsumer<Lap> { lap ->
-            val settings = DjiSettings.read(appContext)
-            if (settings.autoHighlightsEnabled && settings.lapHighlights) {
-                requestHighlight(appContext.getString(R.string.highlight_lap_feedback, lap.number), cooldownExempt = true)
-            }
-        }
+        karooSystem.addConsumer<Lap>(onEvent = ::onLap)
         karooSystem.addConsumer<UserProfile> { _ -> }
         karooSystem.addConsumer<OnLocationChanged> { location ->
             latestLocation = location
@@ -135,6 +130,20 @@ class DjiKarooIntegration(
                     onValue(value)
                 } else telemetryAt.remove(typeId)
             }
+        }
+    }
+
+    private fun onLap(lap: Lap) {
+        if (DjiSettings.hardwareStartStopEnabled(appContext)) {
+            automationHandler.post {
+                if (!stopped) DjiCameraController.toggleRecording(appContext, requireCameraStatus = true)
+            }
+            return
+        }
+
+        val settings = DjiSettings.read(appContext)
+        if (settings.autoHighlightsEnabled && settings.lapHighlights) {
+            requestHighlight(appContext.getString(R.string.highlight_lap_feedback, lap.number), cooldownExempt = true)
         }
     }
 

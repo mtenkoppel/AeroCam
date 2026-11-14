@@ -128,6 +128,26 @@ class SettingsUiTest {
         controller.pause().stop().destroy()
     }
 
+    @Test fun hardwareStartStopDefaultsOffAndPersistsAcrossSettingsReload() {
+        val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
+        val activity = controller.get()
+        val label = activity.getString(R.string.hardware_start_stop_hack)
+        fun shortcut() = views(activity).filterIsInstance<Switch>().single { it.text.toString() == label }
+        val toggle = shortcut()
+        assertTrue(toggle.parent === button(activity, activity.getString(R.string.advanced_settings)).parent)
+        assertFalse(toggle.isChecked)
+        toggle.performClick()
+        assertTrue(DjiSettings.hardwareStartStopEnabled(activity))
+        controller.pause().stop().destroy()
+
+        val reopened = Robolectric.buildActivity(MainActivity::class.java).setup()
+        val savedToggle = views(reopened.get()).filterIsInstance<Switch>().single { it.text.toString() == label }
+        assertTrue(savedToggle.isChecked)
+        savedToggle.performClick()
+        assertFalse(DjiSettings.hardwareStartStopEnabled(reopened.get()))
+        reopened.pause().stop().destroy()
+    }
+
     @Test fun `white menus preserve defaults and controls under either system appearance`() {
         for (mode in listOf("dark", "light")) {
             RuntimeEnvironment.setQualifiers(if (mode == "dark") "+night" else "+notnight")

@@ -231,4 +231,6 @@
     <string name="widget_refreshing_video">A atualizar…</string>
     <string name="widget_switching_to_video">A mudar para vídeo…</string>
     <string name="widget_switching_to_video_short">A mudar…</string>
+    <string name="hardware_start_stop_hack">Início e paragem por botão</string>
+    <string name="hardware_start_stop_hack_summary">Inicia ou para a gravação com o botão de volta do Karoo quando a câmara está ligada. As voltas automáticas e de treino também alternam a gravação.</string>
 </resources>

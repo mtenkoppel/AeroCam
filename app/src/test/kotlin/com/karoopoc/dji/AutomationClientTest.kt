@@ -1,11 +1,14 @@
 package com.karoopoc.dji
 
+import android.content.ComponentName
+import android.content.Intent
 import android.os.Looper
 import android.os.SystemClock
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
@@ -32,6 +35,48 @@ class AutomationClientTest {
         client.setAutomationRideActive(true)
         field("writeInProgress").setBoolean(client, true)
     }
+
+    @Test fun lapToggleUsesCameraStatusIncludingExternallyStartedRecording() {
+        shadowOf(context).declareComponentUnbindable(
+            ComponentName.createRelative("io.hammerhead.appstore", ".service.AppStoreService"),
+        )
+        val service = Robolectric.buildService(DjiCameraService::class.java).create().get()
+        DjiCameraService::class.java.getDeclaredField("client").apply { isAccessible = true }.set(service, client)
+        val toggle = Intent(DjiCameraService.ACTION_RECORD_TOGGLE)
+            .putExtra(DjiCameraService.EXTRA_REQUIRE_CAMERA_STATUS, true)
+        val handleStatus = DjiOsmoBleClient::class.java
+            .getDeclaredMethod("handleCameraStatus", DjiProtocol.Frame::class.java).apply { isAccessible = true }
+
+        fun reportVideoStatus(status: Byte) {
+            val payload = ByteArray(38)
+            payload[0] = 1 // Video mode
+            payload[1] = status
+            handleStatus.invoke(
+                client,
+                DjiProtocol.Frame(byteArrayOf(), 0, 1, DjiProtocol.CMD_SET_CAMERA, DjiProtocol.CMD_ID_CAMERA_STATUS_PUSH, payload),
+            )
+        }
+
+        service.onStartCommand(toggle, 0, 1)
+        assertTrue(writes().isEmpty())
+
+        reportVideoStatus(3) // Recording began on the camera itself.
+        service.onStartCommand(toggle, 0, 2)
+        val stopWrite = writes().removeFirst()
+        val frame = stopWrite.javaClass.getDeclaredField("frame").apply { isAccessible = true }
+        val stop = DjiProtocol.parseFrame(frame.get(stopWrite) as ByteArray)!!
+        assertEquals(DjiProtocol.CMD_ID_RECORD_CONTROL, stop.cmdId)
+        assertEquals(1, stop.payload[4].toInt())
+        val onComplete = stopWrite.javaClass.getDeclaredField("onComplete").apply { isAccessible = true }
+        @Suppress("UNCHECKED_CAST")
+        (onComplete.get(stopWrite) as (Boolean) -> Unit)(true)
+
+        reportVideoStatus(0)
+        service.onStartCommand(toggle, 0, 3)
+        val modeSwitch = DjiProtocol.parseFrame(frame.get(writes().removeFirst()) as ByteArray)!!
+        assertEquals(DjiProtocol.CMD_ID_MODE_SWITCH, modeSwitch.cmdId)
+    }
+
     @Test fun offlineEventsNeverQueueForReconnect() {
         field("protocolConnected").setBoolean(client, false)
         client.automaticStart(); mode(AutomationMode.PHOTOS); client.automaticPhoto(); idle()

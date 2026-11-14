@@ -231,4 +231,6 @@
     <string name="widget_refreshing_video">Aktualisiere…</string>
     <string name="widget_switching_to_video">Wechsel zu Video…</string>
     <string name="widget_switching_to_video_short">Wechsel…</string>
+    <string name="hardware_start_stop_hack">Hardware-Start/Stopp-Hack</string>
+    <string name="hardware_start_stop_hack_summary">Startet oder stoppt die Videoaufnahme mit der Rundentaste des Karoo bei verbundener Kamera. Auto-Runden und Trainingsrunden schalten die Aufnahme ebenfalls um.</string>
 </resources>

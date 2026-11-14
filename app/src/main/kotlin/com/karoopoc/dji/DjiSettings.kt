@@ -54,6 +54,7 @@ object DjiSettings {
     const val KEY_HIGHLIGHT_COOLDOWN_SECONDS = "highlight_cooldown_seconds"
     const val KEY_AUTO_START_RECORDING = "highlight_auto_start_recording"
     const val KEY_LAP_HIGHLIGHTS = "highlight_lap"
+    const val KEY_HARDWARE_START_STOP = "hardware_start_stop"
     const val KEY_PEAK_POWER_HIGHLIGHTS = "highlight_peak_power"
     const val KEY_PEAK_POWER_WATTS = "highlight_peak_power_watts"
     const val KEY_MAX_SPEED_HIGHLIGHTS = "highlight_max_speed"
@@ -148,6 +149,9 @@ object DjiSettings {
 
     fun hideFieldCaptions(context: Context): Boolean =
         preferences(context).getBoolean(KEY_HIDE_FIELD_CAPTIONS, false)
+
+    fun hardwareStartStopEnabled(context: Context): Boolean =
+        preferences(context).getBoolean(KEY_HARDWARE_START_STOP, false)
 
     fun resetAll(context: Context) {
         preferences(context).edit().clear()

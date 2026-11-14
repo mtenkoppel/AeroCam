@@ -143,6 +143,13 @@ class MainActivity : Activity() {
         ui.alerts(content)
         ui.style(content)
         val advanced = ui.group(content, getString(R.string.advanced_settings))
+        ui.settingsSwitch(
+            advanced,
+            getString(R.string.hardware_start_stop_hack),
+            DjiSettings.KEY_HARDWARE_START_STOP,
+            default = false,
+            summary = getString(R.string.hardware_start_stop_hack_summary),
+        )
         ui.cooldown(advanced)
         ui.standbyTime(advanced)
         connectButton = ui.action(getString(R.string.connect_known_dji)) {

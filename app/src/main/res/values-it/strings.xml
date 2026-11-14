@@ -231,4 +231,6 @@
     <string name="widget_refreshing_video">Aggiornamento…</string>
     <string name="widget_switching_to_video">Passaggio a video…</string>
     <string name="widget_switching_to_video_short">Passaggio…</string>
+    <string name="hardware_start_stop_hack">Avvio e arresto con tasto</string>
+    <string name="hardware_start_stop_hack_summary">Avvia o interrompe il video con il tasto giro del Karoo quando la fotocamera è connessa. Anche i giri automatici e quelli di allenamento alternano la registrazione.</string>
 </resources>
