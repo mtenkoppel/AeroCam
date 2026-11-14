@@ -5,7 +5,7 @@ the matching version heading when preparing a release.
 
 ## [Unreleased]
 
-- Added the beta-only **Hardware start/stop hack** under Advanced settings. Karoo lap events toggle video recording when enabled, overriding AeroCam’s lap automation.
+- Added the beta-only **Hardware start/stop hack** under Advanced settings. Press the Karoo manual lap button to toggle video recording when enabled, overriding AeroCam’s lap automation.
 
 ## [1.1.0] - 2026-11-06
 

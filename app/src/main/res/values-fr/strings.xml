@@ -232,5 +232,5 @@
     <string name="widget_switching_to_video">Passage en vidéo…</string>
     <string name="widget_switching_to_video_short">Passage…</string>
     <string name="hardware_start_stop_hack">Astuce marche/arrêt par bouton</string>
-    <string name="hardware_start_stop_hack_summary">Démarre ou arrête la vidéo avec le bouton de tour du Karoo lorsque la caméra est connectée. Les tours automatiques et les tours d’entraînement basculent aussi l’enregistrement.</string>
+    <string name="hardware_start_stop_hack_summary">Démarre ou arrête la vidéo avec le bouton de tour manuel du Karoo lorsque la caméra est connectée.</string>
 </resources>

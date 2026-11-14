@@ -135,6 +135,8 @@ class DjiKarooIntegration(
 
     private fun onLap(lap: Lap) {
         if (DjiSettings.hardwareStartStopEnabled(appContext)) {
+            // Karoo reports MANUAL for presses of its lap button.
+            if (lap.trigger != "MANUAL") return
             automationHandler.post {
                 if (!stopped) DjiCameraController.toggleRecording(appContext, requireCameraStatus = true)
             }

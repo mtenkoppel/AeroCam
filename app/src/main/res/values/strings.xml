@@ -240,5 +240,5 @@
     <string name="widget_switching_to_video">Switching to Video…</string>
     <string name="widget_switching_to_video_short">Switching…</string>
     <string name="hardware_start_stop_hack">Hardware start/stop hack</string>
-    <string name="hardware_start_stop_hack_summary">Start or stop video with the Karoo lap button while the camera is connected. Auto-Lap and workout laps also toggle video.</string>
+    <string name="hardware_start_stop_hack_summary">Start or stop video with the Karoo manual lap button while the camera is connected.</string>
 </resources>
