@@ -13,6 +13,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import java.time.Duration
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [32])
@@ -57,11 +58,16 @@ class AutomationClientTest {
             )
         }
 
-        service.onStartCommand(toggle, 0, 1)
+        fun toggleRecording(startId: Int) {
+            service.onStartCommand(toggle, 0, startId)
+            idle()
+        }
+
+        toggleRecording(1)
         assertTrue(writes().isEmpty())
 
         reportVideoStatus(3) // Recording began on the camera itself.
-        service.onStartCommand(toggle, 0, 2)
+        toggleRecording(2)
         val stopWrite = writes().removeFirst()
         val frame = stopWrite.javaClass.getDeclaredField("frame").apply { isAccessible = true }
         val stop = DjiProtocol.parseFrame(frame.get(stopWrite) as ByteArray)!!
@@ -72,9 +78,16 @@ class AutomationClientTest {
         (onComplete.get(stopWrite) as (Boolean) -> Unit)(true)
 
         reportVideoStatus(0)
-        service.onStartCommand(toggle, 0, 3)
-        val modeSwitch = DjiProtocol.parseFrame(frame.get(writes().removeFirst()) as ByteArray)!!
+        toggleRecording(3)
+        val modeWrite = writes().removeFirst()
+        val modeSwitch = DjiProtocol.parseFrame(frame.get(modeWrite) as ByteArray)!!
         assertEquals(DjiProtocol.CMD_ID_MODE_SWITCH, modeSwitch.cmdId)
+        @Suppress("UNCHECKED_CAST")
+        (onComplete.get(modeWrite) as (Boolean) -> Unit)(true)
+        shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(700))
+        val start = DjiProtocol.parseFrame(frame.get(writes().removeFirst()) as ByteArray)!!
+        assertEquals(DjiProtocol.CMD_ID_RECORD_CONTROL, start.cmdId)
+        assertEquals(0, start.payload[4].toInt())
     }
 
     @Test fun offlineEventsNeverQueueForReconnect() {
