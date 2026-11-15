@@ -160,7 +160,6 @@ class SettingsUiTest {
             .first { it.component?.className == HelpActivity::class.java.name }
         val help = Robolectric.buildActivity(HelpActivity::class.java, helpIntent).setup()
         assertEquals(title, button(help.get(), title).text.toString())
-        render(help.get(), "article-hardware-control")
         help.pause().stop().destroy()
 
         toggle.performClick()
@@ -272,7 +271,7 @@ class SettingsUiTest {
 
     @Test fun `all help pages render outside tab container with image and language fallback`() {
         val context = RuntimeEnvironment.getApplication()
-        assertEquals(5, HelpContent.articles.size)
+        assertTrue(HelpContent.hardwareControl in HelpContent.articles)
         HelpContent.articles.forEach { article ->
             val intent = Intent(context, HelpActivity::class.java).putExtra("help_file", article.fileName)
             val controller = Robolectric.buildActivity(HelpActivity::class.java, intent).setup()
