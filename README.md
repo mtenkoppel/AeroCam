@@ -17,6 +17,13 @@ automatic reconnection, and a configurable keep-awake mode.
 [Installation steps](#install-on-your-karoo) · [Screenshots](#screenshots) ·
 [Compatibility](#compatibility)
 
+## New in 1.2
+
+Start or stop video with the Karoo’s lap button, ideal when you’re wearing winter
+gloves. Enable **Hardware Control** in Settings. It’s off by default.
+
+[Download AeroCam 1.2.0](https://github.com/mtenkoppel/AeroCam/releases/tag/v1.2.0). Install over the existing app to keep pairing and settings.
+
 ## New in 1.1
 
 Let your ride trigger recordings, highlights, or photos. Choose a mode, add your triggers, and keep your attention on the ride. Automatic recordings stop after a quiet minute by default; automatic photos are at least two minutes apart. Both intervals are adjustable, and manual recording stays available.
