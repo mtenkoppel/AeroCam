@@ -153,6 +153,19 @@ internal class SettingsViews(val activity: Activity) {
     fun automation(content: LinearLayout) {
         automationCard = AutomationSettingsUi(activity, this).also { it.attach(content) }
     }
+    fun hardwareControl(parent: LinearLayout) {
+        val article = HelpContent.hardwareControl
+        val card = group(parent, getString(article.titleRes), R.drawable.ic_hand_outline) {
+            HelpActivity.open(activity, article.fileName)
+        }
+        settingsSwitch(
+            card,
+            getString(R.string.hardware_control_enable),
+            DjiSettings.KEY_HARDWARE_START_STOP,
+            default = false,
+            summary = getString(article.summaryRes),
+        )
+    }
     fun alerts(parent: LinearLayout) {
         val card = group(parent, getString(R.string.alert_settings))
         settingsSwitch(card, getString(R.string.alert_low_battery_setting), DjiSettings.KEY_LOW_BATTERY_ALERT, true)

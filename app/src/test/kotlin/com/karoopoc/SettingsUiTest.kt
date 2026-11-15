@@ -41,13 +41,20 @@ class SettingsUiTest {
         (0 until view.childCount).flatMap { descendants(view.getChildAt(it)) } else emptyList()
     private fun views(activity: Activity) = descendants(activity.findViewById(android.R.id.content))
     private fun button(activity: Activity, label: String) = views(activity).filterIsInstance<TextView>().first { it.text.toString() == label }
-    private fun render(activity: Activity, name: String): View {
+    private fun render(activity: Activity, name: String, settingsTarget: View? = null): View {
         shadowOf(Looper.getMainLooper()).idle()
         val view = (activity.findViewById<ViewGroup>(android.R.id.content)).getChildAt(0)
         view.measure(View.MeasureSpec.makeMeasureSpec(480, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(755, View.MeasureSpec.EXACTLY))
         view.layout(0, 0, 480, 755)
         if (name.endsWith("-bottom")) descendants(view).filterIsInstance<ScrollView>().filter { it.visibility == View.VISIBLE }.forEach {
             it.scrollTo(0, it.getChildAt(0).height)
+        }
+        if (settingsTarget != null) {
+            val scroll = activity.findViewById<ScrollView>(R.id.settings_scroll)
+            val rect = android.graphics.Rect()
+            settingsTarget.getDrawingRect(rect)
+            scroll.offsetDescendantRectToMyCoords(settingsTarget, rect)
+            scroll.scrollTo(0, rect.top - 12)
         }
         if (name.contains("gradients")) {
             val scroll = activity.findViewById<ScrollView>(R.id.settings_scroll)
@@ -128,14 +135,34 @@ class SettingsUiTest {
         controller.pause().stop().destroy()
     }
 
-    @Test fun hardwareStartStopDefaultsOffAndPersistsAcrossSettingsReload() {
+    @Test fun hardwareControlHasItsOwnSectionHelpAndPersistentSwitch() {
         val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
         val activity = controller.get()
-        val label = activity.getString(R.string.hardware_start_stop_hack)
-        fun shortcut() = views(activity).filterIsInstance<Switch>().single { it.text.toString() == label }
-        val toggle = shortcut()
-        assertTrue(toggle.parent === button(activity, activity.getString(R.string.advanced_settings)).parent)
+        val title = activity.getString(R.string.hardware_control_title)
+        val label = activity.getString(R.string.hardware_control_enable)
+        val toggle = views(activity).filterIsInstance<Switch>().single { it.text.toString() == label }
+        val card = toggle.parent as LinearLayout
+        val sections = card.parent as LinearLayout
+        val heading = button(activity, title)
+        val automationHeading = button(activity, activity.getString(R.string.automation_title))
+        val alertsHeading = button(activity, activity.getString(R.string.alert_settings))
+        assertSame(card, heading.parent.parent)
+        assertNotNull(heading.compoundDrawables[0])
+        assertSame(automationHeading.parent.parent, sections.getChildAt(sections.indexOfChild(card) - 1))
+        assertSame(alertsHeading.parent, sections.getChildAt(sections.indexOfChild(card) + 1))
+        assertEquals(activity.getString(R.string.hardware_control_summary),
+            (card.getChildAt(card.indexOfChild(toggle) + 1) as TextView).text.toString())
         assertFalse(toggle.isChecked)
+        render(activity, "settings-hardware-control", card)
+
+        descendants(card).filterIsInstance<ImageButton>().single().performClick()
+        val helpIntent = generateSequence { shadowOf(activity).nextStartedActivity }
+            .first { it.component?.className == HelpActivity::class.java.name }
+        val help = Robolectric.buildActivity(HelpActivity::class.java, helpIntent).setup()
+        assertEquals(title, button(help.get(), title).text.toString())
+        render(help.get(), "article-hardware-control")
+        help.pause().stop().destroy()
+
         toggle.performClick()
         assertTrue(DjiSettings.hardwareStartStopEnabled(activity))
         controller.pause().stop().destroy()

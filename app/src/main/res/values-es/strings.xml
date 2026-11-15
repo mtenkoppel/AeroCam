@@ -231,6 +231,7 @@
     <string name="widget_refreshing_video">Actualizando…</string>
     <string name="widget_switching_to_video">Cambiando a vídeo…</string>
     <string name="widget_switching_to_video_short">Cambiando…</string>
-    <string name="hardware_start_stop_hack">Truco de inicio y parada con botón</string>
-    <string name="hardware_start_stop_hack_summary">Inicia o detiene la grabación con el botón de vuelta manual del Karoo cuando la cámara está conectada.</string>
+    <string name="hardware_control_title">Control con botones</string>
+    <string name="hardware_control_enable">Activar el control con botones</string>
+    <string name="hardware_control_summary">Inicia o detén la grabación de vídeo con el botón de vuelta. Útil si llevas guantes gruesos de invierno.</string>
 </resources>

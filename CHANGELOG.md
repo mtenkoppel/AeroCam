@@ -5,7 +5,7 @@ the matching version heading when preparing a release.
 
 ## [Unreleased]
 
-- Added the beta-only **Hardware start/stop hack** under Advanced settings. Press the Karoo manual lap button to toggle video recording when enabled, overriding AeroCam’s lap automation.
+- Added **Hardware control** to beta settings. Enable it to start or stop video recording with the Karoo manual lap button.
 
 ## [1.1.0] - 2026-11-06
 
