@@ -5,7 +5,11 @@ the matching version heading when preparing a release.
 
 ## [Unreleased]
 
-- Added **Hardware control** to beta settings. Enable it to start or stop video recording with the Karoo manual lap button.
+## [1.2.0] - 2026-11-15
+
+Added **Hardware Control** to start or stop video with the Karoo’s lap button, even with winter gloves. Off by default.
+
+<!-- karoo-release-notes: Start or stop video with the Karoo’s lap button, even with winter gloves. Off by default. -->
 
 ## [1.1.0] - 2026-11-06
 
