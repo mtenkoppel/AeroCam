@@ -5,6 +5,12 @@ the matching version heading when preparing a release.
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-11-15
+
+Added **Hardware Control** to start or stop video with the Karoo’s lap button, even with winter gloves. Off by default.
+
+<!-- karoo-release-notes: Start or stop video with the Karoo’s lap button, even with winter gloves. Off by default. -->
+
 ## [1.1.0] - 2026-11-06
 
 AeroCam 1.1 brings automatic recording and photos, guided setup, and polished ride controls.

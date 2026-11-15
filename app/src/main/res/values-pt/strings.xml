@@ -231,4 +231,7 @@
     <string name="widget_refreshing_video">A atualizar…</string>
     <string name="widget_switching_to_video">A mudar para vídeo…</string>
     <string name="widget_switching_to_video_short">A mudar…</string>
+    <string name="hardware_control_title">Controlo por botão</string>
+    <string name="hardware_control_enable">Ativar o controlo por botão</string>
+    <string name="hardware_control_summary">Inicia ou para a gravação de vídeo com o botão de volta. Útil com luvas grossas de inverno.</string>
 </resources>

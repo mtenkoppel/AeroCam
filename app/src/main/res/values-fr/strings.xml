@@ -231,4 +231,7 @@
     <string name="widget_refreshing_video">Actualisation…</string>
     <string name="widget_switching_to_video">Passage en vidéo…</string>
     <string name="widget_switching_to_video_short">Passage…</string>
+    <string name="hardware_control_title">Commande par bouton</string>
+    <string name="hardware_control_enable">Activer la commande par bouton</string>
+    <string name="hardware_control_summary">Démarrez ou arrêtez l’enregistrement vidéo avec le bouton de tour. Pratique avec des gants d’hiver épais.</string>
 </resources>

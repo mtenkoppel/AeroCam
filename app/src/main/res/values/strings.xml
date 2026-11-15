@@ -239,4 +239,7 @@
     <string name="widget_refreshing_video">Refreshing…</string>
     <string name="widget_switching_to_video">Switching to Video…</string>
     <string name="widget_switching_to_video_short">Switching…</string>
+    <string name="hardware_control_title">Hardware control</string>
+    <string name="hardware_control_enable">Enable hardware control</string>
+    <string name="hardware_control_summary">Start or stop video recording by pressing the lap button. Useful when wearing thick winter gloves.</string>
 </resources>

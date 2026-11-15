@@ -1,9 +1,11 @@
 package com.karoopoc.dji
 
+import android.content.Intent
 import android.os.Looper
 import android.os.SystemClock
 import io.hammerhead.karooext.KarooSystemService
 import io.hammerhead.karooext.models.DataType
+import io.hammerhead.karooext.models.Lap
 import io.hammerhead.karooext.models.RideState
 import org.junit.Assert.*
 import org.junit.Test
@@ -17,6 +19,45 @@ import java.time.Duration
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [32])
 class AutomationIntegrationTest {
+    @Test fun lapShortcutOverridesLapAutomationAndCanBeTurnedOffDuringARide() {
+        val context = RuntimeEnvironment.getApplication()
+        DjiSettings.resetAll(context)
+        DjiSettings.setBoolean(context, DjiSettings.KEY_LAP_HIGHLIGHTS, true)
+        val integration = DjiKarooIntegration(context, KarooSystemService(context))
+        DjiKarooIntegration::class.java.getDeclaredMethod("onRideState", RideState::class.java)
+            .apply { isAccessible = true }.invoke(integration, RideState.Recording)
+        val lap = DjiKarooIntegration::class.java.getDeclaredMethod("onLap", Lap::class.java)
+            .apply { isAccessible = true }
+        DjiCameraController.publish(DjiCameraState(connection = CameraConnectionState.CONNECTED, recording = true))
+        while (shadowOf(context).nextStartedService != null) { }
+
+        var lapNumber = 0
+        fun lapActions(trigger: String = "MANUAL"): List<Intent> {
+            lap.invoke(integration, Lap(++lapNumber, 30_000L, trigger))
+            shadowOf(Looper.getMainLooper()).idle()
+            return generateSequence { shadowOf(context).nextStartedService }.toList()
+        }
+
+        val defaultAction = lapActions().single()
+        assertEquals(DjiCameraService.ACTION_HIGHLIGHT, defaultAction.action)
+        assertFalse(defaultAction.getBooleanExtra(DjiCameraService.EXTRA_HIGHLIGHT_COOLDOWN_LIMITED, true))
+
+        DjiSettings.setBoolean(context, DjiSettings.KEY_HARDWARE_START_STOP, true)
+        val shortcut = lapActions().single()
+        assertEquals(DjiCameraService.ACTION_RECORD_TOGGLE, shortcut.action)
+        assertTrue(shortcut.getBooleanExtra(DjiCameraService.EXTRA_REQUIRE_CAMERA_STATUS, false))
+        for (trigger in listOf("TIME", "DISTANCE", "POSITION", "FITNESS_EQUIPMENT", "WORKOUT", "SESSION_END", "")) {
+            assertTrue("Unexpected camera action for lap trigger $trigger", lapActions(trigger).isEmpty())
+        }
+
+        DjiSettings.setBoolean(context, DjiSettings.KEY_AUTO_HIGHLIGHTS_ENABLED, false)
+        assertEquals(DjiCameraService.ACTION_RECORD_TOGGLE, lapActions().single().action)
+
+        DjiSettings.setBoolean(context, DjiSettings.KEY_AUTO_HIGHLIGHTS_ENABLED, true)
+        DjiSettings.setBoolean(context, DjiSettings.KEY_HARDWARE_START_STOP, false)
+        assertEquals(DjiCameraService.ACTION_HIGHLIGHT, lapActions("DISTANCE").single().action)
+    }
+
     @Test fun autoPauseRetainsStopPermissionWhileManualPauseCancelsAutomation() {
         val context = RuntimeEnvironment.getApplication()
         DjiSettings.resetAll(context)

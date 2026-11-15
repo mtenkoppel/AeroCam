@@ -231,4 +231,7 @@
     <string name="widget_refreshing_video">Aggiornamento…</string>
     <string name="widget_switching_to_video">Passaggio a video…</string>
     <string name="widget_switching_to_video_short">Passaggio…</string>
+    <string name="hardware_control_title">Controllo tramite tasto</string>
+    <string name="hardware_control_enable">Attiva il controllo tramite tasto</string>
+    <string name="hardware_control_summary">Avvia o interrompi la registrazione video con il tasto giro. Utile con i guanti invernali spessi.</string>
 </resources>

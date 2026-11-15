@@ -140,6 +140,7 @@ class MainActivity : Activity() {
         val content = pageContent()
         ui.standby(content)
         ui.automation(content)
+        ui.hardwareControl(content)
         ui.alerts(content)
         ui.style(content)
         val advanced = ui.group(content, getString(R.string.advanced_settings))

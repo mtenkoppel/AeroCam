@@ -71,7 +71,10 @@ object DjiCameraController {
 
     fun startRecording(context: Context) = dispatch(context, DjiCameraService.ACTION_RECORD_START)
 
-    fun toggleRecording(context: Context) = dispatch(context, DjiCameraService.ACTION_RECORD_TOGGLE)
+    fun toggleRecording(context: Context, requireCameraStatus: Boolean = false) =
+        dispatch(context, DjiCameraService.ACTION_RECORD_TOGGLE) {
+            putExtra(DjiCameraService.EXTRA_REQUIRE_CAMERA_STATUS, requireCameraStatus)
+        }
 
     fun addHighlight(context: Context, feedback: String? = null, cooldownLimited: Boolean = false) = dispatch(
         context,
@@ -267,7 +270,13 @@ class DjiCameraService : Service() {
                 if (!client.state().recording) client.startVideoRecording()
             }
             ACTION_RECORD_TOGGLE -> {
-                if (client.state().recording) client.stopVideoRecording() else client.startVideoRecording()
+                val state = client.state()
+                val requireCameraStatus = intent?.getBooleanExtra(EXTRA_REQUIRE_CAMERA_STATUS, false) == true
+                if (!requireCameraStatus || client.connectionState() == DjiOsmoBleClient.ConnectionState.CONNECTED &&
+                    state.cameraMode != DjiCameraMode.UNKNOWN
+                ) {
+                    if (state.recording) client.stopVideoRecording() else client.startVideoRecording()
+                }
             }
             ACTION_HIGHLIGHT -> client.addHighlight(
                 intent?.getStringExtra(EXTRA_HIGHLIGHT_FEEDBACK),
@@ -423,6 +432,7 @@ class DjiCameraService : Service() {
         const val ACTION_PHOTO = "com.karoopoc.dji.PHOTO"
         const val ACTION_RECORD_START = "com.karoopoc.dji.RECORD_START"
         const val ACTION_RECORD_TOGGLE = "com.karoopoc.dji.RECORD_TOGGLE"
+        internal const val EXTRA_REQUIRE_CAMERA_STATUS = "requireCameraStatus"
         const val ACTION_HIGHLIGHT = "com.karoopoc.dji.HIGHLIGHT"
         const val ACTION_MODE_TOGGLE = "com.karoopoc.dji.MODE_TOGGLE"
         const val ACTION_SELECT_VIDEO_MODE = "com.karoopoc.dji.SELECT_VIDEO_MODE"

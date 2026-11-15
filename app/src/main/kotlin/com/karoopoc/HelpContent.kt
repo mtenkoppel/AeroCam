@@ -18,10 +18,13 @@ data class HelpArticle(
 )
 
 object HelpContent {
+    val hardwareControl = HelpArticle("hardware-control.md", R.string.hardware_control_title, R.string.hardware_control_summary)
+
     val articles = listOf(
         HelpArticle("get-ready-for-a-ride.md", R.string.help_ride, R.string.help_ride_summary),
         HelpArticle("prevent-standby.md", R.string.help_standby, R.string.help_standby_summary),
         HelpArticle("auto-highlights.md", R.string.help_highlights, R.string.help_highlights_summary),
+        hardwareControl,
         HelpArticle("different-widgets.md", R.string.help_widgets, R.string.help_widgets_summary),
         HelpArticle("gps-telemetry.md", R.string.help_gps, R.string.help_gps_summary),
     )

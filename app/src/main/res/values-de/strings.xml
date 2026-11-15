@@ -231,4 +231,7 @@
     <string name="widget_refreshing_video">Aktualisiere…</string>
     <string name="widget_switching_to_video">Wechsel zu Video…</string>
     <string name="widget_switching_to_video_short">Wechsel…</string>
+    <string name="hardware_control_title">Tastensteuerung</string>
+    <string name="hardware_control_enable">Tastensteuerung aktivieren</string>
+    <string name="hardware_control_summary">Starte oder stoppe die Videoaufnahme mit der Rundentaste. Praktisch mit dicken Winterhandschuhen.</string>
 </resources>
