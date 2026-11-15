@@ -110,6 +110,8 @@ Choose your automation mode and add triggers during setup or later in Settings.
 - **Start and stop recording:** Control video recording from an in-ride data
   field or a Karoo bonus action, with immediate input feedback and camera-state
   confirmation.
+- Enable **Hardware Control** in Settings to start or stop video with the
+  Karoo’s lap button. Ideal when you’re wearing winter gloves.
 - **GPS telemetry:** Stream live Karoo position, altitude, and movement data to
   the camera so supported DJI recordings contain telemetry for later overlays.
 - **Highlights:** Add DJI highlight markers while recording, making interesting
