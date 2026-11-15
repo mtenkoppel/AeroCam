@@ -142,7 +142,7 @@ internal class SettingsViews(val activity: Activity) {
     }
     fun standby(parent: LinearLayout) {
         val card = group(parent, getString(R.string.prevent_standby), R.drawable.ic_coffee) {
-            HelpActivity.open(activity, "prevent-standby.md")
+            HelpActivity.open(activity, "prevent-standby.md", contextual = true)
         }
         settingsSwitch(card, getString(R.string.keep_camera_awake), DjiSettings.KEY_KEEP_AWAKE_ENABLED, false)
         card.addView(action(getString(R.string.recommended_camera_setup)) {
@@ -156,7 +156,7 @@ internal class SettingsViews(val activity: Activity) {
     fun hardwareControl(parent: LinearLayout) {
         val article = HelpContent.hardwareControl
         val card = group(parent, getString(article.titleRes), R.drawable.ic_hand_outline) {
-            HelpActivity.open(activity, article.fileName)
+            HelpActivity.open(activity, article.fileName, contextual = true)
         }
         settingsSwitch(
             card,

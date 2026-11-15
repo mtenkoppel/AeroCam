@@ -10,6 +10,8 @@ import android.graphics.drawable.GradientDrawable
 import org.json.JSONObject
 import org.json.JSONArray
 import android.os.Looper
+import android.transition.Slide
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -132,6 +134,32 @@ class SettingsUiTest {
         assertEquals(65, DjiSettings.read(controller.get()).descentSpeedKph)
         assertEquals(-3, DjiSettings.read(controller.get()).descentGradePercent)
         assertTrue(views(controller.get()).filterIsInstance<Switch>().first { it.text.toString() == context.getString(R.string.keep_camera_awake) }.isChecked)
+        controller.pause().stop().destroy()
+    }
+
+    @Test fun settingsQuestionMarksUseTheSameVerticalTransition() {
+        val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
+        val activity = controller.get()
+        val moreInformation = activity.getString(R.string.automation_more_information)
+        val destinations = listOf(
+            R.string.prevent_standby to HelpActivity::class.java,
+            R.string.automation_title to AutomationActivity::class.java,
+            R.string.hardware_control_title to HelpActivity::class.java,
+        )
+        while (shadowOf(activity).nextStartedActivity != null) { }
+
+        for ((title, destination) in destinations) {
+            val helpButton = views(activity).filterIsInstance<ImageButton>().single {
+                it.contentDescription.toString() == "${activity.getString(title)}: $moreInformation"
+            }
+            helpButton.performClick()
+            val intent = shadowOf(activity).nextStartedActivity
+            assertEquals(destination.name, intent.component?.className)
+            val detail = Robolectric.buildActivity(destination, intent).setup()
+            assertEquals(Gravity.BOTTOM, (detail.get().window.enterTransition as Slide).slideEdge)
+            assertEquals(Gravity.BOTTOM, (detail.get().window.returnTransition as Slide).slideEdge)
+            detail.pause().stop().destroy()
+        }
         controller.pause().stop().destroy()
     }
 

@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 open class DetailActivity : Activity() {
     internal lateinit var ui: SettingsViews
     internal lateinit var body: LinearLayout
+    protected open val transitionEdge: Int = Gravity.END
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(DjiTheme.activityContext(newBase))
@@ -23,8 +24,8 @@ open class DetailActivity : Activity() {
         DjiTheme.applyActivityTheme(this)
         window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
         super.onCreate(savedInstanceState)
-        window.enterTransition = Slide(Gravity.END)
-        window.returnTransition = Slide(Gravity.END)
+        window.enterTransition = Slide(transitionEdge)
+        window.returnTransition = Slide(transitionEdge)
         ui = SettingsViews(this)
         val root = ui.column().apply { setBackgroundColor(ui.palette.appBackground) }
         body = ui.column().apply { setPadding(ui.dp(8), ui.dp(12), ui.dp(8), ui.dp(16)) }
@@ -34,6 +35,9 @@ open class DetailActivity : Activity() {
 }
 
 class HelpActivity : DetailActivity() {
+    override val transitionEdge: Int
+        get() = if (intent.getBooleanExtra(EXTRA_CONTEXTUAL_HELP, false)) Gravity.BOTTOM else super.transitionEdge
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val fileName = intent.getStringExtra(EXTRA_FILE)
@@ -44,10 +48,14 @@ class HelpActivity : DetailActivity() {
 
     companion object {
         private const val EXTRA_FILE = "help_file"
-        fun open(activity: Activity, fileName: String) {
+        private const val EXTRA_CONTEXTUAL_HELP = "contextual_help"
+
+        fun open(activity: Activity, fileName: String, contextual: Boolean = false) {
             activity.currentFocus?.clearFocus()
-            activity.startActivity(Intent(activity, HelpActivity::class.java).putExtra(EXTRA_FILE, fileName),
-                ActivityOptions.makeSceneTransitionAnimation(activity).toBundle())
+            val intent = Intent(activity, HelpActivity::class.java)
+                .putExtra(EXTRA_FILE, fileName)
+                .putExtra(EXTRA_CONTEXTUAL_HELP, contextual)
+            activity.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle())
         }
     }
 }
